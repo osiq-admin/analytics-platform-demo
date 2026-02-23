@@ -1,0 +1,48 @@
+import { type RouteObject } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout.tsx";
+
+// Lazy-loaded view stubs
+import EntityDesigner from "./views/EntityDesigner/index.tsx";
+import MetadataExplorer from "./views/MetadataExplorer/index.tsx";
+import SettingsManager from "./views/SettingsManager/index.tsx";
+import MappingStudio from "./views/MappingStudio/index.tsx";
+import PipelineMonitor from "./views/PipelineMonitor/index.tsx";
+import SchemaExplorer from "./views/SchemaExplorer/index.tsx";
+import SQLConsole from "./views/SQLConsole/index.tsx";
+import ModelComposer from "./views/ModelComposer/index.tsx";
+import DataManager from "./views/DataManager/index.tsx";
+import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
+import AIAssistant from "./views/AIAssistant/index.tsx";
+
+export const routes: RouteObject[] = [
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      // Define
+      { index: true, element: <EntityDesigner /> },
+      { path: "entities", element: <EntityDesigner /> },
+      { path: "metadata", element: <MetadataExplorer /> },
+
+      // Configure
+      { path: "settings", element: <SettingsManager /> },
+      { path: "mappings", element: <MappingStudio /> },
+
+      // Operate
+      { path: "pipeline", element: <PipelineMonitor /> },
+      { path: "schema", element: <SchemaExplorer /> },
+      { path: "sql", element: <SQLConsole /> },
+
+      // Compose
+      { path: "models", element: <ModelComposer /> },
+      { path: "data", element: <DataManager /> },
+
+      // Investigate
+      { path: "alerts", element: <RiskCaseManager /> },
+      { path: "alerts/:alertId", element: <RiskCaseManager /> },
+
+      // AI
+      { path: "assistant", element: <AIAssistant /> },
+    ],
+  },
+];

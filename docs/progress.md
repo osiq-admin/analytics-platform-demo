@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | IN PROGRESS | M0+M1+M2+M3 complete — 85 tests passing |
+| Implementation | IN PROGRESS | M0+M1+M2+M3+M4 complete — 103 tests passing |
 
 ---
 
@@ -28,7 +28,7 @@
 | M1 | Backend Foundation | COMPLETE | 6 | 6 | DuckDB, models, metadata svc, data loader, API routes, query svc |
 | M2 | Calculation Engine | COMPLETE | 5 | 5 | DAG executor + 10 calc definitions (L1-L3.5) |
 | M3 | Settings Resolution | COMPLETE | 2 | 2 | Resolver engine + 15 setting JSON files |
-| M4 | Detection & Alerts | NOT STARTED | 3 | 0 | Depends: M2, M3 |
+| M4 | Detection & Alerts | COMPLETE | 3 | 3 | Detection engine + 5 models + alert service |
 | M5 | Frontend Foundation | NOT STARTED | 4 | 0 | Depends: M0 |
 | M6 | Configuration Views | NOT STARTED | 4 | 0 | Depends: M1, M5 |
 | M7 | Operations Views | NOT STARTED | 3 | 0 | Depends: M2, M5 |
@@ -96,6 +96,12 @@
 - [x] **M2 Task 2.5**: Layer 3.5 derived calcs — large_trading_activity (threshold flag), wash_detection (qty match + VWAP proximity) (8 tests)
 - [x] **Bug fix**: Data loader now quotes table names for SQL reserved words (e.g., "order")
 - **Total**: 85 tests passing, 15 commits on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-24 (continued)
+- [x] **M4 Task 4.1**: Detection engine — graduated scoring, MUST_PASS/OPTIONAL strictness, alert trigger logic (10 tests)
+- [x] **M4 Task 4.2**: 5 detection model JSON definitions — wash_full_day, wash_intraday, market_price_ramping, insider_dealing, spoofing_layering
+- [x] **M4 Task 4.3**: Alert service — JSON trace files, Parquet summary, DuckDB registration (8 tests)
+- **Total**: 103 tests passing, 18 commits on `feature/scaffold/m0-m1-foundation`
 
 ---
 
