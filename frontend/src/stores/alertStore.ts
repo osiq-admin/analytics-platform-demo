@@ -14,22 +14,37 @@ export interface AlertSummary {
   alert_fired: boolean;
 }
 
+export interface CalculationScore {
+  calc_id: string;
+  score: number;
+  raw_value: number;
+  computed_value?: number;
+  strictness: string;
+  threshold_passed: boolean;
+  score_step_matched?: { min_value: number | null; max_value: number | null; score: number } | null;
+}
+
+export interface SettingsTraceEntry {
+  setting_id: string;
+  setting_name: string;
+  matched_override: Record<string, unknown> | null;
+  resolved_value: unknown;
+  why: string;
+}
+
 export interface AlertTrace {
   alert_id: string;
   model_id: string;
   timestamp: string;
   entity_context: Record<string, string>;
-  calculation_scores: Array<{
-    calc_id: string;
-    score: number;
-    raw_value: number;
-    strictness: string;
-    threshold_passed: boolean;
-  }>;
+  calculation_scores: CalculationScore[];
   accumulated_score: number;
   score_threshold: number;
   trigger_path: string;
   alert_fired: boolean;
+  calculation_trace: { query_row?: Record<string, string> };
+  settings_trace: SettingsTraceEntry[];
+  related_data: Record<string, unknown>;
 }
 
 interface AlertState {
