@@ -17,6 +17,7 @@
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
 | Implementation | COMPLETE | All 14 milestones done — 185 tests, 11 views, full pipeline |
+| Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
 
 ---
 
@@ -168,6 +169,33 @@
 - [x] **M13 Task 13.4**: E2E integration test (`tests/test_integration_e2e.py`) — 18 tests covering all API endpoints via FastAPI TestClient
 - [x] **M13 Task 13.5**: SPA static files serving — SPAStaticFiles class in `backend/main.py` with index.html fallback for client-side routing
 - **Total**: 185 tests passing on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-23 (Browser Testing — Playwright E2E)
+- [x] **Full browser-based E2E testing** of all 11 views using Playwright MCP
+- [x] **9 bugs found and fixed** during live testing:
+  1. **`step()` not restoring snapshots** — `demo_controller.py` only updated state label, never called `restore_snapshot()`. Fixed.
+  2. **No DuckDB re-registration after snapshot restore** — Snapshot restores files to disk but DuckDB views not recreated. Added `_reload_data()` in `demo.py` that re-registers CSVs, result parquets, and alerts summary after every state change.
+  3. **Result parquet glob pattern wrong** — Used `results/*.parquet` but files are in `results/<layer>/*.parquet`. Fixed to `**/*.parquet`.
+  4. **alerts_summary filename mismatch** — Snapshot has `summary.parquet`, code expected `alerts_summary.parquet`. Fixed to check both names.
+  5. **`/api/alerts` returning HTML (SPA fallback)** — Route `@router.get("/")` only matched with trailing slash; without slash, SPA fallback returned index.html. Fixed by adding `@router.get("")`.
+  6. **Alerts fallback never triggered** — `QueryService.execute()` catches exceptions internally (returns `{"error": ...}` dict). The try/except in alerts handler never caught anything. Fixed by checking `if "rows" in result and result["rows"]`.
+  7. **`data.py` and `pipeline.py` were stubs** — Returned hardcoded empty responses. Wired to DataLoader, QueryService, and CalculationEngine.
+  8. **Pipeline API response mismatch** — Backend returned `{"calculations": ...}` but frontend expected `{"steps": [...]}` with PipelineStep format. Fixed to return proper steps with calc_id, name, layer, status, duration_ms, row_count.
+  9. **DuckDB DROP TABLE/VIEW type conflict** — `DROP VIEW IF EXISTS` fails when object is TABLE and vice versa. Wrapped both drop statements in try/except blocks.
+- [x] **All 11 views verified working**:
+  - Entity Designer: 4 entities, field details, React Flow relationships graph
+  - Metadata Explorer: 10 calculations, DAG visualization, layer filters
+  - Settings Manager: 15 settings, score steps table, resolution tester
+  - Mapping Studio: 10 calculations, source columns, required fields with type badges
+  - Pipeline Monitor: DAG execution graph, 10 steps table with timing and row counts
+  - Schema Explorer: 4 tables with column details
+  - SQL Console: Monaco editor, preset queries, custom SQL execution
+  - Model Composer: 5 detection models, calculation composition
+  - Data Manager: 15 tables grid, data preview with live DuckDB query
+  - Risk Case Manager: 500 alerts grid, alert detail with score breakdown chart
+  - AI Assistant: Mock mode, 5 scenarios, "Run Query" executes live SQL with results grid
+- [x] **Additional features verified**: Dark/Light theme toggle, demo toolbar (Reset/Step/End/Act 1/Act 2), full checkpoint progression (pristine → data_loaded → pipeline_run → alerts_generated → act1_complete → model_deployed → act2_complete → final)
+- **Files modified**: `backend/services/demo_controller.py`, `backend/api/demo.py`, `backend/api/alerts.py`, `backend/api/data.py`, `backend/api/pipeline.py`, `backend/engine/calculation_engine.py`
 
 ---
 

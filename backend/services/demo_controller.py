@@ -100,15 +100,18 @@ class DemoController:
         return self.get_state()
 
     def step(self) -> dict:
-        """Advance to the next checkpoint."""
+        """Advance to the next checkpoint (restores snapshot)."""
         idx = self._state["checkpoint_index"]
         if idx < len(CHECKPOINTS) - 1:
             idx += 1
-            self._state = {
-                "current_checkpoint": CHECKPOINTS[idx],
-                "checkpoint_index": idx,
-            }
-            self._save_state()
+            next_cp = CHECKPOINTS[idx]
+            if not self.restore_snapshot(next_cp):
+                # No snapshot — just advance the state label
+                self._state = {
+                    "current_checkpoint": next_cp,
+                    "checkpoint_index": idx,
+                }
+                self._save_state()
         return self.get_state()
 
     def jump_to(self, checkpoint: str) -> dict:

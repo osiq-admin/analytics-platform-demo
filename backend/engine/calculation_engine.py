@@ -121,9 +121,16 @@ class CalculationEngine:
         cursor.close()
 
         # Create DuckDB table from results (quote name for reserved words)
+        # DuckDB requires matching DROP type, so try both to handle either case
         cursor = self._db.cursor()
-        cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
-        cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
+        try:
+            cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
+        except Exception:
+            pass
+        try:
+            cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
+        except Exception:
+            pass
         cursor.execute(f'CREATE TABLE "{table_name}" AS {sql}')
         cursor.close()
 

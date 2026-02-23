@@ -160,3 +160,6 @@ Click **Skip to End** to show the final state.
 | No data visible | Click **Reset** then **Skip to End** |
 | No alerts | Run `uv run python -m scripts.generate_snapshots` |
 | AI not responding | Mock mode is the default — need `LLM_API_KEY` env var for live mode |
+| DuckDB lock error on start | Another process holds the lock — kill it (`lsof workspace/analytics.duckdb`) or restart |
+| Pipeline shows errors | Normal on re-run if tables/views type-mismatch — fixed with try/except drop logic |
+| Schema Explorer empty after Step | Data reload happens automatically; if still empty, click **Reset** then **Skip to End** |

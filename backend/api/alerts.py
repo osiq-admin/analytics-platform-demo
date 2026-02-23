@@ -14,32 +14,33 @@ def _traces_dir() -> Path:
     return settings.workspace_dir / "alerts" / "traces"
 
 
+@router.get("")
 @router.get("/")
 def list_alerts(request: Request):
     """List alert summaries from DuckDB if available, else from trace files."""
-    try:
-        from backend.services.query_service import QueryService
-        svc = QueryService(request.app.state.db)
-        result = svc.execute("SELECT * FROM alerts_summary ORDER BY timestamp DESC", limit=500)
-        return result.get("rows", [])
-    except Exception:
-        # Fallback: read trace files
-        traces_dir = _traces_dir()
-        if not traces_dir.exists():
-            return []
-        alerts = []
-        for f in sorted(traces_dir.glob("*.json")):
-            data = json.loads(f.read_text())
-            alerts.append({
-                "alert_id": data.get("alert_id"),
-                "model_id": data.get("model_id"),
-                "timestamp": data.get("timestamp"),
-                "accumulated_score": data.get("accumulated_score"),
-                "score_threshold": data.get("score_threshold"),
-                "trigger_path": data.get("trigger_path"),
-                "alert_fired": data.get("alert_fired"),
-            })
-        return alerts
+    from backend.services.query_service import QueryService
+    svc = QueryService(request.app.state.db)
+    result = svc.execute("SELECT * FROM alerts_summary ORDER BY timestamp DESC", limit=500)
+    if "rows" in result and result["rows"]:
+        return result["rows"]
+
+    # Fallback: read trace files
+    traces_dir = _traces_dir()
+    if not traces_dir.exists():
+        return []
+    alerts = []
+    for f in sorted(traces_dir.glob("*.json")):
+        data = json.loads(f.read_text())
+        alerts.append({
+            "alert_id": data.get("alert_id"),
+            "model_id": data.get("model_id"),
+            "timestamp": data.get("timestamp"),
+            "accumulated_score": data.get("accumulated_score"),
+            "score_threshold": data.get("score_threshold"),
+            "trigger_path": data.get("trigger_path"),
+            "alert_fired": data.get("alert_fired"),
+        })
+    return alerts
 
 
 @router.get("/{alert_id}")
