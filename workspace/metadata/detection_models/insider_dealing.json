@@ -19,7 +19,7 @@
     }
   ],
   "score_threshold_setting": "insider_score_threshold",
-  "query": "SELECT ta.product_id, ta.account_id, ta.business_date, ta.total_value, ta.same_side_pct, me.event_type, me.event_date, me.price_change_pct, me.lookback_start, me.lookforward_end, 'equity' AS asset_class FROM calc_large_trading_activity ta INNER JOIN calc_market_event_window me ON ta.product_id = me.product_id WHERE ta.is_large = TRUE AND CAST(ta.business_date AS DATE) >= CAST(me.lookback_start AS DATE) AND CAST(ta.business_date AS DATE) <= CAST(me.event_date AS DATE)",
+  "query": "SELECT ta.product_id, ta.account_id, ta.business_date, ta.total_value, ta.same_side_pct, me.event_type, me.event_date, me.price_change_pct, me.lookback_start, me.lookforward_end, p.asset_class, p.instrument_type FROM calc_large_trading_activity ta INNER JOIN calc_market_event_window me ON ta.product_id = me.product_id INNER JOIN product p ON ta.product_id = p.product_id WHERE ta.is_large = TRUE AND CAST(ta.business_date AS DATE) >= CAST(me.lookback_start AS DATE) AND CAST(ta.business_date AS DATE) <= CAST(me.event_date AS DATE)",
   "alert_template": {
     "title": "Insider Dealing Alert",
     "sections": ["business_description", "entity_context", "market_event_analysis", "related_products", "calculation_trace", "score_breakdown", "price_chart", "order_timeline"]

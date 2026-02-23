@@ -19,7 +19,7 @@
     }
   ],
   "score_threshold_setting": "spoofing_score_threshold",
-  "query": "SELECT cp.product_id, cp.account_id, cp.pattern_date AS business_date, cp.cancel_count, cp.cancel_quantity, cp.pattern_side, cp.window_start, cp.window_end, ta.total_value, ta.buy_value, ta.sell_value, 'equity' AS asset_class FROM calc_cancellation_pattern cp LEFT JOIN calc_large_trading_activity ta ON cp.product_id = ta.product_id AND cp.account_id = ta.account_id WHERE cp.cancel_count >= 3",
+  "query": "SELECT cp.product_id, cp.account_id, cp.pattern_date AS business_date, cp.cancel_count, cp.cancel_quantity, cp.pattern_side, cp.window_start, cp.window_end, ta.total_value, ta.buy_value, ta.sell_value, p.asset_class, p.instrument_type FROM calc_cancellation_pattern cp LEFT JOIN calc_large_trading_activity ta ON cp.product_id = ta.product_id AND cp.account_id = ta.account_id INNER JOIN product p ON cp.product_id = p.product_id WHERE cp.cancel_count >= 3",
   "alert_template": {
     "title": "Spoofing / Layering Alert",
     "sections": ["business_description", "entity_context", "cancellation_analysis", "order_book_snapshot", "calculation_trace", "score_breakdown", "order_timeline"]

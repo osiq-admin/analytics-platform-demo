@@ -28,7 +28,7 @@
       {"name": "execution_time", "type": "varchar"}
     ]
   },
-  "logic": "SELECT cv.execution_id, cv.product_id, cv.account_id, cv.trader_id, cv.side AS original_side, CASE WHEN cv.instrument_type = 'option' AND cv.side = 'BUY' AND COALESCE(e.option_type, 'call') = 'put' THEN 'SELL' WHEN cv.instrument_type = 'option' AND cv.side = 'SELL' AND COALESCE(e.option_type, 'call') = 'call' THEN 'SELL' WHEN cv.instrument_type = 'option' AND cv.side = 'SELL' AND COALESCE(e.option_type, 'call') = 'put' THEN 'BUY' ELSE cv.side END AS adjusted_side, cv.instrument_type, cv.asset_class, cv.price, cv.quantity, cv.calculated_value, cv.execution_date, cv.execution_time FROM calc_value cv LEFT JOIN execution e ON cv.execution_id = e.execution_id",
+  "logic": "SELECT cv.execution_id, cv.product_id, cv.account_id, cv.trader_id, cv.side AS original_side, CASE WHEN cv.instrument_type = 'option' AND cv.side = 'BUY' AND COALESCE(p.option_type, 'call') = 'put' THEN 'SELL' WHEN cv.instrument_type = 'option' AND cv.side = 'SELL' AND COALESCE(p.option_type, 'call') = 'call' THEN 'SELL' WHEN cv.instrument_type = 'option' AND cv.side = 'SELL' AND COALESCE(p.option_type, 'call') = 'put' THEN 'BUY' ELSE cv.side END AS adjusted_side, cv.instrument_type, cv.asset_class, cv.price, cv.quantity, cv.calculated_value, cv.execution_date, cv.execution_time FROM calc_value cv LEFT JOIN product p ON cv.product_id = p.product_id",
   "parameters": {},
   "display": {
     "label": "Adjusted Direction"

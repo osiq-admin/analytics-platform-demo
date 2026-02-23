@@ -25,7 +25,7 @@
     }
   ],
   "score_threshold_setting": "wash_score_threshold",
-  "query": "SELECT w.product_id, w.account_id, w.business_date, w.total_value, w.buy_value, w.sell_value, w.buy_qty, w.sell_qty, w.total_trades, w.same_side_pct, w.is_large, w.qty_match_ratio, w.vwap_buy, w.vwap_sell, w.vwap_spread, w.vwap_proximity, w.is_wash_candidate, 'equity' AS asset_class FROM calc_wash_detection w WHERE w.is_wash_candidate = TRUE AND w.buy_qty > 0 AND w.sell_qty > 0",
+  "query": "SELECT w.product_id, w.account_id, w.business_date, w.total_value, w.buy_value, w.sell_value, w.buy_qty, w.sell_qty, w.total_trades, w.same_side_pct, w.is_large, w.qty_match_ratio, w.vwap_buy, w.vwap_sell, w.vwap_spread, w.vwap_proximity, w.is_wash_candidate, p.asset_class, p.instrument_type FROM calc_wash_detection w INNER JOIN product p ON w.product_id = p.product_id WHERE w.is_wash_candidate = TRUE AND w.buy_qty > 0 AND w.sell_qty > 0",
   "alert_template": {
     "title": "Wash Trading Alert — Full Day",
     "sections": ["business_description", "entity_context", "calculation_trace", "score_breakdown", "settings_trace", "related_orders"]
