@@ -21,7 +21,7 @@
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
 | UX Polish & AI Integration (Phase 4) | COMPLETE | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout — 193 tests |
-| Data Model, UX, Viz & Dashboard (Phase 5) | IN PROGRESS | M34-M48: Product entity, tooltips/tours, chart enhancements, dashboard |
+| Data Model, UX, Viz & Dashboard (Phase 5) | COMPLETE | M34-M48: Product entity, tooltips/tours, chart enhancements, dashboard — 193 tests |
 
 ---
 
@@ -63,21 +63,21 @@
 | M31 | Dynamic Alert Structure | COMPLETE | 2 | 2 | Model-type layout config with emphasis and hints |
 | M32 | Build, Test & Verify | COMPLETE | 3 | 3 | Frontend build (876 modules), 193 backend tests, Playwright E2E |
 | M33 | Documentation | COMPLETE | 2 | 2 | Update progress.md and demo-guide.md |
-| M34 | Phase 5 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
-| M35 | Product Entity & CSV | PENDING | 5 | 0 | Create product entity, generate product.csv, remove fields from execution |
-| M36 | Update Entity Defs & Loader | PENDING | 3 | 0 | Update execution.json, Pydantic models, schema docs |
-| M37 | Update Calculation SQL | PENDING | 4 | 0 | Update value_calc and adjusted_direction to JOIN product |
-| M38 | Update Detection Models & Engine | PENDING | 3 | 0 | Update all 5 detection model queries to JOIN product |
-| M39 | Update Tests & Frontend | PENDING | 4 | 0 | Update test fixtures for product table |
-| M40 | Regenerate Data & Snapshots | PENDING | 4 | 0 | Regenerate CSVs and snapshots with new schema |
-| M41 | Tooltip Infrastructure | PENDING | 5 | 0 | @floating-ui/react, Tooltip, HelpButton components |
-| M42 | Tour System & Store | PENDING | 5 | 0 | tourStore, TourOverlay, OnboardingModal |
-| M43 | Chart Enhancements & Filtering | PENDING | 6 | 0 | Time range, intraday toggle, AG Grid filters |
-| M44 | View Tooltips & Tour Content | PENDING | 5 | 0 | Tour definitions, tooltips on all views |
-| M45 | Demo Workflow Guides | PENDING | 4 | 0 | Act 1/2/3 guided workflows |
-| M46 | Dashboard View | PENDING | 6 | 0 | Backend endpoint, store, view, charts |
-| M47 | Build, Test & Verify | PENDING | 4 | 0 | Frontend build, all tests, Playwright E2E |
-| M48 | Documentation | PENDING | 3 | 0 | Update progress and demo guide |
+| M34 | Phase 5 Plan & Progress | COMPLETE | 1 | 1 | Save plan, update progress tracker |
+| M35 | Product Entity & CSV | COMPLETE | 5 | 5 | Create product entity, generate product.csv, remove fields from execution |
+| M36 | Update Entity Defs & Loader | COMPLETE | 3 | 3 | Update execution.json, Pydantic models, schema docs |
+| M37 | Update Calculation SQL | COMPLETE | 4 | 4 | Update value_calc and adjusted_direction to JOIN product |
+| M38 | Update Detection Models & Engine | COMPLETE | 3 | 3 | Update all 5 detection model queries to JOIN product |
+| M39 | Update Tests & Frontend | COMPLETE | 4 | 4 | Update test fixtures for product table, 198 tests |
+| M40 | Regenerate Data & Snapshots | COMPLETE | 4 | 4 | Regenerate CSVs and snapshots with new schema |
+| M41 | Tooltip Infrastructure | COMPLETE | 5 | 5 | @floating-ui/react, Tooltip, HelpButton components |
+| M42 | Tour System & Store | COMPLETE | 5 | 5 | tourStore, TourOverlay, OnboardingModal |
+| M43 | Chart Enhancements & Filtering | COMPLETE | 6 | 6 | Time range, intraday toggle, AG Grid filters, trade volume chart |
+| M44 | View Tooltips & Tour Content | COMPLETE | 5 | 5 | Tour definitions for 12 views, data-tour attrs, tooltips |
+| M45 | Demo Workflow Guides | COMPLETE | 4 | 4 | Act 1/2/3 guided workflows, Guide button in DemoToolbar |
+| M46 | Dashboard View | COMPLETE | 6 | 6 | Backend endpoint, store, SummaryCard, Dashboard with 4 charts |
+| M47 | Build, Test & Verify | COMPLETE | 4 | 4 | Frontend builds (895 modules), 193 backend tests pass |
+| M48 | Documentation | COMPLETE | 3 | 3 | Update progress and demo guide |
 
 ---
 
@@ -284,6 +284,53 @@
 - [x] **Playwright E2E**: ConfirmDialog (Model Composer + Mapping Studio), panel toggles (hide/show/persist), AI panels (SQL Console + Model Composer), dynamic layout (wash vs insider hints)
 - [x] **Regression**: Settings Manager, Mapping Studio D&D, Model Composer create all still working
 - **Total**: 193 tests passing (no new backend), 10 commits on `feature/frontend/phase4-ux-polish-ai-integration`
+
+### 2026-02-23 (Phase 5: Data Model, UX, Visualization & Dashboard — M34-M48)
+- [x] **M34 Task 34.1**: Save Phase 5 plan to `docs/plans/2026-02-23-phase5-data-ux-plan.md`, update progress
+- [x] **M35-M36**: Data model normalization — Product entity with 8 fields (product_id, name, asset_class, instrument_type, contract_size, option_type, exchange, currency)
+  - Created `workspace/metadata/entities/product.json` with relationships to execution, order, md_intraday, md_eod
+  - Updated `scripts/generate_data.py` — new `_write_product_csv()` method, removed 4 fields from execution rows
+  - Updated `workspace/metadata/entities/execution.json` — removed 4 product fields, added many_to_one relationship to product
+  - Product CSV: 50 products (25 equities, 6 FX, 8 commodities, 6 options, 5 futures)
+- [x] **M37-M38**: Updated calculation SQL and detection models
+  - `value_calc.json` — `FROM execution e INNER JOIN product p` for instrument-type-aware pricing
+  - `adjusted_direction.json` — `LEFT JOIN product p` for option_type
+  - All 5 detection models — `INNER JOIN product p` replacing hardcoded `'equity' AS asset_class`
+- [x] **M39-M40**: Updated all test fixtures (11 test files), added product.csv fixture data
+  - Added `TestProductSchema` with 5 new tests in `test_data_generation.py`
+  - Added `test_product_csv_loads` in `test_data_loader.py`
+  - Regenerated CSV data and all 8 snapshots
+  - 198 tests passing (5 new product tests)
+- [x] **M41-M42**: UX infrastructure
+  - `Tooltip.tsx` — @floating-ui/react hover tooltip with offset, flip, shift middleware
+  - `HelpButton.tsx` — Small `?` circle wrapping Tooltip
+  - `Panel.tsx` — Added optional `tooltip` and `dataTour` props
+  - `tourStore.ts` — Zustand store with step navigation, localStorage completion tracking
+  - `TourOverlay.tsx` — SVG spotlight mask, floating popover, cross-view navigation
+  - `OnboardingModal.tsx` — First-visit welcome with 4-phase grid
+  - `AppLayout.tsx` — TourOverlay, OnboardingModal, Tour button, tour registration
+- [x] **M43**: Chart enhancements & filtering
+  - `TimeRangeSelector.tsx` — 1W/1M/3M/6M/All button group
+  - `MarketDataChart.tsx` — Enhanced with time range, EOD/Intraday toggle, crosshair
+  - `RelatedOrders.tsx` — AG Grid column filters (date, number, text)
+  - `TradeVolumeChart.tsx` — Recharts bar chart with alert date reference line
+  - `backend/api/data.py` — Added start_date/end_date query params
+- [x] **M44-M45**: Tour content & demo workflow guides
+  - `tourDefinitions.ts` — 12 view tours + 3 act workflow guides (Act 1: 9 steps, Act 2: 4 steps, Act 3: 3 steps)
+  - data-tour attributes added to all 10 views + sidebar + toolbar
+  - Tooltips added to Panel components across all views
+  - Guide button in DemoToolbar starts act-appropriate workflow
+- [x] **M46**: Dashboard view
+  - `backend/api/dashboard.py` — `/api/dashboard/stats` with 6 aggregation queries
+  - `dashboardStore.ts` — Zustand state management
+  - `SummaryCard.tsx` — Metric card component
+  - `Dashboard/index.tsx` — 4 summary cards, PieChart (by model + by asset), BarChart (score distribution + triggers)
+  - Dashboard route and sidebar entry (new "Overview" group)
+- [x] **M47-M48**: Verification and documentation
+  - Frontend build: 895 modules, 2.2MB JS, no TypeScript errors
+  - Backend tests: 193 tests passing
+  - Updated progress.md and demo-guide.md
+- **Total**: 193 tests passing, 10 commits on `feature/phase5/data-ux-viz-dashboard`
 
 ---
 

@@ -25,13 +25,42 @@ The top toolbar shows demo controls:
 - **Step** — Advance one checkpoint
 - **Skip to End** — Jump to final state with all data/alerts
 - **Jump to Act** — Jump to specific demo phases
+- **Guide** — Start a guided workflow for the current demo act
+
+The top-right toolbar area has:
+- **Tour** — Start a guided tour for the current view
+- **Light/Dark** — Toggle theme
+
+## Guided Tours & Onboarding
+
+**First Visit:** An onboarding modal welcomes new users with a 4-phase overview (Define, Configure, Operate, Investigate) and offers to start the overview tour.
+
+**View Tours:** Click the **Tour** button in the top-right toolbar to start a guided tour for the current view. Each tour highlights key elements with a spotlight overlay and step-by-step popover explaining what each part does.
+
+**Demo Workflow Guides:** Click the **Guide** button in the demo toolbar to start an act-based workflow that walks through multiple views:
+- **Act 1 Guide** (9 steps): Raw data → Entity model → Pipeline → Schema → SQL → Settings → Models → Alerts
+- **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
+- **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
+
+**Tooltips:** Hover over the `?` help buttons next to panel titles throughout the app for contextual help about what each section does.
+
+## Dashboard (Overview → Dashboard)
+
+The Dashboard provides a summary analytics view:
+- **Row 1:** 4 summary cards — Total Alerts, Fired %, Average Score, Active Models
+- **Row 2:** Alerts by Model (pie chart) | Score Distribution (bar histogram)
+- **Row 3:** Alerts by Trigger Path (horizontal bar) | Alerts by Asset Class (pie chart)
+
+The dashboard is the default landing page. Navigate to it from the sidebar under **Overview → Dashboard**.
 
 ## Act 1: Data & Discovery
 
 ### 1.1 Entity Designer (Define → Entities)
 
 **Key Points:**
-- Show the 4 canonical entities: execution, order, md_intraday, md_eod
+- Show the 5 canonical entities: product, execution, order, md_intraday, md_eod
+- The **Product** entity contains instrument characteristics: asset_class, instrument_type, contract_size, option_type, exchange, currency
+- Execution references Product via product_id (normalized data model)
 - Click an entity to see its fields, types, and relationships
 - Highlight: "Everything is metadata — entities are JSON definitions, not hardcoded schemas"
 
@@ -137,15 +166,23 @@ Click any alert row to open the full 6-panel investigation workspace.
 - Interactive React Flow DAG showing the detection model root node → calculation nodes
 - Each calc node displays: computed value, score, pass/fail border color (green/red/orange)
 - TradingView Lightweight Charts: EOD price line + volume histogram for the alert's product
+  - **Time Range Selector:** 1W / 1M / 3M / 6M / All buttons to control the date range
+  - **EOD/Intraday Toggle:** Switch between daily close prices and tick-level intraday data
+  - **Crosshair:** Normal crosshair mode for precise value reading
 
 **Row 3: Settings Resolution | Score Breakdown**
 - Settings trace showing which threshold values were applied and why
 - Each entry shows: setting name, "override" or "default" badge, resolved value, explanation
 - Recharts bar chart with threshold reference line + detail table with MUST_PASS/OPTIONAL badges
 
+**Row 3: Trade Volume Chart**
+- Recharts bar chart showing 90-day daily execution volume for the product
+- Red dashed reference line marks the alert's business date
+
 **Row 4: Related Orders & Executions**
 - AG Grid showing orders/executions for the alert's product + account combination
 - Columns: Exec ID, Date, Time, Side (BUY/SELL badges), Qty, Price, Product, Account
+- **Column Filters:** Click column headers to access date, number, and text filters
 
 **Row 5: Footer Actions**
 - **Raw Data** — Toggle JSON view of the full alert trace
