@@ -29,14 +29,21 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
+    # Product dimension table
+    (tmp_path / "data" / "csv" / "product.csv").write_text(
+        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
+        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
+        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+    )
+
     # Execution data: ACC001 buys and sells AAPL (wash-like pattern)
     (tmp_path / "data" / "csv" / "execution.csv").write_text(
-        "execution_id,order_id,product_id,account_id,trader_id,side,price,quantity,"
-        "instrument_type,asset_class,execution_date,execution_time,option_type,contract_size\n"
-        "E001,O001,AAPL,ACC001,T001,BUY,150.00,100,stock,equity,2026-01-15,10:30:00,,\n"
-        "E002,O002,AAPL,ACC001,T001,SELL,151.00,80,stock,equity,2026-01-15,14:00:00,,\n"
-        "E003,O003,AAPL,ACC001,T001,BUY,150.50,50,stock,equity,2026-01-15,11:00:00,,\n"
-        "E004,O004,MSFT,ACC002,T002,BUY,400.00,30,stock,equity,2026-01-15,10:00:00,,\n"
+        "execution_id,product_id,account_id,trader_id,side,price,quantity,"
+        "execution_date,execution_time\n"
+        "E001,AAPL,ACC001,T001,BUY,150.00,100,2026-01-15,10:30:00\n"
+        "E002,AAPL,ACC001,T001,SELL,151.00,80,2026-01-15,14:00:00\n"
+        "E003,AAPL,ACC001,T001,BUY,150.50,50,2026-01-15,11:00:00\n"
+        "E004,MSFT,ACC002,T002,BUY,400.00,30,2026-01-15,10:00:00\n"
     )
 
     # Need intraday/eod/order data for L2 calcs (they run too)

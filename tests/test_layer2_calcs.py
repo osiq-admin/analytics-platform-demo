@@ -31,13 +31,20 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
-    # Execution data (for L1 → business date window)
+    # Product dimension table
+    (tmp_path / "data" / "csv" / "product.csv").write_text(
+        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
+        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
+        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+    )
+
+    # Execution data (product fields now in product.csv)
     (tmp_path / "data" / "csv" / "execution.csv").write_text(
-        "execution_id,order_id,product_id,account_id,trader_id,side,price,quantity,"
-        "instrument_type,asset_class,execution_date,execution_time,option_type,contract_size\n"
-        "E001,O001,AAPL,ACC001,T001,BUY,150.00,100,stock,equity,2026-01-15,10:30:00,,\n"
-        "E002,O002,AAPL,ACC001,T001,SELL,151.00,80,stock,equity,2026-01-15,14:00:00,,\n"
-        "E003,O003,AAPL,ACC001,T001,BUY,152.00,50,stock,equity,2026-01-15,18:00:00,,\n"
+        "execution_id,product_id,account_id,trader_id,side,price,quantity,"
+        "execution_date,execution_time\n"
+        "E001,AAPL,ACC001,T001,BUY,150.00,100,2026-01-15,10:30:00\n"
+        "E002,AAPL,ACC001,T001,SELL,151.00,80,2026-01-15,14:00:00\n"
+        "E003,AAPL,ACC001,T001,BUY,152.00,50,2026-01-15,18:00:00\n"
     )
 
     # Intraday market data (for trend window)

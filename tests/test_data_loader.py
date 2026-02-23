@@ -79,6 +79,25 @@ def test_reload_detects_changes(workspace, db, sample_csv):
     assert result[0] == 4
 
 
+def test_product_csv_loads(workspace, db):
+    """Verify product.csv auto-discovers and loads into DuckDB."""
+    path = workspace / "data" / "csv" / "product.csv"
+    with open(path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["product_id", "name", "asset_class", "instrument_type",
+                         "contract_size", "option_type", "exchange", "currency"])
+        writer.writerow(["AAPL", "Apple Inc.", "equity", "stock", "", "", "NYSE", "USD"])
+        writer.writerow(["MSFT", "Microsoft Corp.", "equity", "stock", "", "", "NYSE", "USD"])
+
+    loader = DataLoader(workspace, db)
+    loader.load_all()
+
+    cursor = db.cursor()
+    result = cursor.execute("SELECT COUNT(*) FROM product").fetchone()
+    cursor.close()
+    assert result[0] == 2
+
+
 def test_empty_csv_dir(workspace, db):
     loader = DataLoader(workspace, db)
     loader.load_all()  # Should not raise

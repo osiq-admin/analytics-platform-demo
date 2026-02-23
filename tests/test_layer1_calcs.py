@@ -27,17 +27,26 @@ def workspace(tmp_path):
     (tmp_path / "data" / "csv").mkdir(parents=True)
     (tmp_path / "data" / "parquet").mkdir(parents=True)
 
-    # Create stock execution data
+    # Create product dimension table
+    (tmp_path / "data" / "csv" / "product.csv").write_text(
+        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
+        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
+        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+        "AAPL_C150,AAPL Call 150,equity,option,100,call,CBOE,USD\n"
+        "AAPL_P150,AAPL Put 150,equity,option,100,put,CBOE,USD\n"
+    )
+
+    # Create execution data (product fields now in product.csv)
     csv_path = tmp_path / "data" / "csv" / "execution.csv"
     csv_path.write_text(
-        "execution_id,order_id,product_id,account_id,trader_id,side,price,quantity,"
-        "instrument_type,asset_class,execution_date,execution_time,option_type,contract_size\n"
-        "E001,O001,AAPL,ACC001,T001,BUY,150.00,100,stock,equity,2026-01-15,10:30:00,,\n"
-        "E002,O002,AAPL,ACC001,T001,SELL,151.00,80,stock,equity,2026-01-15,14:00:00,,\n"
-        "E003,O003,MSFT,ACC002,T002,BUY,400.00,50,stock,equity,2026-01-15,11:00:00,,\n"
-        "E004,O004,AAPL_C150,ACC001,T001,BUY,3.50,10,option,equity,2026-01-15,10:35:00,call,100\n"
-        "E005,O005,AAPL_P150,ACC001,T001,BUY,2.10,5,option,equity,2026-01-15,11:00:00,put,100\n"
-        "E006,O006,AAPL_C150,ACC002,T002,SELL,3.80,20,option,equity,2026-01-15,13:00:00,call,100\n"
+        "execution_id,product_id,account_id,trader_id,side,price,quantity,"
+        "execution_date,execution_time\n"
+        "E001,AAPL,ACC001,T001,BUY,150.00,100,2026-01-15,10:30:00\n"
+        "E002,AAPL,ACC001,T001,SELL,151.00,80,2026-01-15,14:00:00\n"
+        "E003,MSFT,ACC002,T002,BUY,400.00,50,2026-01-15,11:00:00\n"
+        "E004,AAPL_C150,ACC001,T001,BUY,3.50,10,2026-01-15,10:35:00\n"
+        "E005,AAPL_P150,ACC001,T001,BUY,2.10,5,2026-01-15,11:00:00\n"
+        "E006,AAPL_C150,ACC002,T002,SELL,3.80,20,2026-01-15,13:00:00\n"
     )
     return tmp_path
 

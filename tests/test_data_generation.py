@@ -85,35 +85,62 @@ class TestDataGeneration:
         assert counts1 == counts2
 
 
+class TestProductSchema:
+    def test_product_csv_generated(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "product.csv")
+        assert len(rows) == 50  # 25 equities + 6 FX + 8 commodities + 6 options + 5 futures
+
+    def test_product_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "product.csv")
+        expected_cols = {
+            "product_id", "name", "asset_class", "instrument_type",
+            "contract_size", "option_type", "exchange", "currency",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+    def test_product_instrument_types(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "product.csv")
+        types = {r["instrument_type"] for r in rows}
+        assert "stock" in types
+        assert "option" in types
+        assert "future" in types
+
+    def test_product_asset_classes(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "product.csv")
+        classes = {r["asset_class"] for r in rows}
+        assert "equity" in classes
+        assert "fx" in classes
+        assert "commodity" in classes
+
+    def test_product_exchanges(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "product.csv")
+        exchanges = {r["exchange"] for r in rows}
+        assert "NYSE" in exchanges
+        assert "OTC" in exchanges
+        assert "CME" in exchanges
+        assert "CBOE" in exchanges
+
+
 class TestExecutionSchema:
     def test_execution_columns(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
         assert len(rows) > 0
         expected_cols = {
             "execution_id", "product_id", "account_id", "trader_id", "side",
-            "price", "quantity", "instrument_type", "asset_class",
-            "execution_date", "execution_time", "contract_size", "option_type",
+            "price", "quantity", "execution_date", "execution_time",
         }
         assert set(rows[0].keys()) == expected_cols
+
+    def test_execution_no_product_fields(self, workspace, generated_data):
+        """Execution CSV should NOT have product-level fields (normalized to product table)."""
+        rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
+        for col in ["instrument_type", "asset_class", "contract_size", "option_type"]:
+            assert col not in rows[0].keys(), f"{col} should not be in execution.csv"
 
     def test_execution_sides(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
         sides = {r["side"] for r in rows}
         assert sides == {"BUY", "SELL"}
-
-    def test_execution_instrument_types(self, workspace, generated_data):
-        rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
-        types = {r["instrument_type"] for r in rows}
-        assert "stock" in types
-        assert "option" in types
-        assert "future" in types
-
-    def test_execution_asset_classes(self, workspace, generated_data):
-        rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
-        classes = {r["asset_class"] for r in rows}
-        assert "equity" in classes
-        assert "fx" in classes
-        assert "commodity" in classes
 
     def test_unique_execution_ids(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "execution.csv")

@@ -29,19 +29,27 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
+    # Product dimension table
+    (tmp_path / "data" / "csv" / "product.csv").write_text(
+        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
+        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
+        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+        "GOOG,Alphabet Inc.,equity,stock,,,NYSE,USD\n"
+    )
+
     # Wash trade pattern: ACC001 buys and sells AAPL at similar prices/quantities
     # Non-wash: ACC002 only buys MSFT
     (tmp_path / "data" / "csv" / "execution.csv").write_text(
-        "execution_id,order_id,product_id,account_id,trader_id,side,price,quantity,"
-        "instrument_type,asset_class,execution_date,execution_time,option_type,contract_size\n"
+        "execution_id,product_id,account_id,trader_id,side,price,quantity,"
+        "execution_date,execution_time\n"
         # ACC001 wash pattern: buy 100 + sell 90 of AAPL at very similar prices
-        "E001,O001,AAPL,ACC001,T001,BUY,150.00,100,stock,equity,2026-01-15,10:30:00,,\n"
-        "E002,O002,AAPL,ACC001,T001,SELL,150.10,90,stock,equity,2026-01-15,14:00:00,,\n"
+        "E001,AAPL,ACC001,T001,BUY,150.00,100,2026-01-15,10:30:00\n"
+        "E002,AAPL,ACC001,T001,SELL,150.10,90,2026-01-15,14:00:00\n"
         # ACC002 only buys — no wash
-        "E003,O003,MSFT,ACC002,T002,BUY,400.00,50,stock,equity,2026-01-15,11:00:00,,\n"
+        "E003,MSFT,ACC002,T002,BUY,400.00,50,2026-01-15,11:00:00\n"
         # ACC003 buys and sells but very different quantities — not wash
-        "E004,O004,GOOG,ACC003,T003,BUY,180.00,200,stock,equity,2026-01-15,10:00:00,,\n"
-        "E005,O005,GOOG,ACC003,T003,SELL,182.00,20,stock,equity,2026-01-15,15:00:00,,\n"
+        "E004,GOOG,ACC003,T003,BUY,180.00,200,2026-01-15,10:00:00\n"
+        "E005,GOOG,ACC003,T003,SELL,182.00,20,2026-01-15,15:00:00\n"
     )
 
     # Minimal L2 data
