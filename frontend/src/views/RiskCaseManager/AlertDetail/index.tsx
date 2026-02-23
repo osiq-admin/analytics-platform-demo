@@ -10,8 +10,7 @@ import MarketDataChart from "./MarketDataChart.tsx";
 import SettingsTrace from "./SettingsTrace.tsx";
 import RelatedOrders from "./RelatedOrders.tsx";
 import FooterActions from "./FooterActions.tsx";
-
-type PanelId = "business" | "entity" | "calcTrace" | "marketData" | "settings" | "scores" | "orders" | "footer";
+import { getModelLayout, type PanelId } from "./modelLayouts.ts";
 
 const PANEL_LABELS: Record<PanelId, string> = {
   business: "Business Desc",
@@ -49,6 +48,8 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
   const accountId = alert.entity_context?.account_id ?? "";
 
   const [panelConfig, setPanelConfig] = useState(loadPanelConfig);
+  const modelLayout = getModelLayout(alert.model_id);
+  const isEmphasized = (id: PanelId) => modelLayout?.emphasis.includes(id) ?? false;
 
   const togglePanel = (id: PanelId) => {
     setPanelConfig((prev) => {
@@ -101,11 +102,27 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
         ))}
       </div>
 
+      {/* Investigation hint */}
+      {modelLayout && (
+        <div className="text-xs bg-accent/10 border border-accent/20 rounded px-3 py-1.5 text-accent">
+          <span className="font-semibold">{modelLayout.label}:</span>{" "}
+          {modelLayout.investigationHint}
+        </div>
+      )}
+
       {/* Row 1: Business Description | Entity Context */}
       {(panelConfig.business || panelConfig.entity) && (
         <div className={`grid gap-4 ${panelConfig.business && panelConfig.entity ? "grid-cols-2" : "grid-cols-1"}`}>
-          {panelConfig.business && <BusinessDescription alert={alert} />}
-          {panelConfig.entity && <EntityContext alert={alert} />}
+          {panelConfig.business && (
+            <div className={isEmphasized("business") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+              <BusinessDescription alert={alert} />
+            </div>
+          )}
+          {panelConfig.entity && (
+            <div className={isEmphasized("entity") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+              <EntityContext alert={alert} />
+            </div>
+          )}
         </div>
       )}
 
@@ -113,18 +130,20 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       {(panelConfig.calcTrace || panelConfig.marketData) && (
         <div className={`grid gap-4 ${panelConfig.calcTrace && panelConfig.marketData ? "grid-cols-2" : "grid-cols-1"}`}>
           {panelConfig.calcTrace && (
-            <Panel title="Calculation Trace" noPadding className="min-h-[250px]">
+            <Panel title="Calculation Trace" noPadding className={`min-h-[250px] ${isEmphasized("calcTrace") ? "ring-1 ring-accent/30" : ""}`}>
               <CalculationTrace alert={alert} />
             </Panel>
           )}
           {panelConfig.marketData && (
-            productId ? (
-              <MarketDataChart productId={productId} />
-            ) : (
-              <Panel title="Market Data">
-                <p className="text-xs text-muted">No product context available.</p>
-              </Panel>
-            )
+            <div className={isEmphasized("marketData") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+              {productId ? (
+                <MarketDataChart productId={productId} />
+              ) : (
+                <Panel title="Market Data">
+                  <p className="text-xs text-muted">No product context available.</p>
+                </Panel>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -132,14 +151,24 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       {/* Row 3: Settings Resolution | Score Breakdown */}
       {(panelConfig.settings || panelConfig.scores) && (
         <div className={`grid gap-4 ${panelConfig.settings && panelConfig.scores ? "grid-cols-2" : "grid-cols-1"}`}>
-          {panelConfig.settings && <SettingsTrace entries={alert.settings_trace ?? []} />}
-          {panelConfig.scores && <ScoreBreakdown alert={alert} />}
+          {panelConfig.settings && (
+            <div className={isEmphasized("settings") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+              <SettingsTrace entries={alert.settings_trace ?? []} />
+            </div>
+          )}
+          {panelConfig.scores && (
+            <div className={isEmphasized("scores") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+              <ScoreBreakdown alert={alert} />
+            </div>
+          )}
         </div>
       )}
 
       {/* Row 4: Related Orders (full width) */}
       {panelConfig.orders && productId && accountId && (
-        <RelatedOrders productId={productId} accountId={accountId} />
+        <div className={isEmphasized("orders") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+          <RelatedOrders productId={productId} accountId={accountId} />
+        </div>
       )}
 
       {/* Row 5: Footer Actions */}
