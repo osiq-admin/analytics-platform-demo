@@ -1,0 +1,25 @@
+{
+  "setting_id": "business_date_cutoff",
+  "name": "Business Date Cutoff",
+  "description": "Business date cutoff hour in UTC. Trades after this time are attributed to the next business date.",
+  "value_type": "string",
+  "default": "17:00",
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "exchange": "NYSE" },
+      "value": "21:00",
+      "priority": 1
+    },
+    {
+      "match": { "exchange": "LSE" },
+      "value": "16:30",
+      "priority": 1
+    },
+    {
+      "match": { "asset_class": "fx" },
+      "value": "21:00",
+      "priority": 1
+    }
+  ]
+}

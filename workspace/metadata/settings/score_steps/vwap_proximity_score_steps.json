@@ -1,0 +1,14 @@
+{
+  "setting_id": "vwap_proximity_score_steps",
+  "name": "VWAP Proximity Score Steps",
+  "description": "Graduated scoring for VWAP proximity in wash trading detection. Lower proximity (closer to VWAP) yields higher scores.",
+  "value_type": "score_steps",
+  "default": [
+    { "min_value": 0, "max_value": 0.005, "score": 10 },
+    { "min_value": 0.005, "max_value": 0.01, "score": 7 },
+    { "min_value": 0.01, "max_value": 0.02, "score": 3 },
+    { "min_value": 0.02, "max_value": null, "score": 0 }
+  ],
+  "match_type": "hierarchy",
+  "overrides": []
+}

@@ -1,0 +1,20 @@
+{
+  "setting_id": "insider_lookback_days",
+  "name": "Insider Lookback Days",
+  "description": "Number of days to look back when evaluating trading activity around material events for insider dealing detection.",
+  "value_type": "integer",
+  "default": 30,
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "asset_class": "equity" },
+      "value": 20,
+      "priority": 1
+    },
+    {
+      "match": { "instrument_type": "option" },
+      "value": 10,
+      "priority": 1
+    }
+  ]
+}

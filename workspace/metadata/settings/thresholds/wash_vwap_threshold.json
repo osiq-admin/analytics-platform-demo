@@ -1,0 +1,25 @@
+{
+  "setting_id": "wash_vwap_threshold",
+  "name": "Wash VWAP Threshold",
+  "description": "VWAP proximity threshold for wash trading detection. Trades within this percentage of VWAP are considered suspicious.",
+  "value_type": "decimal",
+  "default": 0.02,
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "asset_class": "equity" },
+      "value": 0.015,
+      "priority": 1
+    },
+    {
+      "match": { "asset_class": "equity", "exchange": "NYSE" },
+      "value": 0.012,
+      "priority": 2
+    },
+    {
+      "match": { "product": "AAPL" },
+      "value": 0.01,
+      "priority": 100
+    }
+  ]
+}

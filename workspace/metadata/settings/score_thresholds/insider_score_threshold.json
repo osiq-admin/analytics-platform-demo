@@ -1,0 +1,9 @@
+{
+  "setting_id": "insider_score_threshold",
+  "name": "Insider Dealing Score Threshold",
+  "description": "Minimum accumulated score required to generate an insider dealing alert.",
+  "value_type": "decimal",
+  "default": 10,
+  "match_type": "hierarchy",
+  "overrides": []
+}

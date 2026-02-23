@@ -1,0 +1,15 @@
+{
+  "setting_id": "mpr_score_threshold",
+  "name": "MPR Score Threshold",
+  "description": "Minimum accumulated score required to generate a Market Price Ramping alert.",
+  "value_type": "decimal",
+  "default": 12,
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "asset_class": "equity" },
+      "value": 10,
+      "priority": 1
+    }
+  ]
+}

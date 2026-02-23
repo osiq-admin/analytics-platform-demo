@@ -1,0 +1,14 @@
+{
+  "setting_id": "market_event_score_steps",
+  "name": "Market Event Score Steps",
+  "description": "Graduated scoring for trading volume relative to a market event in insider dealing detection. Higher volume multiples yield higher scores.",
+  "value_type": "score_steps",
+  "default": [
+    { "min_value": 0, "max_value": 1.5, "score": 0 },
+    { "min_value": 1.5, "max_value": 3.0, "score": 3 },
+    { "min_value": 3.0, "max_value": 5.0, "score": 7 },
+    { "min_value": 5.0, "max_value": null, "score": 10 }
+  ],
+  "match_type": "hierarchy",
+  "overrides": []
+}

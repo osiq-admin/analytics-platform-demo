@@ -1,0 +1,20 @@
+{
+  "setting_id": "wash_score_threshold",
+  "name": "Wash Trading Score Threshold",
+  "description": "Minimum accumulated score required to generate a wash trading alert.",
+  "value_type": "decimal",
+  "default": 10,
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "asset_class": "equity" },
+      "value": 8,
+      "priority": 1
+    },
+    {
+      "match": { "asset_class": "fx" },
+      "value": 12,
+      "priority": 1
+    }
+  ]
+}

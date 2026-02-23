@@ -1,0 +1,25 @@
+{
+  "setting_id": "large_activity_multiplier",
+  "name": "Large Activity Multiplier",
+  "description": "Multiplier applied to average daily volume to determine large trading activity threshold.",
+  "value_type": "decimal",
+  "default": 2.0,
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": { "asset_class": "equity" },
+      "value": 1.5,
+      "priority": 1
+    },
+    {
+      "match": { "asset_class": "fx" },
+      "value": 3.0,
+      "priority": 1
+    },
+    {
+      "match": { "asset_class": "commodity" },
+      "value": 2.5,
+      "priority": 1
+    }
+  ]
+}
