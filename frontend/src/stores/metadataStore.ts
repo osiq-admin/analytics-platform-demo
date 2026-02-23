@@ -44,6 +44,7 @@ interface MetadataState {
   fetchSettings: () => Promise<void>;
   fetchDetectionModels: () => Promise<void>;
   fetchAll: () => Promise<void>;
+  saveDetectionModel: (model: Record<string, unknown>) => Promise<void>;
 }
 
 export const useMetadataStore = create<MetadataState>((set) => ({
@@ -112,5 +113,12 @@ export const useMetadataStore = create<MetadataState>((set) => ({
     } catch (e) {
       set({ error: String(e), loading: false });
     }
+  },
+
+  saveDetectionModel: async (model) => {
+    await api.post("/metadata/detection-models", model);
+    // Refresh the list
+    const data = await api.get<DetectionModelDef[]>("/metadata/detection-models");
+    set({ detectionModels: data });
   },
 }));
