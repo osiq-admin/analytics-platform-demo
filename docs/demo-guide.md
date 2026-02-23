@@ -59,6 +59,12 @@ Click **Step** in the toolbar to advance to `data_loaded`.
 - Type a custom query: `SELECT * FROM execution LIMIT 10`
 - Show the Monaco editor with syntax highlighting
 
+**AI Assistant in SQL Console**
+1. Click **Ask AI** in the header bar to open a collapsible chat panel on the right
+2. Type a question like "What data do we have?" → AI responds (mock mode returns guidance)
+3. When the AI returns SQL in a code block, click **Run Query** → SQL auto-populates the Monaco editor
+4. Click **Close AI** to collapse the panel back
+
 ### 1.5 Run Pipeline (Step → pipeline_run)
 
 Click **Step** to advance to `pipeline_run`.
@@ -112,6 +118,17 @@ Click **Step** to advance to `alerts_generated`.
 
 Click any alert row to open the full 6-panel investigation workspace.
 
+**Panel Toggle Toolbar**
+- Below the header, 8 toggle buttons let you show/hide individual panels
+- Toggle state persists across page refreshes (localStorage)
+- When one panel in a 2-column row is hidden, the remaining panel expands to full width
+
+**Investigation Hint Banner**
+- A colored hint banner appears based on the alert's detection model type
+- Examples: "Wash Trading: Focus on VWAP proximity, quantity matching, and related buy/sell orders."
+- "Insider Dealing: Focus on related products, profit/loss, and proximity to market events."
+- Emphasized panels get a subtle accent ring border to draw investigator attention
+
 **Row 1: Business Description | Entity Context**
 - Model name, trigger path (all_passed vs score_based), accumulated score vs threshold
 - Entity context badges: product_id, account_id, business_date, asset_class
@@ -156,8 +173,14 @@ Click any alert row to open the full 6-panel investigation workspace.
 6. Click "Wash Detection" → leaves as OPTIONAL
 7. Click **Save Model (2 calcs)**
 8. New model appears in the left sidebar
-9. Select it → click **Deploy & Run** → see alert count badge
-10. Key takeaway: "Build detection models by composing existing calculations"
+9. Select it → click **Deploy & Run** → a confirmation dialog appears with the model name
+10. Click **Deploy & Run** in the dialog to confirm → see alert count badge
+11. Key takeaway: "Build detection models by composing existing calculations"
+
+**AI Assistant in Model Composer**
+- Click **Ask AI** in the top right to open a collapsible chat panel
+- Ask questions about detection models, calculations, or scoring logic
+- The AI panel provides conversational guidance alongside the model composition view
 
 ### 2.2 AI Assistant (AI → Assistant)
 
@@ -190,8 +213,9 @@ Click any alert row to open the full 6-panel investigation workspace.
 3. **Drag** "symbol" from Source → **drop** on "product_id" → green badge appears
 4. Drag "account" → "account_id", "price" → "price", "qty" → "quantity"
 5. Click **x** on any mapping to remove it
-6. Click **Save Mappings** → green "Saved" badge
-7. Key takeaway: "Map any data format to canonical fields with drag-and-drop"
+6. Click **Save Mappings** → a confirmation dialog shows the field count and calculation name
+7. Confirm to save → green "Saved" badge appears
+8. Key takeaway: "Map any data format to canonical fields with drag-and-drop"
 
 ### 3.2 Skip to End
 

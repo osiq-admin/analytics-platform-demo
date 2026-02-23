@@ -20,7 +20,7 @@
 | Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
-| UX Polish & AI Integration (Phase 4) | IN PROGRESS | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout |
+| UX Polish & AI Integration (Phase 4) | COMPLETE | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout — 193 tests |
 
 ---
 
@@ -54,14 +54,14 @@
 | M23 | Related Orders Table | COMPLETE | 1 | 1 | AG Grid executions table |
 | M24 | Footer Actions & Layout | COMPLETE | 2 | 2 | Action bar + 6-row layout |
 | M25 | Build, Test & Document | COMPLETE | 6 | 6 | 193 tests pass, Playwright E2E, docs |
-| M26 | Phase 4 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
-| M27 | ConfirmDialog Component | PENDING | 3 | 0 | Reusable dialog + wire into Model Composer & Mapping Studio |
-| M28 | Configurable Alert Panels | PENDING | 1 | 0 | Panel toggle toolbar + localStorage persistence |
-| M29 | AI Side Panel in SQL Console | PENDING | 1 | 0 | Collapsible ChatPanel + query injection |
-| M30 | AI Side Panel in Model Composer | PENDING | 1 | 0 | Collapsible ChatPanel |
-| M31 | Dynamic Alert Structure | PENDING | 2 | 0 | Model-type layout config with emphasis and hints |
-| M32 | Build, Test & Verify | PENDING | 3 | 0 | Frontend build, backend tests, Playwright E2E |
-| M33 | Documentation | PENDING | 3 | 0 | Update progress.md and demo-guide.md |
+| M26 | Phase 4 Plan & Progress | COMPLETE | 1 | 1 | Save plan, update progress tracker |
+| M27 | ConfirmDialog Component | COMPLETE | 3 | 3 | Reusable dialog + wire into Model Composer & Mapping Studio |
+| M28 | Configurable Alert Panels | COMPLETE | 1 | 1 | Panel toggle toolbar + localStorage persistence |
+| M29 | AI Side Panel in SQL Console | COMPLETE | 1 | 1 | Collapsible ChatPanel + query injection |
+| M30 | AI Side Panel in Model Composer | COMPLETE | 1 | 1 | Collapsible ChatPanel |
+| M31 | Dynamic Alert Structure | COMPLETE | 2 | 2 | Model-type layout config with emphasis and hints |
+| M32 | Build, Test & Verify | COMPLETE | 3 | 3 | Frontend build (876 modules), 193 backend tests, Playwright E2E |
+| M33 | Documentation | COMPLETE | 2 | 2 | Update progress.md and demo-guide.md |
 
 ---
 
@@ -254,6 +254,21 @@
 - [x] **Additional features verified**: Dark/Light theme toggle, demo toolbar (Reset/Step/End/Act 1/Act 2), full checkpoint progression (pristine → data_loaded → pipeline_run → alerts_generated → act1_complete → model_deployed → act2_complete → final)
 - **Files modified**: `backend/services/demo_controller.py`, `backend/api/demo.py`, `backend/api/alerts.py`, `backend/api/data.py`, `backend/api/pipeline.py`, `backend/engine/calculation_engine.py`
 
+### 2026-02-23 (Phase 4: UX Polish & AI Integration — M26-M33)
+- [x] **M26 Task 26.1**: Save Phase 4 plan to `docs/plans/2026-02-23-phase4-ux-polish-plan.md`, update progress
+- [x] **M27 Task 27.1**: Frontend — `ConfirmDialog.tsx` — Reusable portal-based dialog with Escape key, overlay click, default/danger variants
+- [x] **M27 Task 27.2**: Frontend — Wire ConfirmDialog into Model Composer Deploy & Run button
+- [x] **M27 Task 27.3**: Frontend — Wire ConfirmDialog into Mapping Studio Save Mappings button
+- [x] **M28 Task 28.1**: Frontend — `AlertDetail/index.tsx` — Panel toggle toolbar (8 buttons) with localStorage persistence, conditional grid layout
+- [x] **M29 Task 29.1**: Frontend — `SQLConsole/index.tsx` — Collapsible AI ChatPanel sidebar with query injection into Monaco editor
+- [x] **M30 Task 30.1**: Frontend — `ModelComposer/index.tsx` — Collapsible AI ChatPanel as 4th column, conversational guidance
+- [x] **M31 Task 31.1**: Frontend — `AlertDetail/modelLayouts.ts` — Model-type layout config (wash, MPR, insider, spoofing) with emphasis panels and investigation hints
+- [x] **M31 Task 31.2**: Frontend — `AlertDetail/index.tsx` — Dynamic hint banner + ring emphasis per model type
+- [x] **M32 Tasks 32.1-32.3**: Frontend build (876 modules), 193 backend tests pass, Playwright E2E verified all 5 features
+- [x] **Playwright E2E**: ConfirmDialog (Model Composer + Mapping Studio), panel toggles (hide/show/persist), AI panels (SQL Console + Model Composer), dynamic layout (wash vs insider hints)
+- [x] **Regression**: Settings Manager, Mapping Studio D&D, Model Composer create all still working
+- **Total**: 193 tests passing (no new backend), 10 commits on `feature/frontend/phase4-ux-polish-ai-integration`
+
 ---
 
 ## Gap Analysis: Design vs. Implementation (2026-02-23)
@@ -272,13 +287,13 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 
 ### MEDIUM Priority — Polish & Enhancement
 
-| Gap | Design Section | What's Missing |
+| Gap | Design Section | Status |
 |---|---|---|
-| **Product Details & Related Products** | §8.3 row 1-right | Entity context shows product info but not "related products" expansion |
-| **Dynamic Alert Structure** | §8.2 bullet | Alert detail structure should vary by detection model type |
-| **Configurable Widgets** | §8.1 bullet | Panels should be add/remove configurable in alert detail |
-| **AI in SQL Console & Model Composer** | §10.1 | AI assistant exists but not integrated into SQL Console or Model Composer views |
-| **Confirmation Dialogs** | General | D&D save, model deploy, pipeline run lack confirmation UX |
+| **Product Details & Related Products** | §8.3 row 1-right | DEFERRED — Entity context shows product info but not "related products" expansion |
+| **Dynamic Alert Structure** | §8.2 bullet | RESOLVED (M31) — Model-type layout config with emphasis panels and investigation hints |
+| **Configurable Widgets** | §8.1 bullet | RESOLVED (M28) — Panel toggle toolbar with localStorage persistence |
+| **AI in SQL Console & Model Composer** | §10.1 | RESOLVED (M29, M30) — Collapsible ChatPanel in both views |
+| **Confirmation Dialogs** | General | RESOLVED (M27) — ConfirmDialog for Model Deploy & Mapping Save |
 
 ---
 
