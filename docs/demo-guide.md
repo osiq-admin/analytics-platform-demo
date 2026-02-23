@@ -85,6 +85,14 @@ Click **Step** to advance to `pipeline_run`.
 - "Equities get a 2% VWAP threshold, FX gets 5%"
 - Score steps: graduated scoring ranges per calculation
 
+**Interactive: Resolution Tester**
+1. Select a setting (e.g. "Large Activity Score Steps")
+2. In the Resolution Tester panel, type **equity** in the Asset Class field
+3. Click **Resolve**
+4. See the equity-specific override match with "Why" explanation
+5. Clear Asset Class → Resolve again → see "default value" fallback
+6. Key takeaway: "Same setting resolves differently per entity context"
+
 ### 1.8 Detection (Step → alerts_generated)
 
 Click **Step** to advance to `alerts_generated`.
@@ -114,6 +122,18 @@ Click **Step** to advance to `alerts_generated`.
 - Score steps define graduated scoring ranges
 - "Models are composable from existing calculations"
 
+**Interactive: Create a Custom Model**
+1. Click **+ New Model**
+2. Enter name: "Custom Wash Detection"
+3. Add description: "Focused wash trading with strict quantity matching"
+4. Click "Large Trading Activity" → badge shows OPTIONAL
+5. Click the OPTIONAL badge → toggles to MUST_PASS
+6. Click "Wash Detection" → leaves as OPTIONAL
+7. Click **Save Model (2 calcs)**
+8. New model appears in the left sidebar
+9. Select it → click **Deploy & Run** → see alert count badge
+10. Key takeaway: "Build detection models by composing existing calculations"
+
 ### 2.2 AI Assistant (AI → Assistant)
 
 **Key Points:**
@@ -138,6 +158,15 @@ Click **Step** to advance to `alerts_generated`.
 **Key Points:**
 - Shows how source data maps to canonical entity fields
 - "New data sources just need a mapping definition"
+
+**Interactive: Drag-and-Drop Mapping**
+1. Select a calculation (e.g. "Value Calculation")
+2. Source Columns appear on the left, Required Fields on the right
+3. **Drag** "symbol" from Source → **drop** on "product_id" → green badge appears
+4. Drag "account" → "account_id", "price" → "price", "qty" → "quantity"
+5. Click **x** on any mapping to remove it
+6. Click **Save Mappings** → green "Saved" badge
+7. Key takeaway: "Map any data format to canonical fields with drag-and-drop"
 
 ### 3.2 Skip to End
 

@@ -18,7 +18,7 @@
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
 | Implementation | COMPLETE | All 14 milestones done — 185 tests, 11 views, full pipeline |
 | Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
-| Interactive Core Features | IN PROGRESS | M14-M17: Settings resolver, Mapping D&D, Model create & deploy |
+| Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
 
 ---
 
@@ -40,10 +40,10 @@
 | M11 | Demo Controls | COMPLETE | 2 | 2 | State machine + DemoToolbar |
 | M12 | Synthetic Data | COMPLETE | 3 | 3 | Data gen + entity defs + snapshots for all 8 checkpoints |
 | M13 | Polish & Docs | COMPLETE | 5 | 5 | 4 READMEs, demo guide, data dictionary (3 docs), SPA serving, 18 E2E tests |
-| M14 | Documentation & Lifespan Wiring | IN PROGRESS | 2 | 0 | Wire SettingsResolver, DetectionEngine, AlertService to app.state |
-| M15 | Settings Resolution Tester | PENDING | 2 | 0 | Resolve endpoint + interactive UI |
-| M16 | Mapping Studio Drag-and-Drop | PENDING | 4 | 0 | Save endpoint + HTML5 DnD handlers |
-| M17 | Model Composer Create & Deploy | PENDING | 5 | 0 | Save/generate endpoints + create form + deploy |
+| M14 | Documentation & Lifespan Wiring | COMPLETE | 2 | 2 | Wire SettingsResolver, DetectionEngine, AlertService to app.state |
+| M15 | Settings Resolution Tester | COMPLETE | 2 | 2 | Resolve endpoint + interactive UI |
+| M16 | Mapping Studio Drag-and-Drop | COMPLETE | 4 | 4 | Save endpoint + HTML5 DnD handlers |
+| M17 | Model Composer Create & Deploy | COMPLETE | 5 | 5 | Save/generate endpoints + create form + deploy |
 
 ---
 
@@ -176,19 +176,22 @@
 - **Total**: 185 tests passing on `feature/scaffold/m0-m1-foundation`
 
 ### 2026-02-23 (Phase 2: Interactive Core Features — M14-M17)
-- [ ] **M14 Task 14.1**: Update progress tracker with Phase 2 milestones
-- [ ] **M14 Task 14.2**: Wire SettingsResolver, DetectionEngine, AlertService to app.state
-- [ ] **M15 Task 15.1**: Backend — POST /settings/{id}/resolve endpoint
-- [ ] **M15 Task 15.2**: Frontend — Wire OverrideEditor with live resolve
-- [ ] **M16 Task 16.1**: Backend — POST /metadata/mappings endpoint
-- [ ] **M16 Task 16.2**: Frontend — Add drag handlers to SourcePreview
-- [ ] **M16 Task 16.3**: Frontend — Add drop handlers to CanonicalFields
-- [ ] **M16 Task 16.4**: Frontend — Wire MappingStudio with state & save
-- [ ] **M17 Task 17.1**: Backend — POST /metadata/detection-models endpoint
-- [ ] **M17 Task 17.2**: Backend — POST /alerts/generate/{model_id} endpoint
-- [ ] **M17 Task 17.3**: Frontend — Add saveDetectionModel to store
-- [ ] **M17 Task 17.4**: Frontend — Create ModelCreateForm component
-- [ ] **M17 Task 17.5**: Frontend — Update ModelComposer with create & deploy
+- [x] **M14 Task 14.1**: Update progress tracker with Phase 2 milestones
+- [x] **M14 Task 14.2**: Wire SettingsResolver, DetectionEngine, AlertService to app.state (1 test)
+- [x] **M15 Task 15.1**: Backend — POST /settings/{id}/resolve endpoint (1 test)
+- [x] **M15 Task 15.2**: Frontend — Wire OverrideEditor with live resolve
+- [x] **M16 Task 16.1**: Backend — POST /metadata/mappings endpoint (1 test)
+- [x] **M16 Task 16.2**: Frontend — Add drag handlers to SourcePreview
+- [x] **M16 Task 16.3**: Frontend — Add drop handlers to CanonicalFields
+- [x] **M16 Task 16.4**: Frontend — Wire MappingStudio with state & save
+- [x] **M17 Task 17.1**: Backend — POST /metadata/detection-models endpoint (1 test)
+- [x] **M17 Task 17.2**: Backend — POST /alerts/generate/{model_id} endpoint (2 tests)
+- [x] **M17 Task 17.3**: Frontend — Add saveDetectionModel to store
+- [x] **M17 Task 17.4**: Frontend — Create ModelCreateForm component
+- [x] **M17 Task 17.5**: Frontend — Update ModelComposer with create & deploy
+- [x] **Playwright E2E**: All 3 features verified in browser — resolve tester, D&D mappings, model create & deploy
+- [x] **Regression**: Entity Designer, Risk Case Manager, all existing views still working
+- **Total**: 191 tests passing (6 new), 14 commits on `feature/scaffold/m0-m1-foundation`
 
 ### 2026-02-23 (Browser Testing — Playwright E2E)
 - [x] **Full browser-based E2E testing** of all 11 views using Playwright MCP
