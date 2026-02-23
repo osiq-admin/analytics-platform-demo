@@ -8,6 +8,7 @@ import { api } from "../../api/client.ts";
 import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import ConfirmDialog from "../../components/ConfirmDialog.tsx";
 import ModelCreateForm from "./ModelCreateForm.tsx";
 
 interface DeployResult {
@@ -27,6 +28,7 @@ export default function ModelComposer() {
   const [createMode, setCreateMode] = useState(false);
   const [deploying, setDeploying] = useState(false);
   const [deployResult, setDeployResult] = useState<DeployResult | null>(null);
+  const [confirmDeploy, setConfirmDeploy] = useState(false);
 
   useEffect(() => {
     fetchCalculations();
@@ -142,7 +144,7 @@ export default function ModelComposer() {
                   />
                 )}
                 <button
-                  onClick={handleDeploy}
+                  onClick={() => setConfirmDeploy(true)}
                   disabled={deploying}
                   className="px-3 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
                 >
@@ -195,6 +197,15 @@ export default function ModelComposer() {
           </div>
         </Panel>
       </div>
+
+      <ConfirmDialog
+        open={confirmDeploy}
+        title="Deploy & Run Model"
+        message={`Run detection model "${selectedModel?.name}" and generate alerts? This will execute the model's query against current data.`}
+        confirmLabel="Deploy & Run"
+        onConfirm={() => { setConfirmDeploy(false); handleDeploy(); }}
+        onCancel={() => setConfirmDeploy(false)}
+      />
     </div>
   );
 }
