@@ -1,0 +1,20 @@
+[project]
+name = "analytics-platform-demo"
+version = "0.1.0"
+description = "Metadata-driven trade surveillance analytics platform demo"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+    "duckdb>=1.2.0",
+    "pyarrow>=18.0.0",
+    "watchfiles>=1.0.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "anthropic>=0.42.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[project.scripts]
+serve = "uvicorn backend.main:app --host 0.0.0.0 --port 8000"
