@@ -13,14 +13,18 @@ import ModelComposer from "./views/ModelComposer/index.tsx";
 import DataManager from "./views/DataManager/index.tsx";
 import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
 import AIAssistant from "./views/AIAssistant/index.tsx";
+import Dashboard from "./views/Dashboard/index.tsx";
 
 export const routes: RouteObject[] = [
   {
     path: "/",
     element: <AppLayout />,
     children: [
+      // Overview
+      { index: true, element: <Dashboard /> },
+      { path: "dashboard", element: <Dashboard /> },
+
       // Define
-      { index: true, element: <EntityDesigner /> },
       { path: "entities", element: <EntityDesigner /> },
       { path: "metadata", element: <MetadataExplorer /> },
 
