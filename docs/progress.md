@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24
+**Last Updated**: 2026-02-23
 
 ---
 
@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | IN PROGRESS | M0-M9+M11 complete — 114 tests, all views built |
+| Implementation | COMPLETE | All 14 milestones done — 185 tests, 11 views, full pipeline |
 
 ---
 
@@ -34,10 +34,10 @@
 | M7 | Operations Views | COMPLETE | 3 | 3 | Pipeline Monitor, Schema Explorer, SQL Console |
 | M8 | Compose Views | COMPLETE | 2 | 2 | Model Composer, Data Manager |
 | M9 | Risk Case Manager | COMPLETE | 5 | 5 | Alert Summary, Alert Detail with score breakdown |
-| M10 | AI Query Assistant | NOT STARTED | 2 | 0 | Depends: M7, M8 |
+| M10 | AI Query Assistant | COMPLETE | 2 | 2 | Backend AI service (live+mock) + frontend chat interface |
 | M11 | Demo Controls | COMPLETE | 2 | 2 | State machine + DemoToolbar |
-| M12 | Synthetic Data | NOT STARTED | 3 | 0 | Depends: M4, M11 |
-| M13 | Polish & Docs | NOT STARTED | 5 | 0 | Depends: All |
+| M12 | Synthetic Data | COMPLETE | 3 | 3 | Data gen + entity defs + snapshots for all 8 checkpoints |
+| M13 | Polish & Docs | COMPLETE | 5 | 5 | README, demo guide, SPA serving, E2E tests |
 
 ---
 
@@ -125,6 +125,48 @@
 - [x] **M11 Task 11.2**: DemoToolbar — Reset/Step/End/Act jump buttons, progress bar
 - [x] Wired metadata, query, alerts, and demo API routes to actual backend services
 - **Total**: 114 tests passing, frontend builds, 23 commits
+
+### 2026-02-23 (M12)
+- [x] **M12 Task 12.1**: Data guidelines — already approved (50+ products, 200+ accounts, 50 traders, 2 months, 13 patterns)
+- [x] **M12 Task 12.2**: Data generation script (`scripts/generate_data.py`) — 519 executions, 532 orders, 26,890 intraday rows, 2,150 EOD rows
+  - 50 products: 25 equities, 6 FX, 8 commodities, 6 options, 5 futures
+  - 220 accounts, 50 traders, date range 2024-01-02 to 2024-02-29
+  - 13 embedded detection patterns: 4 wash trading, 3 MPR, 3 insider dealing, 3 spoofing
+  - 4 entity JSON definitions (execution, order, md_intraday, md_eod)
+  - 28 unit tests + 6 pipeline integration tests (data → load → calc → detect → alerts fire)
+  - Detection engine fix: MUST_PASS gate calcs without score_steps now auto-pass (enables MPR + spoofing alerts)
+- **Total**: 148 tests passing, 23 commits on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-23 (M12 continued)
+- [x] **M12 Task 12.3**: Snapshot generation script (`scripts/generate_snapshots.py`)
+  - Drives full pipeline through all 8 checkpoints: pristine → data_loaded → pipeline_run → alerts_generated → act1_complete → model_deployed → act2_complete → final
+  - Each snapshot contains data/, results/, alerts/, metadata/ as appropriate
+  - Verification: each snapshot independently restorable with correct state
+  - Bug fix: `demo_controller.py` restore_snapshot now clears workspace dirs not present in snapshot
+  - 8 tests in `tests/test_snapshot_generation.py`
+- **Total**: 156 tests passing on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-23 (M10)
+- [x] **M10 Task 10.1**: Backend AI service (`backend/services/ai_assistant.py`)
+  - Live mode: Claude API with auto-generated system context (schema, metadata, domain instructions)
+  - Mock mode: 5 pre-scripted conversation sequences (explore data, wash investigation, alert deep dive, custom analysis, spoofing check)
+  - Domain instructions in `workspace/metadata/ai_instructions.md`
+  - Mock sequences in `workspace/metadata/ai_mock_sequences.json`
+  - API routes in `backend/api/ai.py` (mode, mock-sequences, chat endpoints)
+  - 11 tests in `tests/test_ai_assistant.py`
+- [x] **M10 Task 10.2**: Frontend AI chat interface
+  - ChatPanel: message bubbles with markdown code block rendering, SQL "Run Query" buttons
+  - MockPlayer: scenario picker buttons that load pre-scripted conversations
+  - QueryPreview: execute SQL from chat directly, view results in AG Grid
+  - Mode indicator (Live/Mock) with StatusBadge
+- **Total**: 167 tests passing on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-23 (M13)
+- [x] **M13 Task 13.1**: Root README.md with quick start, architecture diagram, project structure
+- [x] **M13 Task 13.2**: Demo guide (`docs/demo-guide.md`) — Act 1/2/3 walkthrough with what to click/say/expect
+- [x] **M13 Task 13.4**: E2E integration test (`tests/test_integration_e2e.py`) — 18 tests covering all API endpoints via FastAPI TestClient
+- [x] **M13 Task 13.5**: SPA static files serving — SPAStaticFiles class in `backend/main.py` with index.html fallback for client-side routing
+- **Total**: 185 tests passing on `feature/scaffold/m0-m1-foundation`
 
 ---
 
