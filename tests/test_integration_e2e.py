@@ -201,6 +201,23 @@ class TestSettingsResolveEndpoint:
         assert "why" in data
 
 
+class TestMappingsEndpoint:
+    def test_save_mapping(self, client):
+        """POST /api/metadata/mappings saves a mapping definition."""
+        resp = client.post(
+            "/api/metadata/mappings",
+            json={
+                "calc_id": "value_calc",
+                "mappings": {"product_id": "symbol", "quantity": "qty"},
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["saved"] is True
+        assert data["calc_id"] == "value_calc"
+        assert data["field_count"] == 2
+
+
 class TestAlertEndpoints:
     def test_list_alerts_empty(self, client):
         resp = client.get("/api/alerts/")

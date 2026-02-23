@@ -94,3 +94,21 @@ def get_detection_model(model_id: str, request: Request):
     if model is None:
         return JSONResponse({"error": "not found"}, status_code=404)
     return model.model_dump()
+
+
+# -- Mappings --
+
+class SaveMappingRequest(BaseModel):
+    calc_id: str
+    mappings: dict[str, str]
+
+
+@router.post("/mappings")
+def save_mapping(body: SaveMappingRequest, request: Request):
+    """Save a field mapping definition for a calculation."""
+    import json
+    mappings_dir = _meta(request)._base / "mappings"
+    mappings_dir.mkdir(parents=True, exist_ok=True)
+    path = mappings_dir / f"{body.calc_id}.json"
+    path.write_text(json.dumps({"calc_id": body.calc_id, "mappings": body.mappings}, indent=2))
+    return {"saved": True, "calc_id": body.calc_id, "field_count": len(body.mappings)}
