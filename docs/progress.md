@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | IN PROGRESS | M0-M5 complete — 103 tests passing, frontend builds |
+| Implementation | IN PROGRESS | M0-M9+M11 complete — 114 tests, all views built |
 
 ---
 
@@ -30,12 +30,12 @@
 | M3 | Settings Resolution | COMPLETE | 2 | 2 | Resolver engine + 15 setting JSON files |
 | M4 | Detection & Alerts | COMPLETE | 3 | 3 | Detection engine + 5 models + alert service |
 | M5 | Frontend Foundation | COMPLETE | 4 | 4 | App shell, theme, components, stores |
-| M6 | Configuration Views | NOT STARTED | 4 | 0 | Depends: M1, M5 |
-| M7 | Operations Views | NOT STARTED | 3 | 0 | Depends: M2, M5 |
-| M8 | Compose Views | NOT STARTED | 2 | 0 | Depends: M4, M5 |
-| M9 | Risk Case Manager | NOT STARTED | 5 | 0 | Depends: M4, M5 |
+| M6 | Configuration Views | COMPLETE | 4 | 4 | Entity Designer, Metadata Explorer, Settings Manager, Mapping Studio |
+| M7 | Operations Views | COMPLETE | 3 | 3 | Pipeline Monitor, Schema Explorer, SQL Console |
+| M8 | Compose Views | COMPLETE | 2 | 2 | Model Composer, Data Manager |
+| M9 | Risk Case Manager | COMPLETE | 5 | 5 | Alert Summary, Alert Detail with score breakdown |
 | M10 | AI Query Assistant | NOT STARTED | 2 | 0 | Depends: M7, M8 |
-| M11 | Demo Controls | NOT STARTED | 2 | 0 | Depends: M4 |
+| M11 | Demo Controls | COMPLETE | 2 | 2 | State machine + DemoToolbar |
 | M12 | Synthetic Data | NOT STARTED | 3 | 0 | Depends: M4, M11 |
 | M13 | Polish & Docs | NOT STARTED | 5 | 0 | Depends: All |
 
@@ -109,6 +109,22 @@
 - [x] **M5 Task 5.3**: Shared components — Panel, DataGrid (AG Grid wrapper), LoadingSpinner, StatusBadge
 - [x] **M5 Task 5.4**: API client & stores — fetch wrapper, WebSocket manager, 4 Zustand stores (alerts, pipeline, demo, metadata)
 - **Total**: 103 tests passing, frontend builds (232 KB JS, 13 KB CSS), 19 commits
+
+### 2026-02-24 (M6+M7+M8+M9+M11)
+- [x] **M6 Task 6.1**: Entity Designer — AG Grid list, detail with fields/types, React Flow relationship graph
+- [x] **M6 Task 6.2**: Metadata Explorer — calculation list by layer, detail panel, dagre-layout DAG
+- [x] **M6 Task 6.3**: Settings Manager — settings list, score steps table, override viewer
+- [x] **M6 Task 6.4**: Mapping Studio — calc selector, source preview, canonical fields
+- [x] **M7 Task 7.1**: Pipeline Monitor — execution DAG with animated edges, step table, run button
+- [x] **M7 Task 7.2**: Schema Explorer — DuckDB table list, column detail
+- [x] **M7 Task 7.3**: SQL Console — Monaco editor with Ctrl+Enter, AG Grid results, preset queries
+- [x] **M8 Task 8.1**: Model Composer — detection model viewer with calc/strictness breakdown
+- [x] **M8 Task 8.2**: Data Manager — table browser with live SQL data preview
+- [x] **M9 Tasks 9.1-9.5**: Risk Case Manager — alert summary grid, alert detail with business description, entity context, Recharts score breakdown with threshold line
+- [x] **M11 Task 11.1**: Demo Controller — 8-checkpoint state machine, save/restore snapshots (11 tests)
+- [x] **M11 Task 11.2**: DemoToolbar — Reset/Step/End/Act jump buttons, progress bar
+- [x] Wired metadata, query, alerts, and demo API routes to actual backend services
+- **Total**: 114 tests passing, frontend builds, 23 commits
 
 ---
 
