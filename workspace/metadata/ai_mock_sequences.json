@@ -1,0 +1,80 @@
+[
+  {
+    "id": "explore_data",
+    "title": "Explore Available Data",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What data do we have in the system?"
+      },
+      {
+        "role": "assistant",
+        "content": "Let me check what tables are available in the database.\n\n```sql\nSELECT table_name, table_type\nFROM information_schema.tables\nWHERE table_schema = 'main'\nORDER BY table_name;\n```\n\nThe platform has three categories of data:\n\n**Source Data:**\n- `execution` — 519 trade executions across 50 products\n- `order` — 532 orders including fills and cancellations\n- `md_intraday` — 26,890 intraday price snapshots\n- `md_eod` — 2,150 end-of-day prices\n\n**Calculation Results** (prefixed with `calc_`):\n- Transaction-level: value calculations, adjusted direction\n- Time windows: business dates, trend detection, market events, cancellation patterns\n- Aggregations: trading activity, VWAP\n- Derived: large activity flags, wash detection candidates\n\n**Alerts:**\n- `alerts_summary` — All fired alerts with scores and trigger paths"
+      }
+    ]
+  },
+  {
+    "id": "wash_investigation",
+    "title": "Investigate Wash Trading",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Show me accounts with potential wash trading activity"
+      },
+      {
+        "role": "assistant",
+        "content": "I'll query the wash detection results to find accounts with the strongest wash trading indicators.\n\n```sql\nSELECT\n  account_id,\n  product_id,\n  business_date,\n  buy_qty,\n  sell_qty,\n  qty_match_ratio,\n  vwap_proximity,\n  is_wash_candidate\nFROM calc_wash_detection\nWHERE is_wash_candidate = TRUE\nORDER BY qty_match_ratio DESC\nLIMIT 20;\n```\n\nThis query finds accounts where:\n- **qty_match_ratio** is high (buy and sell quantities are similar — a key wash trading signal)\n- **vwap_proximity** is low (buy and sell prices are close — not economically motivated)\n- **is_wash_candidate** is TRUE (both conditions met)\n\nHigh qty_match_ratio (close to 1.0) means the account bought and sold nearly identical quantities of the same product on the same day."
+      },
+      {
+        "role": "user",
+        "content": "Which of these actually triggered alerts?"
+      },
+      {
+        "role": "assistant",
+        "content": "Let me cross-reference with the fired alerts to see which wash candidates actually triggered.\n\n```sql\nSELECT\n  a.alert_id,\n  a.model_id,\n  a.account_id,\n  a.product_id,\n  a.accumulated_score,\n  a.score_threshold,\n  a.trigger_path\nFROM alerts_summary a\nWHERE a.model_id IN ('wash_full_day', 'wash_intraday')\nORDER BY a.accumulated_score DESC;\n```\n\nThe `trigger_path` column tells you how each alert was triggered:\n- **all_passed**: Every calculation threshold was met\n- **score_based**: Some thresholds weren't met, but the accumulated graduated score exceeded the model's score threshold\n\nAlerts with higher `accumulated_score` relative to `score_threshold` indicate stronger signals."
+      }
+    ]
+  },
+  {
+    "id": "alert_deep_dive",
+    "title": "Deep Dive into an Alert",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Show me the top alerts by score across all models"
+      },
+      {
+        "role": "assistant",
+        "content": "Here are the highest-scoring alerts across all detection models.\n\n```sql\nSELECT\n  alert_id,\n  model_id,\n  product_id,\n  account_id,\n  accumulated_score,\n  score_threshold,\n  ROUND(accumulated_score / NULLIF(score_threshold, 0) * 100, 1) AS score_pct,\n  trigger_path\nFROM alerts_summary\nWHERE alert_fired = TRUE\nORDER BY accumulated_score DESC\nLIMIT 15;\n```\n\nThe `score_pct` column shows how much the score exceeded the threshold — values well above 100% indicate very strong signals. You can click any alert in the Risk Case Manager to see the full calculation trace, score breakdown, and related trading activity."
+      }
+    ]
+  },
+  {
+    "id": "build_query",
+    "title": "Build a Custom Analysis",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Find accounts that traded in multiple asset classes on the same day"
+      },
+      {
+        "role": "assistant",
+        "content": "This analysis can help identify accounts with unusually diverse trading patterns.\n\n```sql\nSELECT\n  account_id,\n  CAST(execution_time AS DATE) AS trade_date,\n  COUNT(DISTINCT asset_class) AS asset_classes,\n  LIST(DISTINCT asset_class) AS classes,\n  COUNT(*) AS total_trades,\n  SUM(price * quantity) AS total_value\nFROM execution\nGROUP BY account_id, CAST(execution_time AS DATE)\nHAVING COUNT(DISTINCT asset_class) >= 2\nORDER BY asset_classes DESC, total_value DESC\nLIMIT 20;\n```\n\nAccounts trading across multiple asset classes on the same day could indicate:\n- **Legitimate**: Diversified portfolio rebalancing or multi-strategy desk\n- **Suspicious**: Attempting to obscure trading patterns across different markets\n\nYou could combine this with the alerts data to see if any of these accounts also triggered detection alerts."
+      }
+    ]
+  },
+  {
+    "id": "spoofing_check",
+    "title": "Check for Spoofing Patterns",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Are there any spoofing or layering patterns in the data?"
+      },
+      {
+        "role": "assistant",
+        "content": "Let me check the cancellation pattern analysis and spoofing alerts.\n\n```sql\nSELECT\n  cp.account_id,\n  cp.product_id,\n  cp.cancel_count,\n  cp.window_start,\n  cp.window_end,\n  cp.cancel_side\nFROM calc_cancellation_pattern cp\nORDER BY cp.cancel_count DESC;\n```\n\nAnd the spoofing alerts that fired:\n\n```sql\nSELECT\n  alert_id,\n  account_id,\n  product_id,\n  accumulated_score,\n  score_threshold,\n  trigger_path\nFROM alerts_summary\nWHERE model_id = 'spoofing_layering'\nORDER BY accumulated_score DESC;\n```\n\nSpoofing detection looks for:\n1. **Cancellation burst**: Multiple order cancellations on one side within a short time window\n2. **Opposite-side execution**: A fill on the opposite side shortly after the cancellation burst\n\nThe pattern suggests the trader was creating false liquidity on one side to move the price, then executing on the other side at the manipulated price."
+      }
+    ]
+  }
+]
