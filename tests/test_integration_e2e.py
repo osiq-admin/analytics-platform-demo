@@ -218,6 +218,31 @@ class TestMappingsEndpoint:
         assert data["field_count"] == 2
 
 
+class TestDetectionModelSaveEndpoint:
+    def test_save_detection_model(self, client):
+        """POST /api/metadata/detection-models saves a new model."""
+        resp = client.post(
+            "/api/metadata/detection-models",
+            json={
+                "model_id": "test_custom_model",
+                "name": "Test Custom Model",
+                "description": "A test model created via API",
+                "time_window": "business_date",
+                "granularity": ["product_id", "account_id"],
+                "calculations": [
+                    {"calc_id": "large_trading_activity", "strictness": "MUST_PASS"},
+                    {"calc_id": "wash_qty_match", "strictness": "OPTIONAL"},
+                ],
+                "score_threshold_setting": "wash_score_threshold",
+                "query": "SELECT * FROM calc_large_trading_activity WHERE total_value > 50000",
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["saved"] is True
+        assert data["model_id"] == "test_custom_model"
+
+
 class TestAlertEndpoints:
     def test_list_alerts_empty(self, client):
         resp = client.get("/api/alerts/")

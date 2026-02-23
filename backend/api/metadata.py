@@ -96,6 +96,15 @@ def get_detection_model(model_id: str, request: Request):
     return model.model_dump()
 
 
+@router.post("/detection-models")
+def save_detection_model(body: dict, request: Request):
+    """Save a new detection model definition."""
+    from backend.models.detection import DetectionModelDefinition
+    model = DetectionModelDefinition.model_validate(body)
+    _meta(request).save_detection_model(model)
+    return {"saved": True, "model_id": model.model_id}
+
+
 # -- Mappings --
 
 class SaveMappingRequest(BaseModel):
