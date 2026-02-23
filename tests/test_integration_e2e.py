@@ -282,3 +282,28 @@ class TestAlertEndpoints:
         resp = client.post("/api/alerts/generate/nonexistent_model")
         assert resp.status_code == 404
         assert "error" in resp.json()
+
+
+class TestMarketDataEndpoint:
+    def test_market_data(self, client):
+        """GET /api/data/market/{product_id} returns market data."""
+        resp = client.get("/api/data/market/AAPL?days=30")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "product_id" in data
+        assert "eod" in data
+        assert "intraday" in data
+        assert isinstance(data["eod"], list)
+        assert isinstance(data["intraday"], list)
+
+
+class TestRelatedOrdersEndpoint:
+    def test_related_orders(self, client):
+        """GET /api/data/orders returns orders for product+account."""
+        resp = client.get("/api/data/orders?product_id=AAPL&limit=50")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "orders" in data
+        assert "executions" in data
+        assert isinstance(data["orders"], list)
+        assert isinstance(data["executions"], list)

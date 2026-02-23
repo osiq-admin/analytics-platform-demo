@@ -42,3 +42,76 @@ def reload_data(request: Request):
     loader = DataLoader(settings.workspace_dir, request.app.state.db)
     loaded = loader.load_all()
     return {"status": "reloaded", "tables": loaded}
+
+
+@router.get("/market/{product_id}")
+def get_market_data(product_id: str, request: Request, days: int = 60):
+    """Get EOD and intraday market data for a product."""
+    svc = QueryService(request.app.state.db)
+
+    eod_result = svc.execute(
+        f"SELECT product_id, trade_date, close_price, volume"
+        f" FROM md_eod"
+        f" WHERE product_id = '{product_id}'"
+        f" ORDER BY trade_date DESC"
+        f" LIMIT {days}",
+        limit=days,
+    )
+
+    intraday_result = svc.execute(
+        f"SELECT product_id, trade_date, trade_time, trade_price, trade_quantity"
+        f" FROM md_intraday"
+        f" WHERE product_id = '{product_id}'"
+        f" ORDER BY trade_date DESC, trade_time DESC"
+        f" LIMIT 500",
+        limit=500,
+    )
+
+    return {
+        "product_id": product_id,
+        "eod": eod_result.get("rows", []),
+        "intraday": intraday_result.get("rows", []),
+    }
+
+
+@router.get("/orders")
+def get_related_orders(
+    request: Request,
+    product_id: str | None = None,
+    account_id: str | None = None,
+    trade_date: str | None = None,
+    limit: int = 100,
+):
+    """Get orders and executions filtered by product, account, and/or date."""
+    svc = QueryService(request.app.state.db)
+
+    where_parts: list[str] = []
+    if product_id:
+        where_parts.append(f"product_id = '{product_id}'")
+    if account_id:
+        where_parts.append(f"account_id = '{account_id}'")
+    where_clause = " AND ".join(where_parts) if where_parts else "1=1"
+
+    order_where = where_clause
+    if trade_date:
+        order_where += f" AND order_date = '{trade_date}'"
+
+    exec_where = where_clause
+    if trade_date:
+        exec_where += f" AND execution_date = '{trade_date}'"
+
+    orders = svc.execute(
+        f'SELECT * FROM "order" WHERE {order_where}'
+        f" ORDER BY order_date DESC, order_time DESC LIMIT {limit}",
+        limit=limit,
+    )
+    executions = svc.execute(
+        f"SELECT * FROM execution WHERE {exec_where}"
+        f" ORDER BY execution_date DESC, execution_time DESC LIMIT {limit}",
+        limit=limit,
+    )
+
+    return {
+        "orders": orders.get("rows", []),
+        "executions": executions.get("rows", []),
+    }
