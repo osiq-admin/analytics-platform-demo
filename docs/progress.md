@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-02-24
 
 ---
 
@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | NOT STARTED | |
+| Implementation | IN PROGRESS | M0 complete, M1 complete — 27 tests passing |
 
 ---
 
@@ -24,8 +24,8 @@
 
 | # | Milestone | Status | Tasks | Done | Notes |
 |---|---|---|---|---|---|
-| M0 | Project Scaffolding | NOT STARTED | 3 | 0 | |
-| M1 | Backend Foundation | NOT STARTED | 6 | 0 | |
+| M0 | Project Scaffolding | COMPLETE | 3 | 3 | Python backend, React frontend, workspace dirs |
+| M1 | Backend Foundation | COMPLETE | 6 | 6 | DuckDB, models, metadata svc, data loader, API routes, query svc |
 | M2 | Calculation Engine | NOT STARTED | 5 | 0 | Depends: M1 |
 | M3 | Settings Resolution | NOT STARTED | 2 | 0 | Depends: M1 |
 | M4 | Detection & Alerts | NOT STARTED | 3 | 0 | Depends: M2, M3 |
@@ -73,6 +73,18 @@
 - [x] Git repo initialized
 - [x] Synthetic data guidelines approved (50+ real products, 200+ accounts, order versioning, 3 types of market data, news feed, 13 embedded patterns)
 - [x] Graduated scoring system added across all documents (score steps, MUST_PASS/OPTIONAL, score-based alert triggering)
+
+### 2026-02-24
+- [x] **M0 Task 0.1**: Python backend — FastAPI + pyproject.toml + uv sync (49 packages)
+- [x] **M0 Task 0.2**: React frontend — Vite + TypeScript + all deps (AG Grid, TradingView, React Flow, Monaco, etc.)
+- [x] **M0 Task 0.3**: Workspace directory structure + start.sh launch script
+- [x] **M1 Task 1.1**: DuckDB connection manager with thread-safe cursors (3 tests)
+- [x] **M1 Task 1.2**: Pydantic metadata models — entities, calculations, settings, detection, alerts (7 tests)
+- [x] **M1 Task 1.3**: Metadata service — JSON CRUD for all metadata types (6 tests)
+- [x] **M1 Task 1.4**: Data loader — CSV→Parquet→DuckDB with change detection (6 tests)
+- [x] **M1 Task 1.5**: API route structure — 7 routers with placeholder endpoints
+- [x] **M1 Task 1.6**: Query service — SQL execution, table listing, schema introspection (5 tests)
+- **Total**: 27 tests passing, 10 commits on `feature/scaffold/m0-m1-foundation`
 
 ---
 
