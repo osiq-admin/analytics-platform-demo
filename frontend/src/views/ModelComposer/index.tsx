@@ -4,9 +4,16 @@ import {
   type CalculationDef,
   type DetectionModelDef,
 } from "../../stores/metadataStore.ts";
+import { api } from "../../api/client.ts";
 import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import ModelCreateForm from "./ModelCreateForm.tsx";
+
+interface DeployResult {
+  model_id: string;
+  alerts_generated: number;
+}
 
 export default function ModelComposer() {
   const {
@@ -16,9 +23,10 @@ export default function ModelComposer() {
     fetchCalculations,
     fetchDetectionModels,
   } = useMetadataStore();
-  const [selectedModel, setSelectedModel] = useState<DetectionModelDef | null>(
-    null,
-  );
+  const [selectedModel, setSelectedModel] = useState<DetectionModelDef | null>(null);
+  const [createMode, setCreateMode] = useState(false);
+  const [deploying, setDeploying] = useState(false);
+  const [deployResult, setDeployResult] = useState<DeployResult | null>(null);
 
   useEffect(() => {
     fetchCalculations();
@@ -37,6 +45,30 @@ export default function ModelComposer() {
     calculations.map((c) => [c.calc_id, c]),
   );
 
+  const handleDeploy = async () => {
+    if (!selectedModel) return;
+    setDeploying(true);
+    setDeployResult(null);
+    try {
+      const result = await api.post<DeployResult>(
+        `/alerts/generate/${selectedModel.model_id}`
+      );
+      setDeployResult(result);
+    } catch {
+      setDeployResult({ model_id: selectedModel.model_id, alerts_generated: -1 });
+    } finally {
+      setDeploying(false);
+    }
+  };
+
+  const handleModelCreated = (modelId: string) => {
+    setCreateMode(false);
+    fetchDetectionModels().then(() => {
+      const newModel = detectionModels.find((m) => m.model_id === modelId);
+      if (newModel) setSelectedModel(newModel);
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4 h-full">
       <h2 className="text-lg font-semibold">Model Composer</h2>
@@ -44,38 +76,79 @@ export default function ModelComposer() {
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Detection models */}
         <Panel title="Detection Models" className="w-72 shrink-0">
-          {detectionModels.length === 0 ? (
-            <p className="text-muted text-xs">No models defined.</p>
-          ) : (
-            <div className="space-y-1">
-              {detectionModels.map((m) => (
-                <button
-                  key={m.model_id}
-                  onClick={() => setSelectedModel(m)}
-                  className={`w-full text-left px-2 py-1.5 rounded text-xs transition-colors ${
-                    selectedModel?.model_id === m.model_id
-                      ? "bg-accent/15 text-accent"
-                      : "text-foreground/70 hover:bg-foreground/5"
-                  }`}
-                >
-                  <div className="font-medium">{m.name}</div>
-                  <div className="text-muted mt-0.5">
-                    {m.calculations.length} calcs
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                setCreateMode(true);
+                setSelectedModel(null);
+                setDeployResult(null);
+              }}
+              className="w-full text-left px-2 py-1.5 rounded text-xs font-medium text-accent border border-dashed border-accent/30 hover:bg-accent/10 transition-colors"
+            >
+              + New Model
+            </button>
+            {detectionModels.map((m) => (
+              <button
+                key={m.model_id}
+                onClick={() => {
+                  setSelectedModel(m);
+                  setCreateMode(false);
+                  setDeployResult(null);
+                }}
+                className={`w-full text-left px-2 py-1.5 rounded text-xs transition-colors ${
+                  selectedModel?.model_id === m.model_id
+                    ? "bg-accent/15 text-accent"
+                    : "text-foreground/70 hover:bg-foreground/5"
+                }`}
+              >
+                <div className="font-medium">{m.name}</div>
+                <div className="text-muted mt-0.5">
+                  {m.calculations.length} calcs
+                </div>
+              </button>
+            ))}
+          </div>
         </Panel>
 
-        {/* Center: Model detail */}
-        {selectedModel ? (
+        {/* Center: Model detail or create form */}
+        {createMode ? (
+          <ModelCreateForm
+            calculations={calculations}
+            onSaved={handleModelCreated}
+            onCancel={() => setCreateMode(false)}
+          />
+        ) : selectedModel ? (
           <div className="flex-1 flex flex-col gap-3 min-w-0">
-            <div>
-              <h3 className="text-base font-semibold">{selectedModel.name}</h3>
-              <p className="text-xs text-muted mt-1">
-                {selectedModel.description}
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-semibold">{selectedModel.name}</h3>
+                <p className="text-xs text-muted mt-1">{selectedModel.description}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {deployResult && (
+                  <StatusBadge
+                    label={
+                      deployResult.alerts_generated >= 0
+                        ? `${deployResult.alerts_generated} alerts`
+                        : "Error"
+                    }
+                    variant={
+                      deployResult.alerts_generated > 0
+                        ? "success"
+                        : deployResult.alerts_generated === 0
+                        ? "warning"
+                        : "error"
+                    }
+                  />
+                )}
+                <button
+                  onClick={handleDeploy}
+                  disabled={deploying}
+                  className="px-3 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
+                >
+                  {deploying ? "Running..." : "Deploy & Run"}
+                </button>
+              </div>
             </div>
 
             <Panel title="Calculations & Scoring">
@@ -88,20 +161,12 @@ export default function ModelComposer() {
                       className="flex items-center justify-between p-2 rounded border border-border bg-background text-xs"
                     >
                       <div>
-                        <span className="font-medium">
-                          {calc?.name ?? mc.calc_id}
-                        </span>
-                        {calc && (
-                          <span className="text-muted ml-2">
-                            ({calc.layer})
-                          </span>
-                        )}
+                        <span className="font-medium">{calc?.name ?? mc.calc_id}</span>
+                        {calc && <span className="text-muted ml-2">({calc.layer})</span>}
                       </div>
                       <StatusBadge
                         label={mc.strictness}
-                        variant={
-                          mc.strictness === "MUST_PASS" ? "error" : "warning"
-                        }
+                        variant={mc.strictness === "MUST_PASS" ? "error" : "warning"}
                       />
                     </div>
                   );
