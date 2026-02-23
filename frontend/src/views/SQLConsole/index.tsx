@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { api } from "../../api/client.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import ChatPanel from "../AIAssistant/ChatPanel.tsx";
 import QueryEditor from "./QueryEditor.tsx";
 import ResultsGrid from "./ResultsGrid.tsx";
 
@@ -17,11 +18,19 @@ interface QueryResult {
   error?: string;
 }
 
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export default function SQLConsole() {
   const [sql, setSql] = useState("SHOW TABLES;");
   const [result, setResult] = useState<QueryResult>({});
   const [loading, setLoading] = useState(false);
   const [presets, setPresets] = useState<Preset[]>([]);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     api.get<Preset[]>("/query/presets").then(setPresets).catch(() => {});
@@ -34,6 +43,27 @@ export default function SQLConsole() {
       .then(setResult)
       .catch((e) => setResult({ error: String(e) }))
       .finally(() => setLoading(false));
+  };
+
+  const handleAiSend = async (content: string) => {
+    const userMsg: Message = { role: "user", content };
+    const updated = [...messages, userMsg];
+    setMessages(updated);
+    setAiLoading(true);
+    try {
+      const reply = await api.post<Message & { mode: string }>("/ai/chat", {
+        messages: updated,
+      });
+      setMessages([...updated, { role: reply.role as "assistant", content: reply.content }]);
+    } catch (e) {
+      setMessages([...updated, { role: "assistant", content: `Error: ${e}` }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleUseQuery = (sql: string) => {
+    setSql(sql);
   };
 
   return (
@@ -50,45 +80,72 @@ export default function SQLConsole() {
               {p.name}
             </button>
           ))}
+          <button
+            onClick={() => setAiOpen(!aiOpen)}
+            className={`px-2 py-1 text-xs rounded border transition-colors ${
+              aiOpen
+                ? "border-accent bg-accent/15 text-accent"
+                : "border-border text-muted hover:text-foreground"
+            }`}
+          >
+            {aiOpen ? "Close AI" : "Ask AI"}
+          </button>
         </div>
       </div>
 
-      {/* Editor */}
-      <Panel
-        title="Query"
-        className="h-48 shrink-0"
-        noPadding
-        actions={
-          <button
-            onClick={execute}
-            disabled={loading}
-            className="px-2 py-0.5 text-xs rounded bg-accent text-white hover:bg-accent-hover disabled:opacity-50 transition-colors"
+      <div className="flex gap-4 flex-1 min-h-0">
+        {/* Left: SQL editor + results */}
+        <div className="flex flex-col gap-4 flex-1 min-w-0">
+          {/* Editor */}
+          <Panel
+            title="Query"
+            className="h-48 shrink-0"
+            noPadding
+            actions={
+              <button
+                onClick={execute}
+                disabled={loading}
+                className="px-2 py-0.5 text-xs rounded bg-accent text-white hover:bg-accent-hover disabled:opacity-50 transition-colors"
+              >
+                {loading ? <LoadingSpinner size="sm" /> : "Run (Ctrl+Enter)"}
+              </button>
+            }
           >
-            {loading ? <LoadingSpinner size="sm" /> : "Run (Ctrl+Enter)"}
-          </button>
-        }
-      >
-        <QueryEditor value={sql} onChange={setSql} onExecute={execute} />
-      </Panel>
+            <QueryEditor value={sql} onChange={setSql} onExecute={execute} />
+          </Panel>
 
-      {/* Error */}
-      {result.error && (
-        <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded px-3 py-2">
-          {result.error}
+          {/* Error */}
+          {result.error && (
+            <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded px-3 py-2">
+              {result.error}
+            </div>
+          )}
+
+          {/* Results */}
+          <Panel
+            title={`Results${result.row_count != null ? ` (${result.row_count} rows)` : ""}`}
+            className="flex-1 min-h-[200px]"
+            noPadding
+          >
+            <ResultsGrid
+              columns={result.columns ?? []}
+              rows={result.rows ?? []}
+            />
+          </Panel>
         </div>
-      )}
 
-      {/* Results */}
-      <Panel
-        title={`Results${result.row_count != null ? ` (${result.row_count} rows)` : ""}`}
-        className="flex-1 min-h-[200px]"
-        noPadding
-      >
-        <ResultsGrid
-          columns={result.columns ?? []}
-          rows={result.rows ?? []}
-        />
-      </Panel>
+        {/* Right: AI chat panel (collapsible) */}
+        {aiOpen && (
+          <Panel title="AI Assistant" className="w-80 shrink-0" noPadding>
+            <ChatPanel
+              messages={messages}
+              onSend={handleAiSend}
+              loading={aiLoading}
+              onRunQuery={handleUseQuery}
+            />
+          </Panel>
+        )}
+      </div>
     </div>
   );
 }
