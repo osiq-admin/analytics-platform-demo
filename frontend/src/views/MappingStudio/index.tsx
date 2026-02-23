@@ -4,6 +4,7 @@ import { api } from "../../api/client.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
+import ConfirmDialog from "../../components/ConfirmDialog.tsx";
 import SourcePreview from "./SourcePreview.tsx";
 import CanonicalFields from "./CanonicalFields.tsx";
 
@@ -12,6 +13,7 @@ export default function MappingStudio() {
   const [selectedCalc, setSelectedCalc] = useState<CalculationDef | null>(null);
   const [mappings, setMappings] = useState<Record<string, string>>({});
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [confirmSave, setConfirmSave] = useState(false);
 
   useEffect(() => {
     fetchCalculations();
@@ -83,7 +85,7 @@ export default function MappingStudio() {
           {saveStatus === "saved" && <StatusBadge label="Saved" variant="success" />}
           {saveStatus === "error" && <StatusBadge label="Error" variant="error" />}
           <button
-            onClick={handleSave}
+            onClick={() => setConfirmSave(true)}
             disabled={mappedCount === 0 || !selectedCalc}
             className="px-3 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
           >
@@ -126,6 +128,15 @@ export default function MappingStudio() {
           />
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmSave}
+        title="Save Mappings"
+        message={`Save ${mappedCount} field mapping(s) for ${selectedCalc?.name ?? "calculation"}?`}
+        confirmLabel="Save"
+        onConfirm={() => { setConfirmSave(false); handleSave(); }}
+        onCancel={() => setConfirmSave(false)}
+      />
     </div>
   );
 }
