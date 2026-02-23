@@ -21,6 +21,7 @@
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
 | UX Polish & AI Integration (Phase 4) | COMPLETE | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout — 193 tests |
+| Data Model, UX, Viz & Dashboard (Phase 5) | IN PROGRESS | M34-M48: Product entity, tooltips/tours, chart enhancements, dashboard |
 
 ---
 
@@ -62,6 +63,21 @@
 | M31 | Dynamic Alert Structure | COMPLETE | 2 | 2 | Model-type layout config with emphasis and hints |
 | M32 | Build, Test & Verify | COMPLETE | 3 | 3 | Frontend build (876 modules), 193 backend tests, Playwright E2E |
 | M33 | Documentation | COMPLETE | 2 | 2 | Update progress.md and demo-guide.md |
+| M34 | Phase 5 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
+| M35 | Product Entity & CSV | PENDING | 5 | 0 | Create product entity, generate product.csv, remove fields from execution |
+| M36 | Update Entity Defs & Loader | PENDING | 3 | 0 | Update execution.json, Pydantic models, schema docs |
+| M37 | Update Calculation SQL | PENDING | 4 | 0 | Update value_calc and adjusted_direction to JOIN product |
+| M38 | Update Detection Models & Engine | PENDING | 3 | 0 | Update all 5 detection model queries to JOIN product |
+| M39 | Update Tests & Frontend | PENDING | 4 | 0 | Update test fixtures for product table |
+| M40 | Regenerate Data & Snapshots | PENDING | 4 | 0 | Regenerate CSVs and snapshots with new schema |
+| M41 | Tooltip Infrastructure | PENDING | 5 | 0 | @floating-ui/react, Tooltip, HelpButton components |
+| M42 | Tour System & Store | PENDING | 5 | 0 | tourStore, TourOverlay, OnboardingModal |
+| M43 | Chart Enhancements & Filtering | PENDING | 6 | 0 | Time range, intraday toggle, AG Grid filters |
+| M44 | View Tooltips & Tour Content | PENDING | 5 | 0 | Tour definitions, tooltips on all views |
+| M45 | Demo Workflow Guides | PENDING | 4 | 0 | Act 1/2/3 guided workflows |
+| M46 | Dashboard View | PENDING | 6 | 0 | Backend endpoint, store, view, charts |
+| M47 | Build, Test & Verify | PENDING | 4 | 0 | Frontend build, all tests, Playwright E2E |
+| M48 | Documentation | PENDING | 3 | 0 | Update progress and demo guide |
 
 ---
 
