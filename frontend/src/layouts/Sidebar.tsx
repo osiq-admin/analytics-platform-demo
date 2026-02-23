@@ -13,6 +13,10 @@ interface NavGroup {
 
 const navigation: NavGroup[] = [
   {
+    title: "Overview",
+    items: [{ label: "Dashboard", path: "/dashboard" }],
+  },
+  {
     title: "Define",
     items: [
       { label: "Entities", path: "/entities" },
@@ -53,7 +57,7 @@ const navigation: NavGroup[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 shrink-0 border-r border-border bg-surface overflow-y-auto">
+    <aside className="w-56 shrink-0 border-r border-border bg-surface overflow-y-auto" data-tour="sidebar">
       <div className="px-4 py-4">
         <h1 className="text-sm font-bold tracking-wider text-accent uppercase">
           Surveillance

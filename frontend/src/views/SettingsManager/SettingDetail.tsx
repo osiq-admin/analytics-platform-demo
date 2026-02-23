@@ -37,7 +37,7 @@ export default function SettingDetail({ setting }: SettingDetailProps) {
       </div>
 
       {/* Default value */}
-      <Panel title="Default Value">
+      <Panel title="Default Value" dataTour="settings-score-steps" tooltip="Default value or score step configuration">
         {isScoreSteps ? (
           <table className="w-full text-xs">
             <thead>

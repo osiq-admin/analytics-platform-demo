@@ -62,7 +62,7 @@ export default function EntityDetail({ entity }: EntityDetailProps) {
       </div>
 
       {/* Fields Grid */}
-      <Panel title="Fields" className="flex-1 min-h-[200px]" noPadding>
+      <Panel title="Fields" className="flex-1 min-h-[200px]" noPadding dataTour="entity-fields" tooltip="Field definitions for this entity">
         <DataGrid
           rowData={entity.fields}
           columnDefs={fieldColumns}

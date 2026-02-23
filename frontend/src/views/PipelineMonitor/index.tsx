@@ -11,6 +11,7 @@ export default function PipelineMonitor() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Pipeline Monitor</h2>
         <button
+          data-tour="pipeline-run"
           onClick={() => { void runPipeline(); }}
           disabled={running}
           className="px-3 py-1.5 text-xs rounded border border-accent text-accent hover:bg-accent/10 disabled:opacity-50 transition-colors"
@@ -32,7 +33,7 @@ export default function PipelineMonitor() {
       )}
 
       {/* DAG visualization */}
-      <Panel title="Execution Graph" className="flex-1 min-h-[300px]" noPadding>
+      <Panel title="Execution Graph" className="flex-1 min-h-[300px]" noPadding dataTour="pipeline-dag" tooltip="DAG visualization of calculation execution order">
         <PipelineDAG steps={steps} />
       </Panel>
 

@@ -70,7 +70,7 @@ export default function SQLConsole() {
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">SQL Console</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" data-tour="sql-presets">
           {presets.map((p) => (
             <button
               key={p.name}
@@ -101,6 +101,8 @@ export default function SQLConsole() {
             title="Query"
             className="h-48 shrink-0"
             noPadding
+            dataTour="sql-editor"
+            tooltip="Write and execute SQL queries against your data"
             actions={
               <button
                 onClick={execute}
@@ -126,6 +128,8 @@ export default function SQLConsole() {
             title={`Results${result.row_count != null ? ` (${result.row_count} rows)` : ""}`}
             className="flex-1 min-h-[200px]"
             noPadding
+            dataTour="sql-results"
+            tooltip="Query results displayed in a sortable grid"
           >
             <ResultsGrid
               columns={result.columns ?? []}

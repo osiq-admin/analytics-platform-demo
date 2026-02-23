@@ -96,7 +96,7 @@ export default function MappingStudio() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Calculation selector */}
-        <Panel title="Select Calculation" className="w-64 shrink-0">
+        <Panel title="Select Calculation" className="w-64 shrink-0" dataTour="mapping-calc" tooltip="Choose a calculation to configure field mappings">
           <div className="space-y-1">
             {calculations.map((calc) => (
               <button
@@ -120,7 +120,7 @@ export default function MappingStudio() {
         </div>
 
         {/* Right: Canonical fields (drop to) */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0" data-tour="mapping-targets">
           <CanonicalFields
             fields={canonicalFields}
             onMap={handleMap}

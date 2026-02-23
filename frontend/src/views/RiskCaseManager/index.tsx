@@ -50,7 +50,7 @@ export default function RiskCaseManager() {
   // Alert summary view
   return (
     <div className="flex flex-col gap-4 h-full">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-tour="alert-filters">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold">Risk Case Manager</h2>
           <StatusBadge label={`${alerts.length} alerts`} variant="info" />
@@ -69,7 +69,7 @@ export default function RiskCaseManager() {
         </div>
       )}
 
-      <Panel title="Alerts" className="flex-1 min-h-0" noPadding>
+      <Panel title="Alerts" className="flex-1 min-h-0" noPadding dataTour="alert-grid" tooltip="All generated risk alerts with severity and status">
         {alerts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-muted text-sm">
             No alerts generated yet. Run the pipeline and generate alerts.

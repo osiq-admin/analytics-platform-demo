@@ -31,7 +31,7 @@ export default function SettingsManager() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Settings list */}
-        <Panel title="Settings" className="w-[420px] shrink-0" noPadding>
+        <Panel title="Settings" className="w-[420px] shrink-0" noPadding dataTour="settings-list" tooltip="Browse system settings and their overrides">
           {settings.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted text-sm p-4">
               No settings defined yet.

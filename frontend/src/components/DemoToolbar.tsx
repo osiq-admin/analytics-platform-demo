@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDemoStore } from "../stores/demoStore.ts";
+import { useTourStore } from "../stores/tourStore.ts";
 import StatusBadge from "./StatusBadge.tsx";
 
 export default function DemoToolbar() {
@@ -65,6 +66,9 @@ export default function DemoToolbar() {
         End
       </button>
 
+      {/* Guide button */}
+      <GuideButton />
+
       {/* Act jumps */}
       {checkpoints.includes("act1_complete") && (
         <button
@@ -85,5 +89,34 @@ export default function DemoToolbar() {
         </button>
       )}
     </div>
+  );
+}
+
+function GuideButton() {
+  const { startTour, activeTour, definitions } = useTourStore();
+  const current = useDemoStore((s) => s.current_checkpoint);
+
+  const handleGuide = () => {
+    if (activeTour) return;
+    // Pick guide based on demo state
+    if (current.includes("act2") && definitions["act2_guide"]) {
+      startTour("act2_guide");
+    } else if (current.includes("act3") && definitions["act3_guide"]) {
+      startTour("act3_guide");
+    } else if (definitions["act1_guide"]) {
+      startTour("act1_guide");
+    }
+  };
+
+  if (!definitions["act1_guide"]) return null;
+
+  return (
+    <button
+      onClick={handleGuide}
+      className="px-1.5 py-0.5 rounded border border-accent/50 text-accent hover:bg-accent/10 transition-colors"
+      title="Start guided workflow for current demo act"
+    >
+      Guide
+    </button>
   );
 }

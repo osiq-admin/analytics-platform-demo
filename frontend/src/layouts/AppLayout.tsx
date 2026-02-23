@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar.tsx";
 import DemoToolbar from "../components/DemoToolbar.tsx";
@@ -5,6 +6,7 @@ import TourOverlay from "../components/TourOverlay.tsx";
 import OnboardingModal from "../components/OnboardingModal.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
+import { TOURS } from "../data/tourDefinitions.ts";
 
 /** Map pathname segments to tour IDs */
 function getTourIdForPath(pathname: string): string | null {
@@ -28,7 +30,11 @@ function getTourIdForPath(pathname: string): string | null {
 export default function AppLayout() {
   const { theme, toggle } = useTheme();
   const location = useLocation();
-  const { startTour, activeTour, definitions } = useTourStore();
+  const { startTour, activeTour, definitions, registerTours } = useTourStore();
+
+  useEffect(() => {
+    registerTours(TOURS);
+  }, [registerTours]);
 
   const handleTour = () => {
     if (activeTour) return; // already running
@@ -47,8 +53,8 @@ export default function AppLayout() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top toolbar */}
         <header className="h-10 shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
-          <DemoToolbar />
-          <div className="flex items-center gap-2">
+          <div data-tour="demo-toolbar"><DemoToolbar /></div>
+          <div className="flex items-center gap-2" data-tour="theme-toggle">
             <button
               onClick={handleTour}
               className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"

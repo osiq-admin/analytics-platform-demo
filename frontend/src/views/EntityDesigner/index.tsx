@@ -28,7 +28,7 @@ export default function EntityDesigner() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Entity list */}
-        <Panel title="Entities" className="w-72 shrink-0" noPadding>
+        <Panel title="Entities" className="w-72 shrink-0" noPadding dataTour="entity-list" tooltip="Browse and select entity definitions">
           {entities.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted text-sm p-4">
               No entities defined yet.
@@ -50,7 +50,7 @@ export default function EntityDesigner() {
         </div>
 
         {/* Right: Relationship graph */}
-        <Panel title="Relationships" className="w-96 shrink-0" noPadding>
+        <Panel title="Relationships" className="w-96 shrink-0" noPadding dataTour="entity-relationships" tooltip="Visual graph of entity relationships">
           <RelationshipGraph entities={entities} />
         </Panel>
       </div>
