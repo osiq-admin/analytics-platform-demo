@@ -15,6 +15,7 @@
 | Implementation Plan | COMPLETE | 14 milestones, ~35 tasks |
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
+| Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
 | Implementation | NOT STARTED | |
 
 ---
@@ -69,6 +70,7 @@
 - [x] BDD scenarios written for all detection models and features
 - [x] Progress tracker created
 - [x] Git repo initialized
+- [x] Synthetic data guidelines approved (50+ real products, 200+ accounts, order versioning, 3 types of market data, news feed, 13 embedded patterns)
 
 ---
 
@@ -76,7 +78,7 @@
 
 | Item | Reason | When |
 |---|---|---|
-| Synthetic data generation | Requires separate approval session with guidelines | Before M12 |
+| ~~Synthetic data generation~~ | ~~Requires separate approval session~~ | DONE — guidelines approved |
 | Spoofing/layering research | Detailed mechanics deferred to implementation | During M2 Task 2.3 |
 | Swap leg mechanics | Complex instrument relationships deferred | During M1 Task 1.2 |
 | FX reverse pair cascade logic | Implementation detail deferred | During M2 |
@@ -88,6 +90,8 @@
 
 ## Open Questions
 
-1. Data guidelines session — when should we schedule it? (Needed before M12)
-2. Specific financial instruments to include in the demo data?
-3. Number of accounts, traders, products for realistic demo volume?
+1. ~~Data guidelines session~~ — RESOLVED (approved 2026-02-23)
+2. ~~Specific financial instruments~~ — RESOLVED (50+ real products, US-centric, all asset classes)
+3. ~~Number of accounts, traders, products~~ — RESOLVED (200+ accounts, 50 traders, 80+ instruments)
+4. When to add the News Feed entity to the entity definitions? (Discovered during data guidelines — needed for market event type 3)
+5. Order versioning model needs to be added to the entity definitions in the design doc
