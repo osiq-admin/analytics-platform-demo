@@ -9,11 +9,17 @@ import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import ConfirmDialog from "../../components/ConfirmDialog.tsx";
+import ChatPanel from "../AIAssistant/ChatPanel.tsx";
 import ModelCreateForm from "./ModelCreateForm.tsx";
 
 interface DeployResult {
   model_id: string;
   alerts_generated: number;
+}
+
+interface Message {
+  role: "user" | "assistant";
+  content: string;
 }
 
 export default function ModelComposer() {
@@ -29,6 +35,9 @@ export default function ModelComposer() {
   const [deploying, setDeploying] = useState(false);
   const [deployResult, setDeployResult] = useState<DeployResult | null>(null);
   const [confirmDeploy, setConfirmDeploy] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     fetchCalculations();
@@ -71,9 +80,38 @@ export default function ModelComposer() {
     });
   };
 
+  const handleAiSend = async (content: string) => {
+    const userMsg: Message = { role: "user", content };
+    const updated = [...messages, userMsg];
+    setMessages(updated);
+    setAiLoading(true);
+    try {
+      const reply = await api.post<Message & { mode: string }>("/ai/chat", {
+        messages: updated,
+      });
+      setMessages([...updated, { role: reply.role as "assistant", content: reply.content }]);
+    } catch (e) {
+      setMessages([...updated, { role: "assistant", content: `Error: ${e}` }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 h-full">
-      <h2 className="text-lg font-semibold">Model Composer</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Model Composer</h2>
+        <button
+          onClick={() => setAiOpen(!aiOpen)}
+          className={`px-2 py-1 text-xs rounded border transition-colors ${
+            aiOpen
+              ? "border-accent bg-accent/15 text-accent"
+              : "border-border text-muted hover:text-foreground"
+          }`}
+        >
+          {aiOpen ? "Close AI" : "Ask AI"}
+        </button>
+      </div>
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Detection models */}
@@ -196,6 +234,17 @@ export default function ModelComposer() {
             ))}
           </div>
         </Panel>
+
+        {/* AI chat panel (collapsible) */}
+        {aiOpen && (
+          <Panel title="AI Assistant" className="w-72 shrink-0" noPadding>
+            <ChatPanel
+              messages={messages}
+              onSend={handleAiSend}
+              loading={aiLoading}
+            />
+          </Panel>
+        )}
       </div>
 
       <ConfirmDialog
