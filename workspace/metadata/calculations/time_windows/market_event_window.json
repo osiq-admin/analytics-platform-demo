@@ -1,0 +1,43 @@
+{
+  "calc_id": "market_event_window",
+  "name": "Market Event Window",
+  "layer": "time_window",
+  "description": "Detects significant price changes or news events for base products (stock, bond). Defines a lookback window (configurable days before the event) and an optional lookforward window for post-event analysis. Used by insider dealing detection.",
+  "inputs": [
+    {
+      "source_type": "entity",
+      "entity_id": "md_eod",
+      "fields": ["product_id", "trade_date", "close_price", "volume"]
+    },
+    {
+      "source_type": "setting",
+      "setting_id": "insider_lookback_days",
+      "fields": ["lookback_days"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_market_event_window",
+    "fields": [
+      {"name": "event_id", "type": "varchar"},
+      {"name": "product_id", "type": "varchar"},
+      {"name": "event_type", "type": "varchar"},
+      {"name": "event_date", "type": "date"},
+      {"name": "price_change_pct", "type": "decimal"},
+      {"name": "lookback_start", "type": "date"},
+      {"name": "lookforward_end", "type": "date"}
+    ]
+  },
+  "logic": "WITH daily_changes AS (SELECT product_id, trade_date, close_price, LAG(close_price) OVER (PARTITION BY product_id ORDER BY trade_date) AS prev_close, volume, LAG(volume) OVER (PARTITION BY product_id ORDER BY trade_date) AS prev_volume FROM md_eod), significant_events AS (SELECT product_id, trade_date, close_price, prev_close, ROUND((close_price - prev_close) / NULLIF(prev_close, 0) * 100, 4) AS price_change_pct, CASE WHEN close_price > prev_close * 1.05 THEN 'price_surge' WHEN close_price < prev_close * 0.95 THEN 'price_drop' WHEN volume > prev_volume * 3 THEN 'volume_spike' ELSE NULL END AS event_type FROM daily_changes WHERE prev_close IS NOT NULL) SELECT product_id || '_' || trade_date AS event_id, product_id, event_type, trade_date AS event_date, price_change_pct, trade_date - INTERVAL 5 DAY AS lookback_start, trade_date + INTERVAL 2 DAY AS lookforward_end FROM significant_events WHERE event_type IS NOT NULL",
+  "parameters": {
+    "price_change_threshold": 0.05,
+    "volume_spike_multiplier": 3,
+    "default_lookback_days": 5,
+    "default_lookforward_days": 2,
+    "note": "Lookback days resolved via settings engine. Price change threshold and volume spike are hardcoded for demo simplicity."
+  },
+  "display": {
+    "label": "Market Event",
+    "color_map": {"price_surge": "green", "price_drop": "red", "volume_spike": "orange"}
+  },
+  "depends_on": []
+}

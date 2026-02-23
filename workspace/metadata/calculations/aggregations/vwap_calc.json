@@ -1,0 +1,32 @@
+{
+  "calc_id": "vwap_calc",
+  "name": "VWAP Calculation",
+  "layer": "aggregation",
+  "description": "Value-Weighted Average Price of buys vs. sells per product, account, and business date. VWAP = sum(price * quantity) / sum(quantity). The spread between buy VWAP and sell VWAP is a key indicator for wash trading detection.",
+  "inputs": [
+    {
+      "source_type": "calculation",
+      "calc_id": "business_date_window",
+      "fields": ["execution_id", "product_id", "account_id", "adjusted_side", "price", "quantity", "business_date"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_vwap",
+    "fields": [
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "business_date", "type": "date"},
+      {"name": "vwap_buy", "type": "decimal"},
+      {"name": "vwap_sell", "type": "decimal"},
+      {"name": "vwap_spread", "type": "decimal"},
+      {"name": "vwap_proximity", "type": "decimal"}
+    ]
+  },
+  "logic": "SELECT product_id, account_id, business_date, ROUND(SUM(CASE WHEN adjusted_side = 'BUY' THEN price * quantity ELSE 0 END) / NULLIF(SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity ELSE 0 END), 0), 4) AS vwap_buy, ROUND(SUM(CASE WHEN adjusted_side = 'SELL' THEN price * quantity ELSE 0 END) / NULLIF(SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity ELSE 0 END), 0), 4) AS vwap_sell, ROUND(ABS(COALESCE(SUM(CASE WHEN adjusted_side = 'BUY' THEN price * quantity ELSE 0 END) / NULLIF(SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity ELSE 0 END), 0), 0) - COALESCE(SUM(CASE WHEN adjusted_side = 'SELL' THEN price * quantity ELSE 0 END) / NULLIF(SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity ELSE 0 END), 0), 0)), 4) AS vwap_spread, CASE WHEN SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity ELSE 0 END) > 0 AND SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity ELSE 0 END) > 0 THEN ROUND(ABS(SUM(CASE WHEN adjusted_side = 'BUY' THEN price * quantity ELSE 0 END) / SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity END) - SUM(CASE WHEN adjusted_side = 'SELL' THEN price * quantity ELSE 0 END) / SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity END)) / NULLIF((SUM(CASE WHEN adjusted_side = 'BUY' THEN price * quantity ELSE 0 END) / SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity END) + SUM(CASE WHEN adjusted_side = 'SELL' THEN price * quantity ELSE 0 END) / SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity END)) / 2, 0), 6) ELSE NULL END AS vwap_proximity FROM calc_business_date_window GROUP BY product_id, account_id, business_date",
+  "parameters": {},
+  "display": {
+    "format": "decimal",
+    "label": "VWAP"
+  },
+  "depends_on": ["business_date_window"]
+}

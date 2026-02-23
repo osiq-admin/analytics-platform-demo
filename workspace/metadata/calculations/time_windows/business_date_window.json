@@ -1,0 +1,38 @@
+{
+  "calc_id": "business_date_window",
+  "name": "Business Date Window",
+  "layer": "time_window",
+  "description": "Determines business date for each execution based on configurable cutoff time. Executions after the cutoff roll to the next business date. The cutoff varies by exchange, timezone, asset class, and instrument type (resolved via settings engine).",
+  "inputs": [
+    {
+      "source_type": "calculation",
+      "calc_id": "adjusted_direction",
+      "fields": ["execution_id", "execution_date", "execution_time"]
+    },
+    {
+      "source_type": "setting",
+      "setting_id": "business_date_cutoff",
+      "fields": ["cutoff_time"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_business_date_window",
+    "fields": [
+      {"name": "execution_id", "type": "varchar"},
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "business_date", "type": "date"},
+      {"name": "window_start", "type": "timestamp"},
+      {"name": "window_end", "type": "timestamp"}
+    ]
+  },
+  "logic": "SELECT execution_id, product_id, account_id, trader_id, adjusted_side, instrument_type, asset_class, price, quantity, calculated_value, execution_date, execution_time, CAST(CASE WHEN execution_time > '17:00:00' THEN CAST(execution_date AS DATE) + INTERVAL 1 DAY ELSE CAST(execution_date AS DATE) END AS DATE) AS business_date, CAST(execution_date AS TIMESTAMP) AS window_start, CAST(execution_date AS TIMESTAMP) + INTERVAL 1 DAY AS window_end FROM calc_adjusted_direction",
+  "parameters": {
+    "default_cutoff": "17:00:00",
+    "note": "In production, cutoff is resolved per entity context via settings engine. For the demo, using a default cutoff in the SQL."
+  },
+  "display": {
+    "label": "Business Date"
+  },
+  "depends_on": ["adjusted_direction"]
+}

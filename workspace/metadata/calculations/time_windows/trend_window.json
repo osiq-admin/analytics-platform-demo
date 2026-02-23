@@ -1,0 +1,41 @@
+{
+  "calc_id": "trend_window",
+  "name": "Trend Window",
+  "layer": "time_window",
+  "description": "Detects up/down price trends from intraday market data. A trend is identified when the price moves beyond the sensitivity threshold (std dev multiplier) from a local min/max. Each trend has a start time, end time, direction, and magnitude.",
+  "inputs": [
+    {
+      "source_type": "entity",
+      "entity_id": "md_intraday",
+      "fields": ["product_id", "trade_time", "trade_price", "trade_quantity"]
+    },
+    {
+      "source_type": "setting",
+      "setting_id": "trend_sensitivity",
+      "fields": ["sensitivity_multiplier"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_trend_window",
+    "fields": [
+      {"name": "trend_id", "type": "varchar"},
+      {"name": "product_id", "type": "varchar"},
+      {"name": "trend_type", "type": "varchar"},
+      {"name": "window_start", "type": "timestamp"},
+      {"name": "window_end", "type": "timestamp"},
+      {"name": "start_price", "type": "decimal"},
+      {"name": "end_price", "type": "decimal"},
+      {"name": "price_change_pct", "type": "decimal"}
+    ]
+  },
+  "logic": "WITH price_stats AS (SELECT product_id, trade_date, MIN(trade_price) AS day_low, MAX(trade_price) AS day_high, FIRST(trade_price ORDER BY trade_time) AS open_price, LAST(trade_price ORDER BY trade_time) AS close_price, MIN(trade_time) AS first_trade, MAX(trade_time) AS last_trade, STDDEV(trade_price) AS price_stddev FROM md_intraday GROUP BY product_id, trade_date), trends AS (SELECT product_id, trade_date, CASE WHEN close_price > open_price + (price_stddev * 1.5) THEN 'up' WHEN close_price < open_price - (price_stddev * 1.5) THEN 'down' ELSE NULL END AS trend_type, first_trade AS window_start, last_trade AS window_end, open_price AS start_price, close_price AS end_price, ROUND((close_price - open_price) / NULLIF(open_price, 0) * 100, 4) AS price_change_pct FROM price_stats WHERE price_stddev > 0) SELECT product_id || '_' || trade_date || '_' || trend_type AS trend_id, product_id, trend_type, window_start, window_end, start_price, end_price, price_change_pct FROM trends WHERE trend_type IS NOT NULL",
+  "parameters": {
+    "default_sensitivity": 1.5,
+    "note": "Sensitivity multiplier applied to stddev to determine trend significance. Resolved via settings engine per entity context."
+  },
+  "display": {
+    "label": "Price Trend",
+    "color_map": {"up": "green", "down": "red"}
+  },
+  "depends_on": []
+}

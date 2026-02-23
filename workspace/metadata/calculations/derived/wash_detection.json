@@ -1,0 +1,45 @@
+{
+  "calc_id": "wash_detection",
+  "name": "Wash Detection",
+  "layer": "derived",
+  "description": "Combines buy/sell quantity cancellation and VWAP proximity checks to identify potential wash trading. The quantity match ratio (min(buy,sell)/max(buy,sell)) and VWAP proximity are both checked against configurable thresholds from the settings engine.",
+  "inputs": [
+    {
+      "source_type": "calculation",
+      "calc_id": "large_trading_activity",
+      "fields": ["product_id", "account_id", "business_date", "buy_qty", "sell_qty", "is_large"]
+    },
+    {
+      "source_type": "calculation",
+      "calc_id": "vwap_calc",
+      "fields": ["product_id", "account_id", "business_date", "vwap_proximity"]
+    },
+    {
+      "source_type": "setting",
+      "setting_id": "wash_vwap_threshold",
+      "fields": ["vwap_threshold"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_wash_detection",
+    "fields": [
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "business_date", "type": "date"},
+      {"name": "qty_match_ratio", "type": "decimal"},
+      {"name": "vwap_proximity", "type": "decimal"},
+      {"name": "is_wash_candidate", "type": "boolean"}
+    ]
+  },
+  "logic": "SELECT lta.product_id, lta.account_id, lta.business_date, lta.total_value, lta.buy_value, lta.sell_value, lta.buy_qty, lta.sell_qty, lta.total_trades, lta.same_side_pct, lta.is_large, lta.threshold_used, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 THEN ROUND(LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty), 4) ELSE 0 END AS qty_match_ratio, v.vwap_buy, v.vwap_sell, v.vwap_spread, COALESCE(v.vwap_proximity, 1.0) AS vwap_proximity, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 AND LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty) > 0.5 AND COALESCE(v.vwap_proximity, 1.0) < 0.02 THEN TRUE ELSE FALSE END AS is_wash_candidate FROM calc_large_trading_activity lta LEFT JOIN calc_vwap v ON lta.product_id = v.product_id AND lta.account_id = v.account_id AND lta.business_date = v.business_date",
+  "parameters": {
+    "default_qty_threshold": 0.5,
+    "default_vwap_threshold": 0.02,
+    "note": "VWAP threshold resolved via settings engine. Using 0.02 default in SQL."
+  },
+  "display": {
+    "label": "Wash Detection",
+    "highlight_when": "is_wash_candidate = TRUE"
+  },
+  "depends_on": ["large_trading_activity", "vwap_calc"]
+}

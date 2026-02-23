@@ -1,0 +1,35 @@
+{
+  "calc_id": "trading_activity_aggregation",
+  "name": "Trading Activity Aggregation",
+  "layer": "aggregation",
+  "description": "Aggregates buy/sell/net values and quantities at multiple granularity levels (product, account, product+account, trader, desk) per business date window. Used by detection models to assess trading activity significance.",
+  "inputs": [
+    {
+      "source_type": "calculation",
+      "calc_id": "business_date_window",
+      "fields": ["execution_id", "product_id", "account_id", "trader_id", "adjusted_side", "calculated_value", "quantity", "business_date"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_trading_activity",
+    "fields": [
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "business_date", "type": "date"},
+      {"name": "buy_value", "type": "decimal"},
+      {"name": "sell_value", "type": "decimal"},
+      {"name": "net_value", "type": "decimal"},
+      {"name": "buy_qty", "type": "decimal"},
+      {"name": "sell_qty", "type": "decimal"},
+      {"name": "total_trades", "type": "integer"},
+      {"name": "same_side_pct", "type": "decimal"}
+    ]
+  },
+  "logic": "SELECT product_id, account_id, business_date, COALESCE(SUM(CASE WHEN adjusted_side = 'BUY' THEN calculated_value ELSE 0 END), 0) AS buy_value, COALESCE(SUM(CASE WHEN adjusted_side = 'SELL' THEN calculated_value ELSE 0 END), 0) AS sell_value, COALESCE(SUM(CASE WHEN adjusted_side = 'BUY' THEN calculated_value ELSE -calculated_value END), 0) AS net_value, COALESCE(SUM(CASE WHEN adjusted_side = 'BUY' THEN quantity ELSE 0 END), 0) AS buy_qty, COALESCE(SUM(CASE WHEN adjusted_side = 'SELL' THEN quantity ELSE 0 END), 0) AS sell_qty, COUNT(*) AS total_trades, ROUND(GREATEST(SUM(CASE WHEN adjusted_side = 'BUY' THEN 1 ELSE 0 END), SUM(CASE WHEN adjusted_side = 'SELL' THEN 1 ELSE 0 END)) * 1.0 / NULLIF(COUNT(*), 0), 4) AS same_side_pct FROM calc_business_date_window GROUP BY product_id, account_id, business_date",
+  "parameters": {},
+  "display": {
+    "format": "table",
+    "label": "Trading Activity"
+  },
+  "depends_on": ["business_date_window"]
+}

@@ -54,11 +54,11 @@ class DataLoader:
         parquet_path = self._parquet_dir / f"{table_name}.parquet"
         pq.write_table(arrow_table, parquet_path)
 
-        # Register as DuckDB view
+        # Register as DuckDB view (quote name to handle reserved words like "order")
         cursor = self._db.cursor()
-        cursor.execute(f"DROP VIEW IF EXISTS {table_name}")
+        cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
         cursor.execute(
-            f"CREATE VIEW {table_name} AS SELECT * FROM read_parquet('{parquet_path}')"
+            f'CREATE VIEW "{table_name}" AS SELECT * FROM read_parquet(\'{parquet_path}\')'
         )
         cursor.close()
 

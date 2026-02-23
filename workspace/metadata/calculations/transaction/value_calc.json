@@ -1,0 +1,37 @@
+{
+  "calc_id": "value_calc",
+  "name": "Value Calculation",
+  "layer": "transaction",
+  "description": "Calculates the monetary value of each execution based on instrument type. Stock: price × quantity. Option: premium × contract_size × quantity. Default: price × quantity.",
+  "inputs": [
+    {
+      "source_type": "entity",
+      "entity_id": "execution",
+      "fields": ["execution_id", "price", "quantity", "instrument_type"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_value",
+    "fields": [
+      {"name": "execution_id", "type": "varchar"},
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "trader_id", "type": "varchar"},
+      {"name": "side", "type": "varchar"},
+      {"name": "price", "type": "decimal"},
+      {"name": "quantity", "type": "decimal"},
+      {"name": "instrument_type", "type": "varchar"},
+      {"name": "asset_class", "type": "varchar"},
+      {"name": "execution_date", "type": "varchar"},
+      {"name": "execution_time", "type": "varchar"},
+      {"name": "calculated_value", "type": "decimal"}
+    ]
+  },
+  "logic": "SELECT execution_id, product_id, account_id, trader_id, side, price, quantity, instrument_type, asset_class, execution_date, execution_time, CASE WHEN instrument_type = 'option' THEN price * COALESCE(CAST(contract_size AS DECIMAL), 100) * quantity WHEN instrument_type = 'future' THEN price * COALESCE(CAST(contract_size AS DECIMAL), 1) * quantity ELSE price * quantity END AS calculated_value FROM execution",
+  "parameters": {},
+  "display": {
+    "format": "currency",
+    "label": "Transaction Value"
+  },
+  "depends_on": []
+}

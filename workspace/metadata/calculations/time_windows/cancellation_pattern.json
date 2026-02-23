@@ -1,0 +1,42 @@
+{
+  "calc_id": "cancellation_pattern",
+  "name": "Cancellation Pattern Window",
+  "layer": "time_window",
+  "description": "Detects spoofing/layering patterns: X or more order cancellations within Y seconds for the same product+account, where cancelled orders were not executed above a threshold ratio. Defines a lookback/lookforward window around the pattern event for analyzing opposite-side executions.",
+  "inputs": [
+    {
+      "source_type": "entity",
+      "entity_id": "order",
+      "fields": ["order_id", "product_id", "account_id", "side", "order_time", "status", "quantity"]
+    },
+    {
+      "source_type": "setting",
+      "setting_id": "cancel_count_threshold",
+      "fields": ["min_cancellations"]
+    }
+  ],
+  "output": {
+    "table_name": "calc_cancellation_pattern",
+    "fields": [
+      {"name": "pattern_id", "type": "varchar"},
+      {"name": "product_id", "type": "varchar"},
+      {"name": "account_id", "type": "varchar"},
+      {"name": "pattern_side", "type": "varchar"},
+      {"name": "cancel_count", "type": "integer"},
+      {"name": "cancel_quantity", "type": "decimal"},
+      {"name": "window_start", "type": "timestamp"},
+      {"name": "window_end", "type": "timestamp"},
+      {"name": "pattern_date", "type": "date"}
+    ]
+  },
+  "logic": "WITH cancelled_orders AS (SELECT order_id, product_id, account_id, side, order_time, quantity, order_date FROM \"order\" WHERE status = 'CANCELLED'), cancel_windows AS (SELECT product_id, account_id, side, order_date, COUNT(*) AS cancel_count, SUM(quantity) AS cancel_quantity, MIN(CAST(order_date || ' ' || order_time AS TIMESTAMP)) AS window_start, MAX(CAST(order_date || ' ' || order_time AS TIMESTAMP)) AS window_end FROM cancelled_orders GROUP BY product_id, account_id, side, order_date HAVING COUNT(*) >= 3) SELECT product_id || '_' || account_id || '_' || CAST(order_date AS VARCHAR) || '_' || side AS pattern_id, product_id, account_id, side AS pattern_side, cancel_count, cancel_quantity, window_start, window_end + INTERVAL 5 MINUTE AS window_end, CAST(order_date AS DATE) AS pattern_date FROM cancel_windows",
+  "parameters": {
+    "default_min_cancellations": 3,
+    "lookforward_minutes": 5,
+    "note": "Min cancellations threshold resolved via settings engine. Using daily grouping for demo; production would use sub-second time windows."
+  },
+  "display": {
+    "label": "Cancellation Pattern"
+  },
+  "depends_on": []
+}
