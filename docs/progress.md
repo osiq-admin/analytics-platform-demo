@@ -37,7 +37,7 @@
 | M10 | AI Query Assistant | COMPLETE | 2 | 2 | Backend AI service (live+mock) + frontend chat interface |
 | M11 | Demo Controls | COMPLETE | 2 | 2 | State machine + DemoToolbar |
 | M12 | Synthetic Data | COMPLETE | 3 | 3 | Data gen + entity defs + snapshots for all 8 checkpoints |
-| M13 | Polish & Docs | COMPLETE | 5 | 5 | README, demo guide, SPA serving, E2E tests |
+| M13 | Polish & Docs | COMPLETE | 5 | 5 | 4 READMEs, demo guide, data dictionary (3 docs), SPA serving, 18 E2E tests |
 
 ---
 
@@ -162,8 +162,9 @@
 - **Total**: 167 tests passing on `feature/scaffold/m0-m1-foundation`
 
 ### 2026-02-23 (M13)
-- [x] **M13 Task 13.1**: Root README.md with quick start, architecture diagram, project structure
+- [x] **M13 Task 13.1**: 4 README files — root, `backend/README.md`, `frontend/README.md`, `workspace/README.md`
 - [x] **M13 Task 13.2**: Demo guide (`docs/demo-guide.md`) — Act 1/2/3 walkthrough with what to click/say/expect
+- [x] **M13 Task 13.3**: Data dictionary — `docs/schemas/data-dictionary.md`, `docs/schemas/entity-schemas.md`, `docs/schemas/calculation-schemas.md`
 - [x] **M13 Task 13.4**: E2E integration test (`tests/test_integration_e2e.py`) — 18 tests covering all API endpoints via FastAPI TestClient
 - [x] **M13 Task 13.5**: SPA static files serving — SPAStaticFiles class in `backend/main.py` with index.html fallback for client-side routing
 - **Total**: 185 tests passing on `feature/scaffold/m0-m1-foundation`
