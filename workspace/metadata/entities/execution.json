@@ -13,7 +13,7 @@
     {
       "name": "product_id",
       "type": "string",
-      "description": "Product/instrument identifier",
+      "description": "Product/instrument identifier (FK to product)",
       "is_key": false,
       "nullable": false
     },
@@ -57,30 +57,6 @@
       "nullable": false
     },
     {
-      "name": "instrument_type",
-      "type": "string",
-      "description": "Type of instrument",
-      "is_key": false,
-      "nullable": false,
-      "domain_values": [
-        "stock",
-        "option",
-        "future"
-      ]
-    },
-    {
-      "name": "asset_class",
-      "type": "string",
-      "description": "Asset class category",
-      "is_key": false,
-      "nullable": false,
-      "domain_values": [
-        "equity",
-        "fx",
-        "commodity"
-      ]
-    },
-    {
       "name": "execution_date",
       "type": "date",
       "description": "Date of execution (YYYY-MM-DD)",
@@ -93,27 +69,16 @@
       "description": "Time of execution (HH:MM:SS)",
       "is_key": false,
       "nullable": false
-    },
-    {
-      "name": "contract_size",
-      "type": "decimal",
-      "description": "Contract multiplier for options/futures",
-      "is_key": false,
-      "nullable": true
-    },
-    {
-      "name": "option_type",
-      "type": "string",
-      "description": "Option type (call/put)",
-      "is_key": false,
-      "nullable": true,
-      "domain_values": [
-        "call",
-        "put"
-      ]
     }
   ],
   "relationships": [
+    {
+      "target_entity": "product",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "many_to_one"
+    },
     {
       "target_entity": "order",
       "join_fields": {

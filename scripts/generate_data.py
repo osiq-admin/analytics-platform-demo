@@ -272,31 +272,32 @@ class SyntheticDataGenerator:
             catalog[e["id"]] = {
                 "asset_class": "equity", "instrument_type": "stock",
                 "base_price": e["price"], "avg_volume": e["vol"],
-                "name": e["name"],
+                "name": e["name"], "exchange": "NYSE", "currency": "USD",
             }
         for f in FX_PAIRS:
             catalog[f["id"]] = {
                 "asset_class": "fx", "instrument_type": "stock",
                 "base_price": f["price"], "avg_volume": f["vol"],
-                "name": f["name"],
+                "name": f["name"], "exchange": "OTC", "currency": "USD",
             }
         for c in COMMODITIES:
             catalog[c["id"]] = {
                 "asset_class": "commodity", "instrument_type": "stock",
                 "base_price": c["price"], "avg_volume": c["vol"],
-                "name": c["name"],
+                "name": c["name"], "exchange": "CME", "currency": "USD",
             }
         for o in OPTIONS:
             catalog[o["id"]] = {
                 "asset_class": "equity", "instrument_type": "option",
                 "option_type": o["option_type"], "contract_size": o["cs"],
                 "base_price": o["price"], "name": o["name"],
+                "exchange": "CBOE", "currency": "USD",
             }
         for fu in FUTURES:
             catalog[fu["id"]] = {
                 "asset_class": "equity", "instrument_type": "future",
                 "contract_size": fu["cs"], "base_price": fu["price"],
-                "name": fu["name"],
+                "name": fu["name"], "exchange": "CME", "currency": "USD",
             }
         return catalog
 
@@ -579,12 +580,8 @@ class SyntheticDataGenerator:
             "side": side,
             "price": price,
             "quantity": qty,
-            "instrument_type": info["instrument_type"],
-            "asset_class": info["asset_class"],
             "execution_date": day.isoformat(),
             "execution_time": exec_time,
-            "contract_size": info.get("contract_size", ""),
-            "option_type": info.get("option_type", ""),
         }
         self.executions.append(exec_row)
 
@@ -620,12 +617,8 @@ class SyntheticDataGenerator:
                     "execution_id": eid,
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": "BUY", "price": price, "quantity": qty,
-                    "instrument_type": info["instrument_type"],
-                    "asset_class": info["asset_class"],
                     "execution_date": day.isoformat(),
                     "execution_time": exec_time,
-                    "contract_size": info.get("contract_size", ""),
-                    "option_type": info.get("option_type", ""),
                 })
                 self.orders.append({
                     "order_id": self._next_order_id(),
@@ -641,12 +634,8 @@ class SyntheticDataGenerator:
                     "execution_id": eid,
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": "SELL", "price": price, "quantity": qty,
-                    "instrument_type": info["instrument_type"],
-                    "asset_class": info["asset_class"],
                     "execution_date": day.isoformat(),
                     "execution_time": exec_time,
-                    "contract_size": info.get("contract_size", ""),
-                    "option_type": info.get("option_type", ""),
                 })
                 self.orders.append({
                     "order_id": self._next_order_id(),
@@ -680,12 +669,8 @@ class SyntheticDataGenerator:
                     "execution_id": self._next_exec_id(),
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": side, "price": price, "quantity": qty,
-                    "instrument_type": info["instrument_type"],
-                    "asset_class": info["asset_class"],
                     "execution_date": day.isoformat(),
                     "execution_time": exec_time,
-                    "contract_size": info.get("contract_size", ""),
-                    "option_type": info.get("option_type", ""),
                 })
                 self.orders.append({
                     "order_id": self._next_order_id(),
@@ -732,12 +717,8 @@ class SyntheticDataGenerator:
                     "execution_id": self._next_exec_id(),
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": side, "price": price, "quantity": qty,
-                    "instrument_type": info["instrument_type"],
-                    "asset_class": info["asset_class"],
                     "execution_date": trade_date.isoformat(),
                     "execution_time": exec_time,
-                    "contract_size": info.get("contract_size", ""),
-                    "option_type": info.get("option_type", ""),
                 })
                 self.orders.append({
                     "order_id": self._next_order_id(),
@@ -821,11 +802,12 @@ class SyntheticDataGenerator:
         """Write all accumulated data to CSV files."""
         counts = {}
 
+        counts["product"] = self._write_product_csv()
+
         counts["execution"] = self._write_csv(
             "execution.csv",
             ["execution_id", "product_id", "account_id", "trader_id", "side",
-             "price", "quantity", "instrument_type", "asset_class",
-             "execution_date", "execution_time", "contract_size", "option_type"],
+             "price", "quantity", "execution_date", "execution_time"],
             self.executions,
         )
 
@@ -850,6 +832,24 @@ class SyntheticDataGenerator:
 
         return counts
 
+    def _write_product_csv(self) -> int:
+        """Write the product dimension table CSV."""
+        fieldnames = ["product_id", "name", "asset_class", "instrument_type",
+                      "contract_size", "option_type", "exchange", "currency"]
+        rows = []
+        for pid, info in sorted(self.products.items()):
+            rows.append({
+                "product_id": pid,
+                "name": info["name"],
+                "asset_class": info["asset_class"],
+                "instrument_type": info["instrument_type"],
+                "contract_size": info.get("contract_size", ""),
+                "option_type": info.get("option_type", ""),
+                "exchange": info.get("exchange", ""),
+                "currency": info.get("currency", "USD"),
+            })
+        return self._write_csv("product.csv", fieldnames, rows)
+
     def _write_csv(self, filename: str, fieldnames: list[str], rows: list[dict]) -> int:
         path = self.csv_dir / filename
         with open(path, "w", newline="") as f:
@@ -865,26 +865,44 @@ class SyntheticDataGenerator:
     def _write_entity_definitions(self) -> None:
         """Write entity JSON definitions for each CSV table."""
         entities = {
+            "product": {
+                "entity_id": "product",
+                "name": "Product (Instrument)",
+                "description": "Financial instruments with their inherent characteristics. Referenced by execution, order, and market data entities via product_id.",
+                "fields": [
+                    {"name": "product_id", "type": "string", "description": "Unique product identifier (ticker/symbol)", "is_key": True, "nullable": False},
+                    {"name": "name", "type": "string", "description": "Product name", "is_key": False, "nullable": False},
+                    {"name": "asset_class", "type": "string", "description": "Asset class category", "is_key": False, "nullable": False, "domain_values": ["equity", "fx", "fixed_income", "commodity"]},
+                    {"name": "instrument_type", "type": "string", "description": "Type of instrument", "is_key": False, "nullable": False, "domain_values": ["stock", "bond", "option", "future", "forward", "swap"]},
+                    {"name": "contract_size", "type": "decimal", "description": "Contract multiplier (options/futures)", "is_key": False, "nullable": True},
+                    {"name": "option_type", "type": "string", "description": "Option type (call/put)", "is_key": False, "nullable": True, "domain_values": ["call", "put"]},
+                    {"name": "exchange", "type": "string", "description": "Primary exchange", "is_key": False, "nullable": False},
+                    {"name": "currency", "type": "string", "description": "Quotation currency", "is_key": False, "nullable": False},
+                ],
+                "relationships": [
+                    {"target_entity": "execution", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "order", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "md_intraday", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "md_eod", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
+                ],
+            },
             "execution": {
                 "entity_id": "execution",
                 "name": "Trade Execution",
                 "description": "Individual trade executions (fills) across all instrument types.",
                 "fields": [
                     {"name": "execution_id", "type": "string", "description": "Unique execution identifier", "is_key": True, "nullable": False},
-                    {"name": "product_id", "type": "string", "description": "Product/instrument identifier", "is_key": False, "nullable": False},
+                    {"name": "product_id", "type": "string", "description": "Product/instrument identifier (FK to product)", "is_key": False, "nullable": False},
                     {"name": "account_id", "type": "string", "description": "Trading account identifier", "is_key": False, "nullable": False},
                     {"name": "trader_id", "type": "string", "description": "Trader who executed the trade", "is_key": False, "nullable": False},
                     {"name": "side", "type": "string", "description": "Trade direction", "is_key": False, "nullable": False, "domain_values": ["BUY", "SELL"]},
                     {"name": "price", "type": "decimal", "description": "Execution price per unit", "is_key": False, "nullable": False},
                     {"name": "quantity", "type": "decimal", "description": "Number of units traded", "is_key": False, "nullable": False},
-                    {"name": "instrument_type", "type": "string", "description": "Type of instrument", "is_key": False, "nullable": False, "domain_values": ["stock", "option", "future"]},
-                    {"name": "asset_class", "type": "string", "description": "Asset class category", "is_key": False, "nullable": False, "domain_values": ["equity", "fx", "commodity"]},
                     {"name": "execution_date", "type": "date", "description": "Date of execution (YYYY-MM-DD)", "is_key": False, "nullable": False},
                     {"name": "execution_time", "type": "string", "description": "Time of execution (HH:MM:SS)", "is_key": False, "nullable": False},
-                    {"name": "contract_size", "type": "decimal", "description": "Contract multiplier for options/futures", "is_key": False, "nullable": True},
-                    {"name": "option_type", "type": "string", "description": "Option type (call/put)", "is_key": False, "nullable": True, "domain_values": ["call", "put"]},
                 ],
                 "relationships": [
+                    {"target_entity": "product", "join_fields": {"product_id": "product_id"}, "relationship_type": "many_to_one"},
                     {"target_entity": "order", "join_fields": {"product_id": "product_id", "account_id": "account_id"}, "relationship_type": "many_to_one"},
                     {"target_entity": "md_eod", "join_fields": {"product_id": "product_id", "execution_date": "trade_date"}, "relationship_type": "many_to_one"},
                 ],

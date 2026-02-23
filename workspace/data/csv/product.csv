@@ -1,0 +1,51 @@
+product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency
+AAPL,Apple Inc.,equity,stock,,,NYSE,USD
+AAPL_C150,AAPL Call 150,equity,option,100,call,CBOE,USD
+AAPL_P140,AAPL Put 140,equity,option,100,put,CBOE,USD
+AMZN,Amazon.com Inc.,equity,stock,,,NYSE,USD
+AMZN_C180,AMZN Call 180,equity,option,100,call,CBOE,USD
+AUDUSD,AUD/USD,fx,stock,,,OTC,USD
+BAC,Bank of America,equity,stock,,,NYSE,USD
+CL_FUT,Crude Oil Future,equity,future,1000,,CME,USD
+COP,ConocoPhillips,equity,stock,,,NYSE,USD
+COPPER,Copper,commodity,stock,,,CME,USD
+CORN,Corn,commodity,stock,,,CME,USD
+COST,Costco Wholesale,equity,stock,,,NYSE,USD
+CRUDE_OIL,Crude Oil WTI,commodity,stock,,,CME,USD
+CVX,Chevron Corp.,equity,stock,,,NYSE,USD
+DIS,Walt Disney,equity,stock,,,NYSE,USD
+ES_FUT,S&P 500 E-mini,equity,future,50,,CME,USD
+EURUSD,EUR/USD,fx,stock,,,OTC,USD
+GBPUSD,GBP/USD,fx,stock,,,OTC,USD
+GC_FUT,Gold Future,equity,future,100,,CME,USD
+GOLD,Gold,commodity,stock,,,CME,USD
+GOOGL,Alphabet Inc.,equity,stock,,,NYSE,USD
+GS,Goldman Sachs,equity,stock,,,NYSE,USD
+HD,Home Depot,equity,stock,,,NYSE,USD
+JNJ,Johnson & Johnson,equity,stock,,,NYSE,USD
+JPM,JPMorgan Chase,equity,stock,,,NYSE,USD
+MA,Mastercard Inc.,equity,stock,,,NYSE,USD
+META,Meta Platforms,equity,stock,,,NYSE,USD
+MRK,Merck & Co.,equity,stock,,,NYSE,USD
+MS,Morgan Stanley,equity,stock,,,NYSE,USD
+MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD
+NAT_GAS,Natural Gas,commodity,stock,,,CME,USD
+NKE,Nike Inc.,equity,stock,,,NYSE,USD
+NQ_FUT,Nasdaq 100 E-mini,equity,future,20,,CME,USD
+NVDA,NVIDIA Corp.,equity,stock,,,NYSE,USD
+NVDA_C500,NVDA Call 500,equity,option,100,call,CBOE,USD
+PFE,Pfizer Inc.,equity,stock,,,NYSE,USD
+SILVER,Silver,commodity,stock,,,CME,USD
+SOYBEANS,Soybeans,commodity,stock,,,CME,USD
+TSLA,Tesla Inc.,equity,stock,,,NYSE,USD
+TSLA_C250,TSLA Call 250,equity,option,100,call,CBOE,USD
+TSLA_P200,TSLA Put 200,equity,option,100,put,CBOE,USD
+UNH,UnitedHealth Group,equity,stock,,,NYSE,USD
+USDCAD,USD/CAD,fx,stock,,,OTC,USD
+USDCHF,USD/CHF,fx,stock,,,OTC,USD
+USDJPY,USD/JPY,fx,stock,,,OTC,USD
+V,Visa Inc.,equity,stock,,,NYSE,USD
+WFC,Wells Fargo,equity,stock,,,NYSE,USD
+WHEAT,Wheat,commodity,stock,,,CME,USD
+XOM,Exxon Mobil,equity,stock,,,NYSE,USD
+ZB_FUT,30Y Treasury Bond,equity,future,1000,,CME,USD

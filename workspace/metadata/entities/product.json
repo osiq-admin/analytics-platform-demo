@@ -1,0 +1,111 @@
+{
+  "entity_id": "product",
+  "name": "Product (Instrument)",
+  "description": "Financial instruments with their inherent characteristics. Referenced by execution, order, and market data entities via product_id.",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": "string",
+      "description": "Unique product identifier (ticker/symbol)",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Product name",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "asset_class",
+      "type": "string",
+      "description": "Asset class category",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "equity",
+        "fx",
+        "fixed_income",
+        "commodity"
+      ]
+    },
+    {
+      "name": "instrument_type",
+      "type": "string",
+      "description": "Type of instrument",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "stock",
+        "bond",
+        "option",
+        "future",
+        "forward",
+        "swap"
+      ]
+    },
+    {
+      "name": "contract_size",
+      "type": "decimal",
+      "description": "Contract multiplier (options/futures)",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "option_type",
+      "type": "string",
+      "description": "Option type (call/put)",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "call",
+        "put"
+      ]
+    },
+    {
+      "name": "exchange",
+      "type": "string",
+      "description": "Primary exchange",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "description": "Quotation currency",
+      "is_key": false,
+      "nullable": false
+    }
+  ],
+  "relationships": [
+    {
+      "target_entity": "execution",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "order",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "md_intraday",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "md_eod",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "one_to_many"
+    }
+  ]
+}
