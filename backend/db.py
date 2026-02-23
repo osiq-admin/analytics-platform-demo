@@ -5,6 +5,8 @@ from threading import Lock
 import duckdb
 from fastapi import FastAPI
 
+from backend.config import settings
+
 
 class DuckDBManager:
     def __init__(self):
@@ -33,6 +35,13 @@ db_manager = DuckDBManager()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db_manager.connect("workspace/analytics.duckdb")
+    from backend.services.metadata_service import MetadataService
+
+    db_manager.connect(str(settings.workspace_dir / "analytics.duckdb"))
+
+    # Make services available via app.state
+    app.state.db = db_manager
+    app.state.metadata = MetadataService(settings.workspace_dir)
+
     yield
     db_manager.close()
