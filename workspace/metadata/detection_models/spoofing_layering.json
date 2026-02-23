@@ -1,0 +1,27 @@
+{
+  "model_id": "spoofing_layering",
+  "name": "Spoofing / Layering",
+  "description": "Detects spoofing and layering patterns where an account places multiple orders on one side (which are subsequently cancelled) while executing on the opposite side. Requires a cancellation pattern (MUST_PASS) and evaluates opposite-side execution activity.",
+  "time_window": "cancellation_pattern",
+  "granularity": ["product_id", "account_id"],
+  "calculations": [
+    {
+      "calc_id": "cancel_pattern",
+      "strictness": "MUST_PASS",
+      "threshold_setting": "cancel_count_threshold",
+      "score_steps_setting": null
+    },
+    {
+      "calc_id": "opposite_side_execution",
+      "strictness": "OPTIONAL",
+      "threshold_setting": null,
+      "score_steps_setting": "large_activity_score_steps"
+    }
+  ],
+  "score_threshold_setting": "spoofing_score_threshold",
+  "query": "SELECT cp.product_id, cp.account_id, cp.pattern_date AS business_date, cp.cancel_count, cp.cancel_quantity, cp.pattern_side, cp.window_start, cp.window_end, ta.total_value, ta.buy_value, ta.sell_value, 'equity' AS asset_class FROM calc_cancellation_pattern cp LEFT JOIN calc_large_trading_activity ta ON cp.product_id = ta.product_id AND cp.account_id = ta.account_id WHERE cp.cancel_count >= 3",
+  "alert_template": {
+    "title": "Spoofing / Layering Alert",
+    "sections": ["business_description", "entity_context", "cancellation_analysis", "order_book_snapshot", "calculation_trace", "score_breakdown", "order_timeline"]
+  }
+}

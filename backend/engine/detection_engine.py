@@ -1,0 +1,212 @@
+"""Detection engine — evaluates detection models against calculation results with graduated scoring."""
+import logging
+import uuid
+from pathlib import Path
+
+from backend.db import DuckDBManager
+from backend.engine.settings_resolver import ResolutionResult, SettingsResolver
+from backend.models.alerts import AlertTrace, CalculationScore, SettingsTraceEntry
+from backend.models.detection import DetectionModelDefinition, ModelCalculation, Strictness
+from backend.models.settings import ScoreStep, SettingDefinition
+from backend.services.metadata_service import MetadataService
+
+log = logging.getLogger(__name__)
+
+# Mapping from model calculation calc_id to the column in query results that holds
+# the value for score evaluation. Convention: the query must expose columns
+# named after the calc_id's "value field".
+CALC_VALUE_COLUMNS = {
+    "large_trading_activity": "total_value",
+    "wash_qty_match": "qty_match_ratio",
+    "wash_vwap_proximity": "vwap_proximity",
+    "trend_detection": "price_change_pct",
+    "same_side_ratio": "same_side_pct",
+    "market_event_detection": "price_change_pct",
+    "cancel_pattern": "cancel_count",
+    "opposite_side_execution": "total_value",
+}
+
+
+class DetectionEngine:
+    def __init__(
+        self,
+        workspace_dir: Path,
+        db: DuckDBManager,
+        metadata: MetadataService,
+        resolver: SettingsResolver,
+    ):
+        self._workspace = workspace_dir
+        self._db = db
+        self._metadata = metadata
+        self._resolver = resolver
+
+    def evaluate_model(self, model_id: str) -> list[AlertTrace]:
+        """Evaluate a detection model against calculation results. Returns AlertTrace per candidate."""
+        model = self._metadata.load_detection_model(model_id)
+        if model is None:
+            raise ValueError(f"Detection model '{model_id}' not found")
+
+        # Execute the model's query to get candidate rows
+        candidates = self._execute_query(model.query)
+        if not candidates:
+            return []
+
+        alerts = []
+        for row in candidates:
+            alert = self._evaluate_candidate(model, row)
+            alerts.append(alert)
+
+        return alerts
+
+    def evaluate_all(self) -> list[AlertTrace]:
+        """Evaluate all detection models. Returns all AlertTrace objects."""
+        models = self._metadata.list_detection_models()
+        all_alerts = []
+        for model in models:
+            try:
+                alerts = self.evaluate_model(model.model_id)
+                all_alerts.extend(alerts)
+            except Exception as e:
+                log.error("Error evaluating model %s: %s", model.model_id, e)
+        return all_alerts
+
+    def _execute_query(self, sql: str) -> list[dict]:
+        """Execute detection query and return rows as dicts."""
+        if not sql:
+            return []
+        cursor = self._db.cursor()
+        try:
+            result = cursor.execute(sql)
+            columns = [desc[0] for desc in result.description]
+            rows = result.fetchall()
+            return [dict(zip(columns, row)) for row in rows]
+        finally:
+            cursor.close()
+
+    def _evaluate_candidate(self, model: DetectionModelDefinition, row: dict) -> AlertTrace:
+        """Evaluate a single candidate row against the model's calculations."""
+        entity_context = {
+            k: str(v) for k, v in row.items()
+            if k in ("product_id", "account_id", "trader_id", "desk_id",
+                      "business_date", "asset_class", "instrument_type")
+            and v is not None
+        }
+
+        # Resolve score threshold for this entity context
+        score_threshold = self._resolve_score_threshold(model, entity_context)
+
+        # Evaluate each calculation
+        calc_scores: list[CalculationScore] = []
+        settings_trace: list[SettingsTraceEntry] = []
+        accumulated_score = 0.0
+
+        for mc in model.calculations:
+            cs, traces = self._evaluate_calculation(mc, row, entity_context)
+            calc_scores.append(cs)
+            settings_trace.extend(traces)
+            accumulated_score += cs.score
+
+        # Determine alert trigger
+        must_pass_ok = all(
+            cs.threshold_passed
+            for cs, mc in zip(calc_scores, model.calculations)
+            if mc.strictness == Strictness.MUST_PASS
+        )
+        all_passed = all(cs.threshold_passed for cs in calc_scores)
+        score_ok = accumulated_score >= score_threshold
+
+        if all_passed:
+            trigger_path = "all_passed"
+        elif score_ok:
+            trigger_path = "score_based"
+        else:
+            trigger_path = "none"
+
+        alert_fired = must_pass_ok and (all_passed or score_ok)
+
+        alert_id = f"ALT-{uuid.uuid4().hex[:8].upper()}"
+
+        return AlertTrace(
+            alert_id=alert_id,
+            model_id=model.model_id,
+            entity_context=entity_context,
+            calculation_scores=calc_scores,
+            accumulated_score=accumulated_score,
+            score_threshold=score_threshold,
+            trigger_path=trigger_path,
+            alert_fired=alert_fired,
+            settings_trace=settings_trace,
+            calculation_trace={"query_row": {k: str(v) for k, v in row.items()}},
+        )
+
+    def _evaluate_calculation(
+        self, mc: ModelCalculation, row: dict, context: dict[str, str]
+    ) -> tuple[CalculationScore, list[SettingsTraceEntry]]:
+        """Evaluate a single model calculation against the candidate row."""
+        traces: list[SettingsTraceEntry] = []
+
+        # Get the computed value from the query row
+        value_column = CALC_VALUE_COLUMNS.get(mc.calc_id, mc.calc_id)
+        computed_value = float(row.get(value_column, 0) or 0)
+
+        # Resolve score steps via settings
+        score = 0.0
+        score_step_matched = None
+        if mc.score_steps_setting:
+            setting = self._metadata.load_setting(mc.score_steps_setting)
+            if setting:
+                resolution = self._resolver.resolve(setting, context)
+                traces.append(SettingsTraceEntry(
+                    setting_id=setting.setting_id,
+                    setting_name=setting.name,
+                    matched_override=resolution.matched_override.model_dump() if resolution.matched_override else None,
+                    resolved_value=str(resolution.value),
+                    why=resolution.why,
+                ))
+
+                # Parse score steps from resolved value
+                steps = self._parse_score_steps(resolution.value)
+                score = self._resolver.evaluate_score(steps, computed_value)
+
+                # Find matched step for trace
+                for step in steps:
+                    min_v = step.min_value if step.min_value is not None else float("-inf")
+                    max_v = step.max_value if step.max_value is not None else float("inf")
+                    if min_v <= computed_value < max_v or (max_v == float("inf") and computed_value >= min_v):
+                        score_step_matched = {"min": step.min_value, "max": step.max_value, "score": step.score}
+                        break
+
+        # Determine threshold pass (score > 0 means the value fell in a scoring range)
+        threshold_passed = score > 0
+
+        return CalculationScore(
+            calc_id=mc.calc_id,
+            computed_value=computed_value,
+            threshold=None,
+            threshold_passed=threshold_passed,
+            score=score,
+            score_step_matched=score_step_matched,
+            strictness=mc.strictness,
+        ), traces
+
+    def _resolve_score_threshold(self, model: DetectionModelDefinition, context: dict[str, str]) -> float:
+        """Resolve the model's score threshold for the given entity context."""
+        setting = self._metadata.load_setting(model.score_threshold_setting)
+        if setting is None:
+            log.warning("Score threshold setting '%s' not found, using 0", model.score_threshold_setting)
+            return 0.0
+        resolution = self._resolver.resolve(setting, context)
+        return float(resolution.value)
+
+    def _parse_score_steps(self, value) -> list[ScoreStep]:
+        """Parse score steps from a resolved setting value (list of dicts or ScoreStep objects)."""
+        if isinstance(value, list):
+            return [
+                ScoreStep(
+                    min_value=s.get("min_value") if isinstance(s, dict) else s.min_value,
+                    max_value=s.get("max_value") if isinstance(s, dict) else s.max_value,
+                    score=s.get("score") if isinstance(s, dict) else s.score,
+                )
+                for s in value
+            ]
+        return []

@@ -1,0 +1,33 @@
+{
+  "model_id": "market_price_ramping",
+  "name": "Market Price Ramping (MPR)",
+  "description": "Detects accounts that trade aggressively in the same direction as a detected price trend, potentially contributing to or exploiting the trend. Requires a trend to exist (MUST_PASS) and evaluates trading activity and directionality.",
+  "time_window": "trend_window",
+  "granularity": ["product_id", "account_id"],
+  "calculations": [
+    {
+      "calc_id": "trend_detection",
+      "strictness": "MUST_PASS",
+      "threshold_setting": "trend_sensitivity",
+      "score_steps_setting": null
+    },
+    {
+      "calc_id": "large_trading_activity",
+      "strictness": "OPTIONAL",
+      "threshold_setting": "large_activity_multiplier",
+      "score_steps_setting": "large_activity_score_steps"
+    },
+    {
+      "calc_id": "same_side_ratio",
+      "strictness": "OPTIONAL",
+      "threshold_setting": null,
+      "score_steps_setting": "same_side_pct_score_steps"
+    }
+  ],
+  "score_threshold_setting": "mpr_score_threshold",
+  "query": "SELECT ta.product_id, ta.account_id, ta.business_date, ta.total_value, ta.same_side_pct, tw.trend_type, tw.price_change_pct, 'equity' AS asset_class FROM calc_large_trading_activity ta INNER JOIN calc_trend_window tw ON ta.product_id = tw.product_id WHERE ta.is_large = TRUE AND tw.trend_type IS NOT NULL",
+  "alert_template": {
+    "title": "Market Price Ramping Alert",
+    "sections": ["business_description", "entity_context", "trend_analysis", "calculation_trace", "score_breakdown", "price_chart", "related_orders"]
+  }
+}
