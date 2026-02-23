@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | IN PROGRESS | M0+M1+M3 complete — 39 tests passing |
+| Implementation | IN PROGRESS | M0+M1+M2+M3 complete — 85 tests passing |
 
 ---
 
@@ -26,7 +26,7 @@
 |---|---|---|---|---|---|
 | M0 | Project Scaffolding | COMPLETE | 3 | 3 | Python backend, React frontend, workspace dirs |
 | M1 | Backend Foundation | COMPLETE | 6 | 6 | DuckDB, models, metadata svc, data loader, API routes, query svc |
-| M2 | Calculation Engine | NOT STARTED | 5 | 0 | Depends: M1 |
+| M2 | Calculation Engine | COMPLETE | 5 | 5 | DAG executor + 10 calc definitions (L1-L3.5) |
 | M3 | Settings Resolution | COMPLETE | 2 | 2 | Resolver engine + 15 setting JSON files |
 | M4 | Detection & Alerts | NOT STARTED | 3 | 0 | Depends: M2, M3 |
 | M5 | Frontend Foundation | NOT STARTED | 4 | 0 | Depends: M0 |
@@ -88,6 +88,15 @@
 - [x] **M3 Task 3.2**: 15 setting JSON files — 6 thresholds, 5 score steps, 4 score thresholds
 - **Total**: 39 tests passing, 14 commits on `feature/scaffold/m0-m1-foundation`
 
+### 2026-02-23 (continued)
+- [x] **M2 Task 2.1**: Calculation DAG executor — topological sort, cycle detection, SQL execution, Parquet persistence (7 tests)
+- [x] **M2 Task 2.2**: Layer 1 transaction calcs — value_calc (instrument-type-aware), adjusted_direction (short instrument logic) (9 tests)
+- [x] **M2 Task 2.3**: Layer 2 time window calcs — business_date_window, trend_window, market_event_window, cancellation_pattern (12 tests)
+- [x] **M2 Task 2.4**: Layer 3 aggregation calcs — trading_activity_aggregation (buy/sell/net/same_side), vwap_calc (proximity metric) (10 tests)
+- [x] **M2 Task 2.5**: Layer 3.5 derived calcs — large_trading_activity (threshold flag), wash_detection (qty match + VWAP proximity) (8 tests)
+- [x] **Bug fix**: Data loader now quotes table names for SQL reserved words (e.g., "order")
+- **Total**: 85 tests passing, 15 commits on `feature/scaffold/m0-m1-foundation`
+
 ---
 
 ## What Was NOT Done (Deferred / Blocked)
@@ -95,7 +104,7 @@
 | Item | Reason | When |
 |---|---|---|
 | ~~Synthetic data generation~~ | ~~Requires separate approval session~~ | DONE — guidelines approved |
-| Spoofing/layering research | Detailed mechanics deferred to implementation | During M2 Task 2.3 |
+| ~~Spoofing/layering research~~ | ~~Detailed mechanics deferred~~ | DONE — cancellation_pattern.json implemented |
 | Swap leg mechanics | Complex instrument relationships deferred | During M1 Task 1.2 |
 | FX reverse pair cascade logic | Implementation detail deferred | During M2 |
 | Production deployment (Kafka/Flink/Doris) | Out of scope for demo | Future work |
