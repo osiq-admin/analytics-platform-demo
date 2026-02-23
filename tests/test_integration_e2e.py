@@ -50,11 +50,14 @@ def client(e2e_workspace, monkeypatch):
     from backend import config
     monkeypatch.setattr(config.settings, "workspace_dir", e2e_workspace)
 
+    from backend.engine.settings_resolver import SettingsResolver
+
     # Set up DB and app state
     db = DuckDBManager()
     db.connect(":memory:")
     app.state.db = db
     app.state.metadata = MetadataService(e2e_workspace)
+    app.state.resolver = SettingsResolver()
 
     try:
         with TestClient(app, raise_server_exceptions=False) as tc:
@@ -176,6 +179,26 @@ class TestAIEndpoints:
         assert resp.status_code == 200
         data = resp.json()
         assert data["mode"] == "mock"
+
+
+class TestSettingsResolveEndpoint:
+    def test_resolve_setting(self, client):
+        """POST /api/metadata/settings/{id}/resolve returns resolution result."""
+        resp = client.get("/api/metadata/settings")
+        assert resp.status_code == 200
+        settings_list = resp.json()
+        assert len(settings_list) > 0
+
+        setting_id = settings_list[0]["setting_id"]
+        resp = client.post(
+            f"/api/metadata/settings/{setting_id}/resolve",
+            json={"context": {"asset_class": "equity"}},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "setting_id" in data
+        assert "value" in data
+        assert "why" in data
 
 
 class TestAlertEndpoints:

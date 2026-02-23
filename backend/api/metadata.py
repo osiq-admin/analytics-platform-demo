@@ -1,6 +1,7 @@
 """Metadata CRUD endpoints for entities, calculations, settings, detection models."""
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/metadata", tags=["metadata"])
 
@@ -55,6 +56,28 @@ def get_setting(setting_id: str, request: Request):
     if setting is None:
         return JSONResponse({"error": "not found"}, status_code=404)
     return setting.model_dump()
+
+
+class ResolveRequest(BaseModel):
+    context: dict[str, str]
+
+
+@router.post("/settings/{setting_id}/resolve")
+def resolve_setting(setting_id: str, body: ResolveRequest, request: Request):
+    """Resolve a setting value for a given entity context."""
+    meta = _meta(request)
+    setting = meta.load_setting(setting_id)
+    if setting is None:
+        return JSONResponse({"error": "setting not found"}, status_code=404)
+
+    resolver = request.app.state.resolver
+    result = resolver.resolve(setting, body.context)
+    return {
+        "setting_id": result.setting_id,
+        "value": result.value,
+        "matched_override": result.matched_override.model_dump() if result.matched_override else None,
+        "why": result.why,
+    }
 
 
 # -- Detection Models --
