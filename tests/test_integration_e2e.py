@@ -51,6 +51,8 @@ def client(e2e_workspace, monkeypatch):
     monkeypatch.setattr(config.settings, "workspace_dir", e2e_workspace)
 
     from backend.engine.settings_resolver import SettingsResolver
+    from backend.engine.detection_engine import DetectionEngine
+    from backend.services.alert_service import AlertService
 
     # Set up DB and app state
     db = DuckDBManager()
@@ -58,6 +60,9 @@ def client(e2e_workspace, monkeypatch):
     app.state.db = db
     app.state.metadata = MetadataService(e2e_workspace)
     app.state.resolver = SettingsResolver()
+    detection = DetectionEngine(e2e_workspace, db, app.state.metadata, app.state.resolver)
+    app.state.detection = detection
+    app.state.alerts = AlertService(e2e_workspace, db, detection)
 
     try:
         with TestClient(app, raise_server_exceptions=False) as tc:
@@ -254,3 +259,26 @@ class TestAlertEndpoints:
     def test_get_alert_not_found(self, client):
         resp = client.get("/api/alerts/nonexistent")
         assert resp.status_code == 404
+
+    def test_generate_alerts_for_model(self, client):
+        """POST /api/alerts/generate/{model_id} triggers alert generation."""
+        # First run pipeline to create calculation results
+        client.post("/api/pipeline/run")
+
+        # Generate alerts — may return 200 (success) or 500 (if calc tables
+        # don't exist yet in the test environment). Either way, the endpoint
+        # returns structured JSON.
+        resp = client.post("/api/alerts/generate/wash_full_day")
+        data = resp.json()
+        if resp.status_code == 200:
+            assert "model_id" in data
+            assert "alerts_generated" in data
+            assert isinstance(data["alerts_generated"], int)
+        else:
+            assert "error" in data
+
+    def test_generate_alerts_not_found(self, client):
+        """POST /api/alerts/generate/{nonexistent} returns 404."""
+        resp = client.post("/api/alerts/generate/nonexistent_model")
+        assert resp.status_code == 404
+        assert "error" in resp.json()

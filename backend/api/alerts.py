@@ -56,3 +56,27 @@ def get_alert(alert_id: str):
 def get_alert_trace(alert_id: str):
     """Get alert trace (same as full alert for now)."""
     return get_alert(alert_id)
+
+
+@router.post("/generate/{model_id}")
+def generate_alerts(model_id: str, request: Request):
+    """Run detection engine for a specific model and generate alerts."""
+    alert_svc = request.app.state.alerts
+    try:
+        fired = alert_svc.generate_alerts(model_id)
+        return {
+            "model_id": model_id,
+            "alerts_generated": len(fired),
+            "alerts": [
+                {
+                    "alert_id": a.alert_id,
+                    "accumulated_score": a.accumulated_score,
+                    "trigger_path": a.trigger_path,
+                }
+                for a in fired
+            ],
+        }
+    except ValueError as e:
+        return JSONResponse({"error": str(e)}, status_code=404)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
