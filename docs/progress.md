@@ -20,6 +20,7 @@
 | Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
+| UX Polish & AI Integration (Phase 4) | IN PROGRESS | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout |
 
 ---
 
@@ -53,6 +54,14 @@
 | M23 | Related Orders Table | COMPLETE | 1 | 1 | AG Grid executions table |
 | M24 | Footer Actions & Layout | COMPLETE | 2 | 2 | Action bar + 6-row layout |
 | M25 | Build, Test & Document | COMPLETE | 6 | 6 | 193 tests pass, Playwright E2E, docs |
+| M26 | Phase 4 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
+| M27 | ConfirmDialog Component | PENDING | 3 | 0 | Reusable dialog + wire into Model Composer & Mapping Studio |
+| M28 | Configurable Alert Panels | PENDING | 1 | 0 | Panel toggle toolbar + localStorage persistence |
+| M29 | AI Side Panel in SQL Console | PENDING | 1 | 0 | Collapsible ChatPanel + query injection |
+| M30 | AI Side Panel in Model Composer | PENDING | 1 | 0 | Collapsible ChatPanel |
+| M31 | Dynamic Alert Structure | PENDING | 2 | 0 | Model-type layout config with emphasis and hints |
+| M32 | Build, Test & Verify | PENDING | 3 | 0 | Frontend build, backend tests, Playwright E2E |
+| M33 | Documentation | PENDING | 3 | 0 | Update progress.md and demo-guide.md |
 
 ---
 
