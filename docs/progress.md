@@ -19,6 +19,7 @@
 | Implementation | COMPLETE | All 14 milestones done — 185 tests, 11 views, full pipeline |
 | Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
+| Alert Detail & Polish (Phase 3) | IN PROGRESS | M19-M25: TS types, endpoints, 5 new components, layout, E2E |
 
 ---
 
@@ -44,6 +45,14 @@
 | M15 | Settings Resolution Tester | COMPLETE | 2 | 2 | Resolve endpoint + interactive UI |
 | M16 | Mapping Studio Drag-and-Drop | COMPLETE | 4 | 4 | Save endpoint + HTML5 DnD handlers |
 | M17 | Model Composer Create & Deploy | COMPLETE | 5 | 5 | Save/generate endpoints + create form + deploy |
+| M18 | Phase 3 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
+| M19 | Foundation: TS Types + Endpoints | PENDING | 3 | 0 | AlertTrace TS, market data + orders endpoints |
+| M20 | Calculation Trace DAG | PENDING | 1 | 0 | React Flow + dagre with live score values |
+| M21 | Market Data Chart | PENDING | 1 | 0 | TradingView Lightweight Charts |
+| M22 | Settings Resolution Trace | PENDING | 1 | 0 | Override/default badges, resolution trace |
+| M23 | Related Orders Table | PENDING | 1 | 0 | AG Grid executions table |
+| M24 | Footer Actions & Layout | PENDING | 2 | 0 | Action bar + 6-row layout |
+| M25 | Build, Test & Document | PENDING | 6 | 0 | Build, Playwright E2E, docs |
 
 ---
 
@@ -219,6 +228,32 @@
   - AI Assistant: Mock mode, 5 scenarios, "Run Query" executes live SQL with results grid
 - [x] **Additional features verified**: Dark/Light theme toggle, demo toolbar (Reset/Step/End/Act 1/Act 2), full checkpoint progression (pristine → data_loaded → pipeline_run → alerts_generated → act1_complete → model_deployed → act2_complete → final)
 - **Files modified**: `backend/services/demo_controller.py`, `backend/api/demo.py`, `backend/api/alerts.py`, `backend/api/data.py`, `backend/api/pipeline.py`, `backend/engine/calculation_engine.py`
+
+---
+
+## Gap Analysis: Design vs. Implementation (2026-02-23)
+
+Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-platform-demo-design.md` §8.3) against current implementation. These are the remaining items to bring the demo to full design parity.
+
+### HIGH Priority — Core Demo Gaps
+
+| Gap | Design Section | What's Missing |
+|---|---|---|
+| **Calculation Trace DAG** | §8.3 row 3-left | Interactive DAG showing detection model → calc chain with live values. Currently: only Recharts score breakdown bar chart |
+| **Market Data Graph** | §8.3 row 3-right | Price + volume + orders timeline (TradingView Lightweight Charts). Currently: not implemented |
+| **Settings Resolution Trace** | §8.3 row 4-left | Per-alert view showing which thresholds applied and WHY (resolution trace). Currently: not implemented |
+| **Related Orders Table** | §8.3 row 5 | AG Grid table of related orders/executions with timestamps, side, qty, price, status. Currently: not implemented |
+| **Footer Actions** | §8.3 row 6 | [Logs] [Raw Data] [Related Alerts] [Export] action buttons. Currently: not implemented |
+
+### MEDIUM Priority — Polish & Enhancement
+
+| Gap | Design Section | What's Missing |
+|---|---|---|
+| **Product Details & Related Products** | §8.3 row 1-right | Entity context shows product info but not "related products" expansion |
+| **Dynamic Alert Structure** | §8.2 bullet | Alert detail structure should vary by detection model type |
+| **Configurable Widgets** | §8.1 bullet | Panels should be add/remove configurable in alert detail |
+| **AI in SQL Console & Model Composer** | §10.1 | AI assistant exists but not integrated into SQL Console or Model Composer views |
+| **Confirmation Dialogs** | General | D&D save, model deploy, pipeline run lack confirmation UX |
 
 ---
 
