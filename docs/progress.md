@@ -19,7 +19,7 @@
 | Implementation | COMPLETE | All 14 milestones done — 185 tests, 11 views, full pipeline |
 | Browser Testing (Playwright) | COMPLETE | All 11 views tested, 9 bugs found & fixed, all demo controls verified |
 | Interactive Core Features | COMPLETE | M14-M17: Settings resolver, Mapping D&D, Model create & deploy — 191 tests |
-| Alert Detail & Polish (Phase 3) | IN PROGRESS | M19-M25: TS types, endpoints, 5 new components, layout, E2E |
+| Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
 
 ---
 
@@ -45,14 +45,14 @@
 | M15 | Settings Resolution Tester | COMPLETE | 2 | 2 | Resolve endpoint + interactive UI |
 | M16 | Mapping Studio Drag-and-Drop | COMPLETE | 4 | 4 | Save endpoint + HTML5 DnD handlers |
 | M17 | Model Composer Create & Deploy | COMPLETE | 5 | 5 | Save/generate endpoints + create form + deploy |
-| M18 | Phase 3 Plan & Progress | IN PROGRESS | 1 | 0 | Save plan, update progress tracker |
-| M19 | Foundation: TS Types + Endpoints | PENDING | 3 | 0 | AlertTrace TS, market data + orders endpoints |
-| M20 | Calculation Trace DAG | PENDING | 1 | 0 | React Flow + dagre with live score values |
-| M21 | Market Data Chart | PENDING | 1 | 0 | TradingView Lightweight Charts |
-| M22 | Settings Resolution Trace | PENDING | 1 | 0 | Override/default badges, resolution trace |
-| M23 | Related Orders Table | PENDING | 1 | 0 | AG Grid executions table |
-| M24 | Footer Actions & Layout | PENDING | 2 | 0 | Action bar + 6-row layout |
-| M25 | Build, Test & Document | PENDING | 6 | 0 | Build, Playwright E2E, docs |
+| M18 | Phase 3 Plan & Progress | COMPLETE | 1 | 1 | Save plan, update progress tracker |
+| M19 | Foundation: TS Types + Endpoints | COMPLETE | 3 | 3 | AlertTrace TS, market data + orders endpoints |
+| M20 | Calculation Trace DAG | COMPLETE | 1 | 1 | React Flow + dagre with live score values |
+| M21 | Market Data Chart | COMPLETE | 1 | 1 | TradingView Lightweight Charts |
+| M22 | Settings Resolution Trace | COMPLETE | 1 | 1 | Override/default badges, resolution trace |
+| M23 | Related Orders Table | COMPLETE | 1 | 1 | AG Grid executions table |
+| M24 | Footer Actions & Layout | COMPLETE | 2 | 2 | Action bar + 6-row layout |
+| M25 | Build, Test & Document | COMPLETE | 6 | 6 | 193 tests pass, Playwright E2E, docs |
 
 ---
 
@@ -201,6 +201,22 @@
 - [x] **Playwright E2E**: All 3 features verified in browser — resolve tester, D&D mappings, model create & deploy
 - [x] **Regression**: Entity Designer, Risk Case Manager, all existing views still working
 - **Total**: 191 tests passing (6 new), 14 commits on `feature/scaffold/m0-m1-foundation`
+
+### 2026-02-23 (Phase 3: Alert Detail & Polish — M18-M25)
+- [x] **M18 Task 18.1**: Save Phase 3 plan to `docs/plans/2026-02-23-phase3-alert-detail-plan.md`, update progress
+- [x] **M19 Task 19.1**: Extend AlertTrace TS interface — `calculation_trace`, `settings_trace`, `related_data`, `SettingsTraceEntry`, `CalculationScore`
+- [x] **M19 Task 19.2**: Backend — `GET /data/market/{product_id}` endpoint for EOD + intraday market data (1 test)
+- [x] **M19 Task 19.3**: Backend — `GET /data/orders` endpoint for related orders/executions (1 test)
+- [x] **M20 Task 20.1**: Frontend — `CalculationTrace.tsx` — React Flow + dagre DAG (model → calc nodes with scores, pass/fail coloring)
+- [x] **M21 Task 21.1**: Frontend — `MarketDataChart.tsx` — TradingView Lightweight Charts v5 (price line + volume histogram, resize observer)
+- [x] **M22 Task 22.1**: Frontend — `SettingsTrace.tsx` — Settings resolution entries with override/default badges, match details
+- [x] **M23 Task 23.1**: Frontend — `RelatedOrders.tsx` — AG Grid executions table (Exec ID, Date, Time, Side, Qty, Price, Product, Account)
+- [x] **M24 Task 24.1**: Frontend — `FooterActions.tsx` — Raw Data toggle, Export JSON download, Related Alerts button
+- [x] **M24 Task 24.2**: Frontend — Rewire `AlertDetail/index.tsx` to 6-row layout matching design §8.3
+- [x] **M25 Tasks 25.1-25.6**: Build (874 modules, 2.1MB JS), 193 backend tests pass, Playwright E2E verified all 6 panels render with real data
+- [x] **Playwright E2E**: Insider dealing alert (AMZN/ACC-121) — all panels render: Calc Trace DAG, Market Data chart, Settings Resolution, Score Breakdown, Related Orders (4 executions), Footer Actions
+- [x] **Regression**: Settings Manager, Mapping Studio, Model Composer all still working
+- **Total**: 193 tests passing (2 new), 10 commits on `feature/alert-detail/phase3-investigation-workspace`
 
 ### 2026-02-23 (Browser Testing — Playwright E2E)
 - [x] **Full browser-based E2E testing** of all 11 views using Playwright MCP

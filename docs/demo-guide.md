@@ -106,11 +106,36 @@ Click **Step** to advance to `alerts_generated`.
 
 **Key Points:**
 - AG Grid with all fired alerts — sort by score, filter by model
-- Click an alert to drill into the full trace:
-  - Business description
-  - Entity context (account, product, trader)
-  - Score breakdown (Recharts bar chart)
-  - Settings resolution trace (which override matched)
+- Click an alert to drill into the full investigation workspace (see below)
+
+### 1.10 Alert Investigation Deep Dive
+
+Click any alert row to open the full 6-panel investigation workspace.
+
+**Row 1: Business Description | Entity Context**
+- Model name, trigger path (all_passed vs score_based), accumulated score vs threshold
+- Entity context badges: product_id, account_id, business_date, asset_class
+
+**Row 2: Calculation Trace DAG | Market Data Chart**
+- Interactive React Flow DAG showing the detection model root node → calculation nodes
+- Each calc node displays: computed value, score, pass/fail border color (green/red/orange)
+- TradingView Lightweight Charts: EOD price line + volume histogram for the alert's product
+
+**Row 3: Settings Resolution | Score Breakdown**
+- Settings trace showing which threshold values were applied and why
+- Each entry shows: setting name, "override" or "default" badge, resolved value, explanation
+- Recharts bar chart with threshold reference line + detail table with MUST_PASS/OPTIONAL badges
+
+**Row 4: Related Orders & Executions**
+- AG Grid showing orders/executions for the alert's product + account combination
+- Columns: Exec ID, Date, Time, Side (BUY/SELL badges), Qty, Price, Product, Account
+
+**Row 5: Footer Actions**
+- **Raw Data** — Toggle JSON view of the full alert trace
+- **Export JSON** — Download the alert as a `.json` file for external analysis
+- **Related Alerts** — (when available) Jump to alerts for same entity
+
+**Key Takeaway:** "Every alert is fully traceable — from the detection model, through each calculation's score, the settings that drove thresholds, market data context, and related trading activity."
 
 ## Act 2: Model Composition
 
