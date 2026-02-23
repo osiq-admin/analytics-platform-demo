@@ -14,8 +14,12 @@ export default function SourcePreview({ columns }: SourcePreviewProps) {
           {columns.map((col) => (
             <li
               key={col}
-              className="px-2 py-1 text-xs rounded bg-background border border-border cursor-grab"
+              className="px-2 py-1 text-xs rounded bg-background border border-border cursor-grab active:cursor-grabbing hover:border-accent/50 transition-colors"
               draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData("text/plain", col);
+                e.dataTransfer.effectAllowed = "link";
+              }}
             >
               {col}
             </li>
