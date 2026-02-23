@@ -16,7 +16,7 @@
 | Capabilities & User Stories | COMPLETE | 9 capabilities, 18 user stories |
 | BDD Scenarios | COMPLETE | All detection models covered |
 | Data Guidelines | COMPLETE | Approved — 50+ real products, 200+ accounts, 2 months |
-| Implementation | IN PROGRESS | M0 complete, M1 complete — 27 tests passing |
+| Implementation | IN PROGRESS | M0+M1+M3 complete — 39 tests passing |
 
 ---
 
@@ -27,7 +27,7 @@
 | M0 | Project Scaffolding | COMPLETE | 3 | 3 | Python backend, React frontend, workspace dirs |
 | M1 | Backend Foundation | COMPLETE | 6 | 6 | DuckDB, models, metadata svc, data loader, API routes, query svc |
 | M2 | Calculation Engine | NOT STARTED | 5 | 0 | Depends: M1 |
-| M3 | Settings Resolution | NOT STARTED | 2 | 0 | Depends: M1 |
+| M3 | Settings Resolution | COMPLETE | 2 | 2 | Resolver engine + 15 setting JSON files |
 | M4 | Detection & Alerts | NOT STARTED | 3 | 0 | Depends: M2, M3 |
 | M5 | Frontend Foundation | NOT STARTED | 4 | 0 | Depends: M0 |
 | M6 | Configuration Views | NOT STARTED | 4 | 0 | Depends: M1, M5 |
@@ -84,7 +84,9 @@
 - [x] **M1 Task 1.4**: Data loader — CSV→Parquet→DuckDB with change detection (6 tests)
 - [x] **M1 Task 1.5**: API route structure — 7 routers with placeholder endpoints
 - [x] **M1 Task 1.6**: Query service — SQL execution, table listing, schema introspection (5 tests)
-- **Total**: 27 tests passing, 10 commits on `feature/scaffold/m0-m1-foundation`
+- [x] **M3 Task 3.1**: Settings resolver — hierarchy, multi-dim, product-specific, score steps, evaluation (12 tests)
+- [x] **M3 Task 3.2**: 15 setting JSON files — 6 thresholds, 5 score steps, 4 score thresholds
+- **Total**: 39 tests passing, 14 commits on `feature/scaffold/m0-m1-foundation`
 
 ---
 
