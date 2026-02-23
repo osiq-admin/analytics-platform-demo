@@ -9,6 +9,7 @@ import CalculationTrace from "./CalculationTrace.tsx";
 import MarketDataChart from "./MarketDataChart.tsx";
 import SettingsTrace from "./SettingsTrace.tsx";
 import RelatedOrders from "./RelatedOrders.tsx";
+import TradeVolumeChart from "./TradeVolumeChart.tsx";
 import FooterActions from "./FooterActions.tsx";
 import { getModelLayout, type PanelId } from "./modelLayouts.ts";
 
@@ -17,13 +18,14 @@ const PANEL_LABELS: Record<PanelId, string> = {
   entity: "Entity Context",
   calcTrace: "Calc Trace",
   marketData: "Market Data",
+  volume: "Volume",
   settings: "Settings",
   scores: "Scores",
   orders: "Orders",
   footer: "Actions",
 };
 
-const ALL_PANELS: PanelId[] = ["business", "entity", "calcTrace", "marketData", "settings", "scores", "orders", "footer"];
+const ALL_PANELS: PanelId[] = ["business", "entity", "calcTrace", "marketData", "volume", "settings", "scores", "orders", "footer"];
 
 const DEFAULT_CONFIG: Record<PanelId, boolean> = Object.fromEntries(
   ALL_PANELS.map((id) => [id, true])
@@ -148,7 +150,14 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
         </div>
       )}
 
-      {/* Row 3: Settings Resolution | Score Breakdown */}
+      {/* Row 3: Trade Volume */}
+      {panelConfig.volume && productId && (
+        <div className={isEmphasized("volume") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+          <TradeVolumeChart productId={productId} alertDate={alert.entity_context?.business_date} />
+        </div>
+      )}
+
+      {/* Row 4: Settings Resolution | Score Breakdown */}
       {(panelConfig.settings || panelConfig.scores) && (
         <div className={`grid gap-4 ${panelConfig.settings && panelConfig.scores ? "grid-cols-2" : "grid-cols-1"}`}>
           {panelConfig.settings && (
@@ -164,14 +173,14 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
         </div>
       )}
 
-      {/* Row 4: Related Orders (full width) */}
+      {/* Row 5: Related Orders (full width) */}
       {panelConfig.orders && productId && accountId && (
         <div className={isEmphasized("orders") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
           <RelatedOrders productId={productId} accountId={accountId} />
         </div>
       )}
 
-      {/* Row 5: Footer Actions */}
+      {/* Row 6: Footer Actions */}
       {panelConfig.footer && <FooterActions alert={alert} />}
     </div>
   );

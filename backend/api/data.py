@@ -45,23 +45,44 @@ def reload_data(request: Request):
 
 
 @router.get("/market/{product_id}")
-def get_market_data(product_id: str, request: Request, days: int = 60):
+def get_market_data(
+    product_id: str,
+    request: Request,
+    days: int = 60,
+    start_date: str | None = None,
+    end_date: str | None = None,
+):
     """Get EOD and intraday market data for a product."""
     svc = QueryService(request.app.state.db)
 
-    eod_result = svc.execute(
-        f"SELECT product_id, trade_date, close_price, volume"
-        f" FROM md_eod"
-        f" WHERE product_id = '{product_id}'"
-        f" ORDER BY trade_date DESC"
-        f" LIMIT {days}",
-        limit=days,
-    )
+    date_filter = f"product_id = '{product_id}'"
+    if start_date:
+        date_filter += f" AND trade_date >= '{start_date}'"
+    if end_date:
+        date_filter += f" AND trade_date <= '{end_date}'"
+
+    if start_date or end_date:
+        eod_result = svc.execute(
+            f"SELECT product_id, trade_date, close_price, volume"
+            f" FROM md_eod"
+            f" WHERE {date_filter}"
+            f" ORDER BY trade_date DESC",
+            limit=1000,
+        )
+    else:
+        eod_result = svc.execute(
+            f"SELECT product_id, trade_date, close_price, volume"
+            f" FROM md_eod"
+            f" WHERE product_id = '{product_id}'"
+            f" ORDER BY trade_date DESC"
+            f" LIMIT {days}",
+            limit=days,
+        )
 
     intraday_result = svc.execute(
         f"SELECT product_id, trade_date, trade_time, trade_price, trade_quantity"
         f" FROM md_intraday"
-        f" WHERE product_id = '{product_id}'"
+        f" WHERE {date_filter}"
         f" ORDER BY trade_date DESC, trade_time DESC"
         f" LIMIT 500",
         limit=500,

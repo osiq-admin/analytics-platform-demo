@@ -18,19 +18,20 @@ interface OrdersResponse {
 
 const executionCols: ColDef[] = [
   { field: "execution_id", headerName: "Exec ID", width: 120, cellStyle: { fontFamily: "monospace", fontSize: "10px" } },
-  { field: "execution_date", headerName: "Date", width: 100 },
+  { field: "execution_date", headerName: "Date", width: 100, filter: "agDateColumnFilter" },
   { field: "execution_time", headerName: "Time", width: 80 },
   {
     field: "side",
     headerName: "Side",
     width: 70,
+    filter: "agTextColumnFilter",
     cellRenderer: (p: { value: string }) =>
       p.value === "BUY"
         ? StatusBadge({ label: "BUY", variant: "success" })
         : StatusBadge({ label: "SELL", variant: "error" }),
   },
-  { field: "quantity", headerName: "Qty", width: 70, type: "numericColumn" },
-  { field: "price", headerName: "Price", width: 90, type: "numericColumn", valueFormatter: (p: { value: number }) => p.value?.toFixed(2) },
+  { field: "quantity", headerName: "Qty", width: 70, type: "numericColumn", filter: "agNumberColumnFilter" },
+  { field: "price", headerName: "Price", width: 90, type: "numericColumn", filter: "agNumberColumnFilter", valueFormatter: (p: { value: number }) => p.value?.toFixed(2) },
   { field: "product_id", headerName: "Product", width: 80 },
   { field: "account_id", headerName: "Account", width: 90 },
 ];
@@ -64,7 +65,7 @@ export default function RelatedOrders({ productId, accountId }: RelatedOrdersPro
         <DataGrid
           rowData={data?.executions ?? []}
           columnDefs={executionCols}
-          defaultColDef={{ sortable: true, resizable: true, flex: 0 }}
+          defaultColDef={{ sortable: true, resizable: true, filter: true, flex: 0 }}
         />
       </div>
     </Panel>

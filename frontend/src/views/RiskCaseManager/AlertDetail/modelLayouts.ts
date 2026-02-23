@@ -1,4 +1,4 @@
-export type PanelId = "business" | "entity" | "calcTrace" | "marketData" | "settings" | "scores" | "orders" | "footer";
+export type PanelId = "business" | "entity" | "calcTrace" | "marketData" | "volume" | "settings" | "scores" | "orders" | "footer";
 
 export interface ModelLayout {
   label: string;
