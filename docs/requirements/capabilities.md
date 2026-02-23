@@ -132,9 +132,13 @@
 - [ ] Model Composer shows available calculation results as building blocks
 - [ ] Can compose SQL query selecting from calculation result tables
 - [ ] Can configure thresholds (from settings or custom)
+- [ ] Can tag each calculation as MUST_PASS or OPTIONAL
+- [ ] Can configure score steps per calculation (graduated scoring based on value ranges)
+- [ ] Can set a score threshold for the model (entity-attribute-dependent via settings)
 - [ ] Can define alert template (description, sections, display)
 - [ ] Deploying a model immediately generates alerts
 - [ ] Near-instant results after deployment
+- [ ] Alerts trigger via two paths: all-thresholds-pass OR accumulated-score exceeds threshold
 
 ### US-5.2: Deploy a Detection Model
 **As a** platform operator

@@ -379,9 +379,9 @@ Create models matching the metadata schemas defined in the design document (Sect
 Key models:
 - `EntityDefinition` — canonical entity with fields, types, relationships
 - `CalculationDefinition` — calc_id, layer, inputs, outputs, logic, parameters, display, storage
-- `SettingDefinition` — setting_id, default, match_type, overrides with matching patterns
-- `DetectionModelDefinition` — model_id, required_calculations, query, thresholds, alert_template
-- `AlertTrace` — alert_id, model, trigger_value, calculation_trace, related_entities
+- `SettingDefinition` — setting_id, default, match_type, overrides with matching patterns; supports `type: "score_steps"` with array of `{min_value, max_value, score}` ranges
+- `DetectionModelDefinition` — model_id, required_calculations (each with `strictness: MUST_PASS|OPTIONAL` and `score_steps_setting` reference), query, thresholds, `score_threshold_setting` reference, alert_template
+- `AlertTrace` — alert_id, model, per-calculation scores with strictness tags, accumulated_score, score_threshold, trigger_path ("all_passed"|"score_based"), calculation_trace, settings_trace, related_entities
 
 **Step 4: Run tests**
 
@@ -547,6 +547,8 @@ Implements:
 - Multi-dimensional match_type (most dimension matches wins)
 - Default fallback (guaranteed resolution)
 - Resolution trace recording (which override matched and why)
+- **Score steps resolution**: Resolve graduated score step definitions per entity context (same matching engine as thresholds)
+- **Score step evaluation**: Given a calculated value and resolved score steps, return the graduated score (lookup which range the value falls into)
 
 This is a critical component — must have comprehensive tests:
 - Test product-specific override
@@ -555,6 +557,8 @@ This is a critical component — must have comprehensive tests:
 - Test tie-breaking
 - Test default fallback
 - Test resolution trace accuracy
+- Test score steps resolution for different entity contexts (equity vs FX get different score ranges)
+- Test score step evaluation (value → score lookup)
 
 ---
 
@@ -569,8 +573,17 @@ This is a critical component — must have comprehensive tests:
 - Create: `workspace/metadata/settings/thresholds/cancel_count_threshold.json`
 - Create: `workspace/metadata/settings/matching_patterns.json`
 - Create: `workspace/metadata/settings/resolution_rules.json`
+- Create: `workspace/metadata/settings/score_steps/large_activity_score_steps.json`
+- Create: `workspace/metadata/settings/score_steps/vwap_proximity_score_steps.json`
+- Create: `workspace/metadata/settings/score_steps/quantity_match_score_steps.json`
+- Create: `workspace/metadata/settings/score_steps/same_side_pct_score_steps.json`
+- Create: `workspace/metadata/settings/score_steps/market_event_score_steps.json`
+- Create: `workspace/metadata/settings/score_thresholds/wash_score_threshold.json`
+- Create: `workspace/metadata/settings/score_thresholds/mpr_score_threshold.json`
+- Create: `workspace/metadata/settings/score_thresholds/insider_score_threshold.json`
+- Create: `workspace/metadata/settings/score_thresholds/spoofing_score_threshold.json`
 
-All settings for the 5 detection models, with overrides for different entity attribute combinations.
+All settings for the 5 detection models, with overrides for different entity attribute combinations. Score step definitions use the same matching engine as thresholds (entity-attribute-dependent, resolved via settings resolver). Score thresholds per model are also entity-attribute-dependent.
 
 ---
 
@@ -586,7 +599,18 @@ Implements:
 - Load detection model definitions
 - Evaluate model query against calculation results in DuckDB
 - Match thresholds via settings resolver
-- Generate alerts with full trace
+- **Graduated scoring**: For each calculation in a model, resolve score steps via settings and compute the graduated score based on the actual value
+- **MUST_PASS / OPTIONAL logic**: Each calculation tagged as MUST_PASS (gate condition) or OPTIONAL (score-only)
+- **Alert trigger logic**: `alert_fires = must_pass_ok AND (all_passed OR score_ok)` where `score_ok = accumulated_score >= model.score_threshold`
+- Score threshold resolved per entity context via settings engine
+- Generate alerts with full trace including trigger path ("all_passed" or "score-based")
+
+Tests must cover:
+- All thresholds pass → alert fires via all_passed path
+- MUST_PASS passes, OPTIONAL fails, score exceeds threshold → alert fires via score path
+- MUST_PASS fails, even if score exceeds threshold → NO alert
+- All calculations OPTIONAL → score is the only determinant
+- Score threshold varies by entity context
 
 ---
 
@@ -599,7 +623,7 @@ Implements:
 - Create: `workspace/metadata/detection_models/insider_dealing.json`
 - Create: `workspace/metadata/detection_models/spoofing_layering.json`
 
-Each contains: required_calculations, SQL query template, threshold references, alert template.
+Each contains: required_calculations (with MUST_PASS/OPTIONAL strictness per calculation), SQL query template, threshold references, score step references per calculation, model score_threshold setting reference, alert template.
 
 ---
 
@@ -612,8 +636,9 @@ Each contains: required_calculations, SQL query template, threshold references, 
 
 Implements:
 - Generate alert JSON trace files (per-alert, in `workspace/alerts/traces/`)
-- Include: calculation trace, settings resolution trace, entity context, score breakdown
-- Save alert summary to Parquet
+- Include: calculation trace, settings resolution trace, entity context, per-calculation graduated score breakdown, MUST_PASS/OPTIONAL tags, trigger path ("all_passed" or "score-based"), accumulated score vs score threshold
+- Score step resolution traces per calculation (which score step definition was used, which range matched)
+- Save alert summary to Parquet (include accumulated_score, score_threshold, trigger_path columns)
 - Register alerts in DuckDB for querying
 
 ---
@@ -802,10 +827,14 @@ Implements:
 - Create: `frontend/src/views/ModelComposer/CalculationPicker.tsx`
 - Create: `frontend/src/views/ModelComposer/QueryBuilder.tsx`
 - Create: `frontend/src/views/ModelComposer/ThresholdConfig.tsx`
+- Create: `frontend/src/views/ModelComposer/ScoreConfig.tsx`
 - Create: `frontend/src/views/ModelComposer/AlertTemplateEditor.tsx`
 
 Implements:
 - Select existing calculations as building blocks
+- **Tag each calculation as MUST_PASS or OPTIONAL** (toggle per calculation)
+- **Configure score steps per calculation** (select from settings or define custom graduated ranges)
+- **Configure model score threshold** (select from settings, entity-attribute-dependent)
 - Compose SQL query (Monaco Editor) or use drag-and-drop
 - Configure thresholds (from settings or custom)
 - Define alert template (description, sections)
@@ -903,8 +932,9 @@ Implements:
 - Create: `frontend/src/views/RiskCaseManager/AlertDetail/RelatedData.tsx`
 
 Implements:
-- Settings resolution trace: which setting was resolved, which override matched, what the default was
-- Score breakdown: recharts bar chart showing component scores
+- Settings resolution trace: which setting was resolved, which override matched, what the default was (includes score step and score threshold resolution traces)
+- **Graduated score breakdown**: recharts bar chart showing per-calculation scores with MUST_PASS/OPTIONAL visual tags, accumulated score vs score threshold gauge, trigger path indicator ("all_passed" or "score-based")
+- Score steps detail: click a calculation score to see the graduated range definition and which range the actual value fell into
 - Related orders/executions table (AG Grid)
 - Links to logs, raw data, related alerts
 

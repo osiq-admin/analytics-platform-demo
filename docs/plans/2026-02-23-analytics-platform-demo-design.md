@@ -153,16 +153,52 @@ A cross-cutting mechanism that resolves "which threshold/setting applies here?" 
 Detection models are queries over pre-calculated results. Creating a new model requires:
 1. Selecting which calculation results to query
 2. Defining filter conditions and thresholds (from settings)
-3. Defining the alert template (description, sections, display)
+3. Tagging each calculation as **MUST_PASS** or **OPTIONAL**
+4. Configuring **score steps** per calculation (graduated scoring based on actual values)
+5. Setting a **score threshold** for the model
+6. Defining the alert template (description, sections, display)
 
 No new calculation code is needed if the building blocks exist. Models can be deployed instantly.
 
-### 3.6 Full Traceability
+### 3.6 Graduated Scoring & Alert Triggering
+
+Alerts are NOT triggered by simple boolean threshold pass/fail. Instead, a **graduated scoring system** determines alert generation:
+
+**Score Steps** (per calculation, per entity attributes — resolved via settings engine):
+- Each calculation's score is graduated based on the actual computed value
+- Example: Large Trading Activity for equity:
+  - $10,000 → 3 points
+  - $100,000 → 7 points
+  - $1,000,000 → 10 points
+- Score steps vary by entity attributes (instrument type, asset class, etc.)
+
+**Calculation Strictness** (per calculation within a model):
+- **MUST_PASS**: This calculation's threshold MUST pass — it's a gate condition
+- **OPTIONAL**: This calculation contributes to the accumulated score but doesn't block the alert
+
+**Alert Trigger Logic**:
+```
+must_pass_ok = ALL must_pass calculations passed their thresholds
+all_passed = ALL calculations (including optional) passed thresholds
+score_ok = accumulated_score >= model.score_threshold
+
+alert_fires = must_pass_ok AND (all_passed OR score_ok)
+```
+
+- If ALL calcs are MUST_PASS → traditional boolean AND (all must pass)
+- If ALL calcs are OPTIONAL → only accumulated score determines the alert
+- Mixed → must_pass gates + score accumulation from all calculations
+- The **score threshold** is also a setting (entity-attribute-dependent)
+
+### 3.7 Full Traceability
 
 Every alert can be traced back through:
 - Which detection model triggered it
-- Which calculation results matched
+- Which calculation results matched (and which didn't — with scores)
 - What settings/thresholds were applied (and why — resolution trace)
+- How each calculation's score was computed (which score step matched)
+- The accumulated score vs. the score threshold
+- Whether the alert triggered via all-pass or score-based path
 - What source data was involved
 - Processing logs
 
@@ -292,29 +328,51 @@ FX reverse pair detection cascades to all FX products on those currency pairs.
 
 ## 6. Detection Models
 
+Each model defines its calculations with strictness (MUST_PASS / OPTIONAL), score steps, and a score threshold.
+
 ### 6.1 Wash Trading — Full Day (`wash_full_day`)
 - **Time window**: Business date
-- **Conditions**: Large trading activity + buy/sell quantity cancellation + VWAP buy ≈ VWAP sell
+- **Calculations**:
+  - Large trading activity — MUST_PASS (gate: must have significant activity)
+  - Buy/sell quantity cancellation — OPTIONAL (score: higher when buy_qty ≈ sell_qty)
+  - VWAP proximity — OPTIONAL (score: higher when VWAP buy ≈ VWAP sell)
+- **Score threshold**: Configurable via settings (e.g., 15 points)
 - **Granularity**: Per product + account
+- **Example**: Even if VWAP proximity doesn't pass its threshold, a very close quantity match + large activity can still trigger via score
 
 ### 6.2 Wash Trading — Intraday (`wash_intraday`)
 - **Time window**: Batch or trend window
-- **Conditions**: Same as Full Day at finer granularity
+- **Calculations**: Same as Full Day at finer granularity
+- **Score threshold**: Configurable (may differ from Full Day)
 
 ### 6.3 Market Price Ramping — MPR (`market_price_ramping`)
 - **Time window**: Trend window (up/down trends)
-- **Conditions**: Large trading activity on the same side as the trend (buying during uptrend, selling during downtrend — using adjusted direction)
+- **Calculations**:
+  - Trend detection — MUST_PASS (gate: trend must exist)
+  - Large trading activity — OPTIONAL (score: graduated by volume)
+  - Same-side trading ratio — OPTIONAL (score: higher when more trades align with trend)
+- **Score threshold**: Configurable via settings
 - **Granularity**: Per product + account + trend window
 
 ### 6.4 Insider Dealing (`insider_dealing`)
 - **Time window**: Market event window (lookback)
-- **Conditions**: Large trading activity in related products to the base product/company before the market event + profit detection (look-forward)
+- **Calculations**:
+  - Market event detection — MUST_PASS (gate: event must exist)
+  - Large trading activity in related products — OPTIONAL (score: graduated by value)
+  - Profit from event (look-forward) — OPTIONAL (score: graduated by profit amount)
+- **Score threshold**: Configurable via settings
 - **Granularity**: Per product + account, expanded to related products
 - **Related products**: All relationship types applicable to the base product
+- **Example**: Account bought modest amount but profited significantly → high profit score compensates for lower activity score
 
 ### 6.5 Spoofing/Layering (`spoofing_layering`)
 - **Time window**: Cancellation pattern window
-- **Conditions**: Cancellation pattern detected + large executed orders on opposite side + cancelled orders within/outside spread analysis
+- **Calculations**:
+  - Cancellation pattern — MUST_PASS (gate: pattern must be detected)
+  - Large executed orders on opposite side — OPTIONAL (score: graduated by execution value)
+  - Spread analysis (within/outside) — OPTIONAL (score: higher when within spread)
+  - Opposite-side ratio — OPTIONAL (score: higher when more cancels on opposite side)
+- **Score threshold**: Configurable via settings
 - **Granularity**: Per product + account + pattern event
 
 ---
@@ -331,6 +389,8 @@ FX reverse pair detection cascades to all FX products on those currency pairs.
 | **Pattern thresholds** | Cancellation count/ratio, spread tolerance |
 | **Aggregation config** | Granularity levels, time window types to include |
 | **Detection levels** | Exchange, timezone, asset class, instrument type |
+| **Score steps** | Per-calculation graduated scoring based on value ranges (see 7.4) |
+| **Score thresholds** | Per-model minimum score to trigger alert |
 
 ### 7.2 Matching Pattern Schema
 
@@ -367,6 +427,39 @@ FX reverse pair detection cascades to all FX products on those currency pairs.
 - `multi_dimensional` match_type: most matching dimensions wins
 - Default: always present, used when no override matches
 - Resolution trace: recorded for every resolution (which override won and why)
+
+### 7.4 Score Steps
+
+Score steps define graduated scoring for each calculation. They are settings (entity-attribute-dependent, resolved via the settings engine).
+
+```json
+{
+  "setting_id": "large_activity_score_steps",
+  "name": "Score Steps for Large Trading Activity",
+  "type": "score_steps",
+  "default": [
+    {"min_value": 0, "max_value": 10000, "score": 0},
+    {"min_value": 10000, "max_value": 100000, "score": 3},
+    {"min_value": 100000, "max_value": 500000, "score": 7},
+    {"min_value": 500000, "max_value": null, "score": 10}
+  ],
+  "match_type": "hierarchy",
+  "overrides": [
+    {
+      "match": {"asset_class": "equity", "instrument_type": "option"},
+      "value": [
+        {"min_value": 0, "max_value": 5000, "score": 0},
+        {"min_value": 5000, "max_value": 50000, "score": 3},
+        {"min_value": 50000, "max_value": 200000, "score": 7},
+        {"min_value": 200000, "max_value": null, "score": 10}
+      ],
+      "priority": 1
+    }
+  ]
+}
+```
+
+Score steps are resolved the same way as any other setting — product-specific wins, then hierarchy/multi-dimensional, then default. The score for a calculation is determined by finding which step range contains the actual computed value.
 
 ---
 
@@ -407,7 +500,7 @@ FX reverse pair detection cascades to all FX products on those currency pairs.
     - Graphs: price, volume, orders timeline (with lookback/lookahead)
     - Calculation trace: interactive DAG with live values and formulas
     - Settings resolution trace: which thresholds applied and why
-    - Score breakdown
+    - Score breakdown: per-calculation scores (with step resolution), accumulated score vs. threshold, trigger path (all-pass vs. score-based)
     - Related data links
     - Processing logs
 

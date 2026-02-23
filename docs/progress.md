@@ -57,6 +57,7 @@
 | Theme | Tailwind CSS 4 + CSS variables | Bloomberg dark default, easy light mode toggle |
 | AI Assistant | Claude API (live) + Mock mode | Works with or without API key |
 | Demo Controls | File-based snapshots | Simple, reliable, fast reset |
+| Alert Scoring | Graduated scoring + MUST_PASS/OPTIONAL | Flexible: alerts can trigger via all-thresholds-pass OR score-exceeds-threshold |
 
 ---
 
@@ -71,6 +72,7 @@
 - [x] Progress tracker created
 - [x] Git repo initialized
 - [x] Synthetic data guidelines approved (50+ real products, 200+ accounts, order versioning, 3 types of market data, news feed, 13 embedded patterns)
+- [x] Graduated scoring system added across all documents (score steps, MUST_PASS/OPTIONAL, score-based alert triggering)
 
 ---
 

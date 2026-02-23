@@ -212,11 +212,93 @@ Then alerts are generated within 3 seconds
 And the alert count badge updates in the sidebar
 ```
 
+### Scenario: Configure Score Steps for a Calculation
+```gherkin
+Given I am composing a detection model in Model Composer
+When I select "large_trading_activity" as a building block
+And I configure score steps from settings "large_activity_score_steps" for equity:
+  | min_value | max_value | score |
+  | 0         | 10000     | 0     |
+  | 10000     | 100000    | 3     |
+  | 100000    | 500000    | 7     |
+  | 500000    | null      | 10    |
+Then the score steps are entity-attribute-dependent (resolved via settings engine)
+And different entity contexts (e.g., FX vs equity) can have different score step ranges
+```
+
+### Scenario: Tag Calculations as MUST_PASS or OPTIONAL
+```gherkin
+Given I am composing a detection model with 3 calculations:
+  | calculation             | strictness |
+  | quantity_match          | MUST_PASS  |
+  | vwap_proximity          | MUST_PASS  |
+  | large_trading_activity  | OPTIONAL   |
+When I save the model configuration
+Then the model definition records each calculation's strictness tag
+And MUST_PASS calculations act as gate conditions
+And OPTIONAL calculations contribute only to the accumulated score
+```
+
+### Scenario: Alert Triggers via Score When Not All Thresholds Pass
+```gherkin
+Given a detection model "wash_full_day" with:
+  | calculation            | strictness | threshold | actual | passed | score |
+  | quantity_match         | MUST_PASS  | 90%       | 95%    | YES    | 8     |
+  | vwap_proximity         | MUST_PASS  | 0.02      | 0.005  | YES    | 9     |
+  | large_trading_activity | OPTIONAL   | 2.0x      | 1.5x   | NO     | 3     |
+And the model score_threshold setting resolves to 15 for this entity context
+When the detection engine evaluates this model
+Then must_pass_ok = true (quantity_match and vwap_proximity both passed)
+And all_passed = false (large_trading_activity did not pass)
+And accumulated_score = 20 (8 + 9 + 3)
+And score_ok = true (20 >= 15)
+And alert_fires = true (must_pass_ok AND score_ok)
+And the alert trace records the trigger path as "score-based"
+```
+
+### Scenario: Alert Does NOT Trigger When MUST_PASS Fails
+```gherkin
+Given a detection model with:
+  | calculation    | strictness | threshold | actual | passed | score |
+  | quantity_match | MUST_PASS  | 90%       | 70%    | NO     | 2     |
+  | vwap_proximity | MUST_PASS  | 0.02      | 0.005  | YES    | 9     |
+And accumulated_score = 11 which exceeds the score_threshold of 10
+When the detection engine evaluates this model
+Then must_pass_ok = false (quantity_match did not pass)
+And alert_fires = false (must_pass_ok is required)
+And no alert is generated
+```
+
+### Scenario: Score Steps Resolve Differently Per Entity Context
+```gherkin
+Given setting "large_activity_score_steps" with:
+  | context                | steps                                          |
+  | default                | [0→0, 10000→3, 100000→7, 500000→10]           |
+  | asset_class=fx         | [0→0, 50000→3, 500000→7, 2000000→10]          |
+When I resolve score steps for {asset_class: "equity", value: 150000}
+Then the score is 7 (using default steps: 100000-500000 range)
+When I resolve score steps for {asset_class: "fx", value: 150000}
+Then the score is 3 (using FX steps: 50000-500000 range)
+And each resolution trace records which score step definition was used
+```
+
+### Scenario: Score Threshold Resolved via Settings Engine
+```gherkin
+Given a detection model "insider_dealing" with score_threshold setting "insider_score_threshold"
+And setting "insider_score_threshold" with:
+  | scope              | value |
+  | default            | 15    |
+  | asset_class=equity | 12    |
+When the detection engine evaluates for {asset_class: "equity"}
+Then the score threshold used is 12
+And the resolution trace shows "hierarchy: asset_class=equity"
+```
+
 ---
 
 ## Feature: Wash Trading Detection (Act 1)
 
-### Scenario: Detect Wash Trading — Full Day
+### Scenario: Detect Wash Trading — Full Day with Graduated Scoring
 ```gherkin
 Given account ACC-42 traded AAPL on 2024-01-15:
   | time  | side | quantity | price  |
@@ -225,21 +307,28 @@ Given account ACC-42 traded AAPL on 2024-01-15:
   | 14:00 | SELL | 1000     | 185.20 |
   | 14:30 | SELL | 500      | 185.10 |
 And setting "wash_vwap_threshold" = 0.02 for equity
+And the wash_full_day model has calculations:
+  | calculation        | strictness | threshold |
+  | quantity_match     | MUST_PASS  | 90%       |
+  | vwap_proximity     | MUST_PASS  | 0.02      |
+  | large_activity     | OPTIONAL   | 2.0x      |
 When wash_full_day model runs
 Then it detects:
-  | check              | value  | threshold | result |
-  | buy_qty ≈ sell_qty | 1500/1500 | match  | PASS   |
-  | vwap_proximity     | 0.0011 | 0.02     | PASS   |
-  | large_activity     | 2.5x   | 2.0x     | PASS   |
-And an alert is generated with score > 0.8
-And the alert detail shows the VWAP comparison and order timeline
+  | check              | value     | threshold | passed | score |
+  | quantity_match     | 100%      | 90%       | YES    | 10    |
+  | vwap_proximity     | 0.0011    | 0.02      | YES    | 9     |
+  | large_activity     | 2.5x      | 2.0x      | YES    | 7     |
+And must_pass_ok = true
+And accumulated_score = 26, score_threshold = 15
+And alert_fires = true (all_passed path: all thresholds passed)
+And the alert detail shows the VWAP comparison, order timeline, and score breakdown
 ```
 
 ---
 
 ## Feature: Market Price Ramping Detection (Act 2)
 
-### Scenario: Detect MPR During Up Trend
+### Scenario: Detect MPR During Up Trend with Graduated Scoring
 ```gherkin
 Given a detected up trend for AAPL: 10:00-11:00
 And account ACC-55 aggressively bought during the up trend:
@@ -247,19 +336,28 @@ And account ACC-55 aggressively bought during the up trend:
   | 10:05 | BUY  | 2000     |
   | 10:15 | BUY  | 3000     |
   | 10:25 | BUY  | 1500     |
-And setting "mpr_same_side_threshold" = 80% (80% of trades on same side as trend)
+And the market_price_ramping model has calculations:
+  | calculation        | strictness | threshold |
+  | trend_detected     | MUST_PASS  | exists    |
+  | same_side_pct      | MUST_PASS  | 80%       |
+  | large_activity     | OPTIONAL   | 2.0x      |
 When market_price_ramping model runs
-Then it detects ACC-55 with 100% same-side trading (all BUY during up trend)
-And the activity exceeds the large trading threshold
-And an MPR alert is generated
+Then it detects:
+  | check          | value | threshold | passed | score |
+  | trend_detected | yes   | exists    | YES    | 10    |
+  | same_side_pct  | 100%  | 80%       | YES    | 10    |
+  | large_activity | 3.2x  | 2.0x      | YES    | 8     |
+And must_pass_ok = true, accumulated_score = 28
+And an MPR alert is generated via all_passed path
 And the alert chart shows the trend with the account's buy markers overlaid
+And the alert detail includes score breakdown per calculation
 ```
 
 ---
 
 ## Feature: Insider Dealing Detection (Act 3)
 
-### Scenario: Detect Insider Dealing Before Market Event
+### Scenario: Detect Insider Dealing Before Market Event with Graduated Scoring
 ```gherkin
 Given AAPL had a market event on 2024-01-15 (5.4% price jump)
 And setting "insider_lookback_days" = 5 for equity
@@ -268,18 +366,29 @@ And account ACC-42 bought AAPL call options on 2024-01-12 and 2024-01-13:
   | 2024-01-12 | AAPL-C150 | BUY  | 15000.00 |
   | 2024-01-13 | AAPL-C155 | BUY  | 8000.00  |
 And AAPL-C150 and AAPL-C155 are related to AAPL via "underlying" relationship
+And the insider_dealing model has calculations:
+  | calculation         | strictness | threshold        |
+  | market_event        | MUST_PASS  | event exists     |
+  | lookback_activity   | MUST_PASS  | within window    |
+  | related_products    | OPTIONAL   | has relationship |
+  | large_activity      | OPTIONAL   | 2.0x             |
 When insider_dealing model runs
-Then it detects ACC-42 traded related products 2-3 days before the market event
-And the total activity ($23,000) exceeds the large activity threshold
+Then it detects:
+  | check             | value    | threshold      | passed | score |
+  | market_event      | 5.4%     | 3% change      | YES    | 10    |
+  | lookback_activity | 2-3 days | within 5 days  | YES    | 8     |
+  | related_products  | options  | relationship   | YES    | 7     |
+  | large_activity    | $23,000  | 2.0x           | YES    | 7     |
+And must_pass_ok = true, accumulated_score = 32
 And an insider dealing alert is generated
-And the alert shows: market event, lookback window, related product expansion, profit calculation
+And the alert shows: market event, lookback window, related product expansion, profit calculation, and score breakdown
 ```
 
 ---
 
 ## Feature: Alert Investigation
 
-### Scenario: Drill Down Into Alert
+### Scenario: Drill Down Into Alert with Score Breakdown
 ```gherkin
 Given alert ALT-001 exists for insider dealing
 When I click ALT-001 in the Alert Summary
@@ -289,10 +398,17 @@ Then I see the Alert Detail with:
   - Price chart: AAPL price with market event marker and ACC-42's trade markers
   - Calculation trace DAG: market_event → large_activity → insider_dealing
   - Settings resolution: lookback=5 days (equity default), threshold=2x (global)
-  - Score breakdown: activity_score=0.82, event_significance=0.91, composite=0.87
+  - Score breakdown showing per-calculation scores with MUST_PASS/OPTIONAL tags:
+    | calculation       | strictness | score | max | passed |
+    | market_event      | MUST_PASS  | 10    | 10  | YES    |
+    | lookback_activity | MUST_PASS  | 8     | 10  | YES    |
+    | related_products  | OPTIONAL   | 7     | 10  | YES    |
+    | large_activity    | OPTIONAL   | 7     | 10  | YES    |
+  - Trigger path: "all_passed" (all thresholds passed)
+  - Accumulated score: 32, score threshold: 12 (equity)
   - Related orders table showing all ACC-42's AAPL option trades
-And I can click any calculation node to see its formula and input values
-And I can click any setting to see the full resolution trace
+And I can click any calculation node to see its formula, input values, and score steps
+And I can click any setting to see the full resolution trace (including score step resolution)
 ```
 
 ### Scenario: Configurable Widget Layout
