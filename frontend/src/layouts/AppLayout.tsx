@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar.tsx";
+import DemoToolbar from "../components/DemoToolbar.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 
 export default function AppLayout() {
@@ -12,7 +13,7 @@ export default function AppLayout() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top toolbar */}
         <header className="h-10 shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
-          <div className="text-xs text-muted" id="page-title" />
+          <DemoToolbar />
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
@@ -20,7 +21,6 @@ export default function AppLayout() {
             >
               {theme === "dark" ? "Light" : "Dark"}
             </button>
-            <div id="toolbar-actions" />
           </div>
         </header>
 
