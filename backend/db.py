@@ -36,12 +36,22 @@ db_manager = DuckDBManager()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from backend.services.metadata_service import MetadataService
+    from backend.engine.settings_resolver import SettingsResolver
+    from backend.engine.detection_engine import DetectionEngine
+    from backend.services.alert_service import AlertService
 
     db_manager.connect(str(settings.workspace_dir / "analytics.duckdb"))
 
     # Make services available via app.state
     app.state.db = db_manager
     app.state.metadata = MetadataService(settings.workspace_dir)
+    app.state.resolver = SettingsResolver()
+    app.state.detection = DetectionEngine(
+        settings.workspace_dir, db_manager, app.state.metadata, app.state.resolver
+    )
+    app.state.alerts = AlertService(
+        settings.workspace_dir, db_manager, app.state.detection
+    )
 
     yield
     db_manager.close()
