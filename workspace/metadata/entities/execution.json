@@ -1,0 +1,134 @@
+{
+  "entity_id": "execution",
+  "name": "Trade Execution",
+  "description": "Individual trade executions (fills) across all instrument types.",
+  "fields": [
+    {
+      "name": "execution_id",
+      "type": "string",
+      "description": "Unique execution identifier",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "product_id",
+      "type": "string",
+      "description": "Product/instrument identifier",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "account_id",
+      "type": "string",
+      "description": "Trading account identifier",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "trader_id",
+      "type": "string",
+      "description": "Trader who executed the trade",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "side",
+      "type": "string",
+      "description": "Trade direction",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "BUY",
+        "SELL"
+      ]
+    },
+    {
+      "name": "price",
+      "type": "decimal",
+      "description": "Execution price per unit",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "quantity",
+      "type": "decimal",
+      "description": "Number of units traded",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "instrument_type",
+      "type": "string",
+      "description": "Type of instrument",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "stock",
+        "option",
+        "future"
+      ]
+    },
+    {
+      "name": "asset_class",
+      "type": "string",
+      "description": "Asset class category",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "equity",
+        "fx",
+        "commodity"
+      ]
+    },
+    {
+      "name": "execution_date",
+      "type": "date",
+      "description": "Date of execution (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "execution_time",
+      "type": "string",
+      "description": "Time of execution (HH:MM:SS)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "contract_size",
+      "type": "decimal",
+      "description": "Contract multiplier for options/futures",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "option_type",
+      "type": "string",
+      "description": "Option type (call/put)",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "call",
+        "put"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "target_entity": "order",
+      "join_fields": {
+        "product_id": "product_id",
+        "account_id": "account_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "md_eod",
+      "join_fields": {
+        "product_id": "product_id",
+        "execution_date": "trade_date"
+      },
+      "relationship_type": "many_to_one"
+    }
+  ]
+}

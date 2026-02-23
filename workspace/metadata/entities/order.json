@@ -1,0 +1,73 @@
+{
+  "entity_id": "order",
+  "name": "Order",
+  "description": "Order records including filled, cancelled, and pending orders.",
+  "fields": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "description": "Unique order identifier",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "product_id",
+      "type": "string",
+      "description": "Product/instrument identifier",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "account_id",
+      "type": "string",
+      "description": "Trading account identifier",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "side",
+      "type": "string",
+      "description": "Order direction",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "BUY",
+        "SELL"
+      ]
+    },
+    {
+      "name": "order_time",
+      "type": "string",
+      "description": "Time order was placed (HH:MM:SS)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Order status",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "FILLED",
+        "CANCELLED",
+        "PENDING"
+      ]
+    },
+    {
+      "name": "quantity",
+      "type": "decimal",
+      "description": "Order quantity",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "order_date",
+      "type": "date",
+      "description": "Date of order (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": false
+    }
+  ],
+  "relationships": []
+}

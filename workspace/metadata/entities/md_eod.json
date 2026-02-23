@@ -1,0 +1,36 @@
+{
+  "entity_id": "md_eod",
+  "name": "End-of-Day Market Data",
+  "description": "Daily close prices and volumes for all products.",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": "string",
+      "description": "Product identifier",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "trade_date",
+      "type": "date",
+      "description": "Trading date (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "close_price",
+      "type": "decimal",
+      "description": "Closing price",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "volume",
+      "type": "integer",
+      "description": "Total daily volume",
+      "is_key": false,
+      "nullable": false
+    }
+  ],
+  "relationships": []
+}

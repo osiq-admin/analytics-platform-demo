@@ -176,8 +176,13 @@ class DetectionEngine:
                         score_step_matched = {"min": step.min_value, "max": step.max_value, "score": step.score}
                         break
 
-        # Determine threshold pass (score > 0 means the value fell in a scoring range)
-        threshold_passed = score > 0
+        # Gate calcs (MUST_PASS with no score steps) auto-pass when present in
+        # query results — the query already pre-filters for the required condition.
+        # Scored calcs pass when score > 0 (value fell in a scoring range).
+        if not mc.score_steps_setting:
+            threshold_passed = True
+        else:
+            threshold_passed = score > 0
 
         return CalculationScore(
             calc_id=mc.calc_id,

@@ -73,7 +73,7 @@ class DemoController:
             log.warning("Snapshot not found: %s", checkpoint)
             return False
 
-        # Restore data, results, alerts
+        # Restore data, results, alerts — clear dirs not present in snapshot
         for subdir in ["data", "results", "alerts"]:
             dest = self._workspace / subdir
             src = snapshot_dir / subdir
@@ -81,6 +81,8 @@ class DemoController:
                 if dest.exists():
                     shutil.rmtree(dest)
                 shutil.copytree(src, dest)
+            elif dest.exists():
+                shutil.rmtree(dest)
 
         idx = CHECKPOINTS.index(checkpoint) if checkpoint in CHECKPOINTS else 0
         self._state = {"current_checkpoint": checkpoint, "checkpoint_index": idx}
