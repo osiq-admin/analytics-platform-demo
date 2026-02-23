@@ -1,8 +1,14 @@
 import type { AlertTrace } from "../../../stores/alertStore.ts";
+import Panel from "../../../components/Panel.tsx";
 import StatusBadge from "../../../components/StatusBadge.tsx";
 import BusinessDescription from "./BusinessDescription.tsx";
 import EntityContext from "./EntityContext.tsx";
 import ScoreBreakdown from "./ScoreBreakdown.tsx";
+import CalculationTrace from "./CalculationTrace.tsx";
+import MarketDataChart from "./MarketDataChart.tsx";
+import SettingsTrace from "./SettingsTrace.tsx";
+import RelatedOrders from "./RelatedOrders.tsx";
+import FooterActions from "./FooterActions.tsx";
 
 interface AlertDetailProps {
   alert: AlertTrace;
@@ -10,6 +16,9 @@ interface AlertDetailProps {
 }
 
 export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
+  const productId = alert.entity_context?.product_id ?? "";
+  const accountId = alert.entity_context?.account_id ?? "";
+
   return (
     <div className="flex flex-col gap-4 h-full overflow-auto">
       {/* Header bar */}
@@ -36,14 +45,39 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
         </span>
       </div>
 
-      {/* Widget grid */}
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      {/* Row 1: Business Description | Entity Context */}
+      <div className="grid grid-cols-2 gap-4">
         <BusinessDescription alert={alert} />
         <EntityContext alert={alert} />
-        <div className="col-span-2">
-          <ScoreBreakdown alert={alert} />
-        </div>
       </div>
+
+      {/* Row 2: Calculation Trace DAG | Market Data Chart */}
+      <div className="grid grid-cols-2 gap-4">
+        <Panel title="Calculation Trace" noPadding className="min-h-[250px]">
+          <CalculationTrace alert={alert} />
+        </Panel>
+        {productId ? (
+          <MarketDataChart productId={productId} />
+        ) : (
+          <Panel title="Market Data">
+            <p className="text-xs text-muted">No product context available.</p>
+          </Panel>
+        )}
+      </div>
+
+      {/* Row 3: Settings Resolution | Score Breakdown */}
+      <div className="grid grid-cols-2 gap-4">
+        <SettingsTrace entries={alert.settings_trace ?? []} />
+        <ScoreBreakdown alert={alert} />
+      </div>
+
+      {/* Row 4: Related Orders (full width) */}
+      {productId && accountId && (
+        <RelatedOrders productId={productId} accountId={accountId} />
+      )}
+
+      {/* Row 5: Footer Actions */}
+      <FooterActions alert={alert} />
     </div>
   );
 }
