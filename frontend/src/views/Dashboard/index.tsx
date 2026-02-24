@@ -66,24 +66,21 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 gap-4">
         <Panel title="Alerts by Model" dataTour="dashboard-by-model">
           <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={stats.by_model}
-                dataKey="cnt"
-                nameKey="model_id"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label={(props: PieLabelRenderProps) => `${props.name ?? ""} (${props.value ?? 0})`}
-                labelLine
-                fontSize={10}
-              >
+            <BarChart data={stats.by_model} layout="vertical" margin={{ top: 4, right: 40, left: 10, bottom: 0 }}>
+              <XAxis type="number" tick={{ fontSize: 9, fill: "var(--color-muted)" }} />
+              <YAxis
+                type="category"
+                dataKey="model_id"
+                tick={{ fontSize: 9, fill: "var(--color-muted)" }}
+                width={130}
+              />
+              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
+              <Bar dataKey="cnt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "var(--color-muted)" }}>
                 {stats.by_model.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
-              </Pie>
-              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
-            </PieChart>
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </Panel>
 
