@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 7 dynamic metadata foundation complete)
+**Last Updated**: 2026-02-24 (Phase 8 explainability drill-down UI complete)
 
 ---
 
@@ -104,6 +104,7 @@
 | M68 | Metadata CRUD APIs | COMPLETE | 5 | 5 | PUT/DELETE for calcs/settings/entities/models, dependency checker, dependency graph, validation endpoint, 13 new tests |
 | M69 | SQL Parameter Substitution | COMPLETE | 3 | 3 | Setting + literal param resolution, $param_name substitution, 7 new tests |
 | M71 | Trace API Endpoints | COMPLETE | 3 | 3 | Trace API endpoints (alert, calculation, settings) — 10 new tests |
+| M72 | Frontend Explainability Drill-Down | COMPLETE | 4 | 4 | ExplainabilityPanel, SQLViewer, SettingsTraceViewer components, AlertDetail integration |
 
 ---
 

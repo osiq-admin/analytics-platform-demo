@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AlertTrace } from "../../../stores/alertStore.ts";
+import { api } from "../../../api/client.ts";
 import Panel from "../../../components/Panel.tsx";
 import StatusBadge from "../../../components/StatusBadge.tsx";
+import ExplainabilityPanel, { type AlertTraceResponse } from "../../../components/ExplainabilityPanel.tsx";
+import LoadingSpinner from "../../../components/LoadingSpinner.tsx";
 import BusinessDescription from "./BusinessDescription.tsx";
 import EntityContext from "./EntityContext.tsx";
 import ScoreBreakdown from "./ScoreBreakdown.tsx";
@@ -22,10 +25,11 @@ const PANEL_LABELS: Record<PanelId, string> = {
   settings: "Settings",
   scores: "Scores",
   orders: "Orders",
+  explainability: "Explainability",
   footer: "Actions",
 };
 
-const ALL_PANELS: PanelId[] = ["business", "entity", "calcTrace", "marketData", "volume", "settings", "scores", "orders", "footer"];
+const ALL_PANELS: PanelId[] = ["business", "entity", "calcTrace", "marketData", "volume", "settings", "scores", "orders", "explainability", "footer"];
 
 const DEFAULT_CONFIG: Record<PanelId, boolean> = Object.fromEntries(
   ALL_PANELS.map((id) => [id, true])
@@ -52,6 +56,33 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
   const [panelConfig, setPanelConfig] = useState(loadPanelConfig);
   const modelLayout = getModelLayout(alert.model_id);
   const isEmphasized = (id: PanelId) => modelLayout?.emphasis.includes(id) ?? false;
+
+  // Fetch explainability trace from /api/trace/alert/{id}
+  const [traceData, setTraceData] = useState<AlertTraceResponse | null>(null);
+  const [traceLoading, setTraceLoading] = useState(false);
+  const [traceError, setTraceError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setTraceLoading(true);
+    setTraceError(null);
+
+    api
+      .get<AlertTraceResponse>(`/trace/alert/${alert.alert_id}`)
+      .then((data) => {
+        if (!cancelled) setTraceData(data);
+      })
+      .catch((e) => {
+        if (!cancelled) setTraceError(String(e));
+      })
+      .finally(() => {
+        if (!cancelled) setTraceLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [alert.alert_id]);
 
   const togglePanel = (id: PanelId) => {
     setPanelConfig((prev) => {
@@ -180,7 +211,29 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
         </div>
       )}
 
-      {/* Row 6: Footer Actions */}
+      {/* Row 6: Explainability Trace (full width) */}
+      {panelConfig.explainability && (
+        <div className={isEmphasized("explainability") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+          {traceLoading && (
+            <Panel title="Explainability Trace">
+              <div className="flex items-center gap-2 py-4 justify-center">
+                <LoadingSpinner size="sm" />
+                <span className="text-xs text-muted">Loading trace data...</span>
+              </div>
+            </Panel>
+          )}
+          {traceError && (
+            <Panel title="Explainability Trace">
+              <div className="text-xs text-muted py-2">
+                Trace data not available for this alert.
+              </div>
+            </Panel>
+          )}
+          {traceData && !traceLoading && <ExplainabilityPanel trace={traceData} />}
+        </div>
+      )}
+
+      {/* Row 7: Footer Actions */}
       {panelConfig.footer && <FooterActions alert={alert} />}
     </div>
   );
