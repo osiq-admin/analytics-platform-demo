@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 9 complete — Metadata Editor, Visual Config, E2E Tests & Tours)
+**Last Updated**: 2026-02-24 (Phase 10 complete — Regulatory Traceability & Model Tagging)
 
 ---
 
@@ -30,6 +30,7 @@
 | E2E Testing (Phase 7-8) | COMPLETE | M73: 42 Playwright E2E scenarios, 11 test classes, 0 console errors — 294 total tests |
 | Metadata Editor & Visual Config (Phase 9) | COMPLETE | M74-M78: MetadataEditor view, visual editors, dashboard widgets, CRUD wiring — 280 backend tests |
 | E2E Testing & Tours (Phase 9) | COMPLETE | 14 new Playwright E2E tests (56 total), MetadataEditor guided tour, demo guide updates — 294 total tests |
+| Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 
 ---
 
@@ -116,6 +117,11 @@
 | M76 | Visual Editors for All 4 Types | COMPLETE | 4 | 4 | EntityEditor, CalculationEditor, SettingsEditor, DetectionModelEditor |
 | M77 | Dashboard Widgets + Chart Switching | COMPLETE | 5 | 5 | WidgetContainer, widgetStore, ChartTypeSwitcher, multi-renderer (5 types) |
 | M78 | Wire CRUD into Existing Views | COMPLETE | 6 | 6 | Edit/delete in EntityDesigner, MetadataExplorer, SettingsManager, ModelComposer + verification |
+| M79 | Regulatory Tags on Backend Models | COMPLETE | 6 | 6 | regulatory_tags on calcs, regulatory_coverage on models, TS types, snapshot regen |
+| M80 | Regulatory Traceability API | COMPLETE | 3 | 3 | Regulation registry, coverage map, traceability graph endpoint — 9 tests |
+| M81 | Frontend RegulatoryMap View | COMPLETE | 3 | 3 | React Flow graph, regulatoryStore, route + sidebar entry |
+| M82 | Coverage Analysis & Suggestions | COMPLETE | 3 | 3 | SuggestionService, API endpoint, frontend suggestions panel — 4 tests |
+| M83 | E2E Tests, Tours & Documentation | COMPLETE | 4 | 4 | 4 E2E tests, guided tour, demo guide, progress tracker |
 
 ---
 
@@ -437,6 +443,24 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **Demo Guide**: Updated `docs/demo-guide.md` with Phase 9 features — Metadata Editor section, chart type switching, widget visibility, CRUD buttons
 - [x] **Visual Verification**: 11 screenshots taken across MetadataEditor, Dashboard, EntityDesigner, SettingsManager, ModelComposer
 - **Total**: 294 tests passing (56 E2E + 238 backend), 1 pre-existing flaky test (Monaco keyboard in headless)
+
+### 2026-02-24 (Phase 10: Regulatory Traceability & Model Tagging — M79-M83)
+- [x] **M79**: Added `regulatory_tags` (list[str]) to CalculationDefinition, `RegulatoryCoverage` model + `regulatory_coverage` to DetectionModelDefinition
+- [x] **M79**: Updated all 10 calculation JSONs with regulatory article tags (MAR, MiFID II, Dodd-Frank)
+- [x] **M79**: Updated all 5 detection model JSONs with structured regulatory coverage entries
+- [x] **M79**: Expanded TS interfaces (RegulatoryCoverage, regulatory_tags, regulatory_coverage)
+- [x] **M80**: Created regulation registry (`workspace/metadata/regulations/registry.json`) — 4 regulations, 10 articles
+- [x] **M80**: Added `load_regulation_registry()` and `get_regulatory_coverage_map()` to MetadataService
+- [x] **M80**: Added 3 API endpoints: `/regulatory/registry`, `/regulatory/coverage`, `/regulatory/traceability-graph`
+- [x] **M80**: 9 new tests in `test_regulatory_api.py` (registry, coverage, graph)
+- [x] **M81**: Created `regulatoryStore.ts` Zustand store with parallel fetch
+- [x] **M81**: Created `RegulatoryMap/index.tsx` — React Flow + dagre graph with 4 node types, coverage cards, detail panel
+- [x] **M81**: Added `/regulatory` route and "Governance" sidebar group
+- [x] **M82**: Created `SuggestionService` — gap analysis, model improvements, unused calcs
+- [x] **M82**: Added `/regulatory/suggestions` endpoint + 4 new tests
+- [x] **M82**: Added collapsible SuggestionsPanel to RegulatoryMap
+- [x] **M83**: Added 4 E2E tests for RegulatoryMap, guided tour (4 steps), demo guide section
+- **Total**: 279 backend tests (13 new), 914 frontend modules, 4 new files, 12 modified files
 
 ---
 
