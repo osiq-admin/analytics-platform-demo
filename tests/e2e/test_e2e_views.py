@@ -682,22 +682,27 @@ class TestOobLayers:
         """Entity Designer shows layer badges in entity list."""
         loaded_page.goto(f"{APP_URL}/entities")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        badge = loaded_page.locator("[data-tour='entity-layer-badge']").first
-        assert badge.is_visible(timeout=10000)
+        # Wait for AG Grid rows to render
+        loaded_page.locator(".ag-row").first.wait_for(timeout=10000)
+        # AG Grid cellRenderer injects HTML via innerHTML — check for OOB/Custom text in grid cells
+        grid_text = loaded_page.locator(".ag-body-viewport").inner_text()
+        assert "OOB" in grid_text or "Custom" in grid_text
 
     def test_metadata_explorer_layer_badges(self, loaded_page):
         """Metadata Explorer shows layer badges on calculation list."""
         loaded_page.goto(f"{APP_URL}/metadata")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        badge = loaded_page.locator("[data-tour='calc-layer-badge']").first
-        assert badge.is_visible(timeout=10000)
+        loaded_page.locator(".ag-row").first.wait_for(timeout=10000)
+        grid_text = loaded_page.locator(".ag-body-viewport").inner_text()
+        assert "OOB" in grid_text or "User" in grid_text
 
     def test_settings_manager_layer_badges(self, loaded_page):
         """Settings Manager shows layer badges."""
         loaded_page.goto(f"{APP_URL}/settings")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        badge = loaded_page.locator("[data-tour='setting-layer-badge']").first
-        assert badge.is_visible(timeout=10000)
+        loaded_page.locator(".ag-row").first.wait_for(timeout=10000)
+        grid_text = loaded_page.locator(".ag-body-viewport").inner_text()
+        assert "OOB" in grid_text or "Custom" in grid_text
 
     def test_model_composer_layer_badges(self, loaded_page):
         """Model Composer shows layer badges."""
