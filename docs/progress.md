@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 6 E2E testing complete)
+**Last Updated**: 2026-02-24 (Phase 7 dynamic metadata foundation complete)
 
 ---
 
@@ -25,6 +25,7 @@
 | Data Model Deep Refinement (Phase 6) | COMPLETE | M49-M65: ISO identifiers, FIX Protocol alignment, 3 new entities, OHLCV, bid/ask — 214 tests |
 | E2E Playwright Testing (Phase 6) | COMPLETE | All 12 views tested, 37 screenshots, slow-mo drag & drop, SQL queries verified, tour tested |
 | GitHub Publication | COMPLETE | Repo created, Claude settings/memory/plans pushed, 92 commits |
+| Dynamic Metadata Foundation (Phase 7) | COMPLETE | M66-M69: Remove hardcodings, CRUD APIs, parameter substitution — 234 tests |
 
 ---
 
@@ -98,6 +99,10 @@
 | M63 | Frontend Dashboard & Alert Detail | COMPLETE | 3 | 3 | OHLC candlestick chart, order detail columns |
 | M64 | Build, Test & Verify | COMPLETE | 4 | 4 | Frontend builds (895 modules), 214 tests pass, 51/51 data integrity |
 | M65 | Documentation | COMPLETE | 2 | 2 | Update progress and demo guide |
+| M66 | Remove Hardcoded Value Columns | COMPLETE | 4 | 4 | Add value_field to ModelCalculation + CalculationDefinition, remove CALC_VALUE_COLUMNS, update 15 JSONs + 2 test fixtures |
+| M67 | Remove Hardcoded Context Fields | COMPLETE | 3 | 3 | Add context_fields to DetectionModelDefinition, update 5 model JSONs, update detection_engine.py |
+| M68 | Metadata CRUD APIs | COMPLETE | 5 | 5 | PUT/DELETE for calcs/settings/entities/models, dependency checker, dependency graph, validation endpoint, 13 new tests |
+| M69 | SQL Parameter Substitution | COMPLETE | 3 | 3 | Setting + literal param resolution, $param_name substitution, 7 new tests |
 
 ---
 

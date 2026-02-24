@@ -1,6 +1,10 @@
 """Calculation DAG executor — builds dependency graph and executes SQL layer by layer."""
+from __future__ import annotations
+
 import logging
+import re
 from pathlib import Path
+from typing import Any, TYPE_CHECKING
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -8,6 +12,9 @@ import pyarrow.parquet as pq
 from backend.db import DuckDBManager
 from backend.models.calculations import CalculationDefinition, CalculationLayer
 from backend.services.metadata_service import MetadataService
+
+if TYPE_CHECKING:
+    from backend.engine.settings_resolver import SettingsResolver
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +27,17 @@ LAYER_ORDER = [
 
 
 class CalculationEngine:
-    def __init__(self, workspace_dir: Path, db: DuckDBManager, metadata: MetadataService):
+    def __init__(
+        self,
+        workspace_dir: Path,
+        db: DuckDBManager,
+        metadata: MetadataService,
+        resolver: SettingsResolver | None = None,
+    ):
         self._workspace = workspace_dir
         self._db = db
         self._metadata = metadata
+        self._resolver = resolver
 
     def build_dag(self) -> list[CalculationDefinition]:
         """Load all calculations and return them in topological (dependency) order.
@@ -111,6 +125,11 @@ class CalculationEngine:
             log.warning("Calculation %s has no SQL logic, skipping", calc.calc_id)
             return {"row_count": 0, "table_name": table_name}
 
+        # Resolve and substitute parameters before execution
+        resolved_params = self._resolve_parameters(calc)
+        if resolved_params:
+            sql = self._substitute_parameters(sql, resolved_params)
+
         log.info("Executing calculation: %s → %s", calc.calc_id, table_name)
         cursor = self._db.cursor()
 
@@ -141,6 +160,58 @@ class CalculationEngine:
 
         log.info("Calculation %s complete: %d rows → %s", calc.calc_id, row_count, table_name)
         return {"row_count": row_count, "table_name": table_name}
+
+    def _resolve_parameters(self, calc: CalculationDefinition) -> dict[str, Any]:
+        """Resolve calculation parameters from settings or literal values.
+
+        Supports structured parameter refs:
+          {"source": "setting", "setting_id": "...", "default": ...}
+          {"source": "literal", "value": ...}
+        Skips old-style parameters (plain values, "note" strings, etc.).
+        """
+        resolved: dict[str, Any] = {}
+        for name, spec in calc.parameters.items():
+            if not isinstance(spec, dict) or "source" not in spec:
+                continue
+
+            if spec["source"] == "setting" and self._resolver is not None:
+                setting_id = spec.get("setting_id", "")
+                setting = self._metadata.load_setting(setting_id)
+                if setting is not None:
+                    result = self._resolver.resolve(setting, {})
+                    resolved[name] = result.value
+                else:
+                    resolved[name] = spec.get("default")
+            elif spec["source"] == "literal":
+                resolved[name] = spec.get("value")
+            elif spec["source"] == "setting" and self._resolver is None:
+                resolved[name] = spec.get("default")
+
+        return resolved
+
+    @staticmethod
+    def _substitute_parameters(sql: str, params: dict[str, Any]) -> str:
+        """Replace $param_name placeholders in SQL with resolved values.
+
+        Uses safe value formatting — only numeric and string types are substituted.
+        """
+        for name, value in params.items():
+            placeholder = f"${name}"
+            if placeholder not in sql:
+                continue
+            if value is None:
+                formatted = "NULL"
+            elif isinstance(value, bool):
+                formatted = "TRUE" if value else "FALSE"
+            elif isinstance(value, (int, float)):
+                formatted = str(value)
+            elif isinstance(value, str):
+                # Escape single quotes for SQL safety
+                formatted = "'" + value.replace("'", "''") + "'"
+            else:
+                formatted = str(value)
+            sql = sql.replace(placeholder, formatted)
+        return sql
 
     def _write_parquet(self, calc: CalculationDefinition, table_name: str, sql: str) -> None:
         """Write calculation results to a Parquet file in the results directory."""

@@ -7,6 +7,7 @@ import pytest
 from backend.db import DuckDBManager
 from backend.engine.calculation_engine import CalculationEngine
 from backend.engine.data_loader import DataLoader
+from backend.engine.settings_resolver import SettingsResolver
 from backend.services.metadata_service import MetadataService
 
 
@@ -243,3 +244,139 @@ class TestExecution:
 
         result = engine.run_one("value_calc")
         assert result["row_count"] == 4
+
+
+class TestParameterSubstitution:
+    """Parameter resolution and SQL substitution."""
+
+    def test_literal_parameter_substitution(self, workspace, db, engine):
+        """Literal parameters should be substituted into SQL."""
+        calc = {
+            "calc_id": "param_test",
+            "name": "Param Test",
+            "layer": "transaction",
+            "description": "",
+            "inputs": [],
+            "output": {"table_name": "calc_param_test", "fields": []},
+            "logic": "SELECT execution_id, price * quantity AS value FROM execution WHERE price > $min_price",
+            "parameters": {
+                "min_price": {"source": "literal", "value": 160.0}
+            },
+            "depends_on": [],
+        }
+        meta_dir = workspace / "metadata" / "calculations" / "transaction"
+        (meta_dir / "param_test.json").write_text(json.dumps(calc))
+
+        result = engine.run_one("param_test")
+        # Only MSFT (price=400) and ACC002's AAPL buy (price doesn't exist > 160, actually
+        # E001: 150, E002: 151, E003: 400, E004: 150.50 — only E003 passes >160
+        assert result["row_count"] == 1
+
+    def test_setting_parameter_substitution(self, workspace, db):
+        """Setting-sourced parameters should resolve from settings files."""
+        # Create a setting
+        (workspace / "metadata" / "settings" / "thresholds" / "min_price_setting.json").write_text(
+            json.dumps({
+                "setting_id": "min_price_setting",
+                "name": "Minimum Price",
+                "value_type": "decimal",
+                "default": 155.0,
+                "match_type": "hierarchy",
+                "overrides": [],
+            })
+        )
+
+        calc = {
+            "calc_id": "setting_param_test",
+            "name": "Setting Param Test",
+            "layer": "transaction",
+            "description": "",
+            "inputs": [],
+            "output": {"table_name": "calc_setting_param", "fields": []},
+            "logic": "SELECT execution_id, price FROM execution WHERE price > $threshold",
+            "parameters": {
+                "threshold": {"source": "setting", "setting_id": "min_price_setting", "default": 100.0}
+            },
+            "depends_on": [],
+        }
+        meta_dir = workspace / "metadata" / "calculations" / "transaction"
+        (meta_dir / "setting_param_test.json").write_text(json.dumps(calc))
+
+        # Build engine with resolver
+        loader = DataLoader(workspace, db)
+        loader.load_all()
+        meta = MetadataService(workspace)
+        resolver = SettingsResolver()
+        engine_with_resolver = CalculationEngine(workspace, db, meta, resolver)
+
+        result = engine_with_resolver.run_one("setting_param_test")
+        # default=155.0 → E003 (400.00) passes. E001 (150), E002 (151), E004 (150.50) don't.
+        assert result["row_count"] == 1
+
+    def test_setting_parameter_uses_default_when_no_resolver(self, workspace, db, engine):
+        """When no resolver is provided, setting params should use their default value."""
+        calc = {
+            "calc_id": "no_resolver_test",
+            "name": "No Resolver Test",
+            "layer": "transaction",
+            "description": "",
+            "inputs": [],
+            "output": {"table_name": "calc_no_resolver", "fields": []},
+            "logic": "SELECT execution_id FROM execution WHERE price > $min_price",
+            "parameters": {
+                "min_price": {"source": "setting", "setting_id": "nonexistent_setting", "default": 200.0}
+            },
+            "depends_on": [],
+        }
+        meta_dir = workspace / "metadata" / "calculations" / "transaction"
+        (meta_dir / "no_resolver_test.json").write_text(json.dumps(calc))
+
+        result = engine.run_one("no_resolver_test")
+        # default=200.0 → only E003 (400.00) passes
+        assert result["row_count"] == 1
+
+    def test_old_style_parameters_ignored(self, workspace, db, engine):
+        """Old-style parameters (plain values, notes) should not affect SQL."""
+        calc = {
+            "calc_id": "old_params_test",
+            "name": "Old Params Test",
+            "layer": "transaction",
+            "description": "",
+            "inputs": [],
+            "output": {"table_name": "calc_old_params", "fields": []},
+            "logic": "SELECT execution_id, price * quantity AS value FROM execution",
+            "parameters": {
+                "default_multiplier": 2.0,
+                "note": "This is an old-style parameter"
+            },
+            "depends_on": [],
+        }
+        meta_dir = workspace / "metadata" / "calculations" / "transaction"
+        (meta_dir / "old_params_test.json").write_text(json.dumps(calc))
+
+        result = engine.run_one("old_params_test")
+        assert result["row_count"] == 4  # All rows returned, no filtering
+
+    def test_string_parameter_escaped(self):
+        """String values should be properly quoted and escaped."""
+        result = CalculationEngine._substitute_parameters(
+            "SELECT * FROM t WHERE name = $name",
+            {"name": "O'Reilly"},
+        )
+        assert result == "SELECT * FROM t WHERE name = 'O''Reilly'"
+
+    def test_null_parameter(self):
+        """None values should become SQL NULL."""
+        result = CalculationEngine._substitute_parameters(
+            "SELECT * FROM t WHERE x > $val",
+            {"val": None},
+        )
+        assert result == "SELECT * FROM t WHERE x > NULL"
+
+    def test_boolean_parameter(self):
+        """Boolean values should become SQL TRUE/FALSE."""
+        result = CalculationEngine._substitute_parameters(
+            "SELECT * FROM t WHERE active = $flag",
+            {"flag": True},
+        )
+        assert result == "SELECT * FROM t WHERE active = TRUE"
