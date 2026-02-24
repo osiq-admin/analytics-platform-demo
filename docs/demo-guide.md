@@ -58,9 +58,11 @@ The dashboard is the default landing page. Navigate to it from the sidebar under
 ### 1.1 Entity Designer (Define → Entities)
 
 **Key Points:**
-- Show the 5 canonical entities: product, execution, order, md_intraday, md_eod
-- The **Product** entity contains instrument characteristics: asset_class, instrument_type, contract_size, option_type, exchange, currency
-- Execution references Product via product_id (normalized data model)
+- Show the 8 canonical entities: venue, product, account, trader, order, execution, md_intraday, md_eod
+- **New in Phase 6:** Venue (6 ISO 10383 MIC codes), Account (220 rows with type/country/risk), Trader (50 rows with desk/type)
+- The **Product** entity contains instrument characteristics: asset_class, instrument_type, ISIN, CFI code, MIC, underlying, strike, expiry, tick_size, lot_size
+- **Order** entity includes: order_type (market/limit/stop), limit_price, filled_quantity, time_in_force (DAY/GTC/IOC/FOK), trader_id, venue_mic
+- Execution references Product via product_id, Order via order_id (normalized, FIX Protocol-aligned data model)
 - Click an entity to see its fields, types, and relationships
 - Highlight: "Everything is metadata — entities are JSON definitions, not hardcoded schemas"
 
@@ -70,8 +72,9 @@ Click **Step** in the toolbar to advance to `data_loaded`.
 
 **Key Points:**
 - 519 trade executions across 50 real products (AAPL, MSFT, GOOGL, etc.)
-- 532 orders including fills and cancellations
-- ~27K intraday price records, ~2K EOD records
+- 532 orders with order_type (market/limit/stop), limit_price, time_in_force
+- ~32K intraday price records with bid/ask spreads (equities, FX, futures), ~2K EOD records with full OHLCV
+- 6 venues (ISO MIC codes), 220 accounts, 50 traders
 - CSV → Parquet → DuckDB: "Edit the CSV, pipeline picks up changes"
 
 ### 1.3 Schema Explorer (Operate → Schema)
@@ -165,9 +168,9 @@ Click any alert row to open the full 6-panel investigation workspace.
 **Row 2: Calculation Trace DAG | Market Data Chart**
 - Interactive React Flow DAG showing the detection model root node → calculation nodes
 - Each calc node displays: computed value, score, pass/fail border color (green/red/orange)
-- TradingView Lightweight Charts: EOD price line + volume histogram for the alert's product
+- TradingView Lightweight Charts: EOD OHLC candlesticks + volume histogram for the alert's product
   - **Time Range Selector:** 1W / 1M / 3M / 6M / All buttons to control the date range
-  - **EOD/Intraday Toggle:** Switch between daily close prices and tick-level intraday data
+  - **EOD/Intraday Toggle:** Switch between daily OHLC candlesticks and tick-level intraday data with bid/ask spreads
   - **Crosshair:** Normal crosshair mode for precise value reading
 
 **Row 3: Settings Resolution | Score Breakdown**
@@ -181,7 +184,7 @@ Click any alert row to open the full 6-panel investigation workspace.
 
 **Row 4: Related Orders & Executions**
 - AG Grid showing orders/executions for the alert's product + account combination
-- Columns: Exec ID, Date, Time, Side (BUY/SELL badges), Qty, Price, Product, Account
+- Columns: Order ID, Order Type, Side (BUY/SELL badges), Qty, Filled Qty, Price, Limit Price, Time in Force, Status, Venue, Trader, Date
 - **Column Filters:** Click column headers to access date, number, and text filters
 
 **Row 5: Footer Actions**
@@ -261,6 +264,7 @@ Click **Skip to End** to show the final state.
 ### 3.3 Summary Points
 
 - **Everything is metadata**: entities, calculations, settings, detection models, mappings — all JSON
+- **Production-grade data model**: 8 entities aligned with FIX Protocol and ISO standards (ISO 10383 MIC, ISO 6166 ISIN, ISO 10962 CFI)
 - **Graduated scoring**: flexible alert triggering (all-pass OR score-based)
 - **Full traceability**: every alert shows exactly why it fired
 - **AI-assisted**: natural language → SQL → investigation

@@ -22,7 +22,7 @@
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
 | UX Polish & AI Integration (Phase 4) | COMPLETE | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout — 193 tests |
 | Data Model, UX, Viz & Dashboard (Phase 5) | COMPLETE | M34-M48: Product entity, tooltips/tours, chart enhancements, dashboard — 193 tests |
-| Data Model Deep Refinement (Phase 6) | IN PROGRESS | M49-M65: ISO identifiers, FIX Protocol alignment, new entities (venue, account, trader), OHLCV, bid/ask |
+| Data Model Deep Refinement (Phase 6) | COMPLETE | M49-M65: ISO identifiers, FIX Protocol alignment, 3 new entities, OHLCV, bid/ask — 214 tests |
 
 ---
 
@@ -79,23 +79,23 @@
 | M46 | Dashboard View | COMPLETE | 6 | 6 | Backend endpoint, store, SummaryCard, Dashboard with 4 charts |
 | M47 | Build, Test & Verify | COMPLETE | 4 | 4 | Frontend builds (895 modules), 193 backend tests pass |
 | M48 | Documentation | COMPLETE | 3 | 3 | Update progress and demo guide |
-| M49 | Phase 6 Plan & Progress | IN PROGRESS | 2 | 1 | Save plan, update progress tracker |
-| M50 | Venue Entity | PENDING | 3 | 0 | New entity: 6 static rows with ISO MIC codes |
-| M51 | Product Entity Overhaul | PENDING | 4 | 0 | Fix asset_class/instrument_type, add ISIN/CFI/MIC/underlying |
-| M52 | Account Entity | PENDING | 3 | 0 | New entity: 220 rows with type, country, risk rating |
-| M53 | Trader Entity | PENDING | 3 | 0 | New entity: 50 rows with desk, type, status |
-| M54 | Order Entity Overhaul | PENDING | 4 | 0 | Add order_type, limit_price, time_in_force, trader_id, execution_id |
-| M55 | Execution Entity Overhaul | PENDING | 4 | 0 | Add order_id FK, venue_mic, exec_type, capacity |
-| M56 | MD_EOD Overhaul | PENDING | 4 | 0 | Add OHLCV: open, high, low, prev_close, num_trades, vwap |
-| M57 | MD_Intraday Overhaul | PENDING | 4 | 0 | Add bid/ask, trade_condition, expand to FX + futures |
-| M58 | Update Calculation SQL | PENDING | 3 | 0 | Fix value_calc/adjusted_direction for call_option/put_option |
-| M59 | Update Detection Model SQL | PENDING | 2 | 0 | Verify entity_context, update settings overrides |
-| M60 | Update Tests | PENDING | 4 | 0 | Update fixtures, add new entity tests, fix assertion values |
-| M61 | Regenerate Data & Snapshots | PENDING | 3 | 0 | Regenerate all CSVs and snapshots |
-| M62 | Frontend Entity Display Updates | PENDING | 4 | 0 | EntityDesigner, RelatedOrders, EntityContext updates |
-| M63 | Frontend Dashboard & Alert Detail | PENDING | 3 | 0 | Asset class chart, OHLC candlesticks, order detail |
-| M64 | Build, Test & Verify | PENDING | 4 | 0 | Full build, test suite, Playwright verification |
-| M65 | Documentation | PENDING | 2 | 0 | Update progress and demo guide |
+| M49 | Phase 6 Plan & Progress | COMPLETE | 2 | 2 | Save plan, update progress tracker |
+| M50 | Venue Entity | COMPLETE | 3 | 3 | 6 static rows with ISO 10383 MIC codes |
+| M51 | Product Entity Overhaul | COMPLETE | 4 | 4 | Corrected taxonomy, ISIN/CFI/MIC/underlying/strike/expiry/tick_size/lot_size |
+| M52 | Account Entity | COMPLETE | 3 | 3 | 220 rows with type, country (KY for hedge funds), risk rating |
+| M53 | Trader Entity | COMPLETE | 3 | 3 | 50 rows with desk, type, hire date |
+| M54 | Order Entity Overhaul | COMPLETE | 4 | 4 | order_type, limit_price, filled_quantity, time_in_force, execution_id, venue_mic, trader_id |
+| M55 | Execution Entity Overhaul | COMPLETE | 4 | 4 | order_id FK, venue_mic, exec_type, capacity, millisecond times |
+| M56 | MD_EOD Overhaul | COMPLETE | 4 | 4 | Full OHLCV + prev_close, num_trades, vwap |
+| M57 | MD_Intraday Overhaul | COMPLETE | 4 | 4 | Bid/ask, trade_condition, ms times, FX + futures (32K rows) |
+| M58 | Update Calculation SQL | COMPLETE | 3 | 3 | value_calc/adjusted_direction updated for call_option/put_option |
+| M59 | Update Detection Model SQL | COMPLETE | 2 | 2 | entity_context verified, 4 settings overrides fixed |
+| M60 | Update Tests | COMPLETE | 4 | 4 | 16 new tests (214 total), all fixtures updated |
+| M61 | Regenerate Data & Snapshots | COMPLETE | 3 | 3 | 8 CSVs, 8 checkpoints regenerated |
+| M62 | Frontend Entity Display Updates | COMPLETE | 4 | 4 | New RelatedOrders columns, orders grid, asset class colors |
+| M63 | Frontend Dashboard & Alert Detail | COMPLETE | 3 | 3 | OHLC candlestick chart, order detail columns |
+| M64 | Build, Test & Verify | COMPLETE | 4 | 4 | Frontend builds (895 modules), 214 tests pass, 51/51 data integrity |
+| M65 | Documentation | COMPLETE | 2 | 2 | Update progress and demo guide |
 
 ---
 
@@ -349,6 +349,24 @@
   - Backend tests: 193 tests passing
   - Updated progress.md and demo-guide.md
 - **Total**: 193 tests passing, 10 commits on `feature/phase5/data-ux-viz-dashboard`
+
+### 2026-02-24 (Phase 6: Data Model Deep Refinement — M49-M65)
+- [x] **M49**: Save Phase 6 plan, update progress tracker
+- [x] **M50**: Venue entity — 6 static rows with ISO 10383 MIC codes (XNYS, XNAS, XCBO, XCME, XNYM, XXXX)
+- [x] **M51**: Product entity overhaul — corrected taxonomy (stock→common_stock, fx→spot), added ISIN/CFI/MIC/underlying/strike/expiry/tick_size/lot_size
+- [x] **M52**: Account entity — 220 rows with type, country (KY for hedge funds), risk rating
+- [x] **M53**: Trader entity — 50 rows with desk, type, hire date
+- [x] **M54**: Order entity overhaul — added order_type, limit_price, filled_quantity, time_in_force, execution_id, venue_mic, trader_id; renamed PENDING→NEW
+- [x] **M55**: Execution entity overhaul — added order_id FK, venue_mic, exec_type, capacity, millisecond times
+- [x] **M56**: MD_EOD overhaul — full OHLCV (open, high, low, close, volume) + prev_close, num_trades, vwap
+- [x] **M57**: MD_Intraday overhaul — bid/ask prices, trade_condition, millisecond times, expanded to FX + futures (32K rows)
+- [x] **M58-M59**: Calculation and detection SQL updates — value_calc/adjusted_direction updated for call_option/put_option; 4 settings overrides fixed
+- [x] **M60**: Test updates — 16 new tests (214 total), all fixtures updated for new schemas
+- [x] **M61**: Regenerated all data and snapshots (8 CSVs, 8 checkpoints)
+- [x] **M62-M63**: Frontend updates — new RelatedOrders columns, orders grid, OHLC candlestick chart, asset class colors
+- [x] **M64**: Full verification — frontend builds (895 modules), 214 tests pass, 51/51 data integrity checks
+- [x] **M65**: Documentation — updated progress tracker and demo guide
+- **Total**: 214 tests passing (21 new), 14 commits on `feature/phase6/data-model-refinement`
 
 ---
 
