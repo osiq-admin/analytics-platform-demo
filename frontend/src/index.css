@@ -85,6 +85,29 @@ body {
   --ag-header-height: 34px;
 }
 
+.ag-theme-custom .ag-tooltip {
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ag-theme-custom .ag-cell {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ag-theme-custom .ag-header-cell-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /* ── Monaco editor background sync ── */
 .monaco-themed .monaco-editor,
 .monaco-themed .monaco-editor .margin {
