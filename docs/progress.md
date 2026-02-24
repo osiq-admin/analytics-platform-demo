@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 8 explainability drill-down UI complete)
+**Last Updated**: 2026-02-24 (Phase 7-8 complete with E2E test suite)
 
 ---
 
@@ -26,6 +26,8 @@
 | E2E Playwright Testing (Phase 6) | COMPLETE | All 12 views tested, 37 screenshots, slow-mo drag & drop, SQL queries verified, tour tested |
 | GitHub Publication | COMPLETE | Repo created, Claude settings/memory/plans pushed, 92 commits |
 | Dynamic Metadata Foundation (Phase 7) | COMPLETE | M66-M69: Remove hardcodings, CRUD APIs, parameter substitution — 234 tests |
+| Explainability & Drill-Down (Phase 8) | COMPLETE | M70-M72: AlertTrace fields, trace APIs, frontend panels — 252 tests |
+| E2E Testing (Phase 7-8) | COMPLETE | M73: 42 Playwright E2E scenarios, 11 test classes, 0 console errors — 294 total tests |
 
 ---
 
@@ -103,8 +105,10 @@
 | M67 | Remove Hardcoded Context Fields | COMPLETE | 3 | 3 | Add context_fields to DetectionModelDefinition, update 5 model JSONs, update detection_engine.py |
 | M68 | Metadata CRUD APIs | COMPLETE | 5 | 5 | PUT/DELETE for calcs/settings/entities/models, dependency checker, dependency graph, validation endpoint, 13 new tests |
 | M69 | SQL Parameter Substitution | COMPLETE | 3 | 3 | Setting + literal param resolution, $param_name substitution, 7 new tests |
+| M70 | Enhanced AlertTrace Explainability | COMPLETE | 4 | 4 | CalculationTraceEntry model, executed_sql, scoring_breakdown, entity_context_source — 8 new tests |
 | M71 | Trace API Endpoints | COMPLETE | 3 | 3 | Trace API endpoints (alert, calculation, settings) — 10 new tests |
 | M72 | Frontend Explainability Drill-Down | COMPLETE | 4 | 4 | ExplainabilityPanel, SQLViewer, SettingsTraceViewer components, AlertDetail integration |
+| M73 | E2E Playwright Test Suite | COMPLETE | 5 | 5 | 42 E2E scenarios, 11 test classes, all 12 views, Phase 7-8 APIs, 0 console errors — 294 total tests |
 
 ---
 
