@@ -1,0 +1,7 @@
+mic,name,short_name,country,timezone,open_time,close_time,asset_classes
+XNYS,New York Stock Exchange,NYSE,US,America/New_York,09:30:00,16:00:00,equity
+XNAS,Nasdaq Stock Market,NASDAQ,US,America/New_York,09:30:00,16:00:00,equity
+XCBO,Cboe Options Exchange,CBOE,US,America/Chicago,08:30:00,15:00:00,"equity,option"
+XCME,Chicago Mercantile Exchange,CME,US,America/Chicago,17:00:00,16:00:00,"index,commodity,fixed_income"
+XNYM,New York Mercantile Exchange,NYMEX,US,America/New_York,18:00:00,17:00:00,commodity
+XXXX,Off-Exchange / OTC,OTC,—,UTC,00:00:00,23:59:59,"fx,commodity"

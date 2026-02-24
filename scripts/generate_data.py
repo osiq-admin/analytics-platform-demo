@@ -803,6 +803,7 @@ class SyntheticDataGenerator:
         counts = {}
 
         counts["product"] = self._write_product_csv()
+        counts["venue"] = self._write_venue_csv()
 
         counts["execution"] = self._write_csv(
             "execution.csv",
@@ -849,6 +850,34 @@ class SyntheticDataGenerator:
                 "currency": info.get("currency", "USD"),
             })
         return self._write_csv("product.csv", fieldnames, rows)
+
+    def _write_venue_csv(self) -> int:
+        """Write the venue reference data CSV (6 static rows)."""
+        fieldnames = [
+            "mic", "name", "short_name", "country", "timezone",
+            "open_time", "close_time", "asset_classes",
+        ]
+        rows = [
+            {"mic": "XNYS", "name": "New York Stock Exchange", "short_name": "NYSE",
+             "country": "US", "timezone": "America/New_York",
+             "open_time": "09:30:00", "close_time": "16:00:00", "asset_classes": "equity"},
+            {"mic": "XNAS", "name": "Nasdaq Stock Market", "short_name": "NASDAQ",
+             "country": "US", "timezone": "America/New_York",
+             "open_time": "09:30:00", "close_time": "16:00:00", "asset_classes": "equity"},
+            {"mic": "XCBO", "name": "Cboe Options Exchange", "short_name": "CBOE",
+             "country": "US", "timezone": "America/Chicago",
+             "open_time": "08:30:00", "close_time": "15:00:00", "asset_classes": "equity,option"},
+            {"mic": "XCME", "name": "Chicago Mercantile Exchange", "short_name": "CME",
+             "country": "US", "timezone": "America/Chicago",
+             "open_time": "17:00:00", "close_time": "16:00:00", "asset_classes": "index,commodity,fixed_income"},
+            {"mic": "XNYM", "name": "New York Mercantile Exchange", "short_name": "NYMEX",
+             "country": "US", "timezone": "America/New_York",
+             "open_time": "18:00:00", "close_time": "17:00:00", "asset_classes": "commodity"},
+            {"mic": "XXXX", "name": "Off-Exchange / OTC", "short_name": "OTC",
+             "country": "\u2014", "timezone": "UTC",
+             "open_time": "00:00:00", "close_time": "23:59:59", "asset_classes": "fx,commodity"},
+        ]
+        return self._write_csv("venue.csv", fieldnames, rows)
 
     def _write_csv(self, filename: str, fieldnames: list[str], rows: list[dict]) -> int:
         path = self.csv_dir / filename
@@ -947,6 +976,27 @@ class SyntheticDataGenerator:
                     {"name": "volume", "type": "integer", "description": "Total daily volume", "is_key": False, "nullable": False},
                 ],
                 "relationships": [],
+            },
+            "venue": {
+                "entity_id": "venue",
+                "name": "Venue",
+                "description": "Reference data for trading venues with ISO MIC codes, trading hours, and friendly display names.",
+                "fields": [
+                    {"name": "mic", "type": "string", "description": "ISO 10383 Market Identifier Code", "is_key": True, "nullable": False},
+                    {"name": "name", "type": "string", "description": "Display name", "is_key": False, "nullable": False},
+                    {"name": "short_name", "type": "string", "description": "Abbreviated name for UI", "is_key": False, "nullable": False},
+                    {"name": "country", "type": "string", "description": "ISO 3166-1 alpha-2 country code", "is_key": False, "nullable": False},
+                    {"name": "timezone", "type": "string", "description": "IANA timezone", "is_key": False, "nullable": False},
+                    {"name": "open_time", "type": "string", "description": "Regular session open (local time, HH:MM:SS)", "is_key": False, "nullable": False},
+                    {"name": "close_time", "type": "string", "description": "Regular session close (local time, HH:MM:SS)", "is_key": False, "nullable": False},
+                    {"name": "asset_classes", "type": "string", "description": "Supported asset classes (comma-separated)", "is_key": False, "nullable": False,
+                     "domain_values": ["equity", "option", "index", "commodity", "fixed_income", "fx"]},
+                ],
+                "relationships": [
+                    {"target_entity": "product", "join_fields": {"mic": "exchange_mic"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "order", "join_fields": {"mic": "venue_mic"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "execution", "join_fields": {"mic": "venue_mic"}, "relationship_type": "one_to_many"},
+                ],
             },
         }
 

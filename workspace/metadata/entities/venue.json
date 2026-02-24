@@ -1,0 +1,94 @@
+{
+  "entity_id": "venue",
+  "name": "Venue",
+  "description": "Reference data for trading venues with ISO MIC codes, trading hours, and friendly display names.",
+  "fields": [
+    {
+      "name": "mic",
+      "type": "string",
+      "description": "ISO 10383 Market Identifier Code",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Display name",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "short_name",
+      "type": "string",
+      "description": "Abbreviated name for UI",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "country",
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "timezone",
+      "type": "string",
+      "description": "IANA timezone",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "open_time",
+      "type": "string",
+      "description": "Regular session open (local time, HH:MM:SS)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "close_time",
+      "type": "string",
+      "description": "Regular session close (local time, HH:MM:SS)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "asset_classes",
+      "type": "string",
+      "description": "Supported asset classes (comma-separated)",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "equity",
+        "option",
+        "index",
+        "commodity",
+        "fixed_income",
+        "fx"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "target_entity": "product",
+      "join_fields": {
+        "mic": "exchange_mic"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "order",
+      "join_fields": {
+        "mic": "venue_mic"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "execution",
+      "join_fields": {
+        "mic": "venue_mic"
+      },
+      "relationship_type": "one_to_many"
+    }
+  ]
+}

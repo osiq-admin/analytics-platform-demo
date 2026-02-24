@@ -60,8 +60,8 @@ class TestSnapshotGeneration:
         csv_files = list(csv_dir.glob("*.csv"))
         parquet_files = list(parquet_dir.glob("*.parquet"))
 
-        assert len(csv_files) == 5, f"Expected 5 CSV files, got {len(csv_files)}"
-        assert len(parquet_files) == 5, f"Expected 5 Parquet files, got {len(parquet_files)}"
+        assert len(csv_files) == 6, f"Expected 6 CSV files, got {len(csv_files)}"
+        assert len(parquet_files) == 6, f"Expected 6 Parquet files, got {len(parquet_files)}"
 
     def test_pipeline_run_has_results(self, snapshot_workspace):
         generate_snapshots(snapshot_workspace)
