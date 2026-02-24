@@ -103,6 +103,7 @@
 | M67 | Remove Hardcoded Context Fields | COMPLETE | 3 | 3 | Add context_fields to DetectionModelDefinition, update 5 model JSONs, update detection_engine.py |
 | M68 | Metadata CRUD APIs | COMPLETE | 5 | 5 | PUT/DELETE for calcs/settings/entities/models, dependency checker, dependency graph, validation endpoint, 13 new tests |
 | M69 | SQL Parameter Substitution | COMPLETE | 3 | 3 | Setting + literal param resolution, $param_name substitution, 7 new tests |
+| M71 | Trace API Endpoints | COMPLETE | 3 | 3 | Trace API endpoints (alert, calculation, settings) — 10 new tests |
 
 ---
 
