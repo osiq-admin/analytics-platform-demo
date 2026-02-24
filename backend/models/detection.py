@@ -10,6 +10,12 @@ class Strictness(StrEnum):
     OPTIONAL = "OPTIONAL"
 
 
+class RegulatoryCoverage(BaseModel):
+    regulation: str
+    article: str
+    description: str = ""
+
+
 class ModelCalculation(BaseModel):
     calc_id: str
     strictness: Strictness = Strictness.OPTIONAL
@@ -32,3 +38,4 @@ class DetectionModelDefinition(BaseModel):
     )
     query: str = Field(default="", description="SQL template for detection")
     alert_template: dict[str, Any] = Field(default_factory=dict)
+    regulatory_coverage: list[RegulatoryCoverage] = Field(default_factory=list)
