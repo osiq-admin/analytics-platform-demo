@@ -12,6 +12,15 @@ import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"];
 
+/** Stable color per asset class so the chart is consistent across reloads. */
+const ASSET_CLASS_COLORS: Record<string, string> = {
+  equity: "#6366f1",
+  fx: "#22d3ee",
+  commodity: "#f59e0b",
+  index: "#10b981",
+  fixed_income: "#8b5cf6",
+};
+
 export default function Dashboard() {
   const { stats, loading, error, fetchStats } = useDashboardStore();
 
@@ -132,8 +141,8 @@ export default function Dashboard() {
                 labelLine
                 fontSize={10}
               >
-                {stats.by_asset.map((_, i) => (
-                  <Cell key={i} fill={COLORS[(i + 2) % COLORS.length]} />
+                {stats.by_asset.map((entry, i) => (
+                  <Cell key={i} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
               <Legend wrapperStyle={{ fontSize: 10 }} />

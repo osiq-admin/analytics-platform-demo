@@ -63,7 +63,7 @@ def get_market_data(
 
     if start_date or end_date:
         eod_result = svc.execute(
-            f"SELECT product_id, trade_date, close_price, volume"
+            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"
             f" FROM md_eod"
             f" WHERE {date_filter}"
             f" ORDER BY trade_date DESC",
@@ -71,7 +71,7 @@ def get_market_data(
         )
     else:
         eod_result = svc.execute(
-            f"SELECT product_id, trade_date, close_price, volume"
+            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"
             f" FROM md_eod"
             f" WHERE product_id = '{product_id}'"
             f" ORDER BY trade_date DESC"

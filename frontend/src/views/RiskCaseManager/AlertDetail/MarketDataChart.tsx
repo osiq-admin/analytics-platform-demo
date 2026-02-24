@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { createChart, type IChartApi, LineSeries, HistogramSeries, CrosshairMode } from "lightweight-charts";
+import { createChart, type IChartApi, LineSeries, CandlestickSeries, HistogramSeries, CrosshairMode } from "lightweight-charts";
 import { api } from "../../../api/client.ts";
 import Panel from "../../../components/Panel.tsx";
 import LoadingSpinner from "../../../components/LoadingSpinner.tsx";
@@ -11,6 +11,9 @@ interface MarketDataChartProps {
 
 interface EODRow {
   trade_date: string;
+  open_price: number;
+  high_price: number;
+  low_price: number;
   close_price: number;
   volume: number;
 }
@@ -77,13 +80,23 @@ export default function MarketDataChart({ productId }: MarketDataChartProps) {
           }
           const sorted = [...eod].sort((a, b) => a.trade_date.localeCompare(b.trade_date));
 
-          const priceSeries = chart.addSeries(LineSeries, {
-            color: "var(--color-accent)",
-            lineWidth: 2,
+          const priceSeries = chart.addSeries(CandlestickSeries, {
+            upColor: "#22c55e",
+            downColor: "#ef4444",
+            borderDownColor: "#ef4444",
+            borderUpColor: "#22c55e",
+            wickDownColor: "#ef4444",
+            wickUpColor: "#22c55e",
             priceScaleId: "right",
           });
           priceSeries.setData(
-            sorted.map((r) => ({ time: r.trade_date, value: Number(r.close_price) }))
+            sorted.map((r) => ({
+              time: r.trade_date,
+              open: Number(r.open_price),
+              high: Number(r.high_price),
+              low: Number(r.low_price),
+              close: Number(r.close_price),
+            }))
           );
 
           const volumeSeries = chart.addSeries(HistogramSeries, {
