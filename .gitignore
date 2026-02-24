@@ -54,6 +54,7 @@ Thumbs.db
 # Playwright MCP
 .playwright-mcp/
 
-# Screenshots (from Playwright testing)
+# Screenshots (loose PNGs in root, ignore; test-screenshots/ is tracked)
 *.png
-test-screenshots/
+!test-screenshots/
+!test-screenshots/**
