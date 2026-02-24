@@ -38,5 +38,6 @@
     "color_map": {"up": "green", "down": "red"}
   },
   "value_field": "price_change_pct",
-  "depends_on": []
+  "depends_on": [],
+  "regulatory_tags": ["MAR Art. 12(1)(b)", "MAR Art. 16"]
 }

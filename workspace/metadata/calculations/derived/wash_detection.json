@@ -42,5 +42,6 @@
     "highlight_when": "is_wash_candidate = TRUE"
   },
   "value_field": "qty_match_ratio",
-  "depends_on": ["large_trading_activity", "vwap_calc"]
+  "depends_on": ["large_trading_activity", "vwap_calc"],
+  "regulatory_tags": ["MAR Art. 12(1)(a)", "MiFID II Art. 16(2)"]
 }

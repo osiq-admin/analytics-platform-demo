@@ -36,5 +36,6 @@
     "highlight_when": "is_large = TRUE"
   },
   "value_field": "total_value",
-  "depends_on": ["trading_activity_aggregation"]
+  "depends_on": ["trading_activity_aggregation"],
+  "regulatory_tags": ["MAR Art. 12", "MAR Art. 16"]
 }

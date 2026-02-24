@@ -40,5 +40,6 @@
     "color_map": {"price_surge": "green", "price_drop": "red", "volume_spike": "orange"}
   },
   "value_field": "price_change_pct",
-  "depends_on": []
+  "depends_on": [],
+  "regulatory_tags": ["MAR Art. 14", "MAR Art. 16"]
 }
