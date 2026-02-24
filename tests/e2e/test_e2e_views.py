@@ -655,3 +655,97 @@ class TestRegulatoryMap:
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
         body = loaded_page.locator("main").inner_text()
         assert "suggestions" in body.lower()
+
+
+# ============================================================================
+# Scenario 10: OOB Layer Separation (Phase 11)
+# ============================================================================
+
+class TestOobLayers:
+    """OOB layer separation features — badges, editor integration, APIs."""
+
+    @pytest.fixture()
+    def loaded_page(self, page: Page):
+        """Navigate to dashboard first to ensure app is ready."""
+        page.goto(f"{APP_URL}/dashboard")
+        page.wait_for_load_state("networkidle", timeout=20000)
+        return page
+
+    def test_editor_shows_layer_badge(self, loaded_page):
+        """MetadataEditor shows OOB badge next to item selector."""
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        badge = loaded_page.locator("[data-tour='editor-layer-badge']")
+        assert badge.is_visible(timeout=10000)
+
+    def test_entity_designer_layer_badges(self, loaded_page):
+        """Entity Designer shows layer badges in entity list."""
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        badge = loaded_page.locator("[data-tour='entity-layer-badge']").first
+        assert badge.is_visible(timeout=10000)
+
+    def test_metadata_explorer_layer_badges(self, loaded_page):
+        """Metadata Explorer shows layer badges on calculation list."""
+        loaded_page.goto(f"{APP_URL}/metadata")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        badge = loaded_page.locator("[data-tour='calc-layer-badge']").first
+        assert badge.is_visible(timeout=10000)
+
+    def test_settings_manager_layer_badges(self, loaded_page):
+        """Settings Manager shows layer badges."""
+        loaded_page.goto(f"{APP_URL}/settings")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        badge = loaded_page.locator("[data-tour='setting-layer-badge']").first
+        assert badge.is_visible(timeout=10000)
+
+    def test_model_composer_layer_badges(self, loaded_page):
+        """Model Composer shows layer badges."""
+        loaded_page.goto(f"{APP_URL}/models")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        badge = loaded_page.locator("[data-tour='model-layer-badge']").first
+        assert badge.is_visible(timeout=10000)
+
+    def test_oob_info_banner_visible(self, loaded_page):
+        """OOB info banner visible when editing an OOB item."""
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        banner = loaded_page.locator("[data-tour='editor-oob-banner']")
+        assert banner.is_visible(timeout=10000)
+
+    def test_oob_version_panel_visible(self, loaded_page):
+        """OOB Version panel is present in MetadataEditor."""
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        panel = loaded_page.locator("[data-tour='oob-version-panel']")
+        assert panel.is_visible(timeout=10000)
+
+    def test_reset_button_hidden_for_unmodified(self, loaded_page):
+        """Reset to OOB button is not visible for unmodified OOB items."""
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        reset_btn = loaded_page.locator("[data-tour='reset-to-oob']")
+        assert reset_btn.count() == 0
+
+    def test_layer_api_oob_manifest(self, loaded_page):
+        """API: /api/metadata/oob-manifest returns manifest with items."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const res = await fetch('/api/metadata/oob-manifest');
+                return await res.json();
+            }
+        """)
+        assert "oob_version" in result
+        assert "items" in result
+        assert "entities" in result["items"]
+
+    def test_layer_api_entity_has_layer(self, loaded_page):
+        """API: /api/metadata/entities returns items with metadata_layer."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const res = await fetch('/api/metadata/entities');
+                return await res.json();
+            }
+        """)
+        assert len(result) > 0
+        assert result[0].get("metadata_layer") == "oob"

@@ -348,3 +348,48 @@ Click **Skip to End** to show the final state.
 | DuckDB lock error on start | Another process holds the lock — kill it (`lsof workspace/analytics.duckdb`) or restart |
 | Pipeline shows errors | Normal on re-run if tables/views type-mismatch — fixed with try/except drop logic |
 | Schema Explorer empty after Step | Data reload happens automatically; if still empty, click **Reset** then **Skip to End** |
+
+---
+
+## OOB vs User Metadata (Configure → Editor) — Phase 11
+
+Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metadata and user customizations. All metadata items now carry a `metadata_layer` field indicating their provenance.
+
+### Walkthrough A: Viewing Layers
+
+1. Navigate to **Metadata Editor** (`/editor`)
+2. Observe the **LayerBadge** next to the item selector — shows "OOB" (cyan) for shipped items
+3. Visit **Entity Designer** (`/entities`) — entity list shows OOB/Custom badges per row
+4. Visit **Settings Manager** (`/settings`) — settings list shows Layer column
+5. Visit **Model Composer** (`/models`) — model list shows OOB/Custom badges
+
+### Walkthrough B: Creating a User Override
+
+1. In **Metadata Editor**, select the "product" entity
+2. Note the amber info banner: "Out-of-box item. Editing will create a user override"
+3. Edit the `description` field in the JSON editor
+4. Click **Save** — the badge changes to "Modified" (amber)
+5. The original OOB definition is preserved untouched
+
+### Walkthrough C: Resetting to OOB
+
+1. After modifying an OOB item, the **Reset to OOB** button appears in the bottom bar
+2. Click "Reset to OOB" — a confirmation dialog appears
+3. Confirm — the override is deleted, badge reverts to "OOB", original definition restored
+
+### Walkthrough D: Upgrade Simulation
+
+1. In the Metadata Editor, click **OOB Version Info** to expand the version panel
+2. Shows version "1.0.0", OOB item count, and user override count
+3. Click **Simulate Upgrade** — compares current manifest to a demo v1.1.0 manifest
+4. Review the color-coded upgrade report:
+   - **Green (+ Added)**: new items in the upgrade (e.g., front_running_detection calc)
+   - **Amber (~ Modified)**: OOB items changed by the vendor (e.g., wash_detection, product entity)
+   - **Red (! Conflict)**: modified OOB items that you've also customized — needs manual review
+
+### Walkthrough E: Cross-View Badges
+
+1. **Entity Designer** (`/entities`) — "Layer" column in entity list grid
+2. **Metadata Explorer** (`/metadata`) — "OOB" column in calculation list grid
+3. **Settings Manager** (`/settings`) — "Layer" column in settings list grid
+4. **Model Composer** (`/models`) — inline badge next to each model name

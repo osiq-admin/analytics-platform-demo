@@ -45,7 +45,7 @@ export default function OnboardingModal() {
           <div className="grid grid-cols-2 gap-2 mb-5">
             {[
               { label: "Define", desc: "Data model & entities" },
-              { label: "Configure", desc: "Settings & mappings" },
+              { label: "Configure", desc: "Settings, mappings & OOB layers" },
               { label: "Operate", desc: "Pipeline & SQL" },
               { label: "Investigate", desc: "Alerts & cases" },
             ].map(({ label, desc }) => (
