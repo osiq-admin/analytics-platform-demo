@@ -13,36 +13,100 @@ class MetadataService:
     def __init__(self, workspace_dir: Path):
         self._base = workspace_dir / "metadata"
 
+    # -- OOB Manifest & User Overrides --
+
+    def _oob_manifest_path(self) -> Path:
+        return self._base / "oob_manifest.json"
+
+    def _user_overrides_base(self) -> Path:
+        return self._base / "user_overrides"
+
+    def load_oob_manifest(self) -> dict:
+        path = self._oob_manifest_path()
+        if path.exists():
+            return json.loads(path.read_text())
+        return {"oob_version": "0.0.0", "items": {}}
+
+    def is_oob_item(self, item_type: str, item_id: str) -> bool:
+        manifest = self.load_oob_manifest()
+        return item_id in manifest.get("items", {}).get(item_type, {})
+
+    # -- User Override Path Helpers --
+
+    def _user_entity_path(self, entity_id: str) -> Path:
+        return self._user_overrides_base() / "entities" / f"{entity_id}.json"
+
+    def _user_calc_path(self, calc_id: str) -> Path | None:
+        base = self._user_overrides_base() / "calculations"
+        if not base.exists():
+            return None
+        for f in base.rglob(f"{calc_id}.json"):
+            return f
+        return None
+
+    def _user_setting_path(self, setting_id: str) -> Path | None:
+        base = self._user_overrides_base() / "settings"
+        if not base.exists():
+            return None
+        for f in base.rglob(f"{setting_id}.json"):
+            return f
+        return None
+
+    def _user_detection_model_path(self, model_id: str) -> Path:
+        return self._user_overrides_base() / "detection_models" / f"{model_id}.json"
+
     # -- Entities --
 
     def _entity_path(self, entity_id: str) -> Path:
         return self._base / "entities" / f"{entity_id}.json"
 
     def save_entity(self, entity: EntityDefinition) -> None:
-        path = self._entity_path(entity.entity_id)
+        if self.is_oob_item("entities", entity.entity_id):
+            path = self._user_entity_path(entity.entity_id)
+        else:
+            path = self._entity_path(entity.entity_id)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(entity.model_dump_json(indent=2))
 
     def load_entity(self, entity_id: str) -> EntityDefinition | None:
+        user_path = self._user_entity_path(entity_id)
+        if user_path.exists():
+            entity = EntityDefinition.model_validate_json(user_path.read_text())
+            entity.metadata_layer = "user"
+            return entity
         path = self._entity_path(entity_id)
         if not path.exists():
             return None
-        return EntityDefinition.model_validate_json(path.read_text())
+        entity = EntityDefinition.model_validate_json(path.read_text())
+        entity.metadata_layer = "oob"
+        return entity
 
     def list_entities(self) -> list[EntityDefinition]:
+        items: dict[str, EntityDefinition] = {}
         folder = self._base / "entities"
-        if not folder.exists():
-            return []
-        return [
-            EntityDefinition.model_validate_json(f.read_text())
-            for f in sorted(folder.glob("*.json"))
-        ]
+        if folder.exists():
+            for f in sorted(folder.glob("*.json")):
+                ent = EntityDefinition.model_validate_json(f.read_text())
+                ent.metadata_layer = "oob"
+                items[ent.entity_id] = ent
+        user_folder = self._user_overrides_base() / "entities"
+        if user_folder.exists():
+            for f in sorted(user_folder.glob("*.json")):
+                ent = EntityDefinition.model_validate_json(f.read_text())
+                ent.metadata_layer = "user"
+                items[ent.entity_id] = ent
+        return sorted(items.values(), key=lambda e: e.entity_id)
 
     def delete_entity(self, entity_id: str) -> bool:
-        path = self._entity_path(entity_id)
-        if path.exists():
-            path.unlink()
+        user_path = self._user_entity_path(entity_id)
+        if user_path.exists():
+            user_path.unlink()
             return True
+        if not self.is_oob_item("entities", entity_id):
+            path = self._entity_path(entity_id)
+            if path.exists():
+                path.unlink()
+                return True
         return False
 
     # -- Calculations --
@@ -53,37 +117,72 @@ class MetadataService:
     def _calc_path(self, calc_id: str) -> Path | None:
         """Find a calculation file by calc_id across all layer subdirectories."""
         for f in self._calc_dir().rglob(f"{calc_id}.json"):
-            return f
+            if "user_overrides" not in str(f):
+                return f
         return None
 
     def save_calculation(self, calc: CalculationDefinition) -> None:
-        folder = self._calc_dir() / calc.layer.value
-        folder.mkdir(parents=True, exist_ok=True)
-        path = folder / f"{calc.calc_id}.json"
+        if self.is_oob_item("calculations", calc.calc_id):
+            folder = self._user_overrides_base() / "calculations" / calc.layer.value
+            folder.mkdir(parents=True, exist_ok=True)
+            path = folder / f"{calc.calc_id}.json"
+        else:
+            folder = self._calc_dir() / calc.layer.value
+            folder.mkdir(parents=True, exist_ok=True)
+            path = folder / f"{calc.calc_id}.json"
         path.write_text(calc.model_dump_json(indent=2))
 
     def load_calculation(self, calc_id: str) -> CalculationDefinition | None:
+        user_path = self._user_calc_path(calc_id)
+        if user_path is not None:
+            calc = CalculationDefinition.model_validate_json(user_path.read_text())
+            calc.metadata_layer = "user"
+            return calc
         path = self._calc_path(calc_id)
         if path is None:
             return None
-        return CalculationDefinition.model_validate_json(path.read_text())
+        calc = CalculationDefinition.model_validate_json(path.read_text())
+        calc.metadata_layer = "oob"
+        return calc
 
     def list_calculations(self, layer: str | None = None) -> list[CalculationDefinition]:
+        items: dict[str, CalculationDefinition] = {}
         base = self._calc_dir()
-        if not base.exists():
-            return []
-        if layer:
-            pattern_dir = base / layer
-            files = sorted(pattern_dir.glob("*.json")) if pattern_dir.exists() else []
-        else:
-            files = sorted(base.rglob("*.json"))
-        return [CalculationDefinition.model_validate_json(f.read_text()) for f in files]
+        if base.exists():
+            if layer:
+                pattern_dir = base / layer
+                files = sorted(pattern_dir.glob("*.json")) if pattern_dir.exists() else []
+            else:
+                files = sorted(base.rglob("*.json"))
+            for f in files:
+                if "user_overrides" not in str(f):
+                    calc = CalculationDefinition.model_validate_json(f.read_text())
+                    calc.metadata_layer = "oob"
+                    items[calc.calc_id] = calc
+        user_base = self._user_overrides_base() / "calculations"
+        if user_base.exists():
+            if layer:
+                pattern_dir = user_base / layer
+                files = sorted(pattern_dir.glob("*.json")) if pattern_dir.exists() else []
+            else:
+                files = sorted(user_base.rglob("*.json"))
+            for f in files:
+                if f.suffix == ".json" and f.stem != ".gitkeep":
+                    calc = CalculationDefinition.model_validate_json(f.read_text())
+                    calc.metadata_layer = "user"
+                    items[calc.calc_id] = calc
+        return sorted(items.values(), key=lambda c: c.calc_id)
 
     def delete_calculation(self, calc_id: str) -> bool:
-        path = self._calc_path(calc_id)
-        if path:
-            path.unlink()
+        user_path = self._user_calc_path(calc_id)
+        if user_path is not None:
+            user_path.unlink()
             return True
+        if not self.is_oob_item("calculations", calc_id):
+            path = self._calc_path(calc_id)
+            if path:
+                path.unlink()
+                return True
         return False
 
     # -- Settings --
@@ -93,40 +192,78 @@ class MetadataService:
 
     def _setting_path(self, setting_id: str) -> Path | None:
         for f in self._settings_dir().rglob(f"{setting_id}.json"):
-            return f
+            if "user_overrides" not in str(f):
+                return f
         return None
 
     def save_setting(self, setting: SettingDefinition) -> None:
-        if setting.value_type == "score_steps":
-            folder = self._settings_dir() / "score_steps"
+        if self.is_oob_item("settings", setting.setting_id):
+            if setting.value_type == "score_steps":
+                folder = self._user_overrides_base() / "settings" / "score_steps"
+            elif setting.setting_id.endswith("_score_threshold") or setting.setting_id.endswith("score_threshold"):
+                folder = self._user_overrides_base() / "settings" / "score_thresholds"
+            else:
+                folder = self._user_overrides_base() / "settings" / "thresholds"
         else:
-            folder = self._settings_dir() / "thresholds"
+            if setting.value_type == "score_steps":
+                folder = self._settings_dir() / "score_steps"
+            else:
+                folder = self._settings_dir() / "thresholds"
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{setting.setting_id}.json"
         path.write_text(setting.model_dump_json(indent=2))
 
     def load_setting(self, setting_id: str) -> SettingDefinition | None:
+        user_path = self._user_setting_path(setting_id)
+        if user_path is not None:
+            setting = SettingDefinition.model_validate_json(user_path.read_text())
+            setting.metadata_layer = "user"
+            return setting
         path = self._setting_path(setting_id)
         if path is None:
             return None
-        return SettingDefinition.model_validate_json(path.read_text())
+        setting = SettingDefinition.model_validate_json(path.read_text())
+        setting.metadata_layer = "oob"
+        return setting
 
     def list_settings(self, category: str | None = None) -> list[SettingDefinition]:
+        items: dict[str, SettingDefinition] = {}
         base = self._settings_dir()
-        if not base.exists():
-            return []
-        if category:
-            cat_dir = base / category
-            files = sorted(cat_dir.glob("*.json")) if cat_dir.exists() else []
-        else:
-            files = sorted(base.rglob("*.json"))
-        return [SettingDefinition.model_validate_json(f.read_text()) for f in files]
+        if base.exists():
+            if category:
+                cat_dir = base / category
+                files = sorted(cat_dir.glob("*.json")) if cat_dir.exists() else []
+            else:
+                files = sorted(base.rglob("*.json"))
+            for f in files:
+                if "user_overrides" not in str(f):
+                    setting = SettingDefinition.model_validate_json(f.read_text())
+                    setting.metadata_layer = "oob"
+                    items[setting.setting_id] = setting
+        user_base = self._user_overrides_base() / "settings"
+        if user_base.exists():
+            if category:
+                cat_dir = user_base / category
+                files = sorted(cat_dir.glob("*.json")) if cat_dir.exists() else []
+            else:
+                files = sorted(user_base.rglob("*.json"))
+            for f in files:
+                if f.suffix == ".json" and f.stem != ".gitkeep":
+                    setting = SettingDefinition.model_validate_json(f.read_text())
+                    setting.metadata_layer = "user"
+                    items[setting.setting_id] = setting
+        return sorted(items.values(), key=lambda s: s.setting_id)
 
     def delete_setting(self, setting_id: str) -> bool:
-        path = self._setting_path(setting_id)
-        if path:
-            path.unlink()
+        user_path = self._user_setting_path(setting_id)
+        if user_path is not None:
+            user_path.unlink()
             return True
+        if not self.is_oob_item("settings", setting_id):
+            path = self._setting_path(setting_id)
+            if path:
+                path.unlink()
+                return True
         return False
 
     # -- Detection Models --
@@ -135,32 +272,113 @@ class MetadataService:
         return self._base / "detection_models"
 
     def save_detection_model(self, model: DetectionModelDefinition) -> None:
-        folder = self._detection_dir()
+        if self.is_oob_item("detection_models", model.model_id):
+            folder = self._user_overrides_base() / "detection_models"
+        else:
+            folder = self._detection_dir()
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{model.model_id}.json"
         path.write_text(model.model_dump_json(indent=2))
 
     def load_detection_model(self, model_id: str) -> DetectionModelDefinition | None:
+        user_path = self._user_detection_model_path(model_id)
+        if user_path.exists():
+            model = DetectionModelDefinition.model_validate_json(user_path.read_text())
+            model.metadata_layer = "user"
+            return model
         path = self._detection_dir() / f"{model_id}.json"
         if not path.exists():
             return None
-        return DetectionModelDefinition.model_validate_json(path.read_text())
+        model = DetectionModelDefinition.model_validate_json(path.read_text())
+        model.metadata_layer = "oob"
+        return model
 
     def list_detection_models(self) -> list[DetectionModelDefinition]:
+        items: dict[str, DetectionModelDefinition] = {}
         folder = self._detection_dir()
-        if not folder.exists():
-            return []
-        return [
-            DetectionModelDefinition.model_validate_json(f.read_text())
-            for f in sorted(folder.glob("*.json"))
-        ]
+        if folder.exists():
+            for f in sorted(folder.glob("*.json")):
+                model = DetectionModelDefinition.model_validate_json(f.read_text())
+                model.metadata_layer = "oob"
+                items[model.model_id] = model
+        user_folder = self._user_overrides_base() / "detection_models"
+        if user_folder.exists():
+            for f in sorted(user_folder.glob("*.json")):
+                if f.suffix == ".json" and f.stem != ".gitkeep":
+                    model = DetectionModelDefinition.model_validate_json(f.read_text())
+                    model.metadata_layer = "user"
+                    items[model.model_id] = model
+        return sorted(items.values(), key=lambda m: m.model_id)
 
     def delete_detection_model(self, model_id: str) -> bool:
-        path = self._detection_dir() / f"{model_id}.json"
-        if path.exists():
+        user_path = self._user_detection_model_path(model_id)
+        if user_path.exists():
+            user_path.unlink()
+            return True
+        if not self.is_oob_item("detection_models", model_id):
+            path = self._detection_dir() / f"{model_id}.json"
+            if path.exists():
+                path.unlink()
+                return True
+        return False
+
+    # -- Layer Info Helpers --
+
+    def _has_user_override(self, item_type: str, item_id: str) -> bool:
+        if item_type == "entities":
+            return self._user_entity_path(item_id).exists()
+        elif item_type == "calculations":
+            return self._user_calc_path(item_id) is not None
+        elif item_type == "settings":
+            return self._user_setting_path(item_id) is not None
+        elif item_type == "detection_models":
+            return self._user_detection_model_path(item_id).exists()
+        return False
+
+    def get_item_layer_info(self, item_type: str, item_id: str) -> dict:
+        is_oob = self.is_oob_item(item_type, item_id)
+        has_override = self._has_user_override(item_type, item_id)
+        manifest = self.load_oob_manifest()
+        oob_info = manifest.get("items", {}).get(item_type, {}).get(item_id)
+        return {
+            "layer": "user" if has_override else ("oob" if is_oob else "user"),
+            "is_oob": is_oob,
+            "has_override": has_override,
+            "oob_version": oob_info.get("version") if oob_info else None,
+        }
+
+    def delete_user_override(self, item_type: str, item_id: str) -> bool:
+        if not self.is_oob_item(item_type, item_id):
+            return False
+        path = None
+        if item_type == "entities":
+            path = self._user_entity_path(item_id)
+        elif item_type == "calculations":
+            path = self._user_calc_path(item_id)
+        elif item_type == "settings":
+            path = self._user_setting_path(item_id)
+        elif item_type == "detection_models":
+            path = self._user_detection_model_path(item_id)
+        if path and path.exists():
             path.unlink()
             return True
         return False
+
+    def load_oob_version(self, item_type: str, item_id: str) -> dict | None:
+        if not self.is_oob_item(item_type, item_id):
+            return None
+        path = None
+        if item_type == "entities":
+            path = self._entity_path(item_id)
+        elif item_type == "calculations":
+            path = self._calc_path(item_id)
+        elif item_type == "settings":
+            path = self._setting_path(item_id)
+        elif item_type == "detection_models":
+            path = self._detection_dir() / f"{item_id}.json"
+        if path and path.exists():
+            return json.loads(path.read_text())
+        return None
 
     # -- Dependency Analysis --
 
