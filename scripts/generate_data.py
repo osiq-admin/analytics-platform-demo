@@ -554,27 +554,64 @@ class SyntheticDataGenerator:
     # -----------------------------------------------------------------------
 
     def _generate_eod_data(self) -> None:
-        """Generate daily close prices and volumes for all products."""
+        """Generate daily OHLCV prices and volumes for all products."""
         for pid, info in self.products.items():
             base = info["base_price"]
             vol_base = info.get("avg_volume", 100_000)
             price = base
             prices: dict[date, float] = {}
+            prev_close_price = None  # Track previous day's close
 
             for day in self.trading_days:
                 # Random walk with slight upward drift
                 change = self.rng.gauss(0.0003, 0.015)
-                price = price * (1 + change)
-                price = round(price, 4)
-                prices[day] = price
+                close = price * (1 + change)
+                close = round(close, 4)
+
+                # Generate OHLC from close
+                daily_vol = abs(self.rng.gauss(0, 0.01))  # daily volatility as fraction
+                open_price = round(close * (1 + self.rng.gauss(0, 0.005)), 4)
+
+                # High is max of open/close + some upward noise
+                high_price = round(max(open_price, close) * (1 + abs(self.rng.gauss(0, daily_vol))), 4)
+
+                # Low is min of open/close - some downward noise
+                low_price = round(min(open_price, close) * (1 - abs(self.rng.gauss(0, daily_vol))), 4)
+
+                # Ensure high >= max(open, close) and low <= min(open, close)
+                high_price = max(high_price, open_price, close)
+                low_price = min(low_price, open_price, close)
 
                 vol = int(vol_base * self.rng.uniform(0.6, 1.5))
+
+                # num_trades: based on volume tier
+                if vol_base > 10_000_000:
+                    num_trades = self.rng.randint(1500, 3000)
+                elif vol_base > 1_000_000:
+                    num_trades = self.rng.randint(500, 1500)
+                else:
+                    num_trades = self.rng.randint(100, 500)
+
+                # vwap: weighted average between low and high, biased toward close
+                vwap = round((low_price + high_price + close * 2) / 4, 4)
+
+                prices[day] = close
+
                 self.md_eod.append({
                     "product_id": pid,
                     "trade_date": day.isoformat(),
-                    "close_price": price,
+                    "open_price": open_price,
+                    "high_price": high_price,
+                    "low_price": low_price,
+                    "close_price": close,
                     "volume": vol,
+                    "prev_close": prev_close_price if prev_close_price is not None else "",
+                    "num_trades": num_trades,
+                    "vwap": vwap,
                 })
+
+                prev_close_price = round(close, 4)
+                price = close
 
             self.eod_prices[pid] = prices
 
@@ -604,10 +641,23 @@ class SyntheticDataGenerator:
         for row in self.md_eod:
             if row["product_id"] == pid and row["trade_date"] == prev_date.isoformat():
                 row["close_price"] = pre_price
+                # Update OHLCV for previous day: open stays, adjust high/low to encompass pre_price
+                row["high_price"] = max(row["high_price"], row["open_price"], pre_price)
+                row["low_price"] = min(row["low_price"], row["open_price"], pre_price)
+                row["vwap"] = round((row["low_price"] + row["high_price"] + pre_price * 2) / 4, 4)
             elif row["product_id"] == pid and row["trade_date"] == evt_date.isoformat():
+                # Event day: open near pre_price, close at post_price
+                row["open_price"] = round(pre_price * (1 + self.rng.gauss(0, 0.002)), 4)
                 row["close_price"] = post_price
-                # Also spike volume
+                # High/low encompass the full range of the move
+                row["high_price"] = round(max(row["open_price"], post_price) * 1.005, 4)
+                row["low_price"] = round(min(row["open_price"], post_price) * 0.995, 4)
+                # Spike volume
                 row["volume"] = int(row["volume"] * 4)
+                # prev_close should be pre_price
+                row["prev_close"] = pre_price
+                # Update vwap
+                row["vwap"] = round((row["low_price"] + row["high_price"] + post_price * 2) / 4, 4)
 
         # Update price tracks
         self.eod_prices[pid][prev_date] = pre_price
@@ -701,10 +751,14 @@ class SyntheticDataGenerator:
                 "trade_quantity": self.rng.randint(500, 5000),
             })
 
-        # Also update EOD close to match trend end
+        # Also update EOD data to match trend
         for row in self.md_eod:
             if row["product_id"] == pid and row["trade_date"] == day.isoformat():
+                row["open_price"] = round(start_p, 4)
                 row["close_price"] = end_p
+                row["high_price"] = round(max(start_p, end_p) * 1.003, 4)
+                row["low_price"] = round(min(start_p, end_p) * 0.997, 4)
+                row["vwap"] = round((row["low_price"] + row["high_price"] + end_p * 2) / 4, 4)
                 break
 
     # -----------------------------------------------------------------------
@@ -1153,7 +1207,8 @@ class SyntheticDataGenerator:
 
         counts["md_eod"] = self._write_csv(
             "md_eod.csv",
-            ["product_id", "trade_date", "close_price", "volume"],
+            ["product_id", "trade_date", "open_price", "high_price", "low_price",
+             "close_price", "volume", "prev_close", "num_trades", "vwap"],
             self.md_eod,
         )
 
@@ -1377,12 +1432,18 @@ class SyntheticDataGenerator:
             "md_eod": {
                 "entity_id": "md_eod",
                 "name": "End-of-Day Market Data",
-                "description": "Daily close prices and volumes for all products.",
+                "description": "Daily OHLCV market data with previous close, trade count, and VWAP for all products.",
                 "fields": [
                     {"name": "product_id", "type": "string", "description": "Product identifier", "is_key": False, "nullable": False},
                     {"name": "trade_date", "type": "date", "description": "Trading date (YYYY-MM-DD)", "is_key": False, "nullable": False},
-                    {"name": "close_price", "type": "decimal", "description": "Closing price", "is_key": False, "nullable": False},
+                    {"name": "open_price", "type": "decimal", "description": "Day open price", "is_key": False, "nullable": False},
+                    {"name": "high_price", "type": "decimal", "description": "Intraday high price", "is_key": False, "nullable": False},
+                    {"name": "low_price", "type": "decimal", "description": "Intraday low price", "is_key": False, "nullable": False},
+                    {"name": "close_price", "type": "decimal", "description": "Day closing price", "is_key": False, "nullable": False},
                     {"name": "volume", "type": "integer", "description": "Total daily volume", "is_key": False, "nullable": False},
+                    {"name": "prev_close", "type": "decimal", "description": "Previous trading day close price", "is_key": False, "nullable": True},
+                    {"name": "num_trades", "type": "integer", "description": "Number of trades executed during the day", "is_key": False, "nullable": True},
+                    {"name": "vwap", "type": "decimal", "description": "Volume-weighted average price", "is_key": False, "nullable": True},
                 ],
                 "relationships": [],
             },

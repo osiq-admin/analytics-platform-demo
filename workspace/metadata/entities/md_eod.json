@@ -1,7 +1,7 @@
 {
   "entity_id": "md_eod",
   "name": "End-of-Day Market Data",
-  "description": "Daily close prices and volumes for all products.",
+  "description": "Daily OHLCV market data with previous close, trade count, and VWAP for all products.",
   "fields": [
     {
       "name": "product_id",
@@ -18,9 +18,30 @@
       "nullable": false
     },
     {
+      "name": "open_price",
+      "type": "decimal",
+      "description": "Day open price",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "high_price",
+      "type": "decimal",
+      "description": "Intraday high price",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "low_price",
+      "type": "decimal",
+      "description": "Intraday low price",
+      "is_key": false,
+      "nullable": false
+    },
+    {
       "name": "close_price",
       "type": "decimal",
-      "description": "Closing price",
+      "description": "Day closing price",
       "is_key": false,
       "nullable": false
     },
@@ -30,6 +51,27 @@
       "description": "Total daily volume",
       "is_key": false,
       "nullable": false
+    },
+    {
+      "name": "prev_close",
+      "type": "decimal",
+      "description": "Previous trading day close price",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "num_trades",
+      "type": "integer",
+      "description": "Number of trades executed during the day",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "vwap",
+      "type": "decimal",
+      "description": "Volume-weighted average price",
+      "is_key": false,
+      "nullable": true
     }
   ],
   "relationships": []
