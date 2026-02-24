@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-02-24
 
 ---
 
@@ -22,6 +22,7 @@
 | Alert Detail & Polish (Phase 3) | COMPLETE | M18-M25: 5 new components, 2 endpoints, 6-row layout, 193 tests |
 | UX Polish & AI Integration (Phase 4) | COMPLETE | M26-M33: Confirm dialogs, panel toggles, AI panels, dynamic layout — 193 tests |
 | Data Model, UX, Viz & Dashboard (Phase 5) | COMPLETE | M34-M48: Product entity, tooltips/tours, chart enhancements, dashboard — 193 tests |
+| Data Model Deep Refinement (Phase 6) | IN PROGRESS | M49-M65: ISO identifiers, FIX Protocol alignment, new entities (venue, account, trader), OHLCV, bid/ask |
 
 ---
 
@@ -78,6 +79,23 @@
 | M46 | Dashboard View | COMPLETE | 6 | 6 | Backend endpoint, store, SummaryCard, Dashboard with 4 charts |
 | M47 | Build, Test & Verify | COMPLETE | 4 | 4 | Frontend builds (895 modules), 193 backend tests pass |
 | M48 | Documentation | COMPLETE | 3 | 3 | Update progress and demo guide |
+| M49 | Phase 6 Plan & Progress | IN PROGRESS | 2 | 1 | Save plan, update progress tracker |
+| M50 | Venue Entity | PENDING | 3 | 0 | New entity: 6 static rows with ISO MIC codes |
+| M51 | Product Entity Overhaul | PENDING | 4 | 0 | Fix asset_class/instrument_type, add ISIN/CFI/MIC/underlying |
+| M52 | Account Entity | PENDING | 3 | 0 | New entity: 220 rows with type, country, risk rating |
+| M53 | Trader Entity | PENDING | 3 | 0 | New entity: 50 rows with desk, type, status |
+| M54 | Order Entity Overhaul | PENDING | 4 | 0 | Add order_type, limit_price, time_in_force, trader_id, execution_id |
+| M55 | Execution Entity Overhaul | PENDING | 4 | 0 | Add order_id FK, venue_mic, exec_type, capacity |
+| M56 | MD_EOD Overhaul | PENDING | 4 | 0 | Add OHLCV: open, high, low, prev_close, num_trades, vwap |
+| M57 | MD_Intraday Overhaul | PENDING | 4 | 0 | Add bid/ask, trade_condition, expand to FX + futures |
+| M58 | Update Calculation SQL | PENDING | 3 | 0 | Fix value_calc/adjusted_direction for call_option/put_option |
+| M59 | Update Detection Model SQL | PENDING | 2 | 0 | Verify entity_context, update settings overrides |
+| M60 | Update Tests | PENDING | 4 | 0 | Update fixtures, add new entity tests, fix assertion values |
+| M61 | Regenerate Data & Snapshots | PENDING | 3 | 0 | Regenerate all CSVs and snapshots |
+| M62 | Frontend Entity Display Updates | PENDING | 4 | 0 | EntityDesigner, RelatedOrders, EntityContext updates |
+| M63 | Frontend Dashboard & Alert Detail | PENDING | 3 | 0 | Asset class chart, OHLC candlesticks, order detail |
+| M64 | Build, Test & Verify | PENDING | 4 | 0 | Full build, test suite, Playwright verification |
+| M65 | Documentation | PENDING | 2 | 0 | Update progress and demo guide |
 
 ---
 
