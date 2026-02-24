@@ -33,5 +33,17 @@
   "alert_template": {
     "title": "Wash Trading Alert — Intraday",
     "sections": ["business_description", "entity_context", "calculation_trace", "score_breakdown", "settings_trace", "related_orders"]
-  }
+  },
+  "regulatory_coverage": [
+    {
+      "regulation": "MAR",
+      "article": "Art. 12(1)(a)",
+      "description": "Wash trading — intraday fictitious transactions"
+    },
+    {
+      "regulation": "MiFID II",
+      "article": "Art. 16(2)",
+      "description": "Organisational requirement — effective surveillance systems"
+    }
+  ]
 }

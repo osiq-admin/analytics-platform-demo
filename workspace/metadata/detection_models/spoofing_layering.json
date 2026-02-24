@@ -26,5 +26,22 @@
   "alert_template": {
     "title": "Spoofing / Layering Alert",
     "sections": ["business_description", "entity_context", "cancellation_analysis", "order_book_snapshot", "calculation_trace", "score_breakdown", "order_timeline"]
-  }
+  },
+  "regulatory_coverage": [
+    {
+      "regulation": "MAR",
+      "article": "Art. 12(1)(c)",
+      "description": "Spoofing — orders with no intention to execute"
+    },
+    {
+      "regulation": "Dodd-Frank",
+      "article": "§747",
+      "description": "Anti-manipulation — spoofing prohibition"
+    },
+    {
+      "regulation": "MiFID II",
+      "article": "RTS 25",
+      "description": "Order record keeping — cancellation pattern analysis"
+    }
+  ]
 }

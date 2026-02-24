@@ -33,5 +33,22 @@
   "alert_template": {
     "title": "Market Price Ramping Alert",
     "sections": ["business_description", "entity_context", "trend_analysis", "calculation_trace", "score_breakdown", "price_chart", "related_orders"]
-  }
+  },
+  "regulatory_coverage": [
+    {
+      "regulation": "MAR",
+      "article": "Art. 12(1)(b)",
+      "description": "Price manipulation — securing price at abnormal or artificial level"
+    },
+    {
+      "regulation": "Dodd-Frank",
+      "article": "§747",
+      "description": "Anti-manipulation provisions"
+    },
+    {
+      "regulation": "FINRA",
+      "article": "Rule 5210",
+      "description": "Marking the close — trading activity near market close"
+    }
+  ]
 }

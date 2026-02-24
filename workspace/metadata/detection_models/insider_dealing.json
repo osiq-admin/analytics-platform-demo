@@ -26,5 +26,22 @@
   "alert_template": {
     "title": "Insider Dealing Alert",
     "sections": ["business_description", "entity_context", "market_event_analysis", "related_products", "calculation_trace", "score_breakdown", "price_chart", "order_timeline"]
-  }
+  },
+  "regulatory_coverage": [
+    {
+      "regulation": "MAR",
+      "article": "Art. 14",
+      "description": "Insider dealing — trading on inside information"
+    },
+    {
+      "regulation": "MAR",
+      "article": "Art. 16",
+      "description": "Surveillance obligation — detect and report suspicious orders"
+    },
+    {
+      "regulation": "MiFID II",
+      "article": "Art. 16(2)",
+      "description": "Organisational requirement — effective surveillance systems"
+    }
+  ]
 }
