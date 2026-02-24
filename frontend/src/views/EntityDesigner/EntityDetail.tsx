@@ -25,6 +25,8 @@ interface EntityDetailProps {
     }>;
     subtypes?: string[];
   };
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const fieldColumns: ColDef<Field>[] = [
@@ -43,20 +45,42 @@ const fieldColumns: ColDef<Field>[] = [
   { field: "description", headerName: "Description", flex: 2 },
 ];
 
-export default function EntityDetail({ entity }: EntityDetailProps) {
+export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailProps) {
   return (
     <div className="flex flex-col gap-3 h-full">
       {/* Header */}
-      <div>
-        <h3 className="text-base font-semibold">{entity.name}</h3>
-        {entity.description && (
-          <p className="text-xs text-muted mt-1">{entity.description}</p>
-        )}
-        {entity.subtypes && entity.subtypes.length > 0 && (
-          <div className="flex gap-1 mt-2">
-            {entity.subtypes.map((s) => (
-              <StatusBadge key={s} label={s} variant="info" />
-            ))}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-base font-semibold">{entity.name}</h3>
+          {entity.description && (
+            <p className="text-xs text-muted mt-1">{entity.description}</p>
+          )}
+          {entity.subtypes && entity.subtypes.length > 0 && (
+            <div className="flex gap-1 mt-2">
+              {entity.subtypes.map((s) => (
+                <StatusBadge key={s} label={s} variant="info" />
+              ))}
+            </div>
+          )}
+        </div>
+        {(onEdit || onDelete) && (
+          <div className="flex items-center gap-2 shrink-0">
+            {onEdit && (
+              <button
+                onClick={onEdit}
+                className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+              >
+                Edit
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                Delete
+              </button>
+            )}
           </div>
         )}
       </div>

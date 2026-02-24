@@ -11,6 +11,8 @@ interface SettingDetailProps {
       priority: number;
     }>;
   };
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 interface ScoreStep {
@@ -19,7 +21,7 @@ interface ScoreStep {
   score: number;
 }
 
-export default function SettingDetail({ setting }: SettingDetailProps) {
+export default function SettingDetail({ setting, onEdit, onDelete }: SettingDetailProps) {
   const isScoreSteps =
     setting.value_type === "score_steps" && Array.isArray(setting.default);
   const steps = isScoreSteps ? (setting.default as ScoreStep[]) : [];
@@ -27,7 +29,29 @@ export default function SettingDetail({ setting }: SettingDetailProps) {
   return (
     <div className="flex flex-col gap-3 overflow-auto">
       <div>
-        <h3 className="text-base font-semibold">{setting.name}</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold">{setting.name}</h3>
+          {(onEdit || onDelete) && (
+            <div className="flex items-center gap-2 shrink-0">
+              {onEdit && (
+                <button
+                  onClick={onEdit}
+                  className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+                >
+                  Edit
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <div className="flex gap-2 mt-2">
           <StatusBadge label={setting.value_type} variant="info" />
           {setting.match_type && (

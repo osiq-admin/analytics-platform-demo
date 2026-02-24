@@ -29,12 +29,14 @@ export default function ModelComposer() {
     loading,
     fetchCalculations,
     fetchDetectionModels,
+    deleteDetectionModel,
   } = useMetadataStore();
   const [selectedModel, setSelectedModel] = useState<DetectionModelDef | null>(null);
-  const [createMode, setCreateMode] = useState(false);
+  const [mode, setMode] = useState<"browse" | "create" | "edit">("browse");
   const [deploying, setDeploying] = useState(false);
   const [deployResult, setDeployResult] = useState<DeployResult | null>(null);
   const [confirmDeploy, setConfirmDeploy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
@@ -73,11 +75,27 @@ export default function ModelComposer() {
   };
 
   const handleModelCreated = (modelId: string) => {
-    setCreateMode(false);
+    setMode("browse");
     fetchDetectionModels().then(() => {
       const newModel = detectionModels.find((m) => m.model_id === modelId);
       if (newModel) setSelectedModel(newModel);
     });
+  };
+
+  const handleModelEdited = (modelId: string) => {
+    setMode("browse");
+    fetchDetectionModels().then(() => {
+      const updated = detectionModels.find((m) => m.model_id === modelId);
+      if (updated) setSelectedModel(updated);
+    });
+  };
+
+  const handleDelete = async () => {
+    if (!selectedModel) return;
+    await deleteDetectionModel(selectedModel.model_id);
+    setConfirmDelete(false);
+    setSelectedModel(null);
+    setMode("browse");
   };
 
   const handleAiSend = async (content: string) => {
@@ -119,7 +137,7 @@ export default function ModelComposer() {
           <div className="space-y-1">
             <button
               onClick={() => {
-                setCreateMode(true);
+                setMode("create");
                 setSelectedModel(null);
                 setDeployResult(null);
               }}
@@ -132,7 +150,7 @@ export default function ModelComposer() {
                 key={m.model_id}
                 onClick={() => {
                   setSelectedModel(m);
-                  setCreateMode(false);
+                  setMode("browse");
                   setDeployResult(null);
                 }}
                 className={`w-full text-left px-2 py-1.5 rounded text-xs transition-colors ${
@@ -150,12 +168,19 @@ export default function ModelComposer() {
           </div>
         </Panel>
 
-        {/* Center: Model detail or create form */}
-        {createMode ? (
+        {/* Center: Model detail, create form, or edit form */}
+        {mode === "create" ? (
           <ModelCreateForm
             calculations={calculations}
             onSaved={handleModelCreated}
-            onCancel={() => setCreateMode(false)}
+            onCancel={() => setMode("browse")}
+          />
+        ) : mode === "edit" && selectedModel ? (
+          <ModelCreateForm
+            calculations={calculations}
+            existingModel={selectedModel}
+            onSaved={handleModelEdited}
+            onCancel={() => setMode("browse")}
           />
         ) : selectedModel ? (
           <div className="flex-1 flex flex-col gap-3 min-w-0" data-tour="model-detail">
@@ -181,6 +206,18 @@ export default function ModelComposer() {
                     }
                   />
                 )}
+                <button
+                  onClick={() => setMode("edit")}
+                  className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  Delete
+                </button>
                 <button
                   onClick={() => setConfirmDeploy(true)}
                   disabled={deploying}
@@ -254,6 +291,16 @@ export default function ModelComposer() {
         confirmLabel="Deploy & Run"
         onConfirm={() => { setConfirmDeploy(false); handleDeploy(); }}
         onCancel={() => setConfirmDeploy(false)}
+      />
+
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete Detection Model"
+        message={`Are you sure you want to delete model "${selectedModel?.name}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
       />
     </div>
   );
