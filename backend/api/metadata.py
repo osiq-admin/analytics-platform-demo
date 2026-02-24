@@ -278,6 +278,15 @@ def get_regulatory_coverage(request: Request):
     return _meta(request).get_regulatory_coverage_map()
 
 
+@router.get("/regulatory/suggestions")
+def get_regulatory_suggestions(request: Request):
+    """Analyze regulatory coverage and return improvement suggestions."""
+    from backend.services.suggestion_service import SuggestionService
+    meta = _meta(request)
+    svc = SuggestionService(meta)
+    return svc.analyze_gaps()
+
+
 @router.get("/regulatory/traceability-graph")
 def get_traceability_graph(request: Request):
     """Return a node/edge graph for regulatory traceability visualization.

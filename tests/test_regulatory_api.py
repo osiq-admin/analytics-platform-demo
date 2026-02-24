@@ -210,3 +210,39 @@ class TestTraceabilityGraph:
         art14_nodes = [n for n in nodes if n["type"] == "article" and "Art. 14" in n["label"]]
         assert len(art14_nodes) == 1
         assert art14_nodes[0]["covered"] is False
+
+
+# -- Suggestions --
+
+
+class TestSuggestions:
+    def test_suggestions_endpoint(self, reg_client):
+        """GET /api/metadata/regulatory/suggestions returns 200 with expected keys."""
+        resp = reg_client.get("/api/metadata/regulatory/suggestions")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "gaps" in data
+        assert "improvements" in data
+        assert "unused_calcs" in data
+        assert "summary" in data
+
+    def test_uncovered_article_appears_as_gap(self, reg_client):
+        """Art. 14 (uncovered) appears in the gaps list."""
+        resp = reg_client.get("/api/metadata/regulatory/suggestions")
+        gaps = resp.json()["gaps"]
+        assert any(g["article"] == "Art. 14" for g in gaps)
+
+    def test_gap_has_suggestion_text(self, reg_client):
+        """Every gap entry includes meaningful suggestion text."""
+        resp = reg_client.get("/api/metadata/regulatory/suggestions")
+        gaps = resp.json()["gaps"]
+        for gap in gaps:
+            assert "suggestion" in gap
+            assert len(gap["suggestion"]) > 10
+
+    def test_summary_counts(self, reg_client):
+        """Summary counts match expected values for the fixture data."""
+        resp = reg_client.get("/api/metadata/regulatory/suggestions")
+        summary = resp.json()["summary"]
+        assert summary["gap_count"] == 1
+        assert isinstance(summary["total_suggestions"], int)
