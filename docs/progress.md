@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 7-8 complete with E2E test suite)
+**Last Updated**: 2026-02-24 (Phase 9 complete — Metadata Editor & Visual Configuration)
 
 ---
 
@@ -28,6 +28,7 @@
 | Dynamic Metadata Foundation (Phase 7) | COMPLETE | M66-M69: Remove hardcodings, CRUD APIs, parameter substitution — 234 tests |
 | Explainability & Drill-Down (Phase 8) | COMPLETE | M70-M72: AlertTrace fields, trace APIs, frontend panels — 252 tests |
 | E2E Testing (Phase 7-8) | COMPLETE | M73: 42 Playwright E2E scenarios, 11 test classes, 0 console errors — 294 total tests |
+| Metadata Editor & Visual Config (Phase 9) | COMPLETE | M74-M78: MetadataEditor view, visual editors, dashboard widgets, CRUD wiring — 280 tests |
 
 ---
 
@@ -109,6 +110,11 @@
 | M71 | Trace API Endpoints | COMPLETE | 3 | 3 | Trace API endpoints (alert, calculation, settings) — 10 new tests |
 | M72 | Frontend Explainability Drill-Down | COMPLETE | 4 | 4 | ExplainabilityPanel, SQLViewer, SettingsTraceViewer components, AlertDetail integration |
 | M73 | E2E Playwright Test Suite | COMPLETE | 5 | 5 | 42 E2E scenarios, 11 test classes, all 12 views, Phase 7-8 APIs, 0 console errors — 294 total tests |
+| M74 | Persist Roadmap + Store Foundation | COMPLETE | 4 | 4 | Roadmap saved, TS types expanded, CRUD store actions, 14 API tests — 308 total tests |
+| M75 | MetadataEditor View — JSON + Visual | COMPLETE | 4 | 4 | Monaco JSON panel + visual form panel with bidirectional sync, route + sidebar |
+| M76 | Visual Editors for All 4 Types | COMPLETE | 4 | 4 | EntityEditor, CalculationEditor, SettingsEditor, DetectionModelEditor |
+| M77 | Dashboard Widgets + Chart Switching | COMPLETE | 5 | 5 | WidgetContainer, widgetStore, ChartTypeSwitcher, multi-renderer (5 types) |
+| M78 | Wire CRUD into Existing Views | COMPLETE | 6 | 6 | Edit/delete in EntityDesigner, MetadataExplorer, SettingsManager, ModelComposer + verification |
 
 ---
 
@@ -406,6 +412,19 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 | **Configurable Widgets** | §8.1 bullet | RESOLVED (M28) — Panel toggle toolbar with localStorage persistence |
 | **AI in SQL Console & Model Composer** | §10.1 | RESOLVED (M29, M30) — Collapsible ChatPanel in both views |
 | **Confirmation Dialogs** | General | RESOLVED (M27) — ConfirmDialog for Model Deploy & Mapping Save |
+
+---
+
+### 2026-02-24 (Phase 9: Metadata Editor & Visual Configuration — M74-M78)
+- [x] **M74 Task 74.0**: Persist comprehensive roadmap (Phases 7-20, ~100+ items) to `docs/plans/2026-02-24-comprehensive-roadmap.md`
+- [x] **M74 Task 74.1**: Expand TS metadata types — 6 new interfaces (FieldDef, RelationshipDef, SettingOverride, ModelCalculation), expanded EntityDef, CalculationDef, SettingDef, DetectionModelDef
+- [x] **M74 Task 74.2**: Add 10 CRUD store actions — saveEntity, deleteEntity, saveCalculation, deleteCalculation, saveSetting, deleteSetting, updateDetectionModel, deleteDetectionModel, getCalculationDependents, getSettingDependents
+- [x] **M74 Task 74.3**: Backend CRUD API integration tests — 14 tests covering PUT/DELETE for all 4 types + dependency checking + cycle detection
+- [x] **M75**: MetadataEditor view — Monaco JSON panel (left) + visual form panel (right) with bidirectional sync, route + sidebar entry
+- [x] **M76**: Visual editors — EntityEditor, CalculationEditor, SettingsEditor, DetectionModelEditor components
+- [x] **M77**: Dashboard widgets — WidgetContainer, widgetStore (localStorage), ChartTypeSwitcher, multi-renderer (bar/line/pie/table/h-bar)
+- [x] **M78**: Wire CRUD — edit/delete in EntityDesigner, MetadataExplorer, SettingsManager, ModelComposer; ConfirmDialog; dependency warnings
+- **Total**: 280 tests passing (14 new CRUD tests), 911 frontend modules, 15 new files, 13 modified files
 
 ---
 
