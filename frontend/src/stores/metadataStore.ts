@@ -90,6 +90,16 @@ interface MetadataState {
   fetchDetectionModels: () => Promise<void>;
   fetchAll: () => Promise<void>;
   saveDetectionModel: (model: Record<string, unknown>) => Promise<void>;
+  saveEntity: (entity: EntityDef) => Promise<void>;
+  deleteEntity: (entityId: string) => Promise<void>;
+  saveCalculation: (calc: CalculationDef) => Promise<void>;
+  deleteCalculation: (calcId: string) => Promise<void>;
+  saveSetting: (setting: SettingDef) => Promise<void>;
+  deleteSetting: (settingId: string) => Promise<void>;
+  updateDetectionModel: (model: Record<string, unknown>) => Promise<void>;
+  deleteDetectionModel: (modelId: string) => Promise<void>;
+  getCalculationDependents: (calcId: string) => Promise<{ calculations: string[]; detection_models: string[] }>;
+  getSettingDependents: (settingId: string) => Promise<{ calculations: string[]; detection_models: string[] }>;
 }
 
 export const useMetadataStore = create<MetadataState>((set) => ({
@@ -162,8 +172,68 @@ export const useMetadataStore = create<MetadataState>((set) => ({
 
   saveDetectionModel: async (model) => {
     await api.post("/metadata/detection-models", model);
-    // Refresh the list
     const data = await api.get<DetectionModelDef[]>("/metadata/detection-models");
     set({ detectionModels: data });
+  },
+
+  saveEntity: async (entity) => {
+    await api.put(`/metadata/entities/${entity.entity_id}`, entity);
+    const data = await api.get<EntityDef[]>("/metadata/entities");
+    set({ entities: data });
+  },
+
+  deleteEntity: async (entityId) => {
+    await api.delete(`/metadata/entities/${entityId}`);
+    const data = await api.get<EntityDef[]>("/metadata/entities");
+    set({ entities: data });
+  },
+
+  saveCalculation: async (calc) => {
+    await api.put(`/metadata/calculations/${calc.calc_id}`, calc);
+    const data = await api.get<CalculationDef[]>("/metadata/calculations");
+    set({ calculations: data });
+  },
+
+  deleteCalculation: async (calcId) => {
+    await api.delete(`/metadata/calculations/${calcId}`);
+    const data = await api.get<CalculationDef[]>("/metadata/calculations");
+    set({ calculations: data });
+  },
+
+  saveSetting: async (setting) => {
+    await api.put(`/metadata/settings/${setting.setting_id}`, setting);
+    const data = await api.get<SettingDef[]>("/metadata/settings");
+    set({ settings: data });
+  },
+
+  deleteSetting: async (settingId) => {
+    await api.delete(`/metadata/settings/${settingId}`);
+    const data = await api.get<SettingDef[]>("/metadata/settings");
+    set({ settings: data });
+  },
+
+  updateDetectionModel: async (model) => {
+    const modelId = model.model_id as string;
+    await api.put(`/metadata/detection-models/${modelId}`, model);
+    const data = await api.get<DetectionModelDef[]>("/metadata/detection-models");
+    set({ detectionModels: data });
+  },
+
+  deleteDetectionModel: async (modelId) => {
+    await api.delete(`/metadata/detection-models/${modelId}`);
+    const data = await api.get<DetectionModelDef[]>("/metadata/detection-models");
+    set({ detectionModels: data });
+  },
+
+  getCalculationDependents: async (calcId) => {
+    return api.get<{ calculations: string[]; detection_models: string[] }>(
+      `/metadata/calculations/${calcId}/dependents`
+    );
+  },
+
+  getSettingDependents: async (settingId) => {
+    return api.get<{ calculations: string[]; detection_models: string[] }>(
+      `/metadata/settings/${settingId}/dependents`
+    );
   },
 }));
