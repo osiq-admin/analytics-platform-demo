@@ -14,6 +14,7 @@ import {
   useRegulatoryStore,
   type TraceabilityNode,
   type TraceabilityEdge,
+  type SuggestionData,
 } from "../../stores/regulatoryStore.ts";
 
 /* ---------- Constants ---------- */
@@ -104,12 +105,13 @@ const LEGEND_ITEMS = [
 /* ---------- Component ---------- */
 
 export default function RegulatoryMap() {
-  const { coverage, graphNodes, graphEdges, loading, error, fetchAll } =
+  const { coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll } =
     useRegulatoryStore();
 
   const [selectedNode, setSelectedNode] = useState<TraceabilityNode | null>(
     null
   );
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     fetchAll();
@@ -217,6 +219,15 @@ export default function RegulatoryMap() {
           </div>
         </Panel>
       </div>
+
+      {/* Row 3: Suggestions Panel */}
+      {suggestions && (
+        <SuggestionsPanel
+          suggestions={suggestions}
+          expanded={showSuggestions}
+          onToggle={() => setShowSuggestions((p) => !p)}
+        />
+      )}
     </div>
   );
 }
@@ -295,6 +306,109 @@ function NodeDetail({ node }: { node: TraceabilityNode }) {
         <div>
           <span className="font-semibold text-muted">Layer:</span>{" "}
           {node.layer}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Suggestions Panel ---------- */
+
+function SuggestionsPanel({
+  suggestions,
+  expanded,
+  onToggle,
+}: {
+  suggestions: SuggestionData;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const { gap_count, improvement_count, total_suggestions } =
+    suggestions.summary;
+
+  return (
+    <div
+      className="rounded border border-border bg-surface shrink-0"
+      data-tour="regulatory-suggestions"
+    >
+      {/* Header — always visible */}
+      <button
+        type="button"
+        className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold hover:bg-surface-elevated/50 transition-colors"
+        onClick={onToggle}
+      >
+        <span className="flex items-center gap-2">
+          Suggestions
+          {total_suggestions > 0 && (
+            <>
+              {gap_count > 0 && (
+                <span className="inline-flex items-center rounded-full bg-red-500/15 text-red-500 px-2 py-0.5 text-[10px] font-bold">
+                  {gap_count} gap{gap_count !== 1 ? "s" : ""}
+                </span>
+              )}
+              {improvement_count > 0 && (
+                <span className="inline-flex items-center rounded-full bg-amber-500/15 text-amber-500 px-2 py-0.5 text-[10px] font-bold">
+                  {improvement_count} improvement{improvement_count !== 1 ? "s" : ""}
+                </span>
+              )}
+            </>
+          )}
+          {total_suggestions === 0 && (
+            <span className="inline-flex items-center rounded-full bg-green-500/15 text-green-500 px-2 py-0.5 text-[10px] font-bold">
+              All clear
+            </span>
+          )}
+        </span>
+        <span className="text-muted text-xs">{expanded ? "Collapse" : "Expand"}</span>
+      </button>
+
+      {/* Body — collapsible */}
+      {expanded && (
+        <div className="px-4 pb-4 flex flex-col gap-3 border-t border-border pt-3">
+          {/* Gaps */}
+          {suggestions.gaps.map((g) => (
+            <div
+              key={`${g.regulation}-${g.article}`}
+              className="rounded border border-red-500/30 bg-red-500/5 p-3"
+            >
+              <p className="text-xs font-semibold text-red-500">
+                {g.regulation} {g.article}
+                {g.title ? ` — ${g.title}` : ""}
+              </p>
+              {g.description && (
+                <p className="text-[11px] text-foreground/60 mt-0.5">
+                  {g.description}
+                </p>
+              )}
+              <p className="text-xs text-foreground/80 mt-1.5">{g.suggestion}</p>
+            </div>
+          ))}
+
+          {/* Improvements */}
+          {suggestions.improvements.map((imp) => (
+            <div
+              key={imp.model_id}
+              className="rounded border border-amber-500/30 bg-amber-500/5 p-3"
+            >
+              <p className="text-xs font-semibold text-amber-500">
+                {imp.model_name}
+                <span className="font-normal text-foreground/60 ml-1">
+                  ({imp.current_calc_count} calc{imp.current_calc_count !== 1 ? "s" : ""})
+                </span>
+              </p>
+              <p className="text-xs text-foreground/80 mt-1.5">{imp.suggestion}</p>
+              <p className="text-[11px] text-foreground/50 mt-1 italic">
+                {imp.impact}
+              </p>
+            </div>
+          ))}
+
+          {/* Empty state */}
+          {total_suggestions === 0 && (
+            <p className="text-xs text-muted">
+              No coverage gaps or improvement suggestions detected.
+            </p>
+          )}
         </div>
       )}
     </div>
