@@ -15,15 +15,24 @@ def _meta(request: Request):
 @router.get("/entities")
 def list_entities(request: Request):
     entities = _meta(request).list_entities()
-    return [e.model_dump() for e in entities]
+    result = []
+    for e in entities:
+        d = e.model_dump()
+        d["metadata_layer"] = e.metadata_layer
+        result.append(d)
+    return result
 
 
 @router.get("/entities/{entity_id}")
 def get_entity(entity_id: str, request: Request):
-    entity = _meta(request).load_entity(entity_id)
+    svc = _meta(request)
+    entity = svc.load_entity(entity_id)
     if entity is None:
         return JSONResponse({"error": "not found"}, status_code=404)
-    return entity.model_dump()
+    data = entity.model_dump()
+    data["metadata_layer"] = entity.metadata_layer
+    data["_layer"] = svc.get_item_layer_info("entities", entity_id)
+    return data
 
 
 @router.put("/entities/{entity_id}")
@@ -50,15 +59,24 @@ def delete_entity(entity_id: str, request: Request):
 @router.get("/calculations")
 def list_calculations(request: Request, layer: str | None = None):
     calcs = _meta(request).list_calculations(layer)
-    return [c.model_dump() for c in calcs]
+    result = []
+    for c in calcs:
+        d = c.model_dump()
+        d["metadata_layer"] = c.metadata_layer
+        result.append(d)
+    return result
 
 
 @router.get("/calculations/{calc_id}")
 def get_calculation(calc_id: str, request: Request):
-    calc = _meta(request).load_calculation(calc_id)
+    svc = _meta(request)
+    calc = svc.load_calculation(calc_id)
     if calc is None:
         return JSONResponse({"error": "not found"}, status_code=404)
-    return calc.model_dump()
+    data = calc.model_dump()
+    data["metadata_layer"] = calc.metadata_layer
+    data["_layer"] = svc.get_item_layer_info("calculations", calc_id)
+    return data
 
 
 @router.put("/calculations/{calc_id}")
@@ -102,15 +120,24 @@ def get_calculation_dependents(calc_id: str, request: Request):
 @router.get("/settings")
 def list_settings(request: Request, category: str | None = None):
     items = _meta(request).list_settings(category)
-    return [s.model_dump() for s in items]
+    result = []
+    for s in items:
+        d = s.model_dump()
+        d["metadata_layer"] = s.metadata_layer
+        result.append(d)
+    return result
 
 
 @router.get("/settings/{setting_id}")
 def get_setting(setting_id: str, request: Request):
-    setting = _meta(request).load_setting(setting_id)
+    svc = _meta(request)
+    setting = svc.load_setting(setting_id)
     if setting is None:
         return JSONResponse({"error": "not found"}, status_code=404)
-    return setting.model_dump()
+    data = setting.model_dump()
+    data["metadata_layer"] = setting.metadata_layer
+    data["_layer"] = svc.get_item_layer_info("settings", setting_id)
+    return data
 
 
 @router.put("/settings/{setting_id}")
@@ -172,15 +199,24 @@ def resolve_setting(setting_id: str, body: ResolveRequest, request: Request):
 @router.get("/detection-models")
 def list_detection_models(request: Request):
     models = _meta(request).list_detection_models()
-    return [m.model_dump() for m in models]
+    result = []
+    for m in models:
+        d = m.model_dump()
+        d["metadata_layer"] = m.metadata_layer
+        result.append(d)
+    return result
 
 
 @router.get("/detection-models/{model_id}")
 def get_detection_model(model_id: str, request: Request):
-    model = _meta(request).load_detection_model(model_id)
+    svc = _meta(request)
+    model = svc.load_detection_model(model_id)
     if model is None:
         return JSONResponse({"error": "not found"}, status_code=404)
-    return model.model_dump()
+    data = model.model_dump()
+    data["metadata_layer"] = model.metadata_layer
+    data["_layer"] = svc.get_item_layer_info("detection_models", model_id)
+    return data
 
 
 @router.post("/detection-models")
@@ -213,6 +249,81 @@ def delete_detection_model(model_id: str, request: Request):
     if not deleted:
         return JSONResponse({"error": "not found"}, status_code=404)
     return {"deleted": True, "model_id": model_id}
+
+
+# -- OOB Layer Endpoints --
+
+VALID_ITEM_TYPES = ["entities", "calculations", "settings", "detection_models"]
+
+
+@router.get("/oob-manifest")
+def get_oob_manifest(request: Request):
+    """Return the OOB manifest with checksums and versions."""
+    return _meta(request).load_oob_manifest()
+
+
+@router.get("/layers/{item_type}/{item_id}/info")
+def get_layer_info(item_type: str, item_id: str, request: Request):
+    """Get layer info for a specific metadata item."""
+    if item_type not in VALID_ITEM_TYPES:
+        return JSONResponse(
+            {"error": f"Invalid type. Must be one of: {VALID_ITEM_TYPES}"},
+            status_code=400,
+        )
+    return _meta(request).get_item_layer_info(item_type, item_id)
+
+
+@router.post("/layers/{item_type}/{item_id}/reset")
+def reset_to_oob(item_type: str, item_id: str, request: Request):
+    """Reset an OOB item to its original definition by removing the user override."""
+    svc = _meta(request)
+    if not svc.is_oob_item(item_type, item_id):
+        return JSONResponse({"error": "Item is not an OOB item"}, status_code=400)
+    if not svc.delete_user_override(item_type, item_id):
+        return JSONResponse({"error": "No user override found"}, status_code=404)
+    return {"reset": True, "item_type": item_type, "item_id": item_id}
+
+
+@router.get("/layers/{item_type}/{item_id}/oob")
+def get_oob_version_endpoint(item_type: str, item_id: str, request: Request):
+    """Get the original OOB version of a metadata item."""
+    oob = _meta(request).load_oob_version(item_type, item_id)
+    if oob is None:
+        return JSONResponse({"error": "No OOB version found"}, status_code=404)
+    return oob
+
+
+@router.get("/layers/{item_type}/{item_id}/diff")
+def get_item_diff(item_type: str, item_id: str, request: Request):
+    """Get a diff between the OOB version and current version of a metadata item."""
+    svc = _meta(request)
+    oob = svc.load_oob_version(item_type, item_id)
+    if oob is None:
+        return {"has_diff": False, "changes": []}
+    current = _load_current_as_dict(svc, item_type, item_id)
+    if current is None:
+        return {"has_diff": False, "changes": []}
+    changes = []
+    all_keys = set(oob.keys()) | set(current.keys())
+    for key in sorted(all_keys - {"metadata_layer", "_layer"}):
+        if oob.get(key) != current.get(key):
+            changes.append({"field": key, "oob_value": oob.get(key), "current_value": current.get(key)})
+    return {"has_diff": len(changes) > 0, "changes": changes}
+
+
+def _load_current_as_dict(svc, item_type: str, item_id: str) -> dict | None:
+    """Load the current version of a metadata item as a dict."""
+    if item_type == "entities":
+        item = svc.load_entity(item_id)
+    elif item_type == "calculations":
+        item = svc.load_calculation(item_id)
+    elif item_type == "settings":
+        item = svc.load_setting(item_id)
+    elif item_type == "detection_models":
+        item = svc.load_detection_model(item_id)
+    else:
+        return None
+    return item.model_dump() if item else None
 
 
 # -- Dependency Graph & Validation --
