@@ -28,8 +28,19 @@ export default function SettingsList({ settings, onSelect }: SettingsListProps) 
         headerName: "Layer",
         width: 80,
         cellRenderer: (p: { value: string }) => {
-          if (p.value === "oob") return '<span data-tour="setting-layer-badge" class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border bg-cyan-500/15 text-cyan-400 border-cyan-500/30">OOB</span>';
-          return '<span data-tour="setting-layer-badge" class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border bg-purple-500/15 text-purple-400 border-purple-500/30">Custom</span>';
+          const isOob = p.value === "oob";
+          return (
+            <span
+              data-tour="setting-layer-badge"
+              className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border ${
+                isOob
+                  ? "bg-cyan-500/15 text-cyan-400 border-cyan-500/30"
+                  : "bg-purple-500/15 text-purple-400 border-purple-500/30"
+              }`}
+            >
+              {isOob ? "OOB" : "Custom"}
+            </span>
+          );
         },
       },
     ],
