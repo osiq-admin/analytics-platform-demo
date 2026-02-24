@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 11 complete — OOB vs User-Defined Separation)
+**Last Updated**: 2026-02-24 (Phase 12 complete — UI/UX Usability)
 
 ---
 
@@ -32,6 +32,7 @@
 | E2E Testing & Tours (Phase 9) | COMPLETE | 14 new Playwright E2E tests (56 total), MetadataEditor guided tour, demo guide updates — 294 total tests |
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
+| UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
 
 ---
 
@@ -128,6 +129,10 @@
 | M86 | Frontend Layer UI | COMPLETE | 5 | 5 | LayerBadge, ResetToOobButton, MetadataEditor + 4 views with layer badges (AG Grid badges fixed to use React JSX) |
 | M87 | Version Tracking + Upgrade Simulation | COMPLETE | 5 | 5 | OobVersionService, upgrade simulation API, demo manifest v1.1, OobVersionPanel — 8 new tests |
 | M88 | E2E Tests, Onboarding, Tours & Docs | COMPLETE | 5 | 5 | 10 E2E tests, 7-step OOB tour + act2 integration, onboarding update, demo guide walkthrough |
+| M89 | Global AG Grid Usability | COMPLETE | 2 | 2 | defaultColDef (resizable, sortable, tooltips, minWidth), autoSizeStrategy, tooltip theme CSS |
+| M90 | Per-View Column & Layout Optimization | COMPLETE | 6 | 6 | EntityDesigner, EntityDetail, MetadataExplorer, SettingsManager, RiskCaseManager, MetadataEditor |
+| M91 | Visual Editor Field Grid Fix | COMPLETE | 1 | 1 | CSS grid template fix — Description column now visible |
+| M92 | E2E Viewport Verification, Tours & Docs | COMPLETE | 4 | 4 | 12 new E2E tests, UX features tour, progress tracker, demo guide |
 
 ---
 
@@ -467,6 +472,24 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **M82**: Added collapsible SuggestionsPanel to RegulatoryMap
 - [x] **M83**: Added 4 E2E tests for RegulatoryMap, guided tour (4 steps), demo guide section
 - **Total**: 279 backend tests (13 new), 914 frontend modules, 4 new files, 12 modified files
+
+---
+
+### 2026-02-24 (Phase 12: UI/UX Usability — M89-M92)
+- [x] **M89 Task 89.1**: DataGrid.tsx — global AG Grid defaults: defaultColDef (resizable, sortable, tooltipValueGetter, minWidth:60), autoSizeStrategy (fitGridWidth), tooltipShowDelay, tooltipInteraction, removed deprecated rowSelection="single"
+- [x] **M89 Task 89.2**: AG Grid theme CSS — tooltip styling (background, border, shadow), text-overflow ellipsis on cells and headers
+- [x] **M90 Task 90.1**: EntityDesigner — EntityList columns with minWidth+flex, panel widths w-72→w-80, w-96→w-80
+- [x] **M90 Task 90.2**: EntityDetail — fields grid columns with minWidth+flex (Field 120, Description 150)
+- [x] **M90 Task 90.3**: MetadataExplorer — CalculationList columns with minWidth+flex, panel w-[380px]→w-[440px], detail w-72→w-80
+- [x] **M90 Task 90.4**: SettingsManager — SettingsList columns with minWidth+flex, panel w-[420px]→w-[480px]
+- [x] **M90 Task 90.5**: RiskCaseManager — AlertSummary columns: Alert ID minWidth:150, Model minWidth:120, Time minWidth:180
+- [x] **M90 Task 90.6**: MetadataEditor — dropdown max-w-[400px] to prevent overflow
+- [x] **M91 Task 91.1**: EntityEditor — CSS grid template fix: grid-cols-[1fr_120px_60px_60px_1fr_40px] → grid-cols-[minmax(100px,1.5fr)_100px_45px_45px_minmax(80px,1fr)_32px], gap-1→gap-0.5
+- [x] **M92 Task 92.1**: 12 new E2E tests in TestUxUsability — column readability, visual editor, responsive layout, tooltip/resize
+- [x] **M92 Task 92.2**: UX features guided tour — 5 steps covering resizable columns, relationship graph, layer badges, dual editors, alert grid
+- [x] **M92 Task 92.3**: Documentation — progress tracker, demo guide, plan file
+- [x] **M92 Task 92.4**: Regenerated snapshots
+- **Total**: 309 backend tests + 83 E2E tests, 14 files modified
 
 ---
 

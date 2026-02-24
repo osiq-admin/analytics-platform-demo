@@ -52,22 +52,25 @@
 ### Phase 11: OOB vs User-Defined Separation
 *Layer architecture (base → tenant → user), upgrade-safe customizations*
 
-### Phase 12: AI-Assisted Configuration
+### Phase 12: UI/UX Usability (P1)
+*AG Grid column fixes, responsive layouts, Visual Editor grid fix, tooltips & resize*
+
+### Phase 13: AI-Assisted Configuration
 *LLM understands system metadata, suggests calculations, orchestrates integrations*
 
-### Phase 13: Alert Tuning & Distribution Analysis
+### Phase 14: Alert Tuning & Distribution Analysis
 *Scoring calibration, threshold optimization, back-testing, sandbox mode*
 
-### Phase 14: Additional Detection Models
+### Phase 15: Additional Detection Models
 *Expand from 5 to 15 models covering full regulatory spectrum*
 
-### Phase 15: Security Hardening
+### Phase 16: Security Hardening
 *Authentication, SQL injection fixes, CORS, rate limiting, input validation*
 
-### Phase 16: Testing Framework Expansion
+### Phase 17: Testing Framework Expansion
 *Frontend tests, API security tests, performance tests, E2E automation*
 
-### Phase 17: Cloud & Deployment Infrastructure
+### Phase 18: Cloud & Deployment Infrastructure
 *Docker, CI/CD, health checks, structured logging*
 
 ### Phase 18: Advanced Analytics & Dashboarding
@@ -397,11 +400,19 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
-## Phase 12: AI-Assisted Configuration
+## Phase 12: UI/UX Usability (P1) — COMPLETE
+
+**Goal:** Fix all AG Grid column truncation, responsive layout breakage, and Visual Editor field grid issues across all views so the platform is usable from 1024px to 1920px+.
+
+**Status:** COMPLETE (M89-M92). Global AG Grid defaults (resizable, sortable, tooltips, autoSize), per-view column optimization (6 views), Visual Editor CSS grid fix, 12 new E2E tests, UX features tour.
+
+---
+
+## Phase 13: AI-Assisted Configuration
 
 **Goal:** LLM understands the system's metadata schema, can suggest calculations, help configure models, and utilize the dynamic nature of the system.
 
-### Task 12.1: System metadata context for AI
+### Task 13.1: System metadata context for AI
 
 **Files:**
 - Modify: `backend/services/ai_service.py` — enhance with metadata context
@@ -416,7 +427,7 @@ Resolved:          Merge OOB + User, User wins on conflicts
   - Regulatory coverage map
 - AI can answer: "What settings affect wash trading detection?" or "How would I add a new calculation for bid-ask spread?"
 
-### Task 12.2: AI calculation suggestion
+### Task 13.2: AI calculation suggestion
 
 **Files:**
 - Modify: `backend/api/ai.py` — add calculation suggestion endpoint
@@ -428,7 +439,7 @@ Resolved:          Merge OOB + User, User wins on conflicts
 - User reviews in metadata editor, adjusts, saves
 - AI explains which entities provide the data, which models could use the calc, and which regulations it addresses
 
-### Task 12.3: AI tuning recommendations
+### Task 13.3: AI tuning recommendations
 
 **Design:**
 - AI analyzes alert distribution, false positive rates, score distributions
@@ -437,11 +448,11 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
-## Phase 13: Alert Tuning & Distribution Analysis
+## Phase 14: Alert Tuning & Distribution Analysis
 
 **Goal:** Analyze alert distribution, calibrate scoring, optimize thresholds, sandbox testing.
 
-### Task 13.1: Alert distribution analysis dashboard
+### Task 14.1: Alert distribution analysis dashboard
 
 **Files:**
 - Modify: `frontend/src/views/Dashboard/index.tsx` — add distribution charts
@@ -703,8 +714,9 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 |----------|-----------------|-----------|
 | **P0 — Must Have** | Phase 7 (Dynamic Foundation) | Everything else depends on this |
 | **P1 — Should Have** | Phase 8 (Explainability), Phase 9 (Metadata Editor) | Core differentiators |
-| **P2 — Important** | Phase 10 (Regulatory), Phase 11 (OOB), Phase 12 (AI) | Advanced capabilities |
-| **P3 — Enhance** | Phase 13-14 (Tuning, Models), Phase 15-17 (Security, Test, Cloud) | Production readiness |
+| **P1 — Critical** | Phase 12 (UI/UX Usability) | Platform usable at all viewports |
+| **P2 — Important** | Phase 10 (Regulatory), Phase 11 (OOB), Phase 13 (AI) | Advanced capabilities |
+| **P3 — Enhance** | Phase 14-15 (Tuning, Models), Phase 16-18 (Security, Test, Cloud) | Production readiness |
 | **P4 — Future** | Phase 18-20 (Analytics, Cases, Productization) | Long-term vision |
 
 ---

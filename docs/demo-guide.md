@@ -394,3 +394,35 @@ Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metad
 2. **Metadata Explorer** (`/metadata`) — "OOB" column in calculation list grid
 3. **Settings Manager** (`/settings`) — "Layer" column in settings list grid
 4. **Model Composer** (`/models`) — inline badge next to each model name
+
+---
+
+## Grid & Layout Features — Phase 12
+
+Phase 12 addresses UI/UX usability across all viewports from 1024px to 1920px+. AG Grid columns are now properly sized with tooltips and resizable headers.
+
+### Column Resize
+
+All AG Grid columns are now **resizable**. Drag the border between column headers to adjust width. Columns auto-fit to the available grid width using `fitGridWidth` strategy, but manual adjustment is always available.
+
+### Tooltips on Hover
+
+Hover over any grid cell for **300ms** to see a tooltip with the full cell content. This is especially useful for:
+- **Alert IDs** — truncated UUID prefixes show full ID on hover
+- **Calculation IDs** — long identifiers like `adjusted_direction` appear in full
+- **Setting IDs** — `business_date_cutoff` and similar long names
+
+### Responsive Layouts
+
+Panel widths have been optimized across all split-panel views:
+- **Entity Designer** — left/right panels balanced at 320px each, center panel has usable width even at 1024px
+- **Metadata Explorer** — calculation list panel expanded to 440px for better column readability
+- **Settings Manager** — settings list panel expanded to 480px
+
+### Visual Editor Grid Fix
+
+The Metadata Editor's Visual Editor field table had invisible Description column at smaller viewports. The CSS grid template now uses `minmax()` values ensuring both Name and Description columns have minimum widths.
+
+### Guided Tour
+
+Start the **"Grid & Layout Features"** tour from the tour menu to see these features in action across 5 views.
