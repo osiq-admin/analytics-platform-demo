@@ -1,7 +1,7 @@
-"""Comprehensive Playwright E2E tests for all views and Phase 7-8 features.
+"""Comprehensive Playwright E2E tests for all views and Phase 7-8-10 features.
 
 Covers:
-- All 12 navigation views render without errors
+- All 13 navigation views render without errors
 - Dashboard with demo data
 - Entity Designer — entity list, details, relationship graph
 - Metadata Explorer — calculations, DAG visualization
@@ -12,6 +12,7 @@ Covers:
 - Risk Case Manager — generate alerts, view alert detail
 - Explainability UI (Phase 8) — trace panel in alert detail
 - API endpoints — metadata CRUD, dependency graph, validation (Phase 7)
+- Regulatory Map (Phase 10) — traceability graph, coverage cards, suggestions
 """
 import json
 
@@ -43,6 +44,7 @@ class TestViewsRender:
         ("/data", "Data"),
         ("/alerts", "Risk Case Manager"),
         ("/assistant", "Assistant"),
+        ("/regulatory", "Regulatory"),
     ]
 
     @pytest.mark.parametrize("route,expected_text", NAV_ROUTES)
@@ -472,6 +474,7 @@ class TestNoConsoleErrors:
         routes = [
             "/dashboard", "/entities", "/metadata", "/settings",
             "/editor", "/pipeline", "/sql", "/models", "/alerts", "/assistant",
+            "/regulatory",
         ]
 
         for route in routes:
@@ -615,3 +618,40 @@ class TestCRUDButtons:
 
         assert loaded_page.locator("button:has-text('Edit')").is_visible()
         assert loaded_page.locator("button:has-text('Delete')").is_visible()
+
+
+# ============================================================================
+# Scenario 15: Phase 10 — Regulatory Map
+# ============================================================================
+
+class TestRegulatoryMap:
+    """Tests for the Regulatory Map view."""
+
+    def test_regulatory_map_loads(self, loaded_page):
+        """RegulatoryMap loads with heading."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        body = loaded_page.locator("main").inner_text()
+        assert "regulatory traceability" in body.lower()
+
+    def test_coverage_cards_visible(self, loaded_page):
+        """Coverage summary cards are visible."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        body = loaded_page.locator("main").inner_text()
+        assert "total requirements" in body.lower()
+        assert "covered" in body.lower()
+
+    def test_graph_renders(self, loaded_page):
+        """React Flow graph container renders."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        graph = loaded_page.locator(".react-flow")
+        assert graph.is_visible(timeout=10000)
+
+    def test_suggestions_section(self, loaded_page):
+        """Suggestions section appears."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        body = loaded_page.locator("main").inner_text()
+        assert "suggestions" in body.lower()
