@@ -321,6 +321,39 @@ export const TOURS: Record<string, TourDefinition> = {
     ],
   },
 
+  regulatory: {
+    id: "regulatory",
+    name: "Regulatory Traceability Tour",
+    description: "Explore the regulatory coverage map and gap analysis.",
+    steps: [
+      {
+        target: "[data-tour='regulatory-cards']",
+        title: "Coverage Summary",
+        content: "At a glance: how many regulatory requirements are covered by detection models, and how many have gaps.",
+        placement: "bottom",
+        route: "/regulatory",
+      },
+      {
+        target: "[data-tour='regulatory-graph']",
+        title: "Traceability Graph",
+        content: "Interactive graph showing the full chain: Regulations → Articles → Detection Models → Calculations. Red nodes indicate coverage gaps.",
+        placement: "bottom",
+      },
+      {
+        target: "[data-tour='regulatory-detail']",
+        title: "Node Details",
+        content: "Click any node in the graph to see its details — regulation info, model parameters, or calculation metadata.",
+        placement: "left",
+      },
+      {
+        target: "[data-tour='regulatory-suggestions']",
+        title: "Suggestions & Gap Analysis",
+        content: "Automated suggestions for improving regulatory coverage — coverage gaps that need new models, and existing models that could be strengthened.",
+        placement: "top",
+      },
+    ],
+  },
+
   // Demo workflow guides
   act1_guide: {
     id: "act1_guide",
