@@ -138,7 +138,7 @@ export default function MetadataExplorer() {
         {/* Left: Calculation list */}
         <Panel
           title="Calculations"
-          className="w-[380px] shrink-0"
+          className="w-[440px] shrink-0"
           noPadding
           actions={
             <button
@@ -171,7 +171,7 @@ export default function MetadataExplorer() {
         </Panel>
 
         {/* Right: Detail or Form */}
-        <div className="w-72 shrink-0">
+        <div className="w-80 shrink-0">
           {mode === "create" ? (
             <CalculationForm
               calc={emptyCalc}

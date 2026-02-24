@@ -64,7 +64,7 @@ export default function EntityDesigner() {
         {/* Left: Entity list */}
         <Panel
           title="Entities"
-          className="w-72 shrink-0"
+          className="w-80 shrink-0"
           noPadding
           dataTour="entity-list"
           tooltip="Browse and select entity definitions"
@@ -125,7 +125,7 @@ export default function EntityDesigner() {
         </div>
 
         {/* Right: Relationship graph */}
-        <Panel title="Relationships" className="w-96 shrink-0" noPadding dataTour="entity-relationships" tooltip="Visual graph of entity relationships">
+        <Panel title="Relationships" className="w-80 shrink-0" noPadding dataTour="entity-relationships" tooltip="Visual graph of entity relationships">
           <RelationshipGraph entities={entities} />
         </Panel>
       </div>

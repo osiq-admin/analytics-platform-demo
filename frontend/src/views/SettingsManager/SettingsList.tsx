@@ -11,12 +11,12 @@ interface SettingsListProps {
 export default function SettingsList({ settings, onSelect }: SettingsListProps) {
   const columns: ColDef<SettingDef>[] = useMemo(
     () => [
-      { field: "setting_id", headerName: "ID", flex: 1.5 },
-      { field: "name", headerName: "Name", flex: 1.5 },
-      { field: "value_type", headerName: "Type", width: 100 },
+      { field: "setting_id", headerName: "ID", minWidth: 140, flex: 1.2 },
+      { field: "name", headerName: "Name", minWidth: 140, flex: 1.5 },
+      { field: "value_type", headerName: "Type", width: 90 },
       {
         headerName: "Default",
-        width: 100,
+        width: 90,
         valueGetter: (p) => {
           const d = p.data?.default;
           if (Array.isArray(d)) return `[${d.length} steps]`;
@@ -26,7 +26,7 @@ export default function SettingsList({ settings, onSelect }: SettingsListProps) 
       {
         field: "metadata_layer",
         headerName: "Layer",
-        width: 80,
+        width: 70,
         cellRenderer: (p: { value: string }) => {
           const isOob = p.value === "oob";
           return (

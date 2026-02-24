@@ -9,17 +9,17 @@ interface EntityListProps {
 }
 
 const columns: ColDef<EntityDef>[] = [
-  { field: "entity_id", headerName: "ID", flex: 1 },
-  { field: "name", headerName: "Name", flex: 1 },
+  { field: "entity_id", headerName: "ID", minWidth: 100, flex: 1.2 },
+  { field: "name", headerName: "Name", minWidth: 120, flex: 1.5 },
   {
     headerName: "Fields",
-    flex: 0.5,
+    width: 70,
     valueGetter: (p) => p.data?.fields?.length ?? 0,
   },
   {
     field: "metadata_layer",
     headerName: "Layer",
-    flex: 0.5,
+    width: 70,
     cellRenderer: (p: { value: string }) => {
       const isOob = p.value === "oob";
       return (

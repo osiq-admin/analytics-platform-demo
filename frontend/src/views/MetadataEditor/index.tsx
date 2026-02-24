@@ -194,7 +194,7 @@ export default function MetadataEditor() {
         <select
           value={selectedIndex}
           onChange={(e) => setSelectedIndex(Number(e.target.value))}
-          className="ml-2 px-2 py-1.5 rounded border border-border bg-surface text-sm text-foreground min-w-[200px]"
+          className="ml-2 px-2 py-1.5 rounded border border-border bg-surface text-sm text-foreground min-w-[200px] max-w-[400px]"
         >
           {items.map((item, idx) => (
             <option key={getItemId(selectedType, item)} value={idx}>

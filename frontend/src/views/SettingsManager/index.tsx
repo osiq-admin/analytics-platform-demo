@@ -98,7 +98,7 @@ export default function SettingsManager() {
         {/* Left: Settings list */}
         <Panel
           title="Settings"
-          className="w-[420px] shrink-0"
+          className="w-[480px] shrink-0"
           noPadding
           dataTour="settings-list"
           tooltip="Browse system settings and their overrides"

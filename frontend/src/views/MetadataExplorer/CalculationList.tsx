@@ -32,12 +32,12 @@ export default function CalculationList({
 
   const columns: ColDef<CalculationDef>[] = useMemo(
     () => [
-      { field: "calc_id", headerName: "ID", flex: 1 },
-      { field: "name", headerName: "Name", flex: 1.5 },
+      { field: "calc_id", headerName: "ID", minWidth: 130, flex: 1 },
+      { field: "name", headerName: "Name", minWidth: 140, flex: 1.5 },
       {
         field: "layer",
         headerName: "Layer",
-        width: 120,
+        width: 110,
         cellRenderer: (p: { value: string }) => {
           const v = layerVariant(p.value);
           return StatusBadge({ label: p.value, variant: v });
@@ -45,13 +45,13 @@ export default function CalculationList({
       },
       {
         headerName: "Deps",
-        width: 60,
+        width: 55,
         valueGetter: (p) => p.data?.depends_on?.length ?? 0,
       },
       {
         field: "metadata_layer",
         headerName: "OOB",
-        width: 70,
+        width: 65,
         cellRenderer: (p: { value: string }) => {
           const isOob = p.value === "oob";
           return (

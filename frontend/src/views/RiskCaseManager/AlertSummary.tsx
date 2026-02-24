@@ -25,12 +25,13 @@ export default function AlertSummaryGrid({
       {
         field: "alert_id",
         headerName: "Alert ID",
-        flex: 1.5,
+        minWidth: 150,
+        flex: 1,
         cellRenderer: (p: { value: string }) => (
           <span className="text-accent font-mono text-xs">{p.value?.slice(0, 12)}...</span>
         ),
       },
-      { field: "model_id", headerName: "Model", flex: 1 },
+      { field: "model_id", headerName: "Model", minWidth: 120, flex: 1 },
       { field: "product_id", headerName: "Product", width: 90 },
       { field: "account_id", headerName: "Account", width: 100 },
       {
@@ -53,14 +54,14 @@ export default function AlertSummaryGrid({
       {
         field: "trigger_path",
         headerName: "Trigger",
-        width: 100,
+        minWidth: 100,
         cellRenderer: (p: { value: string }) =>
           StatusBadge({
             label: p.value ?? "",
             variant: p.value === "all_passed" ? "success" : "warning",
           }),
       },
-      { field: "timestamp", headerName: "Time", width: 140 },
+      { field: "timestamp", headerName: "Time", minWidth: 180 },
     ],
     [],
   );

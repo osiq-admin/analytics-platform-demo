@@ -30,19 +30,19 @@ interface EntityDetailProps {
 }
 
 const fieldColumns: ColDef<Field>[] = [
-  { field: "name", headerName: "Field", flex: 1 },
-  { field: "type", headerName: "Type", width: 100 },
+  { field: "name", headerName: "Field", minWidth: 120, flex: 1 },
+  { field: "type", headerName: "Type", width: 80 },
   {
     headerName: "Key",
-    width: 60,
+    width: 55,
     valueGetter: (p) => (p.data?.is_key ? "PK" : ""),
   },
   {
     headerName: "Null",
-    width: 60,
+    width: 55,
     valueGetter: (p) => (p.data?.nullable !== false ? "Y" : "N"),
   },
-  { field: "description", headerName: "Description", flex: 2 },
+  { field: "description", headerName: "Description", minWidth: 150, flex: 2 },
 ];
 
 export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailProps) {
