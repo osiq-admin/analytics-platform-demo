@@ -307,3 +307,213 @@ class TestRelatedOrdersEndpoint:
         assert "executions" in data
         assert isinstance(data["orders"], list)
         assert isinstance(data["executions"], list)
+
+
+class TestCalculationCRUD:
+    def test_put_calculation(self, client):
+        """PUT /api/metadata/calculations/{calc_id} creates or updates a calculation."""
+        resp = client.put(
+            "/api/metadata/calculations/test_calc",
+            json={
+                "calc_id": "test_calc",
+                "name": "Test Calculation",
+                "layer": "derived",
+                "description": "A test calculation",
+                "logic": "SELECT 1 AS value",
+                "depends_on": [],
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["saved"] is True
+        assert data["calc_id"] == "test_calc"
+
+        # Verify it's retrievable
+        resp2 = client.get("/api/metadata/calculations/test_calc")
+        assert resp2.status_code == 200
+        assert resp2.json()["name"] == "Test Calculation"
+
+    def test_delete_calculation(self, client):
+        """DELETE /api/metadata/calculations/{calc_id} removes it."""
+        # Create first
+        client.put(
+            "/api/metadata/calculations/to_delete",
+            json={
+                "calc_id": "to_delete",
+                "name": "To Delete",
+                "layer": "transaction",
+                "logic": "SELECT 1",
+                "depends_on": [],
+            },
+        )
+        # Delete
+        resp = client.delete("/api/metadata/calculations/to_delete")
+        assert resp.status_code == 200
+        assert resp.json()["deleted"] is True
+
+        # Verify it's gone
+        resp2 = client.get("/api/metadata/calculations/to_delete")
+        assert resp2.status_code == 404
+
+    def test_delete_calculation_with_dependents_blocked(self, client):
+        """DELETE fails with 409 if other calcs depend on it."""
+        # large_trading_activity is used by wash detection models
+        resp = client.delete("/api/metadata/calculations/large_trading_activity")
+        assert resp.status_code == 409
+        data = resp.json()
+        assert "dependents" in data
+
+    def test_get_calculation_dependents(self, client):
+        """GET /api/metadata/calculations/{calc_id}/dependents returns dependents."""
+        resp = client.get("/api/metadata/calculations/large_trading_activity/dependents")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "calculations" in data
+        assert "detection_models" in data
+
+
+class TestSettingsCRUD:
+    def test_put_setting(self, client):
+        """PUT /api/metadata/settings/{setting_id} creates or updates a setting."""
+        resp = client.put(
+            "/api/metadata/settings/test_setting",
+            json={
+                "setting_id": "test_setting",
+                "name": "Test Setting",
+                "value_type": "decimal",
+                "default": 42,
+                "match_type": "hierarchy",
+                "overrides": [],
+            },
+        )
+        assert resp.status_code == 200
+        assert resp.json()["saved"] is True
+
+    def test_delete_setting(self, client):
+        """DELETE /api/metadata/settings/{setting_id} removes it."""
+        # Create first
+        client.put(
+            "/api/metadata/settings/orphan_setting",
+            json={
+                "setting_id": "orphan_setting",
+                "name": "Orphan",
+                "value_type": "decimal",
+                "default": 0,
+                "match_type": "hierarchy",
+                "overrides": [],
+            },
+        )
+        resp = client.delete("/api/metadata/settings/orphan_setting")
+        assert resp.status_code == 200
+        assert resp.json()["deleted"] is True
+
+    def test_delete_setting_with_dependents_blocked(self, client):
+        """DELETE fails with 409 if models depend on this setting."""
+        resp = client.delete("/api/metadata/settings/wash_score_threshold")
+        assert resp.status_code == 409
+
+    def test_get_setting_dependents(self, client):
+        """GET /api/metadata/settings/{setting_id}/dependents returns dependents."""
+        resp = client.get("/api/metadata/settings/wash_score_threshold/dependents")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "detection_models" in data
+        assert len(data["detection_models"]) > 0
+
+
+class TestDetectionModelCRUD:
+    def test_put_detection_model(self, client):
+        """PUT /api/metadata/detection-models/{model_id} creates or updates a model."""
+        resp = client.put(
+            "/api/metadata/detection-models/test_model",
+            json={
+                "model_id": "test_model",
+                "name": "Test Model",
+                "time_window": "business_date",
+                "granularity": ["product_id"],
+                "calculations": [],
+                "score_threshold_setting": "wash_score_threshold",
+                "query": "SELECT 1",
+            },
+        )
+        assert resp.status_code == 200
+        assert resp.json()["saved"] is True
+
+    def test_delete_detection_model(self, client):
+        """DELETE /api/metadata/detection-models/{model_id} removes it."""
+        # Create first
+        client.put(
+            "/api/metadata/detection-models/to_delete_model",
+            json={
+                "model_id": "to_delete_model",
+                "name": "To Delete",
+                "time_window": "business_date",
+                "granularity": ["product_id"],
+                "calculations": [],
+                "score_threshold_setting": "wash_score_threshold",
+                "query": "SELECT 1",
+            },
+        )
+        resp = client.delete("/api/metadata/detection-models/to_delete_model")
+        assert resp.status_code == 200
+        assert resp.json()["deleted"] is True
+
+
+class TestDependencyGraph:
+    def test_get_dependency_graph(self, client):
+        """GET /api/metadata/dependency-graph returns full graph."""
+        resp = client.get("/api/metadata/dependency-graph")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "nodes" in data
+        assert "edges" in data
+        assert len(data["nodes"]) > 0
+        assert len(data["edges"]) > 0
+
+        # Should have calculation, detection_model, and entity nodes
+        types = {n["type"] for n in data["nodes"]}
+        assert "calculation" in types
+        assert "detection_model" in types
+        assert "entity" in types
+
+
+class TestValidationEndpoint:
+    def test_validate_valid_calculation(self, client):
+        """POST /api/metadata/validate for a valid calculation returns valid=True."""
+        resp = client.post(
+            "/api/metadata/validate",
+            json={
+                "type": "calculation",
+                "definition": {
+                    "calc_id": "test_valid",
+                    "name": "Valid Calc",
+                    "layer": "transaction",
+                    "logic": "SELECT 1",
+                    "depends_on": [],
+                },
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["valid"] is True
+        assert data["errors"] == []
+
+    def test_validate_calculation_missing_dependency(self, client):
+        """POST /api/metadata/validate catches missing dependencies."""
+        resp = client.post(
+            "/api/metadata/validate",
+            json={
+                "type": "calculation",
+                "definition": {
+                    "calc_id": "test_bad",
+                    "name": "Bad Calc",
+                    "layer": "derived",
+                    "logic": "SELECT 1",
+                    "depends_on": ["nonexistent_calc"],
+                },
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["valid"] is False
+        assert any("nonexistent_calc" in e for e in data["errors"])

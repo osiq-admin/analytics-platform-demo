@@ -34,5 +34,6 @@
   "display": {
     "label": "Business Date"
   },
+  "value_field": "calculated_value",
   "depends_on": ["adjusted_direction"]
 }

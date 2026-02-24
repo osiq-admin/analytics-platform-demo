@@ -37,5 +37,6 @@
     "label": "Price Trend",
     "color_map": {"up": "green", "down": "red"}
   },
+  "value_field": "price_change_pct",
   "depends_on": []
 }

@@ -1,5 +1,6 @@
 """JSON metadata CRUD service for all metadata types."""
 from pathlib import Path
+from typing import Any
 
 from backend.models.calculations import CalculationDefinition
 from backend.models.detection import DetectionModelDefinition
@@ -159,3 +160,121 @@ class MetadataService:
             path.unlink()
             return True
         return False
+
+    # -- Dependency Analysis --
+
+    def get_calculation_dependents(self, calc_id: str) -> dict[str, list[str]]:
+        """Find all calculations and detection models that reference a given calc_id.
+
+        Returns {"calculations": [...], "detection_models": [...]}.
+        """
+        dependent_calcs = []
+        for calc in self.list_calculations():
+            if calc_id in calc.depends_on:
+                dependent_calcs.append(calc.calc_id)
+
+        dependent_models = []
+        for model in self.list_detection_models():
+            for mc in model.calculations:
+                if mc.calc_id == calc_id:
+                    dependent_models.append(model.model_id)
+                    break
+
+        return {"calculations": dependent_calcs, "detection_models": dependent_models}
+
+    def get_setting_dependents(self, setting_id: str) -> dict[str, list[str]]:
+        """Find all calculations and detection models that reference a given setting_id.
+
+        Returns {"calculations": [...], "detection_models": [...]}.
+        """
+        dependent_calcs = []
+        for calc in self.list_calculations():
+            for inp in calc.inputs:
+                if inp.get("source_type") == "setting" and inp.get("setting_id") == setting_id:
+                    dependent_calcs.append(calc.calc_id)
+                    break
+
+        dependent_models = []
+        for model in self.list_detection_models():
+            if model.score_threshold_setting == setting_id:
+                dependent_models.append(model.model_id)
+                continue
+            for mc in model.calculations:
+                if mc.threshold_setting == setting_id or mc.score_steps_setting == setting_id:
+                    dependent_models.append(model.model_id)
+                    break
+
+        return {"calculations": dependent_calcs, "detection_models": dependent_models}
+
+    def validate_calculation(self, calc: CalculationDefinition) -> list[str]:
+        """Validate a calculation definition. Returns list of error strings (empty = valid)."""
+        errors: list[str] = []
+        if not calc.calc_id:
+            errors.append("calc_id is required")
+        if not calc.name:
+            errors.append("name is required")
+        if not calc.layer:
+            errors.append("layer is required")
+
+        # Check for dependency cycle
+        for dep_id in calc.depends_on:
+            if dep_id == calc.calc_id:
+                errors.append(f"Self-dependency: {calc.calc_id} depends on itself")
+            dep = self.load_calculation(dep_id)
+            if dep is None:
+                errors.append(f"Missing dependency: {dep_id} not found")
+
+        return errors
+
+    def validate_detection_model(self, model: DetectionModelDefinition) -> list[str]:
+        """Validate a detection model definition. Returns list of error strings."""
+        errors: list[str] = []
+        if not model.model_id:
+            errors.append("model_id is required")
+        if not model.name:
+            errors.append("name is required")
+
+        # Check referenced settings exist
+        setting = self.load_setting(model.score_threshold_setting)
+        if setting is None:
+            errors.append(f"Score threshold setting not found: {model.score_threshold_setting}")
+
+        for mc in model.calculations:
+            if mc.score_steps_setting:
+                ss = self.load_setting(mc.score_steps_setting)
+                if ss is None:
+                    errors.append(f"Score steps setting not found: {mc.score_steps_setting}")
+            if mc.threshold_setting:
+                ts = self.load_setting(mc.threshold_setting)
+                if ts is None:
+                    errors.append(f"Threshold setting not found: {mc.threshold_setting}")
+
+        return errors
+
+    def get_dependency_graph(self) -> dict[str, Any]:
+        """Build full dependency graph: calc → model → settings."""
+        calcs = self.list_calculations()
+        models = self.list_detection_models()
+
+        nodes: list[dict] = []
+        edges: list[dict] = []
+
+        for calc in calcs:
+            nodes.append({"id": calc.calc_id, "type": "calculation", "label": calc.name, "layer": calc.layer})
+            for dep in calc.depends_on:
+                edges.append({"source": dep, "target": calc.calc_id, "type": "depends_on"})
+            for inp in calc.inputs:
+                if inp.get("source_type") == "entity":
+                    entity_id = inp.get("entity_id", "")
+                    edges.append({"source": entity_id, "target": calc.calc_id, "type": "entity_input"})
+
+        for model in models:
+            nodes.append({"id": model.model_id, "type": "detection_model", "label": model.name})
+            for mc in model.calculations:
+                edges.append({"source": mc.calc_id, "target": model.model_id, "type": "model_uses_calc"})
+
+        entities = self.list_entities()
+        for entity in entities:
+            nodes.append({"id": entity.entity_id, "type": "entity", "label": entity.name})
+
+        return {"nodes": nodes, "edges": edges}

@@ -41,6 +41,7 @@ class CalculationDefinition(BaseModel):
     parameters: dict[str, Any] = Field(default_factory=dict)
     display: dict[str, Any] = Field(default_factory=dict)
     storage: str = Field(default="", description="Result table name")
+    value_field: str = Field(default="", description="Primary value column name for scoring")
     depends_on: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")

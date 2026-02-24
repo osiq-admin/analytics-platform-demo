@@ -41,5 +41,6 @@
     "label": "Wash Detection",
     "highlight_when": "is_wash_candidate = TRUE"
   },
+  "value_field": "qty_match_ratio",
   "depends_on": ["large_trading_activity", "vwap_calc"]
 }

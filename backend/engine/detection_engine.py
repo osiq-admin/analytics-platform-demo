@@ -12,19 +12,6 @@ from backend.services.metadata_service import MetadataService
 
 log = logging.getLogger(__name__)
 
-# Mapping from model calculation calc_id to the column in query results that holds
-# the value for score evaluation. Convention: the query must expose columns
-# named after the calc_id's "value field".
-CALC_VALUE_COLUMNS = {
-    "large_trading_activity": "total_value",
-    "wash_qty_match": "qty_match_ratio",
-    "wash_vwap_proximity": "vwap_proximity",
-    "trend_detection": "price_change_pct",
-    "same_side_ratio": "same_side_pct",
-    "market_event_detection": "price_change_pct",
-    "cancel_pattern": "cancel_count",
-    "opposite_side_execution": "total_value",
-}
 
 
 class DetectionEngine:
@@ -87,9 +74,7 @@ class DetectionEngine:
         """Evaluate a single candidate row against the model's calculations."""
         entity_context = {
             k: str(v) for k, v in row.items()
-            if k in ("product_id", "account_id", "trader_id", "desk_id",
-                      "business_date", "asset_class", "instrument_type")
-            and v is not None
+            if k in model.context_fields and v is not None
         }
 
         # Resolve score threshold for this entity context
@@ -145,8 +130,8 @@ class DetectionEngine:
         """Evaluate a single model calculation against the candidate row."""
         traces: list[SettingsTraceEntry] = []
 
-        # Get the computed value from the query row
-        value_column = CALC_VALUE_COLUMNS.get(mc.calc_id, mc.calc_id)
+        # Get the computed value from the query row using metadata-driven value_field
+        value_column = mc.value_field or mc.calc_id
         computed_value = float(row.get(value_column, 0) or 0)
 
         # Resolve score steps via settings

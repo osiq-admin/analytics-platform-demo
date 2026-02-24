@@ -38,5 +38,6 @@
   "display": {
     "label": "Cancellation Pattern"
   },
+  "value_field": "cancel_count",
   "depends_on": []
 }

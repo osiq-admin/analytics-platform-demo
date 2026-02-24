@@ -39,5 +39,6 @@
     "label": "Market Event",
     "color_map": {"price_surge": "green", "price_drop": "red", "volume_spike": "orange"}
   },
+  "value_field": "price_change_pct",
   "depends_on": []
 }

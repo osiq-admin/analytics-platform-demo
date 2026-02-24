@@ -28,5 +28,6 @@
     "format": "decimal",
     "label": "VWAP"
   },
+  "value_field": "vwap_proximity",
   "depends_on": ["business_date_window"]
 }

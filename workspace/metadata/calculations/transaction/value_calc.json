@@ -38,5 +38,6 @@
     "format": "currency",
     "label": "Transaction Value"
   },
+  "value_field": "calculated_value",
   "depends_on": []
 }

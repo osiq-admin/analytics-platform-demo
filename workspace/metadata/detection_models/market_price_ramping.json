@@ -9,21 +9,25 @@
       "calc_id": "trend_detection",
       "strictness": "MUST_PASS",
       "threshold_setting": "trend_sensitivity",
-      "score_steps_setting": null
+      "score_steps_setting": null,
+      "value_field": "price_change_pct"
     },
     {
       "calc_id": "large_trading_activity",
       "strictness": "OPTIONAL",
       "threshold_setting": "large_activity_multiplier",
-      "score_steps_setting": "large_activity_score_steps"
+      "score_steps_setting": "large_activity_score_steps",
+      "value_field": "total_value"
     },
     {
       "calc_id": "same_side_ratio",
       "strictness": "OPTIONAL",
       "threshold_setting": null,
-      "score_steps_setting": "same_side_pct_score_steps"
+      "score_steps_setting": "same_side_pct_score_steps",
+      "value_field": "same_side_pct"
     }
   ],
+  "context_fields": ["product_id", "account_id", "business_date", "asset_class", "instrument_type", "trend_type"],
   "score_threshold_setting": "mpr_score_threshold",
   "query": "SELECT ta.product_id, ta.account_id, ta.business_date, ta.total_value, ta.same_side_pct, tw.trend_type, tw.price_change_pct, p.asset_class, p.instrument_type FROM calc_large_trading_activity ta INNER JOIN calc_trend_window tw ON ta.product_id = tw.product_id INNER JOIN product p ON ta.product_id = p.product_id WHERE ta.is_large = TRUE AND tw.trend_type IS NOT NULL",
   "alert_template": {

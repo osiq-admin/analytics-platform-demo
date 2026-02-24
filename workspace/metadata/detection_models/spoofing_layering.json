@@ -9,15 +9,18 @@
       "calc_id": "cancel_pattern",
       "strictness": "MUST_PASS",
       "threshold_setting": "cancel_count_threshold",
-      "score_steps_setting": null
+      "score_steps_setting": null,
+      "value_field": "cancel_count"
     },
     {
       "calc_id": "opposite_side_execution",
       "strictness": "OPTIONAL",
       "threshold_setting": null,
-      "score_steps_setting": "large_activity_score_steps"
+      "score_steps_setting": "large_activity_score_steps",
+      "value_field": "total_value"
     }
   ],
+  "context_fields": ["product_id", "account_id", "business_date", "asset_class", "instrument_type", "pattern_side"],
   "score_threshold_setting": "spoofing_score_threshold",
   "query": "SELECT cp.product_id, cp.account_id, cp.pattern_date AS business_date, cp.cancel_count, cp.cancel_quantity, cp.pattern_side, cp.window_start, cp.window_end, ta.total_value, ta.buy_value, ta.sell_value, p.asset_class, p.instrument_type FROM calc_cancellation_pattern cp LEFT JOIN calc_large_trading_activity ta ON cp.product_id = ta.product_id AND cp.account_id = ta.account_id INNER JOIN product p ON cp.product_id = p.product_id WHERE cp.cancel_count >= 3",
   "alert_template": {
