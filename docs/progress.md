@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 9 complete — Metadata Editor & Visual Configuration)
+**Last Updated**: 2026-02-24 (Phase 9 complete — Metadata Editor, Visual Config, E2E Tests & Tours)
 
 ---
 
@@ -28,7 +28,8 @@
 | Dynamic Metadata Foundation (Phase 7) | COMPLETE | M66-M69: Remove hardcodings, CRUD APIs, parameter substitution — 234 tests |
 | Explainability & Drill-Down (Phase 8) | COMPLETE | M70-M72: AlertTrace fields, trace APIs, frontend panels — 252 tests |
 | E2E Testing (Phase 7-8) | COMPLETE | M73: 42 Playwright E2E scenarios, 11 test classes, 0 console errors — 294 total tests |
-| Metadata Editor & Visual Config (Phase 9) | COMPLETE | M74-M78: MetadataEditor view, visual editors, dashboard widgets, CRUD wiring — 280 tests |
+| Metadata Editor & Visual Config (Phase 9) | COMPLETE | M74-M78: MetadataEditor view, visual editors, dashboard widgets, CRUD wiring — 280 backend tests |
+| E2E Testing & Tours (Phase 9) | COMPLETE | 14 new Playwright E2E tests (56 total), MetadataEditor guided tour, demo guide updates — 294 total tests |
 
 ---
 
@@ -425,6 +426,17 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **M77**: Dashboard widgets — WidgetContainer, widgetStore (localStorage), ChartTypeSwitcher, multi-renderer (bar/line/pie/table/h-bar)
 - [x] **M78**: Wire CRUD — edit/delete in EntityDesigner, MetadataExplorer, SettingsManager, ModelComposer; ConfirmDialog; dependency warnings
 - **Total**: 280 tests passing (14 new CRUD tests), 911 frontend modules, 15 new files, 13 modified files
+
+### 2026-02-24 (Phase 9 continued: E2E Tests, Tours & Demo Guide)
+- [x] **E2E Tests**: 14 new Playwright E2E tests for Phase 9 features (56 total E2E, 294 total tests)
+  - `TestMetadataEditor` (5 tests): loads entity, type buttons visible, switch to calculations, switch to models, valid JSON indicator
+  - `TestDashboardWidgets` (3 tests): chart type dropdowns, widget settings gear, widget toggle panel
+  - `TestCRUDButtons` (5 tests): entity new button, entity edit/delete on select, settings new button, model new button, model edit/delete on select
+  - Added `/editor` route to `NAV_ROUTES` and no-console-errors route list
+- [x] **Guided Tour**: Added `editor` tour definition (4 steps) to `tourDefinitions.ts`, wired `data-tour` attributes in MetadataEditor view
+- [x] **Demo Guide**: Updated `docs/demo-guide.md` with Phase 9 features — Metadata Editor section, chart type switching, widget visibility, CRUD buttons
+- [x] **Visual Verification**: 11 screenshots taken across MetadataEditor, Dashboard, EntityDesigner, SettingsManager, ModelComposer
+- **Total**: 294 tests passing (56 E2E + 238 backend), 1 pre-existing flaky test (Monaco keyboard in headless)
 
 ---
 
