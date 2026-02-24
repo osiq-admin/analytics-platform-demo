@@ -1,10 +1,28 @@
 import { create } from "zustand";
 import { api } from "../api/client.ts";
 
+export interface FieldDef {
+  name: string;
+  type: string;
+  description?: string;
+  is_key?: boolean;
+  nullable?: boolean;
+  domain_values?: string[] | null;
+}
+
+export interface RelationshipDef {
+  target_entity: string;
+  join_fields: Record<string, string>;
+  relationship_type: string;
+}
+
 export interface EntityDef {
   entity_id: string;
   name: string;
-  fields: Array<{ name: string; type: string }>;
+  description?: string;
+  fields: FieldDef[];
+  relationships?: RelationshipDef[];
+  subtypes?: string[];
 }
 
 export interface CalculationDef {
@@ -12,24 +30,51 @@ export interface CalculationDef {
   name: string;
   layer: string;
   description: string;
+  inputs: Array<Record<string, unknown>>;
+  output: Record<string, unknown>;
+  logic: string;
+  parameters: Record<string, unknown>;
+  display: Record<string, unknown>;
+  storage: string;
+  value_field: string;
   depends_on: string[];
+}
+
+export interface SettingOverride {
+  match: Record<string, string>;
+  value: unknown;
+  priority: number;
 }
 
 export interface SettingDef {
   setting_id: string;
   name: string;
+  description?: string;
   value_type: string;
   default: unknown;
+  match_type?: string;
+  overrides?: SettingOverride[];
+}
+
+export interface ModelCalculation {
+  calc_id: string;
+  strictness: "MUST_PASS" | "OPTIONAL";
+  threshold_setting?: string | null;
+  score_steps_setting?: string | null;
+  value_field?: string | null;
 }
 
 export interface DetectionModelDef {
   model_id: string;
   name: string;
   description: string;
-  calculations: Array<{
-    calc_id: string;
-    strictness: string;
-  }>;
+  time_window?: string;
+  granularity?: string[];
+  calculations: ModelCalculation[];
+  score_threshold_setting?: string;
+  context_fields?: string[];
+  query?: string;
+  alert_template?: Record<string, unknown>;
 }
 
 interface MetadataState {
