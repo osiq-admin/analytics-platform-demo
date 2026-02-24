@@ -1,4 +1,5 @@
 """JSON metadata CRUD service for all metadata types."""
+import json
 from pathlib import Path
 from typing import Any
 
@@ -278,3 +279,80 @@ class MetadataService:
             nodes.append({"id": entity.entity_id, "type": "entity", "label": entity.name})
 
         return {"nodes": nodes, "edges": edges}
+
+    # -- Regulation Registry --
+
+    def load_regulation_registry(self) -> dict:
+        """Load the regulation registry from workspace/metadata/regulations/registry.json."""
+        path = self._base / "regulations" / "registry.json"
+        if not path.exists():
+            return {"regulations": []}
+        return json.loads(path.read_text())
+
+    def get_regulatory_coverage_map(self) -> dict:
+        """Build a comprehensive regulatory coverage map.
+
+        Returns a structure with:
+        - regulations: the full registry
+        - models_by_article: reverse index of "RegName Article" → [model_ids]
+        - calcs_by_model: model_id → [calc_ids]
+        - entities_by_calc: calc_id → [entity_ids] (from calc inputs)
+        - coverage_summary: total/covered/uncovered articles and coverage percentage
+        """
+        registry = self.load_regulation_registry()
+        models = self.list_detection_models()
+        calcs = self.list_calculations()
+
+        # Build models_by_article: "MAR Art. 12(1)(a)" → [model_ids]
+        models_by_article: dict[str, list[str]] = {}
+        for model in models:
+            for rc in model.regulatory_coverage:
+                key = f"{rc.regulation} {rc.article}"
+                models_by_article.setdefault(key, [])
+                if model.model_id not in models_by_article[key]:
+                    models_by_article[key].append(model.model_id)
+
+        # Build calcs_by_model: model_id → [calc_ids]
+        calcs_by_model: dict[str, list[str]] = {}
+        for model in models:
+            calcs_by_model[model.model_id] = [mc.calc_id for mc in model.calculations]
+
+        # Build entities_by_calc: calc_id → [entity_ids] (from inputs)
+        entities_by_calc: dict[str, list[str]] = {}
+        for calc in calcs:
+            entity_ids: list[str] = []
+            for inp in calc.inputs:
+                if inp.get("source_type") == "entity" and inp.get("entity_id"):
+                    eid = inp["entity_id"]
+                    if eid not in entity_ids:
+                        entity_ids.append(eid)
+            entities_by_calc[calc.calc_id] = entity_ids
+
+        # Analyze coverage against registry articles
+        covered_articles: list[str] = []
+        uncovered_articles: list[str] = []
+        for reg in registry.get("regulations", []):
+            for article in reg.get("articles", []):
+                article_key = f"{reg['name']} {article['article']}"
+                if article_key in models_by_article:
+                    covered_articles.append(article_key)
+                else:
+                    uncovered_articles.append(article_key)
+
+        total = len(covered_articles) + len(uncovered_articles)
+        coverage_pct = round((len(covered_articles) / total * 100), 1) if total > 0 else 0.0
+
+        return {
+            "regulations": registry.get("regulations", []),
+            "models_by_article": models_by_article,
+            "calcs_by_model": calcs_by_model,
+            "entities_by_calc": entities_by_calc,
+            "coverage_summary": {
+                "total_articles": total,
+                "covered": len(covered_articles),
+                "uncovered": len(uncovered_articles),
+                "coverage_pct": coverage_pct,
+                "covered_articles": covered_articles,
+                "uncovered_articles": uncovered_articles,
+            },
+        }
