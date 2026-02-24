@@ -48,6 +48,15 @@ export default function CalculationList({
         width: 60,
         valueGetter: (p) => p.data?.depends_on?.length ?? 0,
       },
+      {
+        field: "metadata_layer",
+        headerName: "OOB",
+        width: 70,
+        cellRenderer: (p: { value: string }) => {
+          if (p.value === "oob") return '<span data-tour="calc-layer-badge" class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border bg-cyan-500/15 text-cyan-400 border-cyan-500/30">OOB</span>';
+          return '<span data-tour="calc-layer-badge" class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border bg-purple-500/15 text-purple-400 border-purple-500/30">User</span>';
+        },
+      },
     ],
     [],
   );

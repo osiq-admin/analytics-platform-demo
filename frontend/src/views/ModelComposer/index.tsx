@@ -159,7 +159,19 @@ export default function ModelComposer() {
                     : "text-foreground/70 hover:bg-foreground/5"
                 }`}
               >
-                <div className="font-medium">{m.name}</div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium">{m.name}</span>
+                  <span
+                    data-tour="model-layer-badge"
+                    className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium border ${
+                      m.metadata_layer === "oob"
+                        ? "bg-cyan-500/15 text-cyan-400 border-cyan-500/30"
+                        : "bg-purple-500/15 text-purple-400 border-purple-500/30"
+                    }`}
+                  >
+                    {m.metadata_layer === "oob" ? "OOB" : "Custom"}
+                  </span>
+                </div>
                 <div className="text-muted mt-0.5">
                   {m.calculations.length} calcs
                 </div>

@@ -16,6 +16,13 @@ export interface RelationshipDef {
   relationship_type: string;
 }
 
+export interface LayerInfo {
+  is_oob: boolean;
+  has_override: boolean;
+  oob_version: string | null;
+  layer: string;
+}
+
 export interface EntityDef {
   entity_id: string;
   name: string;
@@ -23,6 +30,8 @@ export interface EntityDef {
   fields: FieldDef[];
   relationships?: RelationshipDef[];
   subtypes?: string[];
+  metadata_layer?: string;
+  _layer?: LayerInfo;
 }
 
 export interface CalculationDef {
@@ -39,6 +48,8 @@ export interface CalculationDef {
   value_field: string;
   depends_on: string[];
   regulatory_tags: string[];
+  metadata_layer?: string;
+  _layer?: LayerInfo;
 }
 
 export interface SettingOverride {
@@ -55,6 +66,8 @@ export interface SettingDef {
   default: unknown;
   match_type?: string;
   overrides?: SettingOverride[];
+  metadata_layer?: string;
+  _layer?: LayerInfo;
 }
 
 export interface ModelCalculation {
@@ -77,6 +90,8 @@ export interface DetectionModelDef {
   query?: string;
   alert_template?: Record<string, unknown>;
   regulatory_coverage?: RegulatoryCoverage[];
+  metadata_layer?: string;
+  _layer?: LayerInfo;
 }
 
 export interface RegulatoryCoverage {
@@ -108,6 +123,10 @@ interface MetadataState {
   deleteDetectionModel: (modelId: string) => Promise<void>;
   getCalculationDependents: (calcId: string) => Promise<{ calculations: string[]; detection_models: string[] }>;
   getSettingDependents: (settingId: string) => Promise<{ calculations: string[]; detection_models: string[] }>;
+  fetchOobManifest: () => Promise<Record<string, unknown>>;
+  getLayerInfo: (type: string, id: string) => Promise<LayerInfo>;
+  resetToOob: (type: string, id: string) => Promise<void>;
+  getDiff: (type: string, id: string) => Promise<{ has_diff: boolean; changes: Array<Record<string, unknown>> }>;
 }
 
 export const useMetadataStore = create<MetadataState>((set) => ({
@@ -242,6 +261,24 @@ export const useMetadataStore = create<MetadataState>((set) => ({
   getSettingDependents: async (settingId) => {
     return api.get<{ calculations: string[]; detection_models: string[] }>(
       `/metadata/settings/${settingId}/dependents`
+    );
+  },
+
+  fetchOobManifest: async () => {
+    return api.get<Record<string, unknown>>("/metadata/oob-manifest");
+  },
+
+  getLayerInfo: async (type, id) => {
+    return api.get<LayerInfo>(`/metadata/layers/${type}/${id}/info`);
+  },
+
+  resetToOob: async (type, id) => {
+    await api.post(`/metadata/layers/${type}/${id}/reset`, {});
+  },
+
+  getDiff: async (type, id) => {
+    return api.get<{ has_diff: boolean; changes: Array<Record<string, unknown>> }>(
+      `/metadata/layers/${type}/${id}/diff`
     );
   },
 }));

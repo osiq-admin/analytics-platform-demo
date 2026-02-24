@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useMetadataStore } from "../../stores/metadataStore.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import LayerBadge from "../../components/LayerBadge.tsx";
+import ResetToOobButton from "../../components/ResetToOobButton.tsx";
 import JsonPanel from "./JsonPanel.tsx";
 import VisualPanel from "./VisualPanel.tsx";
 
@@ -50,6 +52,7 @@ export default function MetadataEditor() {
     saveCalculation,
     saveSetting,
     updateDetectionModel,
+    resetToOob,
   } = useMetadataStore();
 
   const [selectedType, setSelectedType] = useState<MetadataType>("entities");
@@ -199,7 +202,30 @@ export default function MetadataEditor() {
           ))}
           {items.length === 0 && <option value={0}>No items</option>}
         </select>
+        {items.length > 0 && (() => {
+          const ci = items[Math.min(selectedIndex, items.length - 1)];
+          const layerInfo = ci?._layer as { is_oob?: boolean; has_override?: boolean } | undefined;
+          return (
+            <span data-tour="editor-layer-badge">
+              <LayerBadge
+                layer={String(ci?.metadata_layer ?? "oob")}
+                isOob={layerInfo?.is_oob}
+                hasOverride={layerInfo?.has_override}
+              />
+            </span>
+          );
+        })()}
       </div>
+
+      {/* OOB info banner */}
+      {items.length > 0 && items[Math.min(selectedIndex, items.length - 1)]?.metadata_layer === "oob" && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300" data-tour="editor-oob-banner">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Out-of-box item. Editing will create a user override — the original is preserved.
+        </div>
+      )}
 
       {/* Main editor panels */}
       <div className="flex gap-3 flex-1 min-h-0">
@@ -220,7 +246,7 @@ export default function MetadataEditor() {
         </Panel>
       </div>
 
-      {/* Bottom bar: save + validation */}
+      {/* Bottom bar: save + validation + reset */}
       <div className="flex items-center justify-between px-1 py-1" data-tour="editor-save">
         <div className="flex items-center gap-2">
           {isJsonValid ? (
@@ -245,13 +271,36 @@ export default function MetadataEditor() {
             <span className="text-xs text-red-400 ml-2">Save failed</span>
           )}
         </div>
-        <button
-          onClick={handleSave}
-          disabled={!isJsonValid || saving || items.length === 0}
-          className="px-4 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50 transition-colors"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
+        <div className="flex items-center gap-2" data-tour="editor-reset-oob">
+          {items.length > 0 && (() => {
+            const currentItem = items[Math.min(selectedIndex, items.length - 1)];
+            const layerInfo = currentItem?._layer as { is_oob?: boolean; has_override?: boolean } | undefined;
+            const itemTypeMap: Record<MetadataType, string> = {
+              entities: "entities",
+              calculations: "calculations",
+              settings: "settings",
+              models: "detection_models",
+            };
+            return (
+              <ResetToOobButton
+                itemType={itemTypeMap[selectedType]}
+                itemId={getItemId(selectedType, currentItem)}
+                visible={layerInfo?.is_oob === true && layerInfo?.has_override === true}
+                onReset={async () => {
+                  await resetToOob(itemTypeMap[selectedType], getItemId(selectedType, currentItem));
+                  await fetchAll();
+                }}
+              />
+            );
+          })()}
+          <button
+            onClick={handleSave}
+            disabled={!isJsonValid || saving || items.length === 0}
+            className="px-4 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
       </div>
     </div>
   );
