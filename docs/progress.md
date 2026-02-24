@@ -491,6 +491,22 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **M92 Task 92.4**: Regenerated snapshots
 - **Total**: 309 backend tests + 83 E2E tests, 14 files modified
 
+#### Browser Walkthrough Verification (1440px + 1024px)
+
+**1440x900 viewport — all views verified:**
+- [x] Dashboard: 430 Total Alerts, 5 Active Models, all charts rendering
+- [x] Entity Designer: entity IDs ("account", "execution", "md_eod") fully visible, "Account" detail panel with all 8 field names readable
+- [x] Metadata Explorer: calculation IDs ("adjusted_direction", "business_date_window", "trading_activity_aggregation") fully visible, layer badges, DAG
+- [x] Settings Manager: all 15 setting IDs fully visible ("business_date_cutoff", "same_side_pct_score_steps"), no truncation
+- [x] Risk Case Manager: 8 columns, model names ("wash_intraday", "market_price_ramping") fully visible, full timestamps
+- [x] Metadata Editor Visual Editor: all 5 columns (Name, Type, Key, Null, Description) visible, field names readable, Description column functional
+
+**1024x768 viewport — all critical views verified:**
+- [x] Entity Designer: entity list readable (4 columns), detail panel shows "Account" heading and field names, tight but usable
+- [x] Metadata Editor: JSON + Visual Editor side by side, field names visible ("account_id", "registration_..."), all 5 grid columns present
+- [x] Settings Manager: all 5 columns visible, full IDs readable, no truncation
+- [x] Risk Case Manager: all 8 columns visible, model names identifiable, colored score/trigger badges
+
 ---
 
 ## What Was NOT Done (Deferred / Blocked)
