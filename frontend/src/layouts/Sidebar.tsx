@@ -28,6 +28,7 @@ const navigation: NavGroup[] = [
     items: [
       { label: "Settings", path: "/settings" },
       { label: "Mappings", path: "/mappings" },
+      { label: "Editor", path: "/editor" },
     ],
   },
   {

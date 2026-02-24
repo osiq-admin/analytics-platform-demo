@@ -14,6 +14,7 @@ import DataManager from "./views/DataManager/index.tsx";
 import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
 import AIAssistant from "./views/AIAssistant/index.tsx";
 import Dashboard from "./views/Dashboard/index.tsx";
+import MetadataEditor from "./views/MetadataEditor/index.tsx";
 
 export const routes: RouteObject[] = [
   {
@@ -31,6 +32,7 @@ export const routes: RouteObject[] = [
       // Configure
       { path: "settings", element: <SettingsManager /> },
       { path: "mappings", element: <MappingStudio /> },
+      { path: "editor", element: <MetadataEditor /> },
 
       // Operate
       { path: "pipeline", element: <PipelineMonitor /> },
