@@ -668,9 +668,15 @@ class SyntheticDataGenerator:
     # -----------------------------------------------------------------------
 
     def _generate_intraday_data(self) -> None:
-        """Generate intraday trades for equity products."""
+        """Generate intraday trades for equity, FX, and key futures products."""
         equity_ids = [pid for pid, info in self.products.items()
                       if info["instrument_type"] == "common_stock" and info["asset_class"] == "equity"]
+
+        fx_ids = [pid for pid, info in self.products.items()
+                  if info["instrument_type"] == "spot" and info["asset_class"] == "fx"]
+
+        key_futures_ids = [pid for pid in ["ES_FUT", "NQ_FUT", "CL_FUT", "GC_FUT"]
+                          if pid in self.products]
 
         for pid in equity_ids:
             for day in self.trading_days:
@@ -679,16 +685,30 @@ class SyntheticDataGenerator:
                     continue
                 self._generate_intraday_day(pid, day, close)
 
+        for pid in fx_ids + key_futures_ids:
+            for day in self.trading_days:
+                close = self.eod_prices.get(pid, {}).get(day)
+                if close is None:
+                    continue
+                self._generate_intraday_day(pid, day, close, n_ticks=(10, 15))
+
         # Embed trend days for MPR patterns
         for pat in MPR_PATTERNS:
             self._embed_trend_day(pat)
 
-    def _generate_intraday_day(self, pid: str, day: date, close: float) -> None:
-        """Generate ~25 intraday trades for a normal day."""
+    def _generate_intraday_day(self, pid: str, day: date, close: float,
+                               n_ticks: tuple[int, int] | None = None) -> None:
+        """Generate intraday trades for a normal day.
+
+        Args:
+            n_ticks: Optional (min, max) range for tick count. Defaults to (20, 30) for equities.
+        """
         # Simulate open near previous close with normal variation
         open_price = close * self.rng.uniform(0.995, 1.005)
-        n_trades = self.rng.randint(20, 30)
+        lo, hi = n_ticks if n_ticks else (20, 30)
+        n_trades = self.rng.randint(lo, hi)
         base_vol = self.products[pid].get("avg_volume", 100_000)
+        info = self.products[pid]
 
         for i in range(n_trades):
             # Time between 09:30 and 16:00
@@ -697,13 +717,37 @@ class SyntheticDataGenerator:
             hour = 9 + (30 + offset) // 60
             minute = (30 + offset) % 60
             second = self.rng.randint(0, 59)
-            trade_time = f"{hour:02d}:{minute:02d}:{second:02d}"
+            ms = self.rng.randint(0, 999)
+            trade_time = f"{hour:02d}:{minute:02d}:{second:02d}.{ms:03d}"
 
             # Price interpolates from open toward close with noise
             frac = i / max(n_trades - 1, 1)
             price = open_price + (close - open_price) * frac
             noise = price * self.rng.gauss(0, 0.003)
             price = round(price + noise, 4)
+
+            # Derive bid/ask from trade price
+            if info["asset_class"] == "fx":
+                dp = 4
+                spread = price * self.rng.uniform(0.00005, 0.0003)
+                min_spread = 0.0001  # 1 pip minimum
+            elif info["instrument_type"] == "future":
+                dp = 2
+                spread = self.rng.uniform(0.25, 1.00)
+                min_spread = 0.25
+            else:  # equity
+                dp = 2
+                spread = price * self.rng.uniform(0.0001, 0.0005)
+                min_spread = 0.01  # 1 cent minimum
+
+            bid = round(price - spread / 2, dp)
+            ask = round(price + spread / 2, dp)
+            # Enforce minimum spread after rounding
+            if ask <= bid:
+                bid = round(price - min_spread / 2, dp)
+                ask = round(price + min_spread / 2, dp)
+            if ask <= bid:
+                ask = bid + min_spread
 
             qty = int(base_vol / n_trades * self.rng.uniform(0.3, 2.0) / 1000)
             qty = max(qty, 100)
@@ -714,6 +758,9 @@ class SyntheticDataGenerator:
                 "trade_time": trade_time,
                 "trade_price": price,
                 "trade_quantity": qty,
+                "bid_price": bid,
+                "ask_price": ask,
+                "trade_condition": "@",
             })
 
     def _embed_trend_day(self, pat: dict) -> None:
@@ -722,6 +769,7 @@ class SyntheticDataGenerator:
         day = pat["date"]
         start_p = pat["trend_start"]
         end_p = pat["trend_end"]
+        info = self.products[pid]
 
         # Remove existing intraday data for this product+date
         self.md_intraday = [
@@ -742,13 +790,40 @@ class SyntheticDataGenerator:
             hour = 9 + (30 + offset) // 60
             minute = (30 + offset) % 60
             second = self.rng.randint(0, 59)
+            ms = self.rng.randint(0, 999)
+
+            # Derive bid/ask from trade price
+            if info["asset_class"] == "fx":
+                dp = 4
+                spread = price * self.rng.uniform(0.00005, 0.0003)
+                min_spread = 0.0001  # 1 pip minimum
+            elif info["instrument_type"] == "future":
+                dp = 2
+                spread = self.rng.uniform(0.25, 1.00)
+                min_spread = 0.25
+            else:  # equity
+                dp = 2
+                spread = price * self.rng.uniform(0.0001, 0.0005)
+                min_spread = 0.01  # 1 cent minimum
+
+            bid = round(price - spread / 2, dp)
+            ask = round(price + spread / 2, dp)
+            # Enforce minimum spread after rounding
+            if ask <= bid:
+                bid = round(price - min_spread / 2, dp)
+                ask = round(price + min_spread / 2, dp)
+            if ask <= bid:
+                ask = bid + min_spread
 
             self.md_intraday.append({
                 "product_id": pid,
                 "trade_date": day.isoformat(),
-                "trade_time": f"{hour:02d}:{minute:02d}:{second:02d}",
+                "trade_time": f"{hour:02d}:{minute:02d}:{second:02d}.{ms:03d}",
                 "trade_price": price,
                 "trade_quantity": self.rng.randint(500, 5000),
+                "bid_price": bid,
+                "ask_price": ask,
+                "trade_condition": "@",
             })
 
         # Also update EOD data to match trend
@@ -1201,7 +1276,8 @@ class SyntheticDataGenerator:
 
         counts["md_intraday"] = self._write_csv(
             "md_intraday.csv",
-            ["product_id", "trade_date", "trade_time", "trade_price", "trade_quantity"],
+            ["product_id", "trade_date", "trade_time", "trade_price", "trade_quantity",
+             "bid_price", "ask_price", "trade_condition"],
             self.md_intraday,
         )
 
@@ -1419,15 +1495,21 @@ class SyntheticDataGenerator:
             "md_intraday": {
                 "entity_id": "md_intraday",
                 "name": "Intraday Market Data",
-                "description": "Intraday trade-level market data (tick data).",
+                "description": "Intraday trade-level tick data with bid/ask quotes and trade conditions. Covers equities, FX pairs, and key futures.",
                 "fields": [
-                    {"name": "product_id", "type": "string", "description": "Product identifier", "is_key": False, "nullable": False},
+                    {"name": "product_id", "type": "string", "description": "Product identifier (FK to product)", "is_key": False, "nullable": False},
                     {"name": "trade_date", "type": "date", "description": "Trade date (YYYY-MM-DD)", "is_key": False, "nullable": False},
-                    {"name": "trade_time", "type": "string", "description": "Trade time (HH:MM:SS)", "is_key": False, "nullable": False},
-                    {"name": "trade_price", "type": "decimal", "description": "Trade price", "is_key": False, "nullable": False},
+                    {"name": "trade_time", "type": "string", "description": "Trade time with milliseconds (HH:MM:SS.fff)", "is_key": False, "nullable": False},
+                    {"name": "trade_price", "type": "decimal", "description": "Trade execution price", "is_key": False, "nullable": False},
                     {"name": "trade_quantity", "type": "integer", "description": "Number of units traded", "is_key": False, "nullable": False},
+                    {"name": "bid_price", "type": "decimal", "description": "Best bid price at trade time", "is_key": False, "nullable": True},
+                    {"name": "ask_price", "type": "decimal", "description": "Best ask price at trade time", "is_key": False, "nullable": True},
+                    {"name": "trade_condition", "type": "string", "description": "Trade condition code (e.g. @ = regular)", "is_key": False, "nullable": True,
+                     "domain_values": ["@"]},
                 ],
-                "relationships": [],
+                "relationships": [
+                    {"target_entity": "product", "join_fields": {"product_id": "product_id"}, "relationship_type": "many_to_one"},
+                ],
             },
             "md_eod": {
                 "entity_id": "md_eod",

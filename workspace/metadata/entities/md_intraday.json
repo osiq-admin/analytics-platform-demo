@@ -1,12 +1,12 @@
 {
   "entity_id": "md_intraday",
   "name": "Intraday Market Data",
-  "description": "Intraday trade-level market data (tick data).",
+  "description": "Intraday trade-level tick data with bid/ask quotes and trade conditions. Covers equities, FX pairs, and key futures.",
   "fields": [
     {
       "name": "product_id",
       "type": "string",
-      "description": "Product identifier",
+      "description": "Product identifier (FK to product)",
       "is_key": false,
       "nullable": false
     },
@@ -20,14 +20,14 @@
     {
       "name": "trade_time",
       "type": "string",
-      "description": "Trade time (HH:MM:SS)",
+      "description": "Trade time with milliseconds (HH:MM:SS.fff)",
       "is_key": false,
       "nullable": false
     },
     {
       "name": "trade_price",
       "type": "decimal",
-      "description": "Trade price",
+      "description": "Trade execution price",
       "is_key": false,
       "nullable": false
     },
@@ -37,7 +37,39 @@
       "description": "Number of units traded",
       "is_key": false,
       "nullable": false
+    },
+    {
+      "name": "bid_price",
+      "type": "decimal",
+      "description": "Best bid price at trade time",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "ask_price",
+      "type": "decimal",
+      "description": "Best ask price at trade time",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "trade_condition",
+      "type": "string",
+      "description": "Trade condition code (e.g. @ = regular)",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "@"
+      ]
     }
   ],
-  "relationships": []
+  "relationships": [
+    {
+      "target_entity": "product",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "many_to_one"
+    }
+  ]
 }
