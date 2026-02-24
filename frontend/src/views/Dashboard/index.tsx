@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   PieChart, Pie, Cell,
   BarChart, Bar,
+  LineChart, Line,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
   type PieLabelRenderProps,
 } from "recharts";
 import { useDashboardStore } from "../../stores/dashboardStore.ts";
+import { useWidgetStore } from "../../stores/widgetStore.ts";
 import SummaryCard from "../../components/SummaryCard.tsx";
-import Panel from "../../components/Panel.tsx";
+import WidgetContainer from "../../components/WidgetContainer.tsx";
+import ChartTypeSwitcher from "../../components/ChartTypeSwitcher.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"];
@@ -21,8 +24,277 @@ const ASSET_CLASS_COLORS: Record<string, string> = {
   fixed_income: "#8b5cf6",
 };
 
+const TOOLTIP_STYLE = {
+  fontSize: 11,
+  background: "var(--color-surface)",
+  border: "1px solid var(--color-border)",
+};
+
+const TICK_STYLE = { fontSize: 9, fill: "var(--color-muted)" };
+
+/** Widget definitions for config panel */
+const WIDGETS = [
+  { id: "alerts-by-model", label: "Alerts by Model" },
+  { id: "score-distribution", label: "Score Distribution" },
+  { id: "alerts-by-trigger", label: "Alerts by Trigger" },
+  { id: "alerts-by-asset", label: "Alerts by Asset Class" },
+] as const;
+
+/* ---------- Generic table renderer ---------- */
+function DataTable({ data, labelKey, valueKey }: { data: Record<string, unknown>[]; labelKey: string; valueKey: string }) {
+  return (
+    <div className="overflow-auto max-h-[220px]">
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="text-left py-1 px-2 text-muted font-semibold uppercase tracking-wide">{labelKey}</th>
+            <th className="text-right py-1 px-2 text-muted font-semibold uppercase tracking-wide">{valueKey}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, i) => (
+            <tr key={i} className="border-b border-border/50 hover:bg-surface-elevated/50">
+              <td className="py-1 px-2 text-foreground/80">{String(row[labelKey] ?? "")}</td>
+              <td className="py-1 px-2 text-right text-foreground">{String(row[valueKey] ?? "")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ---------- Multi-type chart renderers ---------- */
+
+function AlertsByModelChart({ data, chartType }: { data: { model_id: string; cnt: number }[]; chartType: string }) {
+  if (chartType === "table") {
+    return <DataTable data={data} labelKey="model_id" valueKey="cnt" />;
+  }
+  if (chartType === "pie") {
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <PieChart>
+          <Pie data={data} dataKey="cnt" nameKey="model_id" cx="50%" cy="50%" outerRadius={65}
+            label={(p: PieLabelRenderProps) => `${p.name ?? ""} (${p.value ?? 0})`} labelLine fontSize={10}>
+            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Pie>
+          <Legend wrapperStyle={{ fontSize: 10 }} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+        </PieChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "line") {
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="model_id" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Line type="monotone" dataKey="cnt" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "bar") {
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="model_id" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Bar dataKey="cnt" radius={[2, 2, 0, 0]}>
+            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+  /* default: horizontal_bar (original) */
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 40, left: 10, bottom: 0 }}>
+        <XAxis type="number" tick={TICK_STYLE} />
+        <YAxis type="category" dataKey="model_id" tick={TICK_STYLE} width={130} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} />
+        <Bar dataKey="cnt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "var(--color-muted)" }}>
+          {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function ScoreDistributionChart({ data, chartType }: { data: { bucket: number; cnt: number }[]; chartType: string }) {
+  if (chartType === "table") {
+    const labeled = data.map((d) => ({ ...d, range: `${d.bucket}-${d.bucket + 10}` }));
+    return <DataTable data={labeled} labelKey="range" valueKey="cnt" />;
+  }
+  if (chartType === "line") {
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="bucket" tick={TICK_STYLE} tickFormatter={(v: number) => `${v}-${v + 10}`} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Line type="monotone" dataKey="cnt" stroke="var(--color-accent)" strokeWidth={2} dot={{ r: 3 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "horizontal_bar") {
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 40, bottom: 0 }}>
+          <XAxis type="number" tick={TICK_STYLE} />
+          <YAxis type="category" dataKey="bucket" tick={TICK_STYLE} width={40}
+            tickFormatter={(v: number) => `${v}-${v + 10}`} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Bar dataKey="cnt" fill="var(--color-accent)" radius={[0, 2, 2, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+  /* default: bar (vertical, original) */
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+        <XAxis dataKey="bucket" tick={TICK_STYLE} tickFormatter={(v: number) => `${v}-${v + 10}`} />
+        <YAxis tick={TICK_STYLE} width={30} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} />
+        <Bar dataKey="cnt" fill="var(--color-accent)" radius={[2, 2, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function AlertsByTriggerChart({ data, chartType }: { data: { trigger_path: string; cnt: number }[]; chartType: string }) {
+  if (chartType === "table") {
+    return <DataTable data={data} labelKey="trigger_path" valueKey="cnt" />;
+  }
+  if (chartType === "pie") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <PieChart>
+          <Pie data={data} dataKey="cnt" nameKey="trigger_path" cx="50%" cy="50%" outerRadius={60}
+            label={(p: PieLabelRenderProps) => `${p.name ?? ""} (${p.value ?? 0})`} labelLine fontSize={10}>
+            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Pie>
+          <Legend wrapperStyle={{ fontSize: 10 }} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+        </PieChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "bar") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="trigger_path" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Bar dataKey="cnt" fill="#22d3ee" radius={[2, 2, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "line") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="trigger_path" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Line type="monotone" dataKey="cnt" stroke="#22d3ee" strokeWidth={2} dot={{ r: 3 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  }
+  /* default: horizontal_bar (original) */
+  return (
+    <ResponsiveContainer width="100%" height={180}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 60, bottom: 0 }}>
+        <XAxis type="number" tick={TICK_STYLE} />
+        <YAxis type="category" dataKey="trigger_path" tick={TICK_STYLE} width={55} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} />
+        <Bar dataKey="cnt" fill="#22d3ee" radius={[0, 2, 2, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function AlertsByAssetChart({ data, chartType }: { data: { asset_class: string; cnt: number }[]; chartType: string }) {
+  if (chartType === "table") {
+    return <DataTable data={data} labelKey="asset_class" valueKey="cnt" />;
+  }
+  if (chartType === "bar") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="asset_class" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Bar dataKey="cnt" radius={[2, 2, 0, 0]}>
+            {data.map((entry, i) => (
+              <Cell key={i} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "horizontal_bar") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 60, bottom: 0 }}>
+          <XAxis type="number" tick={TICK_STYLE} />
+          <YAxis type="category" dataKey="asset_class" tick={TICK_STYLE} width={80} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Bar dataKey="cnt" radius={[0, 2, 2, 0]}>
+            {data.map((entry, i) => (
+              <Cell key={i} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+  if (chartType === "line") {
+    return (
+      <ResponsiveContainer width="100%" height={180}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis dataKey="asset_class" tick={TICK_STYLE} />
+          <YAxis tick={TICK_STYLE} width={30} />
+          <Tooltip contentStyle={TOOLTIP_STYLE} />
+          <Line type="monotone" dataKey="cnt" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  }
+  /* default: pie (original) */
+  return (
+    <ResponsiveContainer width="100%" height={180}>
+      <PieChart>
+        <Pie data={data} dataKey="cnt" nameKey="asset_class" cx="50%" cy="50%" outerRadius={65}
+          label={(props: PieLabelRenderProps) => `${props.name ?? ""} (${props.value ?? 0})`}
+          labelLine fontSize={10}>
+          {data.map((entry, i) => (
+            <Cell key={i} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
+          ))}
+        </Pie>
+        <Legend wrapperStyle={{ fontSize: 10 }} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+/* ---------- Dashboard ---------- */
+
 export default function Dashboard() {
   const { stats, loading, error, fetchStats } = useDashboardStore();
+  const { isVisible, toggleWidget, getChartType, setChartType } = useWidgetStore();
+  const [showConfig, setShowConfig] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -47,9 +319,62 @@ export default function Dashboard() {
     ? Math.round((firedPct.cnt / stats.total_alerts) * 100)
     : 0;
 
+  const modelType = getChartType("alerts-by-model", "horizontal_bar");
+  const scoreType = getChartType("score-distribution", "bar");
+  const triggerType = getChartType("alerts-by-trigger", "horizontal_bar");
+  const assetType = getChartType("alerts-by-asset", "pie");
+
   return (
     <div className="flex flex-col gap-4" data-tour="dashboard">
-      {/* Row 1: Summary Cards */}
+      {/* Dashboard header with config gear */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Dashboard</h2>
+        <button
+          onClick={() => setShowConfig((v) => !v)}
+          title="Widget settings"
+          className="p-1.5 rounded border border-border bg-surface hover:bg-surface-elevated
+                     text-muted hover:text-foreground transition-colors"
+        >
+          {/* Gear icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Config panel */}
+      {showConfig && (
+        <div className="rounded border border-border bg-surface p-3">
+          <div className="text-[10px] font-semibold text-muted uppercase tracking-wide mb-2">
+            Widget Visibility
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {WIDGETS.map((w) => (
+              <label key={w.id} className="flex items-center gap-2 text-xs text-foreground/80 cursor-pointer">
+                <button
+                  role="switch"
+                  aria-checked={isVisible(w.id)}
+                  onClick={() => toggleWidget(w.id)}
+                  className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                    isVisible(w.id) ? "bg-accent" : "bg-border"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                      isVisible(w.id) ? "translate-x-3.5" : "translate-x-0.5"
+                    }`}
+                  />
+                </button>
+                {w.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Row 1: Summary Cards (always visible) */}
       <div className="grid grid-cols-4 gap-4" data-tour="dashboard-cards">
         <SummaryCard
           label="Total Alerts"
@@ -62,8 +387,8 @@ export default function Dashboard() {
         />
         <SummaryCard
           label="Avg Score"
-          value={stats.avg_scores?.avg_score ?? "—"}
-          subtitle={`Threshold: ${stats.avg_scores?.avg_threshold ?? "—"}`}
+          value={stats.avg_scores?.avg_score ?? "\u2014"}
+          subtitle={`Threshold: ${stats.avg_scores?.avg_threshold ?? "\u2014"}`}
         />
         <SummaryCard
           label="Active Models"
@@ -71,85 +396,81 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Row 2: By Model (Pie) | Score Distribution (Bar) */}
+      {/* Row 2: By Model | Score Distribution */}
       <div className="grid grid-cols-2 gap-4">
-        <Panel title="Alerts by Model" dataTour="dashboard-by-model">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={stats.by_model} layout="vertical" margin={{ top: 4, right: 40, left: 10, bottom: 0 }}>
-              <XAxis type="number" tick={{ fontSize: 9, fill: "var(--color-muted)" }} />
-              <YAxis
-                type="category"
-                dataKey="model_id"
-                tick={{ fontSize: 9, fill: "var(--color-muted)" }}
-                width={130}
-              />
-              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
-              <Bar dataKey="cnt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "var(--color-muted)" }}>
-                {stats.by_model.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </Panel>
+        <WidgetContainer
+          id="alerts-by-model"
+          title="Alerts by Model"
+          visible={isVisible("alerts-by-model")}
+          onToggle={() => toggleWidget("alerts-by-model")}
+          dataTour="dashboard-by-model"
+          chartTypeSwitcher={
+            <ChartTypeSwitcher
+              chartId="alerts-by-model"
+              currentType={modelType}
+              options={["horizontal_bar", "bar", "line", "pie", "table"]}
+              onChange={(t) => setChartType("alerts-by-model", t)}
+            />
+          }
+        >
+          <AlertsByModelChart data={stats.by_model} chartType={modelType} />
+        </WidgetContainer>
 
-        <Panel title="Score Distribution" dataTour="dashboard-scores">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={stats.score_distribution} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <XAxis
-                dataKey="bucket"
-                tick={{ fontSize: 9, fill: "var(--color-muted)" }}
-                tickFormatter={(v: number) => `${v}-${v + 10}`}
-              />
-              <YAxis tick={{ fontSize: 9, fill: "var(--color-muted)" }} width={30} />
-              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
-              <Bar dataKey="cnt" fill="var(--color-accent)" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Panel>
+        <WidgetContainer
+          id="score-distribution"
+          title="Score Distribution"
+          visible={isVisible("score-distribution")}
+          onToggle={() => toggleWidget("score-distribution")}
+          dataTour="dashboard-scores"
+          chartTypeSwitcher={
+            <ChartTypeSwitcher
+              chartId="score-distribution"
+              currentType={scoreType}
+              options={["bar", "horizontal_bar", "line", "table"]}
+              onChange={(t) => setChartType("score-distribution", t)}
+            />
+          }
+        >
+          <ScoreDistributionChart data={stats.score_distribution} chartType={scoreType} />
+        </WidgetContainer>
       </div>
 
       {/* Row 3: By Trigger Path | By Asset Class */}
       <div className="grid grid-cols-2 gap-4">
-        <Panel title="Alerts by Trigger Path" dataTour="dashboard-triggers">
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={stats.by_trigger} layout="vertical" margin={{ top: 4, right: 8, left: 60, bottom: 0 }}>
-              <XAxis type="number" tick={{ fontSize: 9, fill: "var(--color-muted)" }} />
-              <YAxis
-                type="category"
-                dataKey="trigger_path"
-                tick={{ fontSize: 9, fill: "var(--color-muted)" }}
-                width={55}
-              />
-              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
-              <Bar dataKey="cnt" fill="#22d3ee" radius={[0, 2, 2, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Panel>
+        <WidgetContainer
+          id="alerts-by-trigger"
+          title="Alerts by Trigger Path"
+          visible={isVisible("alerts-by-trigger")}
+          onToggle={() => toggleWidget("alerts-by-trigger")}
+          dataTour="dashboard-triggers"
+          chartTypeSwitcher={
+            <ChartTypeSwitcher
+              chartId="alerts-by-trigger"
+              currentType={triggerType}
+              options={["horizontal_bar", "bar", "line", "pie", "table"]}
+              onChange={(t) => setChartType("alerts-by-trigger", t)}
+            />
+          }
+        >
+          <AlertsByTriggerChart data={stats.by_trigger} chartType={triggerType} />
+        </WidgetContainer>
 
-        <Panel title="Alerts by Asset Class">
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie
-                data={stats.by_asset}
-                dataKey="cnt"
-                nameKey="asset_class"
-                cx="50%"
-                cy="50%"
-                outerRadius={65}
-                label={(props: PieLabelRenderProps) => `${props.name ?? ""} (${props.value ?? 0})`}
-                labelLine
-                fontSize={10}
-              >
-                {stats.by_asset.map((entry, i) => (
-                  <Cell key={i} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Legend wrapperStyle={{ fontSize: 10 }} />
-              <Tooltip contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </Panel>
+        <WidgetContainer
+          id="alerts-by-asset"
+          title="Alerts by Asset Class"
+          visible={isVisible("alerts-by-asset")}
+          onToggle={() => toggleWidget("alerts-by-asset")}
+          chartTypeSwitcher={
+            <ChartTypeSwitcher
+              chartId="alerts-by-asset"
+              currentType={assetType}
+              options={["pie", "bar", "horizontal_bar", "line", "table"]}
+              onChange={(t) => setChartType("alerts-by-asset", t)}
+            />
+          }
+        >
+          <AlertsByAssetChart data={stats.by_asset} chartType={assetType} />
+        </WidgetContainer>
       </div>
     </div>
   );
