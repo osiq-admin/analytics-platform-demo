@@ -42,8 +42,18 @@ Thumbs.db
 .env
 .env.local
 
-# Claude
-.claude/
+# Claude — include settings, memory, config; exclude local/session data
+.claude/settings.local.json
+.claude/*.jsonl
+.claude/*/subagents/
+.claude/*/tool-results/
 
 # Worktrees
 .worktrees/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Screenshots (from Playwright testing)
+*.png
+test-screenshots/
