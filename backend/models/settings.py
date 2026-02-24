@@ -24,6 +24,7 @@ class SettingDefinition(BaseModel):
     default: Any
     match_type: str = Field(default="hierarchy", description="hierarchy or multi_dimensional")
     overrides: list[SettingOverride] = Field(default_factory=list)
+    metadata_layer: str = Field(default="oob", exclude=True)
 
     @model_validator(mode="after")
     def sort_overrides_by_priority(self):

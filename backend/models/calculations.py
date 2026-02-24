@@ -45,6 +45,7 @@ class CalculationDefinition(BaseModel):
     depends_on: list[str] = Field(default_factory=list)
     # e.g. ["MAR Art. 12(1)(a)", "MiFID II Art. 16(2)"]
     regulatory_tags: list[str] = Field(default_factory=list)
+    metadata_layer: str = Field(default="oob", exclude=True)
 
     @model_validator(mode="after")
     def no_self_dependency(self):

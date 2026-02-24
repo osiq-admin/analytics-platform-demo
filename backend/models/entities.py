@@ -24,3 +24,4 @@ class EntityDefinition(BaseModel):
     fields: list[FieldDefinition] = Field(default_factory=list)
     relationships: list[RelationshipDefinition] = Field(default_factory=list)
     subtypes: list[str] = Field(default_factory=list)
+    metadata_layer: str = Field(default="oob", exclude=True)
