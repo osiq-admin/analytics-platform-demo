@@ -1,7 +1,7 @@
 {
   "entity_id": "product",
   "name": "Product (Instrument)",
-  "description": "Financial instruments with their inherent characteristics. Referenced by execution, order, and market data entities via product_id.",
+  "description": "Financial instruments with ISO standard identifiers, derivative fields, and trading parameters. Master dimension referenced by execution, order, and market data entities via product_id.",
   "fields": [
     {
       "name": "product_id",
@@ -11,9 +11,30 @@
       "nullable": false
     },
     {
+      "name": "isin",
+      "type": "string",
+      "description": "ISO 6166 International Securities Identification Number",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "sedol",
+      "type": "string",
+      "description": "Stock Exchange Daily Official List number",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "ticker",
+      "type": "string",
+      "description": "Exchange ticker symbol (= product_id)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
       "name": "name",
       "type": "string",
-      "description": "Product name",
+      "description": "Product display name",
       "is_key": false,
       "nullable": false
     },
@@ -26,24 +47,38 @@
       "domain_values": [
         "equity",
         "fx",
-        "fixed_income",
-        "commodity"
+        "commodity",
+        "index",
+        "fixed_income"
       ]
     },
     {
       "name": "instrument_type",
       "type": "string",
-      "description": "Type of instrument",
+      "description": "ISO 10962 instrument classification",
       "is_key": false,
       "nullable": false,
       "domain_values": [
-        "stock",
-        "bond",
-        "option",
+        "common_stock",
+        "call_option",
+        "put_option",
         "future",
-        "forward",
-        "swap"
+        "spot"
       ]
+    },
+    {
+      "name": "cfi_code",
+      "type": "string",
+      "description": "ISO 10962 Classification of Financial Instruments code",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "underlying_product_id",
+      "type": "string",
+      "description": "Product ID of the underlying instrument (derivatives only)",
+      "is_key": false,
+      "nullable": true
     },
     {
       "name": "contract_size",
@@ -53,27 +88,51 @@
       "nullable": true
     },
     {
-      "name": "option_type",
-      "type": "string",
-      "description": "Option type (call/put)",
+      "name": "strike_price",
+      "type": "decimal",
+      "description": "Option strike price",
       "is_key": false,
-      "nullable": true,
-      "domain_values": [
-        "call",
-        "put"
-      ]
+      "nullable": true
     },
     {
-      "name": "exchange",
+      "name": "expiry_date",
+      "type": "date",
+      "description": "Contract expiry date (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "exchange_mic",
       "type": "string",
-      "description": "Primary exchange",
+      "description": "ISO 10383 Market Identifier Code of primary exchange",
       "is_key": false,
       "nullable": false
     },
     {
       "name": "currency",
       "type": "string",
-      "description": "Quotation currency",
+      "description": "ISO 4217 quotation currency",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "tick_size",
+      "type": "decimal",
+      "description": "Minimum price increment",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "lot_size",
+      "type": "integer",
+      "description": "Standard trading lot size",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "base_price",
+      "type": "decimal",
+      "description": "Reference base price for data generation",
       "is_key": false,
       "nullable": false
     }
@@ -106,6 +165,13 @@
         "product_id": "product_id"
       },
       "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "venue",
+      "join_fields": {
+        "exchange_mic": "mic"
+      },
+      "relationship_type": "many_to_one"
     }
   ]
 }

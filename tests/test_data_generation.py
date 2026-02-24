@@ -93,17 +93,21 @@ class TestProductSchema:
     def test_product_columns(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "product.csv")
         expected_cols = {
-            "product_id", "name", "asset_class", "instrument_type",
-            "contract_size", "option_type", "exchange", "currency",
+            "product_id", "isin", "sedol", "ticker", "name", "asset_class",
+            "instrument_type", "cfi_code", "underlying_product_id",
+            "contract_size", "strike_price", "expiry_date", "exchange_mic",
+            "currency", "tick_size", "lot_size", "base_price",
         }
         assert set(rows[0].keys()) == expected_cols
 
     def test_product_instrument_types(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "product.csv")
         types = {r["instrument_type"] for r in rows}
-        assert "stock" in types
-        assert "option" in types
+        assert "common_stock" in types
+        assert "call_option" in types
+        assert "put_option" in types
         assert "future" in types
+        assert "spot" in types
 
     def test_product_asset_classes(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "product.csv")
@@ -111,14 +115,17 @@ class TestProductSchema:
         assert "equity" in classes
         assert "fx" in classes
         assert "commodity" in classes
+        assert "index" in classes
+        assert "fixed_income" in classes
 
     def test_product_exchanges(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "product.csv")
-        exchanges = {r["exchange"] for r in rows}
-        assert "NYSE" in exchanges
-        assert "OTC" in exchanges
-        assert "CME" in exchanges
-        assert "CBOE" in exchanges
+        exchanges = {r["exchange_mic"] for r in rows}
+        assert "XNYS" in exchanges
+        assert "XNAS" in exchanges
+        assert "XXXX" in exchanges
+        assert "XCME" in exchanges
+        assert "XCBO" in exchanges
 
 
 class TestExecutionSchema:

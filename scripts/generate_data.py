@@ -268,36 +268,115 @@ class SyntheticDataGenerator:
 
     def _build_product_catalog(self) -> dict[str, dict]:
         catalog: dict[str, dict] = {}
+
+        # NASDAQ-listed equities (use XNAS instead of XNYS)
+        _nasdaq_tickers = {"MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "COST"}
+
+        # Real ISINs for equities
+        _isin_map = {
+            "AAPL": "US0378331005", "MSFT": "US5949181045", "GOOGL": "US02079K3059",
+            "AMZN": "US0231351067", "META": "US30303M1027", "TSLA": "US88160R1014",
+            "NVDA": "US67066G1040", "JPM": "US46625H1005", "BAC": "US0605051046",
+            "GS": "US38141G1040", "MS": "US6174464486", "WFC": "US9497461015",
+            "JNJ": "US4781601046", "PFE": "US7170811035", "MRK": "US58933Y1055",
+            "UNH": "US91324P1021", "XOM": "US30231G1022", "CVX": "US1667641005",
+            "COP": "US20825C1045", "V": "US92826C8394", "MA": "US57636Q1040",
+            "HD": "US4370761029", "NKE": "US6541061031", "COST": "US22160K1051",
+            "DIS": "US2546871060",
+        }
+
+        # Underlying product IDs for derivatives
+        _underlying_map = {
+            "AAPL_C150": "AAPL", "AAPL_P140": "AAPL",
+            "TSLA_C250": "TSLA", "TSLA_P200": "TSLA",
+            "NVDA_C500": "NVDA", "AMZN_C180": "AMZN",
+            "GC_FUT": "GOLD",
+        }
+
+        # Strike prices extracted from option names
+        _strike_map = {
+            "AAPL_C150": 150.0, "AAPL_P140": 140.0,
+            "TSLA_C250": 250.0, "TSLA_P200": 200.0,
+            "NVDA_C500": 500.0, "AMZN_C180": 180.0,
+        }
+
+        # Futures asset_class corrections
+        _futures_asset_class = {
+            "ES_FUT": "index", "NQ_FUT": "index",
+            "CL_FUT": "commodity", "GC_FUT": "commodity",
+            "ZB_FUT": "fixed_income",
+        }
+
         for e in EQUITIES:
+            mic = "XNAS" if e["id"] in _nasdaq_tickers else "XNYS"
             catalog[e["id"]] = {
-                "asset_class": "equity", "instrument_type": "stock",
+                "asset_class": "equity", "instrument_type": "common_stock",
                 "base_price": e["price"], "avg_volume": e["vol"],
-                "name": e["name"], "exchange": "NYSE", "currency": "USD",
+                "name": e["name"], "exchange_mic": mic, "currency": "USD",
+                "isin": _isin_map.get(e["id"]),
+                "sedol": None,
+                "ticker": e["id"],
+                "cfi_code": "ESXXXX",
+                "tick_size": 0.01, "lot_size": 100,
+                "underlying_product_id": None,
+                "contract_size": None,
+                "strike_price": None,
+                "expiry_date": None,
             }
         for f in FX_PAIRS:
             catalog[f["id"]] = {
-                "asset_class": "fx", "instrument_type": "stock",
+                "asset_class": "fx", "instrument_type": "spot",
                 "base_price": f["price"], "avg_volume": f["vol"],
-                "name": f["name"], "exchange": "OTC", "currency": "USD",
+                "name": f["name"], "exchange_mic": "XXXX", "currency": "USD",
+                "isin": None, "sedol": None, "ticker": f["id"],
+                "cfi_code": "MRCXXX",
+                "tick_size": 0.0001, "lot_size": 10000,
+                "underlying_product_id": None,
+                "contract_size": None,
+                "strike_price": None,
+                "expiry_date": None,
             }
         for c in COMMODITIES:
             catalog[c["id"]] = {
-                "asset_class": "commodity", "instrument_type": "stock",
+                "asset_class": "commodity", "instrument_type": "spot",
                 "base_price": c["price"], "avg_volume": c["vol"],
-                "name": c["name"], "exchange": "CME", "currency": "USD",
+                "name": c["name"], "exchange_mic": "XXXX", "currency": "USD",
+                "isin": None, "sedol": None, "ticker": c["id"],
+                "cfi_code": "TCXXXX",
+                "tick_size": 0.01, "lot_size": 1,
+                "underlying_product_id": None,
+                "contract_size": None,
+                "strike_price": None,
+                "expiry_date": None,
             }
         for o in OPTIONS:
+            opt_type = o["option_type"]
+            inst_type = "call_option" if opt_type == "call" else "put_option"
+            cfi = "OCAFXX" if opt_type == "call" else "OPAFXX"
             catalog[o["id"]] = {
-                "asset_class": "equity", "instrument_type": "option",
-                "option_type": o["option_type"], "contract_size": o["cs"],
+                "asset_class": "equity", "instrument_type": inst_type,
+                "option_type": opt_type, "contract_size": o["cs"],
                 "base_price": o["price"], "name": o["name"],
-                "exchange": "CBOE", "currency": "USD",
+                "exchange_mic": "XCBO", "currency": "USD",
+                "isin": None, "sedol": None, "ticker": o["id"],
+                "cfi_code": cfi,
+                "tick_size": 0.01, "lot_size": 1,
+                "underlying_product_id": _underlying_map.get(o["id"]),
+                "strike_price": _strike_map.get(o["id"]),
+                "expiry_date": "2024-03-15",
             }
         for fu in FUTURES:
             catalog[fu["id"]] = {
-                "asset_class": "equity", "instrument_type": "future",
+                "asset_class": _futures_asset_class[fu["id"]],
+                "instrument_type": "future",
                 "contract_size": fu["cs"], "base_price": fu["price"],
-                "name": fu["name"], "exchange": "CME", "currency": "USD",
+                "name": fu["name"], "exchange_mic": "XCME", "currency": "USD",
+                "isin": None, "sedol": None, "ticker": fu["id"],
+                "cfi_code": "FXXXXX",
+                "tick_size": 0.25, "lot_size": 1,
+                "underlying_product_id": _underlying_map.get(fu["id"]),
+                "strike_price": None,
+                "expiry_date": "2024-03-29",
             }
         return catalog
 
@@ -420,7 +499,7 @@ class SyntheticDataGenerator:
     def _generate_intraday_data(self) -> None:
         """Generate intraday trades for equity products."""
         equity_ids = [pid for pid, info in self.products.items()
-                      if info["instrument_type"] == "stock" and info["asset_class"] == "equity"]
+                      if info["instrument_type"] == "common_stock" and info["asset_class"] == "equity"]
 
         for pid in equity_ids:
             for day in self.trading_days:
@@ -513,11 +592,11 @@ class SyntheticDataGenerator:
 
     def _generate_normal_trading(self) -> None:
         """Generate normal trading activity across accounts and products."""
-        # Select tradeable products (stocks, fx, commodities — not options/futures for simplicity)
+        # Select tradeable products (common stocks, fx spots, commodity spots — plus options/futures)
         stock_ids = [pid for pid, info in self.products.items()
-                     if info["instrument_type"] == "stock"]
+                     if info["instrument_type"] in ("common_stock", "spot")]
         option_ids = [pid for pid, info in self.products.items()
-                      if info["instrument_type"] == "option"]
+                      if info["instrument_type"] in ("call_option", "put_option")]
         future_ids = [pid for pid, info in self.products.items()
                       if info["instrument_type"] == "future"]
 
@@ -559,9 +638,9 @@ class SyntheticDataGenerator:
         price = round(price, 4)
 
         # Quantity varies by instrument
-        if info["instrument_type"] == "stock":
+        if info["instrument_type"] in ("common_stock", "spot"):
             qty = self.rng.choice([50, 100, 150, 200, 300, 500])
-        elif info["instrument_type"] == "option":
+        elif info["instrument_type"] in ("call_option", "put_option"):
             qty = self.rng.choice([5, 10, 20, 50])
         else:  # future
             qty = self.rng.choice([1, 2, 5, 10])
@@ -834,20 +913,33 @@ class SyntheticDataGenerator:
         return counts
 
     def _write_product_csv(self) -> int:
-        """Write the product dimension table CSV."""
-        fieldnames = ["product_id", "name", "asset_class", "instrument_type",
-                      "contract_size", "option_type", "exchange", "currency"]
+        """Write the product dimension table CSV (17 columns, ISO-enriched)."""
+        fieldnames = [
+            "product_id", "isin", "sedol", "ticker", "name", "asset_class",
+            "instrument_type", "cfi_code", "underlying_product_id",
+            "contract_size", "strike_price", "expiry_date", "exchange_mic",
+            "currency", "tick_size", "lot_size", "base_price",
+        ]
         rows = []
         for pid, info in sorted(self.products.items()):
             rows.append({
                 "product_id": pid,
+                "isin": info.get("isin") or "",
+                "sedol": info.get("sedol") or "",
+                "ticker": info.get("ticker", pid),
                 "name": info["name"],
                 "asset_class": info["asset_class"],
                 "instrument_type": info["instrument_type"],
-                "contract_size": info.get("contract_size", ""),
-                "option_type": info.get("option_type", ""),
-                "exchange": info.get("exchange", ""),
+                "cfi_code": info.get("cfi_code", ""),
+                "underlying_product_id": info.get("underlying_product_id") or "",
+                "contract_size": info.get("contract_size") or "",
+                "strike_price": info.get("strike_price") or "",
+                "expiry_date": info.get("expiry_date") or "",
+                "exchange_mic": info.get("exchange_mic", ""),
                 "currency": info.get("currency", "USD"),
+                "tick_size": info.get("tick_size", ""),
+                "lot_size": info.get("lot_size", ""),
+                "base_price": info.get("base_price", ""),
             })
         return self._write_csv("product.csv", fieldnames, rows)
 
@@ -897,22 +989,34 @@ class SyntheticDataGenerator:
             "product": {
                 "entity_id": "product",
                 "name": "Product (Instrument)",
-                "description": "Financial instruments with their inherent characteristics. Referenced by execution, order, and market data entities via product_id.",
+                "description": "Financial instruments with ISO standard identifiers, derivative fields, and trading parameters. Master dimension referenced by execution, order, and market data entities via product_id.",
                 "fields": [
                     {"name": "product_id", "type": "string", "description": "Unique product identifier (ticker/symbol)", "is_key": True, "nullable": False},
-                    {"name": "name", "type": "string", "description": "Product name", "is_key": False, "nullable": False},
-                    {"name": "asset_class", "type": "string", "description": "Asset class category", "is_key": False, "nullable": False, "domain_values": ["equity", "fx", "fixed_income", "commodity"]},
-                    {"name": "instrument_type", "type": "string", "description": "Type of instrument", "is_key": False, "nullable": False, "domain_values": ["stock", "bond", "option", "future", "forward", "swap"]},
+                    {"name": "isin", "type": "string", "description": "ISO 6166 International Securities Identification Number", "is_key": False, "nullable": True},
+                    {"name": "sedol", "type": "string", "description": "Stock Exchange Daily Official List number", "is_key": False, "nullable": True},
+                    {"name": "ticker", "type": "string", "description": "Exchange ticker symbol (= product_id)", "is_key": False, "nullable": False},
+                    {"name": "name", "type": "string", "description": "Product display name", "is_key": False, "nullable": False},
+                    {"name": "asset_class", "type": "string", "description": "Asset class category", "is_key": False, "nullable": False,
+                     "domain_values": ["equity", "fx", "commodity", "index", "fixed_income"]},
+                    {"name": "instrument_type", "type": "string", "description": "ISO 10962 instrument classification", "is_key": False, "nullable": False,
+                     "domain_values": ["common_stock", "call_option", "put_option", "future", "spot"]},
+                    {"name": "cfi_code", "type": "string", "description": "ISO 10962 Classification of Financial Instruments code", "is_key": False, "nullable": False},
+                    {"name": "underlying_product_id", "type": "string", "description": "Product ID of the underlying instrument (derivatives only)", "is_key": False, "nullable": True},
                     {"name": "contract_size", "type": "decimal", "description": "Contract multiplier (options/futures)", "is_key": False, "nullable": True},
-                    {"name": "option_type", "type": "string", "description": "Option type (call/put)", "is_key": False, "nullable": True, "domain_values": ["call", "put"]},
-                    {"name": "exchange", "type": "string", "description": "Primary exchange", "is_key": False, "nullable": False},
-                    {"name": "currency", "type": "string", "description": "Quotation currency", "is_key": False, "nullable": False},
+                    {"name": "strike_price", "type": "decimal", "description": "Option strike price", "is_key": False, "nullable": True},
+                    {"name": "expiry_date", "type": "date", "description": "Contract expiry date (YYYY-MM-DD)", "is_key": False, "nullable": True},
+                    {"name": "exchange_mic", "type": "string", "description": "ISO 10383 Market Identifier Code of primary exchange", "is_key": False, "nullable": False},
+                    {"name": "currency", "type": "string", "description": "ISO 4217 quotation currency", "is_key": False, "nullable": False},
+                    {"name": "tick_size", "type": "decimal", "description": "Minimum price increment", "is_key": False, "nullable": False},
+                    {"name": "lot_size", "type": "integer", "description": "Standard trading lot size", "is_key": False, "nullable": False},
+                    {"name": "base_price", "type": "decimal", "description": "Reference base price for data generation", "is_key": False, "nullable": False},
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
                     {"target_entity": "order", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
                     {"target_entity": "md_intraday", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
                     {"target_entity": "md_eod", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "venue", "join_fields": {"exchange_mic": "mic"}, "relationship_type": "many_to_one"},
                 ],
             },
             "execution": {

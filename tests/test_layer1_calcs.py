@@ -29,11 +29,11 @@ def workspace(tmp_path):
 
     # Create product dimension table
     (tmp_path / "data" / "csv" / "product.csv").write_text(
-        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
-        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
-        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
-        "AAPL_C150,AAPL Call 150,equity,option,100,call,CBOE,USD\n"
-        "AAPL_P150,AAPL Put 150,equity,option,100,put,CBOE,USD\n"
+        "product_id,name,asset_class,instrument_type,contract_size,exchange_mic,currency\n"
+        "AAPL,Apple Inc.,equity,common_stock,,XNYS,USD\n"
+        "MSFT,Microsoft Corp.,equity,common_stock,,XNYS,USD\n"
+        "AAPL_C150,AAPL Call 150,equity,call_option,100,XCBO,USD\n"
+        "AAPL_P150,AAPL Put 150,equity,put_option,100,XCBO,USD\n"
     )
 
     # Create execution data (product fields now in product.csv)
@@ -104,7 +104,7 @@ class TestValueCalc:
             "SELECT product_id, account_id, side, instrument_type FROM calc_value WHERE execution_id='E001'"
         ).fetchone()
         cursor.close()
-        assert row == ("AAPL", "ACC001", "BUY", "stock")
+        assert row == ("AAPL", "ACC001", "BUY", "common_stock")
 
 
 class TestAdjustedDirection:

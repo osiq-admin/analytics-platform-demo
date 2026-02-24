@@ -12,7 +12,7 @@
     {
       "source_type": "entity",
       "entity_id": "product",
-      "fields": ["instrument_type", "asset_class", "contract_size", "option_type"]
+      "fields": ["instrument_type", "asset_class", "contract_size"]
     }
   ],
   "output": {
@@ -32,7 +32,7 @@
       {"name": "calculated_value", "type": "decimal"}
     ]
   },
-  "logic": "SELECT e.execution_id, e.product_id, e.account_id, e.trader_id, e.side, e.price, e.quantity, p.instrument_type, p.asset_class, e.execution_date, e.execution_time, CASE WHEN p.instrument_type = 'option' THEN e.price * COALESCE(p.contract_size, 100) * e.quantity WHEN p.instrument_type = 'future' THEN e.price * COALESCE(p.contract_size, 1) * e.quantity ELSE e.price * e.quantity END AS calculated_value FROM execution e INNER JOIN product p ON e.product_id = p.product_id",
+  "logic": "SELECT e.execution_id, e.product_id, e.account_id, e.trader_id, e.side, e.price, e.quantity, p.instrument_type, p.asset_class, e.execution_date, e.execution_time, CASE WHEN p.instrument_type IN ('call_option', 'put_option') THEN e.price * COALESCE(p.contract_size, 100) * e.quantity WHEN p.instrument_type = 'future' THEN e.price * COALESCE(p.contract_size, 1) * e.quantity ELSE e.price * e.quantity END AS calculated_value FROM execution e INNER JOIN product p ON e.product_id = p.product_id",
   "parameters": {},
   "display": {
     "format": "currency",
