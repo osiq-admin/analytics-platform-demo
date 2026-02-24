@@ -1,7 +1,7 @@
 {
   "entity_id": "trader",
   "name": "Trader",
-  "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution via trader_id.",
+  "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution and order via trader_id.",
   "fields": [
     {
       "name": "trader_id",
@@ -63,6 +63,13 @@
   "relationships": [
     {
       "target_entity": "execution",
+      "join_fields": {
+        "trader_id": "trader_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "order",
       "join_fields": {
         "trader_id": "trader_id"
       },

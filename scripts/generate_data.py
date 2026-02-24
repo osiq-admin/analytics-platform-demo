@@ -772,8 +772,9 @@ class SyntheticDataGenerator:
         second = self.rng.randint(0, 59)
         exec_time = f"{hour:02d}:{minute:02d}:{second:02d}"
 
+        exec_id = self._next_exec_id()
         exec_row = {
-            "execution_id": self._next_exec_id(),
+            "execution_id": exec_id,
             "product_id": pid,
             "account_id": acc,
             "trader_id": trader,
@@ -791,11 +792,18 @@ class SyntheticDataGenerator:
             "order_id": self._next_order_id(),
             "product_id": pid,
             "account_id": acc,
+            "trader_id": trader,
             "side": side,
+            "order_type": "MARKET",
+            "limit_price": "",
+            "quantity": qty,
+            "filled_quantity": qty,
+            "order_date": day.isoformat(),
             "order_time": order_time,
             "status": "FILLED",
-            "quantity": qty,
-            "order_date": day.isoformat(),
+            "time_in_force": "DAY",
+            "execution_id": exec_id,
+            "venue_mic": self.products[pid].get("exchange_mic", ""),
         })
 
     # -----------------------------------------------------------------------
@@ -823,9 +831,18 @@ class SyntheticDataGenerator:
                 self.orders.append({
                     "order_id": self._next_order_id(),
                     "product_id": pid, "account_id": acc,
-                    "side": "BUY", "order_time": exec_time,
-                    "status": "FILLED", "quantity": qty,
+                    "trader_id": trader,
+                    "side": "BUY",
+                    "order_type": "LIMIT",
+                    "limit_price": price,
+                    "quantity": qty,
+                    "filled_quantity": qty,
                     "order_date": day.isoformat(),
+                    "order_time": exec_time,
+                    "status": "FILLED",
+                    "time_in_force": "DAY",
+                    "execution_id": eid,
+                    "venue_mic": info.get("exchange_mic", ""),
                 })
 
             for qty, price, exec_time in pat["sells"]:
@@ -840,9 +857,18 @@ class SyntheticDataGenerator:
                 self.orders.append({
                     "order_id": self._next_order_id(),
                     "product_id": pid, "account_id": acc,
-                    "side": "SELL", "order_time": exec_time,
-                    "status": "FILLED", "quantity": qty,
+                    "trader_id": trader,
+                    "side": "SELL",
+                    "order_type": "LIMIT",
+                    "limit_price": price,
+                    "quantity": qty,
+                    "filled_quantity": qty,
                     "order_date": day.isoformat(),
+                    "order_time": exec_time,
+                    "status": "FILLED",
+                    "time_in_force": "DAY",
+                    "execution_id": eid,
+                    "venue_mic": info.get("exchange_mic", ""),
                 })
 
     # -----------------------------------------------------------------------
@@ -865,8 +891,9 @@ class SyntheticDataGenerator:
                 second = self.rng.randint(0, 59)
                 exec_time = f"{hour:02d}:{minute:02d}:{second:02d}"
 
+                eid = self._next_exec_id()
                 self.executions.append({
-                    "execution_id": self._next_exec_id(),
+                    "execution_id": eid,
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": side, "price": price, "quantity": qty,
                     "execution_date": day.isoformat(),
@@ -875,9 +902,18 @@ class SyntheticDataGenerator:
                 self.orders.append({
                     "order_id": self._next_order_id(),
                     "product_id": pid, "account_id": acc,
-                    "side": side, "order_time": exec_time,
-                    "status": "FILLED", "quantity": qty,
+                    "trader_id": trader,
+                    "side": side,
+                    "order_type": "MARKET",
+                    "limit_price": "",
+                    "quantity": qty,
+                    "filled_quantity": qty,
                     "order_date": day.isoformat(),
+                    "order_time": exec_time,
+                    "status": "FILLED",
+                    "time_in_force": "DAY",
+                    "execution_id": eid,
+                    "venue_mic": info.get("exchange_mic", ""),
                 })
 
     # -----------------------------------------------------------------------
@@ -913,8 +949,9 @@ class SyntheticDataGenerator:
                 second = self.rng.randint(0, 59)
                 exec_time = f"{hour:02d}:{minute:02d}:{second:02d}"
 
+                eid = self._next_exec_id()
                 self.executions.append({
-                    "execution_id": self._next_exec_id(),
+                    "execution_id": eid,
                     "product_id": pid, "account_id": acc, "trader_id": trader,
                     "side": side, "price": price, "quantity": qty,
                     "execution_date": trade_date.isoformat(),
@@ -923,9 +960,18 @@ class SyntheticDataGenerator:
                 self.orders.append({
                     "order_id": self._next_order_id(),
                     "product_id": pid, "account_id": acc,
-                    "side": side, "order_time": exec_time,
-                    "status": "FILLED", "quantity": qty,
+                    "trader_id": trader,
+                    "side": side,
+                    "order_type": "LIMIT",
+                    "limit_price": price,
+                    "quantity": qty,
+                    "filled_quantity": qty,
                     "order_date": trade_date.isoformat(),
+                    "order_time": exec_time,
+                    "status": "FILLED",
+                    "time_in_force": "GTC",
+                    "execution_id": eid,
+                    "venue_mic": info.get("exchange_mic", ""),
                 })
 
     # -----------------------------------------------------------------------
@@ -941,57 +987,80 @@ class SyntheticDataGenerator:
             day = pat["date"]
             info = self.products[pid]
 
-            # Cancelled orders (spoof side)
+            venue_mic = info.get("exchange_mic", "")
+
+            # Cancelled orders (spoof side) — no execution
             for qty, price, order_time in pat["cancelled_orders"]:
                 self.orders.append({
                     "order_id": self._next_order_id(),
                     "product_id": pid, "account_id": acc,
-                    "side": pat["spoof_side"], "order_time": order_time,
-                    "status": "CANCELLED", "quantity": qty,
+                    "trader_id": trader,
+                    "side": pat["spoof_side"],
+                    "order_type": "LIMIT",
+                    "limit_price": price,
+                    "quantity": qty,
+                    "filled_quantity": 0,
                     "order_date": day.isoformat(),
+                    "order_time": order_time,
+                    "status": "CANCELLED",
+                    "time_in_force": "IOC",
+                    "execution_id": "",
+                    "venue_mic": venue_mic,
                 })
 
             # One filled order on spoof side (to look legitimate)
             fq, fp, ft = pat["filled_order"]
+            # Create execution first, then the order linked to it
+            spoof_fill_eid = self._next_exec_id()
+            self.executions.append({
+                "execution_id": spoof_fill_eid,
+                "product_id": pid, "account_id": acc, "trader_id": trader,
+                "side": pat["spoof_side"], "price": fp, "quantity": fq,
+                "execution_date": day.isoformat(),
+                "execution_time": ft,
+            })
             self.orders.append({
                 "order_id": self._next_order_id(),
                 "product_id": pid, "account_id": acc,
-                "side": pat["spoof_side"], "order_time": ft,
-                "status": "FILLED", "quantity": fq,
+                "trader_id": trader,
+                "side": pat["spoof_side"],
+                "order_type": "LIMIT",
+                "limit_price": fp,
+                "quantity": fq,
+                "filled_quantity": fq,
                 "order_date": day.isoformat(),
-            })
-            # Execution for the filled spoof-side order
-            self.executions.append({
-                "execution_id": self._next_exec_id(),
-                "product_id": pid, "account_id": acc, "trader_id": trader,
-                "side": pat["spoof_side"], "price": fp, "quantity": fq,
-                "instrument_type": info["instrument_type"],
-                "asset_class": info["asset_class"],
-                "execution_date": day.isoformat(),
-                "execution_time": ft,
-                "contract_size": info.get("contract_size", ""),
-                "option_type": info.get("option_type", ""),
+                "order_time": ft,
+                "status": "FILLED",
+                "time_in_force": "DAY",
+                "execution_id": spoof_fill_eid,
+                "venue_mic": venue_mic,
             })
 
             # Opposite-side execution (the real trade)
             eq, ep, et = pat["execution"]
+            opp_eid = self._next_exec_id()
             self.executions.append({
-                "execution_id": self._next_exec_id(),
+                "execution_id": opp_eid,
                 "product_id": pid, "account_id": acc, "trader_id": trader,
                 "side": pat["exec_side"], "price": ep, "quantity": eq,
-                "instrument_type": info["instrument_type"],
-                "asset_class": info["asset_class"],
                 "execution_date": day.isoformat(),
                 "execution_time": et,
-                "contract_size": info.get("contract_size", ""),
-                "option_type": info.get("option_type", ""),
             })
             self.orders.append({
                 "order_id": self._next_order_id(),
                 "product_id": pid, "account_id": acc,
-                "side": pat["exec_side"], "order_time": et,
-                "status": "FILLED", "quantity": eq,
+                "trader_id": trader,
+                "side": pat["exec_side"],
+                "order_type": "MARKET",
+                "limit_price": "",
+                "quantity": eq,
+                "filled_quantity": eq,
                 "order_date": day.isoformat(),
+                "order_time": et,
+                "status": "FILLED",
+                "time_in_force": "DAY",
+                "execution_id": opp_eid,
+                "venue_mic": venue_mic,
             })
 
     # -----------------------------------------------------------------------
@@ -1016,8 +1085,10 @@ class SyntheticDataGenerator:
 
         counts["order"] = self._write_csv(
             "order.csv",
-            ["order_id", "product_id", "account_id", "side", "order_time",
-             "status", "quantity", "order_date"],
+            ["order_id", "product_id", "account_id", "trader_id", "side",
+             "order_type", "limit_price", "quantity", "filled_quantity",
+             "order_date", "order_time", "status", "time_in_force",
+             "execution_id", "venue_mic"],
             self.orders,
         )
 
@@ -1204,18 +1275,31 @@ class SyntheticDataGenerator:
             "order": {
                 "entity_id": "order",
                 "name": "Order",
-                "description": "Order records including filled, cancelled, and pending orders.",
+                "description": "Order records with FIX Protocol fields including order type, fill status, time-in-force, execution linkage, and venue routing.",
                 "fields": [
                     {"name": "order_id", "type": "string", "description": "Unique order identifier", "is_key": True, "nullable": False},
                     {"name": "product_id", "type": "string", "description": "Product/instrument identifier", "is_key": False, "nullable": False},
                     {"name": "account_id", "type": "string", "description": "Trading account identifier", "is_key": False, "nullable": False},
+                    {"name": "trader_id", "type": "string", "description": "Trader who placed the order", "is_key": False, "nullable": False},
                     {"name": "side", "type": "string", "description": "Order direction", "is_key": False, "nullable": False, "domain_values": ["BUY", "SELL"]},
-                    {"name": "order_time", "type": "string", "description": "Time order was placed (HH:MM:SS)", "is_key": False, "nullable": False},
-                    {"name": "status", "type": "string", "description": "Order status", "is_key": False, "nullable": False, "domain_values": ["FILLED", "CANCELLED", "PENDING"]},
-                    {"name": "quantity", "type": "decimal", "description": "Order quantity", "is_key": False, "nullable": False},
+                    {"name": "order_type", "type": "string", "description": "FIX OrdType: MARKET or LIMIT", "is_key": False, "nullable": False, "domain_values": ["MARKET", "LIMIT"]},
+                    {"name": "limit_price", "type": "decimal", "description": "Limit price for LIMIT orders (empty for MARKET)", "is_key": False, "nullable": True},
+                    {"name": "quantity", "type": "decimal", "description": "Original order quantity", "is_key": False, "nullable": False},
+                    {"name": "filled_quantity", "type": "decimal", "description": "Quantity filled so far", "is_key": False, "nullable": False},
                     {"name": "order_date", "type": "date", "description": "Date of order (YYYY-MM-DD)", "is_key": False, "nullable": False},
+                    {"name": "order_time", "type": "string", "description": "Time order was placed (HH:MM:SS.fff)", "is_key": False, "nullable": False},
+                    {"name": "status", "type": "string", "description": "Order status (FIX OrdStatus)", "is_key": False, "nullable": False, "domain_values": ["NEW", "FILLED", "PARTIALLY_FILLED", "CANCELLED", "REJECTED"]},
+                    {"name": "time_in_force", "type": "string", "description": "FIX TimeInForce instruction", "is_key": False, "nullable": False, "domain_values": ["DAY", "GTC", "IOC", "FOK"]},
+                    {"name": "execution_id", "type": "string", "description": "Linked execution/fill identifier (FK to execution)", "is_key": False, "nullable": True},
+                    {"name": "venue_mic", "type": "string", "description": "ISO 10383 MIC of the routing venue", "is_key": False, "nullable": True},
                 ],
-                "relationships": [],
+                "relationships": [
+                    {"target_entity": "product", "join_fields": {"product_id": "product_id"}, "relationship_type": "many_to_one"},
+                    {"target_entity": "account", "join_fields": {"account_id": "account_id"}, "relationship_type": "many_to_one"},
+                    {"target_entity": "trader", "join_fields": {"trader_id": "trader_id"}, "relationship_type": "many_to_one"},
+                    {"target_entity": "execution", "join_fields": {"execution_id": "execution_id"}, "relationship_type": "many_to_one"},
+                    {"target_entity": "venue", "join_fields": {"venue_mic": "mic"}, "relationship_type": "many_to_one"},
+                ],
             },
             "md_intraday": {
                 "entity_id": "md_intraday",
@@ -1288,7 +1372,7 @@ class SyntheticDataGenerator:
             "trader": {
                 "entity_id": "trader",
                 "name": "Trader",
-                "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution via trader_id.",
+                "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution and order via trader_id.",
                 "fields": [
                     {"name": "trader_id", "type": "string", "description": "Unique trader identifier", "is_key": True, "nullable": False},
                     {"name": "trader_name", "type": "string", "description": "Full name of the trader", "is_key": False, "nullable": False},
@@ -1302,6 +1386,7 @@ class SyntheticDataGenerator:
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"trader_id": "trader_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "order", "join_fields": {"trader_id": "trader_id"}, "relationship_type": "one_to_many"},
                     {"target_entity": "account", "join_fields": {"trader_id": "primary_trader_id"}, "relationship_type": "one_to_many"},
                 ],
             },

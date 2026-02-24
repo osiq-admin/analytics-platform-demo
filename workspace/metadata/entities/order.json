@@ -1,7 +1,7 @@
 {
   "entity_id": "order",
   "name": "Order",
-  "description": "Order records including filled, cancelled, and pending orders.",
+  "description": "Order records with FIX Protocol fields including order type, fill status, time-in-force, execution linkage, and venue routing.",
   "fields": [
     {
       "name": "order_id",
@@ -25,6 +25,13 @@
       "nullable": false
     },
     {
+      "name": "trader_id",
+      "type": "string",
+      "description": "Trader who placed the order",
+      "is_key": false,
+      "nullable": false
+    },
+    {
       "name": "side",
       "type": "string",
       "description": "Order direction",
@@ -36,28 +43,34 @@
       ]
     },
     {
-      "name": "order_time",
+      "name": "order_type",
       "type": "string",
-      "description": "Time order was placed (HH:MM:SS)",
-      "is_key": false,
-      "nullable": false
-    },
-    {
-      "name": "status",
-      "type": "string",
-      "description": "Order status",
+      "description": "FIX OrdType: MARKET or LIMIT",
       "is_key": false,
       "nullable": false,
       "domain_values": [
-        "FILLED",
-        "CANCELLED",
-        "PENDING"
+        "MARKET",
+        "LIMIT"
       ]
+    },
+    {
+      "name": "limit_price",
+      "type": "decimal",
+      "description": "Limit price for LIMIT orders (empty for MARKET)",
+      "is_key": false,
+      "nullable": true
     },
     {
       "name": "quantity",
       "type": "decimal",
-      "description": "Order quantity",
+      "description": "Original order quantity",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "filled_quantity",
+      "type": "decimal",
+      "description": "Quantity filled so far",
       "is_key": false,
       "nullable": false
     },
@@ -67,7 +80,91 @@
       "description": "Date of order (YYYY-MM-DD)",
       "is_key": false,
       "nullable": false
+    },
+    {
+      "name": "order_time",
+      "type": "string",
+      "description": "Time order was placed (HH:MM:SS.fff)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Order status (FIX OrdStatus)",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "NEW",
+        "FILLED",
+        "PARTIALLY_FILLED",
+        "CANCELLED",
+        "REJECTED"
+      ]
+    },
+    {
+      "name": "time_in_force",
+      "type": "string",
+      "description": "FIX TimeInForce instruction",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "DAY",
+        "GTC",
+        "IOC",
+        "FOK"
+      ]
+    },
+    {
+      "name": "execution_id",
+      "type": "string",
+      "description": "Linked execution/fill identifier (FK to execution)",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "venue_mic",
+      "type": "string",
+      "description": "ISO 10383 MIC of the routing venue",
+      "is_key": false,
+      "nullable": true
     }
   ],
-  "relationships": []
+  "relationships": [
+    {
+      "target_entity": "product",
+      "join_fields": {
+        "product_id": "product_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "account",
+      "join_fields": {
+        "account_id": "account_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "trader",
+      "join_fields": {
+        "trader_id": "trader_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "execution",
+      "join_fields": {
+        "execution_id": "execution_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "venue",
+      "join_fields": {
+        "venue_mic": "mic"
+      },
+      "relationship_type": "many_to_one"
+    }
+  ]
 }

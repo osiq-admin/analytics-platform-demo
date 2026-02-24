@@ -158,8 +158,10 @@ class TestExecutionSchema:
 class TestOrderSchema:
     def test_order_columns(self, workspace, generated_data):
         rows = _read_csv(workspace / "data" / "csv" / "order.csv")
-        expected_cols = {"order_id", "product_id", "account_id", "side",
-                         "order_time", "status", "quantity", "order_date"}
+        expected_cols = {"order_id", "product_id", "account_id", "trader_id",
+                         "side", "order_type", "limit_price", "quantity",
+                         "filled_quantity", "order_date", "order_time",
+                         "status", "time_in_force", "execution_id", "venue_mic"}
         assert set(rows[0].keys()) == expected_cols
 
     def test_order_statuses(self, workspace, generated_data):
