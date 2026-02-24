@@ -96,6 +96,58 @@ FUTURES = [
     {"id": "ZB_FUT", "name": "30Y Treasury Bond", "price": 120.0, "cs": 1000},
 ]
 
+# Firm name components for account name generation
+FIRM_PREFIXES = [
+    "Apex", "Summit", "Pinnacle", "Meridian", "Horizon", "Atlas",
+    "Sterling", "Granite", "Northbridge", "Pacific", "Evergreen",
+    "Crestview", "Ironwood", "Silverstone", "Redwood", "Cobalt",
+    "Osprey", "Vanguard", "Citadel", "Bridgewater", "Falcon",
+    "Obsidian", "Keystone", "Sentinel", "Harbor", "Trident",
+    "Monarch", "Cascade", "Patriot", "Alpine", "Beacon",
+    "Cardinal", "Dragonfly", "Eagle", "Frontier", "Golden",
+    "Highland", "Ivory", "Juniper", "Kestrel", "Liberty",
+    "Maple", "Noble", "Oakwood", "Polaris", "Quantum",
+]
+
+FIRM_SUFFIXES_BY_TYPE = {
+    "institutional": [
+        "Capital Management", "Investment Partners", "Asset Management",
+        "Advisors", "Wealth Management", "Financial Group",
+        "Investment Group", "Capital Advisors",
+    ],
+    "retail": [
+        "Account", "Trading", "Portfolio", "Investments",
+        "Brokerage", "Personal Trading", "Direct Investing",
+        "Self-Directed",
+    ],
+    "hedge_fund": [
+        "Capital", "Fund", "Strategies", "Partners LP",
+        "Global Fund", "Alpha Fund", "Macro Partners",
+        "Ventures LP",
+    ],
+    "market_maker": [
+        "Securities", "Trading LLC", "Markets", "Liquidity",
+        "Market Services", "Electronic Trading",
+        "Execution Services", "Flow Trading",
+    ],
+}
+
+# Risk rating by account type
+RISK_RATING_BY_TYPE = {
+    "institutional": "LOW",
+    "retail": "MEDIUM",
+    "hedge_fund": "HIGH",
+    "market_maker": "LOW",
+}
+
+# Registration country by account type
+COUNTRY_BY_TYPE = {
+    "institutional": "US",
+    "retail": "US",
+    "hedge_fund": "KY",
+    "market_maker": "US",
+}
+
 # Trader names
 FIRST_NAMES = [
     "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael",
@@ -391,12 +443,45 @@ class SyntheticDataGenerator:
         for t, w in zip(types, weights):
             pool.extend([t] * w)
 
+        # Shuffle prefix list for name generation (copy to avoid mutating global)
+        prefixes = list(FIRM_PREFIXES)
+        self.rng.shuffle(prefixes)
+
+        # Onboarding date range
+        onboard_start = date(2020, 1, 1)
+        onboard_days = (date(2023, 12, 31) - onboard_start).days
+
         accounts: dict[str, dict] = {}
         for i in range(220):
             aid = f"ACC-{i + 1:03d}"
+            acct_type = pool[i % len(pool)]
+
+            # Generate realistic account name
+            prefix = prefixes[i % len(prefixes)]
+            suffixes = FIRM_SUFFIXES_BY_TYPE[acct_type]
+            suffix = suffixes[i % len(suffixes)]
+            account_name = f"{prefix} {suffix}"
+
+            # Primary trader: each trader manages 4 accounts
+            primary_trader_id = f"TRD-{(i // 4) + 1:03d}"
+            # Cap at 50 traders
+            trader_num = (i // 4) + 1
+            if trader_num > 50:
+                primary_trader_id = ""  # no primary trader beyond trader pool
+
+            # Random onboarding date
+            onboard_offset = self.rng.randint(0, onboard_days)
+            onboarding_date = onboard_start + timedelta(days=onboard_offset)
+
             accounts[aid] = {
-                "type": pool[i % len(pool)],
-                "name": f"Account {i + 1}",
+                "type": acct_type,
+                "name": account_name,
+                "account_name": account_name,
+                "registration_country": COUNTRY_BY_TYPE[acct_type],
+                "status": "ACTIVE",
+                "risk_rating": RISK_RATING_BY_TYPE[acct_type],
+                "primary_trader_id": primary_trader_id,
+                "onboarding_date": onboarding_date.isoformat(),
             }
         return accounts
 
@@ -883,6 +968,7 @@ class SyntheticDataGenerator:
 
         counts["product"] = self._write_product_csv()
         counts["venue"] = self._write_venue_csv()
+        counts["account"] = self._write_account_csv()
 
         counts["execution"] = self._write_csv(
             "execution.csv",
@@ -970,6 +1056,26 @@ class SyntheticDataGenerator:
              "open_time": "00:00:00", "close_time": "23:59:59", "asset_classes": "fx,commodity"},
         ]
         return self._write_csv("venue.csv", fieldnames, rows)
+
+    def _write_account_csv(self) -> int:
+        """Write the account dimension table CSV (220 rows, 8 columns)."""
+        fieldnames = [
+            "account_id", "account_name", "account_type", "registration_country",
+            "primary_trader_id", "status", "risk_rating", "onboarding_date",
+        ]
+        rows = []
+        for aid, info in sorted(self.accounts.items()):
+            rows.append({
+                "account_id": aid,
+                "account_name": info["account_name"],
+                "account_type": info["type"],
+                "registration_country": info["registration_country"],
+                "primary_trader_id": info.get("primary_trader_id", ""),
+                "status": info["status"],
+                "risk_rating": info.get("risk_rating", ""),
+                "onboarding_date": info.get("onboarding_date", ""),
+            })
+        return self._write_csv("account.csv", fieldnames, rows)
 
     def _write_csv(self, filename: str, fieldnames: list[str], rows: list[dict]) -> int:
         path = self.csv_dir / filename
@@ -1100,6 +1206,28 @@ class SyntheticDataGenerator:
                     {"target_entity": "product", "join_fields": {"mic": "exchange_mic"}, "relationship_type": "one_to_many"},
                     {"target_entity": "order", "join_fields": {"mic": "venue_mic"}, "relationship_type": "one_to_many"},
                     {"target_entity": "execution", "join_fields": {"mic": "venue_mic"}, "relationship_type": "one_to_many"},
+                ],
+            },
+            "account": {
+                "entity_id": "account",
+                "name": "Account",
+                "description": "Trading accounts with type classification, registration jurisdiction, risk rating, and trader linkage. Referenced by execution and order entities via account_id.",
+                "fields": [
+                    {"name": "account_id", "type": "string", "description": "Unique account identifier", "is_key": True, "nullable": False},
+                    {"name": "account_name", "type": "string", "description": "Display name of the account", "is_key": False, "nullable": False},
+                    {"name": "account_type", "type": "string", "description": "Account classification", "is_key": False, "nullable": False,
+                     "domain_values": ["institutional", "retail", "hedge_fund", "market_maker"]},
+                    {"name": "registration_country", "type": "string", "description": "ISO 3166-1 alpha-2 country of registration", "is_key": False, "nullable": False},
+                    {"name": "primary_trader_id", "type": "string", "description": "Default trader assigned to the account (FK to trader)", "is_key": False, "nullable": True},
+                    {"name": "status", "type": "string", "description": "Account status", "is_key": False, "nullable": False,
+                     "domain_values": ["ACTIVE"]},
+                    {"name": "risk_rating", "type": "string", "description": "Internal risk tier based on account type", "is_key": False, "nullable": True,
+                     "domain_values": ["LOW", "MEDIUM", "HIGH"]},
+                    {"name": "onboarding_date", "type": "date", "description": "Date the account was opened (YYYY-MM-DD)", "is_key": False, "nullable": True},
+                ],
+                "relationships": [
+                    {"target_entity": "execution", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "order", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},
                 ],
             },
         }

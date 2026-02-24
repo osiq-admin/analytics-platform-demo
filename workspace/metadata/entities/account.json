@@ -1,0 +1,93 @@
+{
+  "entity_id": "account",
+  "name": "Account",
+  "description": "Trading accounts with type classification, registration jurisdiction, risk rating, and trader linkage. Referenced by execution and order entities via account_id.",
+  "fields": [
+    {
+      "name": "account_id",
+      "type": "string",
+      "description": "Unique account identifier",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "account_name",
+      "type": "string",
+      "description": "Display name of the account",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "account_type",
+      "type": "string",
+      "description": "Account classification",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "institutional",
+        "retail",
+        "hedge_fund",
+        "market_maker"
+      ]
+    },
+    {
+      "name": "registration_country",
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country of registration",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "primary_trader_id",
+      "type": "string",
+      "description": "Default trader assigned to the account (FK to trader)",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Account status",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "ACTIVE"
+      ]
+    },
+    {
+      "name": "risk_rating",
+      "type": "string",
+      "description": "Internal risk tier based on account type",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    {
+      "name": "onboarding_date",
+      "type": "date",
+      "description": "Date the account was opened (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": true
+    }
+  ],
+  "relationships": [
+    {
+      "target_entity": "execution",
+      "join_fields": {
+        "account_id": "account_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "order",
+      "join_fields": {
+        "account_id": "account_id"
+      },
+      "relationship_type": "one_to_many"
+    }
+  ]
+}
