@@ -6,6 +6,7 @@ import LayerBadge from "../../components/LayerBadge.tsx";
 import ResetToOobButton from "../../components/ResetToOobButton.tsx";
 import JsonPanel from "./JsonPanel.tsx";
 import VisualPanel from "./VisualPanel.tsx";
+import OobVersionPanel from "./OobVersionPanel.tsx";
 
 type MetadataType = "entities" | "calculations" | "settings" | "models";
 
@@ -216,6 +217,9 @@ export default function MetadataEditor() {
           );
         })()}
       </div>
+
+      {/* OOB Version Panel */}
+      <OobVersionPanel />
 
       {/* OOB info banner */}
       {items.length > 0 && items[Math.min(selectedIndex, items.length - 1)]?.metadata_layer === "oob" && (

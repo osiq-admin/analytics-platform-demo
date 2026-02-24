@@ -476,3 +476,29 @@ def get_traceability_graph(request: Request):
         "edges": edges,
         "summary": coverage["coverage_summary"],
     }
+
+
+# -- OOB Version & Upgrade --
+
+@router.get("/oob-version")
+def get_oob_version(request: Request):
+    from backend.services.oob_version_service import OobVersionService
+    svc = OobVersionService(_meta(request)._base)
+    return svc.get_summary()
+
+
+@router.get("/demo-upgrade-manifest")
+def get_demo_upgrade_manifest(request: Request):
+    import json as _json
+    path = _meta(request)._base / "demo_upgrade_manifest.json"
+    if not path.exists():
+        return JSONResponse(status_code=404, content={"error": "Demo upgrade manifest not found"})
+    return _json.loads(path.read_text())
+
+
+@router.post("/oob-upgrade/simulate")
+def simulate_upgrade(request: Request, body: dict):
+    from backend.services.oob_version_service import OobVersionService
+    svc = OobVersionService(_meta(request)._base)
+    report = svc.simulate_upgrade(body)
+    return report.model_dump()
