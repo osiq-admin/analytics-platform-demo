@@ -39,5 +39,6 @@
     "label": "Cancellation Pattern"
   },
   "value_field": "cancel_count",
-  "depends_on": []
+  "depends_on": [],
+  "regulatory_tags": ["MAR Art. 12(1)(c)", "Dodd-Frank §747"]
 }

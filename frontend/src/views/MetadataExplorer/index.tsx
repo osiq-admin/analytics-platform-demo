@@ -102,6 +102,7 @@ export default function MetadataExplorer() {
     storage: "",
     value_field: "",
     depends_on: [],
+    regulatory_tags: [],
   };
 
   if (loading) {

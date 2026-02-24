@@ -34,5 +34,6 @@
     "label": "Adjusted Direction"
   },
   "value_field": "calculated_value",
-  "depends_on": ["value_calc"]
+  "depends_on": ["value_calc"],
+  "regulatory_tags": ["MAR Art. 16", "MiFID II Art. 16(2)"]
 }

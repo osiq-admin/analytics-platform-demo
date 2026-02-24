@@ -1,0 +1,45 @@
+{
+  "regulations": [
+    {
+      "id": "mar",
+      "name": "MAR",
+      "full_name": "EU Regulation 596/2014 (MAR)",
+      "jurisdiction": "EU",
+      "articles": [
+        {"id": "mar_12_1_a", "article": "Art. 12(1)(a)", "title": "Wash Trading", "description": "Transactions which give, or are likely to give, false or misleading signals as to the supply of, demand for, or price of a financial instrument", "detection_pattern": "wash_trading"},
+        {"id": "mar_12_1_b", "article": "Art. 12(1)(b)", "title": "Price Manipulation", "description": "Transactions which secure, or are likely to secure, the price of one or several financial instruments at an abnormal or artificial level", "detection_pattern": "price_manipulation"},
+        {"id": "mar_12_1_c", "article": "Art. 12(1)(c)", "title": "Spoofing / Layering", "description": "Orders to trade which employ a fictitious device or any other form of deception or contrivance", "detection_pattern": "spoofing"},
+        {"id": "mar_14", "article": "Art. 14", "title": "Insider Dealing", "description": "Prohibition of insider dealing and of unlawful disclosure of inside information", "detection_pattern": "insider_dealing"},
+        {"id": "mar_16", "article": "Art. 16", "title": "Surveillance Obligation", "description": "Obligation to detect and report suspicious orders and transactions", "detection_pattern": "general_surveillance"}
+      ]
+    },
+    {
+      "id": "mifid2",
+      "name": "MiFID II",
+      "full_name": "EU Directive 2014/65/EU (MiFID II)",
+      "jurisdiction": "EU",
+      "articles": [
+        {"id": "mifid2_16_2", "article": "Art. 16(2)", "title": "Organisational Requirements", "description": "Investment firms shall establish adequate policies and procedures to ensure compliance, including effective surveillance systems", "detection_pattern": "general_surveillance"},
+        {"id": "mifid2_rts25", "article": "RTS 25", "title": "Order Record Keeping", "description": "Clock synchronisation and order record keeping obligations", "detection_pattern": "record_keeping"}
+      ]
+    },
+    {
+      "id": "dodd_frank",
+      "name": "Dodd-Frank",
+      "full_name": "Dodd-Frank Wall Street Reform and Consumer Protection Act",
+      "jurisdiction": "US",
+      "articles": [
+        {"id": "df_747", "article": "\u00a7747", "title": "Anti-Manipulation", "description": "Prohibition of spoofing, market manipulation, and disruptive trading practices", "detection_pattern": "spoofing"}
+      ]
+    },
+    {
+      "id": "finra",
+      "name": "FINRA",
+      "full_name": "Financial Industry Regulatory Authority Rules",
+      "jurisdiction": "US",
+      "articles": [
+        {"id": "finra_5210", "article": "Rule 5210", "title": "Marking the Close", "description": "Prohibition of trading activity designed to influence the closing price", "detection_pattern": "price_manipulation"}
+      ]
+    }
+  ]
+}

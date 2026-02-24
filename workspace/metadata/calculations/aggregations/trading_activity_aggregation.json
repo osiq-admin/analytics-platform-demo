@@ -32,5 +32,6 @@
     "label": "Trading Activity"
   },
   "value_field": "net_value",
-  "depends_on": ["business_date_window"]
+  "depends_on": ["business_date_window"],
+  "regulatory_tags": ["MAR Art. 12", "MAR Art. 16", "MiFID II Art. 16(2)"]
 }

@@ -230,6 +230,36 @@ The Metadata Editor provides side-by-side JSON + visual editing for all 4 metada
 - **Model Composer**: "+ New Model" button, Edit/Delete on model detail
 - **Metadata Explorer**: Edit/Delete on calculation detail
 
+## Regulatory Traceability (Governance → Regulatory Map) — Phase 10
+
+The Regulatory Map provides end-to-end traceability from regulatory requirements to detection logic.
+
+### Key Points
+- **Coverage Summary Cards**: Total requirements, covered count, uncovered count, coverage percentage
+- **Interactive Traceability Graph**: React Flow visualization showing Regulations → Articles → Detection Models → Calculations
+  - Blue nodes = Regulations (MAR, MiFID II, Dodd-Frank, FINRA)
+  - Green nodes = Covered regulatory articles
+  - Red nodes = Uncovered regulatory articles (gaps)
+  - Orange nodes = Detection models
+  - Purple nodes = Calculations
+- **Node Detail Panel**: Click any node to see full metadata — regulation descriptions, model parameters, calculation tags
+- **Suggestions Panel**: Automated gap analysis with actionable recommendations
+
+### Interactive: Explore the Traceability Chain
+1. Navigate to **Governance → Regulatory Map**
+2. See 4 coverage summary cards at the top
+3. In the graph, find a **red node** — this is an uncovered regulatory requirement
+4. Click the red node to see why it's uncovered
+5. Trace from a **blue regulation node** → green articles → orange models → purple calculations
+6. Expand the **Suggestions** panel at the bottom
+7. Key takeaway: "Every detection model is traceable to the regulations it covers"
+
+### Interactive: Review Coverage Gaps
+1. Expand the **Suggestions** panel
+2. See **Coverage Gaps** (red) — regulatory articles without detection models
+3. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
+4. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

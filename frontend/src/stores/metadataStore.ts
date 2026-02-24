@@ -38,6 +38,7 @@ export interface CalculationDef {
   storage: string;
   value_field: string;
   depends_on: string[];
+  regulatory_tags: string[];
 }
 
 export interface SettingOverride {
@@ -75,6 +76,13 @@ export interface DetectionModelDef {
   context_fields?: string[];
   query?: string;
   alert_template?: Record<string, unknown>;
+  regulatory_coverage?: RegulatoryCoverage[];
+}
+
+export interface RegulatoryCoverage {
+  regulation: string;
+  article: string;
+  description?: string;
 }
 
 interface MetadataState {

@@ -261,3 +261,107 @@ def save_mapping(body: SaveMappingRequest, request: Request):
     path = mappings_dir / f"{body.calc_id}.json"
     path.write_text(json.dumps({"calc_id": body.calc_id, "mappings": body.mappings}, indent=2))
     return {"saved": True, "calc_id": body.calc_id, "field_count": len(body.mappings)}
+
+
+# -- Regulatory Traceability --
+
+
+@router.get("/regulatory/registry")
+def get_regulation_registry(request: Request):
+    """Return the regulation registry (MAR, MiFID II, Dodd-Frank, FINRA)."""
+    return _meta(request).load_regulation_registry()
+
+
+@router.get("/regulatory/coverage")
+def get_regulatory_coverage(request: Request):
+    """Return the regulatory coverage map with article-to-model mappings."""
+    return _meta(request).get_regulatory_coverage_map()
+
+
+@router.get("/regulatory/suggestions")
+def get_regulatory_suggestions(request: Request):
+    """Analyze regulatory coverage and return improvement suggestions."""
+    from backend.services.suggestion_service import SuggestionService
+    meta = _meta(request)
+    svc = SuggestionService(meta)
+    return svc.analyze_gaps()
+
+
+@router.get("/regulatory/traceability-graph")
+def get_traceability_graph(request: Request):
+    """Return a node/edge graph for regulatory traceability visualization.
+
+    Node types: regulation, article, detection_model, calculation.
+    Edge types: contains (reg→article), detected_by (article→model), uses_calc (model→calc).
+    """
+    meta = _meta(request)
+    coverage = meta.get_regulatory_coverage_map()
+
+    nodes: list[dict] = []
+    edges: list[dict] = []
+    seen_edges: set[tuple[str, str, str]] = set()
+
+    def add_edge(source: str, target: str, edge_type: str) -> None:
+        key = (source, target, edge_type)
+        if key not in seen_edges:
+            seen_edges.add(key)
+            edges.append({"source": source, "target": target, "type": edge_type})
+
+    # Build models_by_article for quick lookup
+    models_by_article = coverage["models_by_article"]
+
+    # Add regulation and article nodes
+    for reg in coverage["regulations"]:
+        reg_node_id = f"reg:{reg['id']}"
+        nodes.append({
+            "id": reg_node_id,
+            "type": "regulation",
+            "label": reg["name"],
+            "full_name": reg.get("full_name", ""),
+            "jurisdiction": reg.get("jurisdiction", ""),
+        })
+        for article in reg.get("articles", []):
+            article_key = f"{reg['name']} {article['article']}"
+            article_node_id = f"article:{article['id']}"
+            is_covered = article_key in models_by_article
+            nodes.append({
+                "id": article_node_id,
+                "type": "article",
+                "label": f"{reg['name']} {article['article']}",
+                "title": article.get("title", ""),
+                "covered": is_covered,
+            })
+            add_edge(reg_node_id, article_node_id, "contains")
+
+            # Link article → detection models
+            if is_covered:
+                for model_id in models_by_article[article_key]:
+                    add_edge(article_node_id, f"model:{model_id}", "detected_by")
+
+    # Add detection model nodes
+    for model in meta.list_detection_models():
+        model_node_id = f"model:{model.model_id}"
+        nodes.append({
+            "id": model_node_id,
+            "type": "detection_model",
+            "label": model.name,
+        })
+        # Link model → calculations
+        for mc in model.calculations:
+            add_edge(model_node_id, f"calc:{mc.calc_id}", "uses_calc")
+
+    # Add calculation nodes
+    for calc in meta.list_calculations():
+        calc_node_id = f"calc:{calc.calc_id}"
+        nodes.append({
+            "id": calc_node_id,
+            "type": "calculation",
+            "label": calc.name,
+            "layer": calc.layer,
+        })
+
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "summary": coverage["coverage_summary"],
+    }

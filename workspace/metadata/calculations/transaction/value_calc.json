@@ -39,5 +39,6 @@
     "label": "Transaction Value"
   },
   "value_field": "calculated_value",
-  "depends_on": []
+  "depends_on": [],
+  "regulatory_tags": ["MAR Art. 16", "MiFID II Art. 16(2)"]
 }

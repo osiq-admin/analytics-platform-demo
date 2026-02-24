@@ -35,5 +35,6 @@
     "label": "Business Date"
   },
   "value_field": "calculated_value",
-  "depends_on": ["adjusted_direction"]
+  "depends_on": ["adjusted_direction"],
+  "regulatory_tags": ["MAR Art. 16"]
 }

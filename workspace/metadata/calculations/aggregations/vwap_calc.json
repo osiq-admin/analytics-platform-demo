@@ -29,5 +29,6 @@
     "label": "VWAP"
   },
   "value_field": "vwap_proximity",
-  "depends_on": ["business_date_window"]
+  "depends_on": ["business_date_window"],
+  "regulatory_tags": ["MAR Art. 12(1)(a)", "MiFID II Art. 16(2)"]
 }
