@@ -31,7 +31,7 @@
 | Metadata Editor & Visual Config (Phase 9) | COMPLETE | M74-M78: MetadataEditor view, visual editors, dashboard widgets, CRUD wiring — 280 backend tests |
 | E2E Testing & Tours (Phase 9) | COMPLETE | 14 new Playwright E2E tests (56 total), MetadataEditor guided tour, demo guide updates — 294 total tests |
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
-| OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking |
+| OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 
 ---
 
@@ -125,7 +125,7 @@
 | M83 | E2E Tests, Tours & Documentation | COMPLETE | 4 | 4 | 4 E2E tests, guided tour, demo guide, progress tracker |
 | M84 | OOB Manifest + Backend Layer Resolution | COMPLETE | 5 | 5 | OOB manifest (38 items), metadata_layer field, user_overrides dir, MetadataService layer resolution — 12 new tests |
 | M85 | Layer-Aware API Endpoints | COMPLETE | 3 | 3 | Layer info in responses, 5 new endpoints (reset, diff, oob-manifest, layer-info, oob-version) — 10 new tests |
-| M86 | Frontend Layer UI | COMPLETE | 5 | 5 | LayerBadge, ResetToOobButton, MetadataEditor + 4 views with layer badges |
+| M86 | Frontend Layer UI | COMPLETE | 5 | 5 | LayerBadge, ResetToOobButton, MetadataEditor + 4 views with layer badges (AG Grid badges fixed to use React JSX) |
 | M87 | Version Tracking + Upgrade Simulation | COMPLETE | 5 | 5 | OobVersionService, upgrade simulation API, demo manifest v1.1, OobVersionPanel — 8 new tests |
 | M88 | E2E Tests, Onboarding, Tours & Docs | COMPLETE | 5 | 5 | 10 E2E tests, 7-step OOB tour + act2 integration, onboarding update, demo guide walkthrough |
 

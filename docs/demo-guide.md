@@ -359,9 +359,10 @@ Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metad
 
 1. Navigate to **Metadata Editor** (`/editor`)
 2. Observe the **LayerBadge** next to the item selector — shows "OOB" (cyan) for shipped items
-3. Visit **Entity Designer** (`/entities`) — entity list shows OOB/Custom badges per row
-4. Visit **Settings Manager** (`/settings`) — settings list shows Layer column
-5. Visit **Model Composer** (`/models`) — model list shows OOB/Custom badges
+3. Visit **Entity Designer** (`/entities`) — entity list shows OOB/Custom badges in Layer column
+4. Visit **Metadata Explorer** (`/metadata`) — calculation list shows OOB badges in OOB column
+5. Visit **Settings Manager** (`/settings`) — settings list shows Layer column with OOB badges
+6. Visit **Model Composer** (`/models`) — model list shows inline OOB/Custom badges next to names
 
 ### Walkthrough B: Creating a User Override
 
