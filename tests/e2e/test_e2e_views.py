@@ -35,6 +35,7 @@ class TestViewsRender:
         ("/metadata", "Metadata Explorer"),
         ("/settings", "Settings"),
         ("/mappings", "Mapping"),
+        ("/editor", "Metadata Editor"),
         ("/pipeline", "Pipeline"),
         ("/schema", "Schema"),
         ("/sql", "SQL Console"),
@@ -470,7 +471,7 @@ class TestNoConsoleErrors:
 
         routes = [
             "/dashboard", "/entities", "/metadata", "/settings",
-            "/pipeline", "/sql", "/models", "/alerts", "/assistant",
+            "/editor", "/pipeline", "/sql", "/models", "/alerts", "/assistant",
         ]
 
         for route in routes:
@@ -479,3 +480,138 @@ class TestNoConsoleErrors:
             loaded_page.wait_for_timeout(300)
 
         assert len(errors) == 0, f"JavaScript errors found: {errors}"
+
+
+# ============================================================================
+# Scenario 12: Phase 9 — Metadata Editor
+# ============================================================================
+
+class TestMetadataEditor:
+    """Metadata Editor should show JSON + Visual side-by-side for all 4 types."""
+
+    def test_editor_loads_entity(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        assert loaded_page.locator("text=Metadata Editor").is_visible()
+        assert loaded_page.locator("text=JSON Editor").is_visible()
+        assert loaded_page.locator("text=Visual Editor").is_visible()
+
+    def test_editor_type_buttons(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        for btn_text in ["Entities", "Calculations", "Settings", "Models"]:
+            assert loaded_page.locator(f"button:has-text('{btn_text}')").is_visible()
+
+    def test_editor_switch_to_calculations(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        loaded_page.locator("button:has-text('Calculations')").click()
+        loaded_page.wait_for_timeout(500)
+
+        body = loaded_page.locator("main").inner_text()
+        assert "Layer" in body or "SQL Logic" in body or "calc_id" in body
+
+    def test_editor_switch_to_models(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        loaded_page.locator("button:has-text('Models')").click()
+        loaded_page.wait_for_timeout(500)
+
+        body = loaded_page.locator("main").inner_text()
+        assert "model_id" in body or "Time Window" in body or "Granularity" in body
+
+    def test_editor_valid_json_indicator(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/editor")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        assert loaded_page.locator("text=Valid JSON").is_visible(timeout=5000)
+        assert loaded_page.locator("button:has-text('Save')").is_visible()
+
+
+# ============================================================================
+# Scenario 13: Phase 9 — Dashboard Widget Controls
+# ============================================================================
+
+class TestDashboardWidgets:
+    """Dashboard should have chart type switchers and widget visibility toggles."""
+
+    def test_chart_type_dropdowns(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        # Each chart should have a chart type dropdown (case-insensitive check)
+        body = loaded_page.locator("main").inner_text()
+        assert "alerts by model" in body.lower()
+        # Check for at least one chart type selector
+        selects = loaded_page.locator("select")
+        assert selects.count() >= 1
+
+    def test_widget_settings_gear(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        # The gear button has title="Widget settings"
+        gear_btn = loaded_page.locator("button[title='Widget settings']")
+        assert gear_btn.is_visible()
+
+    def test_widget_toggle_panel(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        # Click gear to open widget settings
+        gear_btn = loaded_page.locator("button[title='Widget settings']")
+        gear_btn.click()
+        loaded_page.wait_for_timeout(500)
+
+        body = loaded_page.locator("main").inner_text()
+        assert "widget visibility" in body.lower()
+
+
+# ============================================================================
+# Scenario 14: Phase 9 — CRUD Buttons in Existing Views
+# ============================================================================
+
+class TestCRUDButtons:
+    """Existing views should have New/Edit/Delete buttons."""
+
+    def test_entity_new_button(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        assert loaded_page.locator("button:has-text('New Entity')").is_visible()
+
+    def test_entity_edit_delete_on_select(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        loaded_page.locator("[role='gridcell']:has-text('account')").first.click()
+        loaded_page.wait_for_timeout(500)
+
+        assert loaded_page.locator("button:has-text('Edit')").is_visible()
+        assert loaded_page.locator("button:has-text('Delete')").is_visible()
+
+    def test_settings_new_button(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/settings")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        assert loaded_page.locator("button:has-text('New Setting')").is_visible()
+
+    def test_model_new_button(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/models")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        assert loaded_page.locator("button:has-text('New Model')").is_visible()
+
+    def test_model_edit_delete_on_select(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/models")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        loaded_page.locator("button:has-text('Wash Trading — Full Day')").click()
+        loaded_page.wait_for_timeout(500)
+
+        assert loaded_page.locator("button:has-text('Edit')").is_visible()
+        assert loaded_page.locator("button:has-text('Delete')").is_visible()

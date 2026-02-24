@@ -48,8 +48,12 @@ The top-right toolbar area has:
 
 The Dashboard provides a summary analytics view:
 - **Row 1:** 4 summary cards — Total Alerts, Fired %, Average Score, Active Models
-- **Row 2:** Alerts by Model (pie chart) | Score Distribution (bar histogram)
+- **Row 2:** Alerts by Model (horizontal bar) | Score Distribution (bar histogram)
 - **Row 3:** Alerts by Trigger Path (horizontal bar) | Alerts by Asset Class (pie chart)
+
+**Chart Type Switching (Phase 9):** Each chart widget has a dropdown in its header to switch between visualization types (Bar, H-Bar, Line, Pie, Table). Selections persist in localStorage.
+
+**Widget Visibility (Phase 9):** Click the gear icon next to the Dashboard heading to toggle widget visibility. Each chart can be shown/hidden via toggle switches. Settings persist in localStorage.
 
 The dashboard is the default landing page. Navigate to it from the sidebar under **Overview → Dashboard**.
 
@@ -193,6 +197,38 @@ Click any alert row to open the full 6-panel investigation workspace.
 - **Related Alerts** — (when available) Jump to alerts for same entity
 
 **Key Takeaway:** "Every alert is fully traceable — from the detection model, through each calculation's score, the settings that drove thresholds, market data context, and related trading activity."
+
+## Metadata Editor (Configure → Editor) — Phase 9
+
+The Metadata Editor provides side-by-side JSON + visual editing for all 4 metadata types.
+
+### Key Points
+- **Monaco JSON Editor** (left): Full syntax highlighting, validation, auto-format
+- **Visual Form Editor** (right): Type-specific form with fields, dropdowns, and controls
+- **Bidirectional Sync**: Changes in either panel update the other in real-time (400ms debounce on JSON→Visual)
+- **Validation**: Green check / red X indicator shows JSON validity
+- **Save**: Persists changes to the backend via CRUD API
+
+### Interactive: Edit a Setting
+1. Navigate to **Configure → Editor**
+2. Click **Settings** in the type selector
+3. Select "Wash Trading Score Threshold" from the dropdown
+4. In the Visual Editor, change the default value from 10 to 8
+5. Watch the JSON panel update in real-time
+6. Click **Save** — changes persist to disk
+
+### Interactive: Explore Calculation SQL
+1. Click **Calculations** in the type selector
+2. Select "Trading Activity Aggregation"
+3. Scroll down in the Visual Editor to see the full SQL logic
+4. Note the Layer selector (aggregation), Dependencies list
+5. Key takeaway: "Every calculation's SQL is visible and editable alongside its configuration"
+
+### CRUD Buttons in Existing Views (Phase 9)
+- **Entity Designer**: "+ New Entity" button, Edit/Delete on entity detail
+- **Settings Manager**: "+ New Setting" button, Edit/Delete with dependency checking
+- **Model Composer**: "+ New Model" button, Edit/Delete on model detail
+- **Metadata Explorer**: Edit/Delete on calculation detail
 
 ## Act 2: Model Composition
 

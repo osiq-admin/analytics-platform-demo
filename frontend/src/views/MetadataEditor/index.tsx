@@ -172,7 +172,7 @@ export default function MetadataEditor() {
       {/* Top bar: type selector + item selector */}
       <div className="flex items-center gap-3">
         <h2 className="text-lg font-semibold shrink-0">Metadata Editor</h2>
-        <div className="flex items-center gap-2 ml-4">
+        <div className="flex items-center gap-2 ml-4" data-tour="editor-type-selector">
           {TYPE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -204,14 +204,14 @@ export default function MetadataEditor() {
       {/* Main editor panels */}
       <div className="flex gap-3 flex-1 min-h-0">
         {/* Left panel: JSON editor */}
-        <Panel title="JSON Editor" className="flex-1 min-w-0" noPadding>
+        <Panel title="JSON Editor" className="flex-1 min-w-0" noPadding dataTour="editor-json">
           <div className="h-full">
             <JsonPanel value={jsonText} onChange={handleJsonChange} />
           </div>
         </Panel>
 
         {/* Right panel: Visual editor */}
-        <Panel title="Visual Editor" className="flex-1 min-w-0 overflow-auto">
+        <Panel title="Visual Editor" className="flex-1 min-w-0 overflow-auto" dataTour="editor-visual">
           <VisualPanel
             type={selectedType}
             data={editorData}
@@ -221,7 +221,7 @@ export default function MetadataEditor() {
       </div>
 
       {/* Bottom bar: save + validation */}
-      <div className="flex items-center justify-between px-1 py-1">
+      <div className="flex items-center justify-between px-1 py-1" data-tour="editor-save">
         <div className="flex items-center gap-2">
           {isJsonValid ? (
             <span className="flex items-center gap-1 text-xs text-green-400">
