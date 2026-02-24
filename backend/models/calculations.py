@@ -43,6 +43,8 @@ class CalculationDefinition(BaseModel):
     storage: str = Field(default="", description="Result table name")
     value_field: str = Field(default="", description="Primary value column name for scoring")
     depends_on: list[str] = Field(default_factory=list)
+    # e.g. ["MAR Art. 12(1)(a)", "MiFID II Art. 16(2)"]
+    regulatory_tags: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def no_self_dependency(self):
