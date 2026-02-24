@@ -12,7 +12,7 @@
       "priority": 1
     },
     {
-      "match": { "asset_class": "equity", "exchange": "NYSE" },
+      "match": { "asset_class": "equity", "exchange_mic": "XNYS" },
       "value": 0.012,
       "priority": 2
     },

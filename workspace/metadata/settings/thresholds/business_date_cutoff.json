@@ -7,12 +7,12 @@
   "match_type": "hierarchy",
   "overrides": [
     {
-      "match": { "exchange": "NYSE" },
+      "match": { "exchange_mic": "XNYS" },
       "value": "21:00",
       "priority": 1
     },
     {
-      "match": { "exchange": "LSE" },
+      "match": { "exchange_mic": "XLON" },
       "value": "16:30",
       "priority": 1
     },

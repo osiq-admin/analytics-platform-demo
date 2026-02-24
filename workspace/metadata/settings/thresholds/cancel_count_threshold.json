@@ -12,7 +12,12 @@
       "priority": 1
     },
     {
-      "match": { "instrument_type": "option" },
+      "match": { "instrument_type": "call_option" },
+      "value": 8,
+      "priority": 1
+    },
+    {
+      "match": { "instrument_type": "put_option" },
       "value": 8,
       "priority": 1
     }
