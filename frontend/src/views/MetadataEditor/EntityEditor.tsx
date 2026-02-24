@@ -114,7 +114,7 @@ export default function EntityEditor({ value, onChange }: EditorProps) {
         {fields.length > 0 && (
           <div className="border border-[var(--color-border)] rounded overflow-hidden">
             {/* Header */}
-            <div className="grid grid-cols-[1fr_120px_60px_60px_1fr_40px] gap-1 px-3 py-1.5 bg-[var(--color-surface)] border-b border-[var(--color-border)] text-xs font-semibold text-[var(--color-text)] uppercase tracking-wide opacity-70">
+            <div className="grid grid-cols-[minmax(100px,1.5fr)_100px_45px_45px_minmax(80px,1fr)_32px] gap-0.5 px-2 py-1.5 bg-[var(--color-surface)] border-b border-[var(--color-border)] text-xs font-semibold text-[var(--color-text)] uppercase tracking-wide opacity-70">
               <span>Name</span>
               <span>Type</span>
               <span className="text-center">Key</span>
@@ -126,7 +126,7 @@ export default function EntityEditor({ value, onChange }: EditorProps) {
             {fields.map((f, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-[1fr_120px_60px_60px_1fr_40px] gap-1 px-3 py-1.5 border-b border-[var(--color-border)] last:border-b-0 items-center"
+                className="grid grid-cols-[minmax(100px,1.5fr)_100px_45px_45px_minmax(80px,1fr)_32px] gap-0.5 px-2 py-1.5 border-b border-[var(--color-border)] last:border-b-0 items-center"
               >
                 <input
                   className="px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm"
