@@ -60,11 +60,11 @@ class TestHierarchyResolution:
             default=0.02,
             overrides=[
                 SettingOverride(match={"asset_class": "equity"}, value=0.015, priority=1),
-                SettingOverride(match={"asset_class": "equity", "exchange": "NYSE"}, value=0.012, priority=2),
+                SettingOverride(match={"asset_class": "equity", "exchange_mic": "XNYS"}, value=0.012, priority=2),
             ],
         )
         resolver = SettingsResolver()
-        result = resolver.resolve(setting, {"asset_class": "equity", "exchange": "NYSE"})
+        result = resolver.resolve(setting, {"asset_class": "equity", "exchange_mic": "XNYS"})
         assert result.value == 0.012
 
     def test_partial_match_still_works(self):
@@ -72,7 +72,7 @@ class TestHierarchyResolution:
             match_type="hierarchy",
             default=0.02,
             overrides=[
-                SettingOverride(match={"asset_class": "equity", "exchange": "NYSE"}, value=0.012, priority=2),
+                SettingOverride(match={"asset_class": "equity", "exchange_mic": "XNYS"}, value=0.012, priority=2),
             ],
         )
         resolver = SettingsResolver()
@@ -89,7 +89,7 @@ class TestMultiDimensionalResolution:
             overrides=[
                 SettingOverride(match={"asset_class": "equity"}, value=0.015, priority=1),
                 SettingOverride(
-                    match={"asset_class": "equity", "instrument_type": "stock"},
+                    match={"asset_class": "equity", "instrument_type": "common_stock"},
                     value=0.012,
                     priority=1,
                 ),
@@ -97,7 +97,7 @@ class TestMultiDimensionalResolution:
         )
         resolver = SettingsResolver()
         result = resolver.resolve(
-            setting, {"asset_class": "equity", "instrument_type": "stock"}
+            setting, {"asset_class": "equity", "instrument_type": "common_stock"}
         )
         assert result.value == 0.012
 
@@ -107,12 +107,12 @@ class TestMultiDimensionalResolution:
             default=0.02,
             overrides=[
                 SettingOverride(match={"asset_class": "equity"}, value=0.015, priority=5),
-                SettingOverride(match={"instrument_type": "stock"}, value=0.018, priority=10),
+                SettingOverride(match={"instrument_type": "common_stock"}, value=0.018, priority=10),
             ],
         )
         resolver = SettingsResolver()
         result = resolver.resolve(
-            setting, {"asset_class": "equity", "instrument_type": "stock"}
+            setting, {"asset_class": "equity", "instrument_type": "common_stock"}
         )
         # Both match 1 dimension, priority 10 wins
         assert result.value == 0.018

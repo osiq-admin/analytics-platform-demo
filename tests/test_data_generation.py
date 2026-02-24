@@ -51,6 +51,10 @@ class TestDataGeneration:
         assert (csv_dir / "order.csv").exists()
         assert (csv_dir / "md_intraday.csv").exists()
         assert (csv_dir / "md_eod.csv").exists()
+        assert (csv_dir / "product.csv").exists()
+        assert (csv_dir / "venue.csv").exists()
+        assert (csv_dir / "account.csv").exists()
+        assert (csv_dir / "trader.csv").exists()
 
     def test_generates_entity_definitions(self, workspace, generated_data):
         ent_dir = workspace / "metadata" / "entities"
@@ -58,6 +62,10 @@ class TestDataGeneration:
         assert (ent_dir / "order.json").exists()
         assert (ent_dir / "md_intraday.json").exists()
         assert (ent_dir / "md_eod.json").exists()
+        assert (ent_dir / "product.json").exists()
+        assert (ent_dir / "venue.json").exists()
+        assert (ent_dir / "account.json").exists()
+        assert (ent_dir / "trader.json").exists()
 
     def test_execution_row_counts(self, generated_data):
         assert generated_data["execution"] > 400, "Should have hundreds of executions"
@@ -294,6 +302,107 @@ class TestSpoofingPatterns:
         assert len(sells) >= 1, "Spoofing pattern should have opposite-side execution"
 
 
+class TestVenueSchema:
+    def test_venue_csv_generated(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "venue.csv")
+        assert len(rows) == 6
+
+    def test_venue_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "venue.csv")
+        expected_cols = {
+            "mic", "name", "short_name", "country", "timezone",
+            "open_time", "close_time", "asset_classes",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+    def test_venue_mics(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "venue.csv")
+        mics = {r["mic"] for r in rows}
+        assert "XNYS" in mics
+        assert "XNAS" in mics
+        assert "XCBO" in mics
+        assert "XCME" in mics
+        assert "XXXX" in mics
+
+
+class TestAccountSchema:
+    def test_account_csv_generated(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "account.csv")
+        assert len(rows) == 220
+
+    def test_account_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "account.csv")
+        expected_cols = {
+            "account_id", "account_name", "account_type",
+            "registration_country", "primary_trader_id", "status",
+            "risk_rating", "onboarding_date",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+    def test_account_types(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "account.csv")
+        types = {r["account_type"] for r in rows}
+        assert "institutional" in types
+        assert "retail" in types
+        assert "hedge_fund" in types
+        assert "market_maker" in types
+
+    def test_account_statuses(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "account.csv")
+        statuses = {r["status"] for r in rows}
+        assert statuses == {"ACTIVE"}
+
+
+class TestTraderSchema:
+    def test_trader_csv_generated(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "trader.csv")
+        assert len(rows) == 50
+
+    def test_trader_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "trader.csv")
+        expected_cols = {
+            "trader_id", "trader_name", "desk", "trader_type",
+            "hire_date", "status",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+    def test_trader_desks(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "trader.csv")
+        desks = {r["desk"] for r in rows}
+        assert "Equity Flow" in desks
+        assert "Derivatives" in desks
+        assert "FX Spot" in desks
+        assert "Commodities" in desks
+
+    def test_trader_types(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "trader.csv")
+        types = {r["trader_type"] for r in rows}
+        assert "execution" in types
+        assert "portfolio" in types
+        assert "algorithmic" in types
+
+
+class TestMdEodSchema:
+    def test_eod_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "md_eod.csv")
+        expected_cols = {
+            "product_id", "trade_date", "open_price", "high_price",
+            "low_price", "close_price", "volume", "prev_close",
+            "num_trades", "vwap",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+
+class TestMdIntradaySchema:
+    def test_intraday_columns(self, workspace, generated_data):
+        rows = _read_csv(workspace / "data" / "csv" / "md_intraday.csv")
+        expected_cols = {
+            "product_id", "trade_date", "trade_time", "trade_price",
+            "trade_quantity", "bid_price", "ask_price", "trade_condition",
+        }
+        assert set(rows[0].keys()) == expected_cols
+
+
 class TestEntityDefinitions:
     def test_execution_entity_valid(self, workspace, generated_data):
         path = workspace / "metadata" / "entities" / "execution.json"
@@ -312,9 +421,34 @@ class TestEntityDefinitions:
         assert "order_id" in field_names
         assert "status" in field_names
 
+    def test_venue_entity_valid(self, workspace, generated_data):
+        path = workspace / "metadata" / "entities" / "venue.json"
+        entity = json.loads(path.read_text())
+        assert entity["entity_id"] == "venue"
+        field_names = {f["name"] for f in entity["fields"]}
+        assert "mic" in field_names
+        assert "name" in field_names
+
+    def test_account_entity_valid(self, workspace, generated_data):
+        path = workspace / "metadata" / "entities" / "account.json"
+        entity = json.loads(path.read_text())
+        assert entity["entity_id"] == "account"
+        field_names = {f["name"] for f in entity["fields"]}
+        assert "account_id" in field_names
+        assert "account_type" in field_names
+
+    def test_trader_entity_valid(self, workspace, generated_data):
+        path = workspace / "metadata" / "entities" / "trader.json"
+        entity = json.loads(path.read_text())
+        assert entity["entity_id"] == "trader"
+        field_names = {f["name"] for f in entity["fields"]}
+        assert "trader_id" in field_names
+        assert "trader_name" in field_names
+
     def test_entity_definitions_loadable(self, workspace, generated_data):
         """Verify entity definitions are valid JSON matching EntityDefinition schema."""
-        for name in ["execution", "order", "md_intraday", "md_eod"]:
+        for name in ["execution", "order", "md_intraday", "md_eod",
+                      "product", "venue", "account", "trader"]:
             path = workspace / "metadata" / "entities" / f"{name}.json"
             entity = json.loads(path.read_text())
             assert "entity_id" in entity

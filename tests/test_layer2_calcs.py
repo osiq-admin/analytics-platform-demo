@@ -31,11 +31,15 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
-    # Product dimension table
+    # Product dimension table (17-column schema)
     (tmp_path / "data" / "csv" / "product.csv").write_text(
-        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
-        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
-        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+        "product_id,isin,sedol,ticker,name,asset_class,instrument_type,cfi_code,"
+        "underlying_product_id,contract_size,strike_price,expiry_date,exchange_mic,"
+        "currency,tick_size,lot_size,base_price\n"
+        "AAPL,US0378331005,,AAPL,Apple Inc.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,185.0\n"
+        "MSFT,US5949181045,,MSFT,Microsoft Corp.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,380.0\n"
     )
 
     # Execution data (product fields now in product.csv)
@@ -47,42 +51,46 @@ def workspace(tmp_path):
         "E003,AAPL,ACC001,T001,BUY,152.00,50,2026-01-15,18:00:00\n"
     )
 
-    # Intraday market data (for trend window)
+    # Intraday market data (8-column schema with bid/ask and trade_condition)
     (tmp_path / "data" / "csv" / "md_intraday.csv").write_text(
-        "product_id,trade_date,trade_time,trade_price,trade_quantity\n"
-        "AAPL,2026-01-15,09:30:00,148.00,1000\n"
-        "AAPL,2026-01-15,10:00:00,149.50,800\n"
-        "AAPL,2026-01-15,11:00:00,151.00,1200\n"
-        "AAPL,2026-01-15,12:00:00,153.00,600\n"
-        "AAPL,2026-01-15,13:00:00,155.50,900\n"
-        "AAPL,2026-01-15,14:00:00,157.00,1100\n"
-        "AAPL,2026-01-15,15:00:00,158.00,700\n"
-        "MSFT,2026-01-15,09:30:00,400.00,500\n"
-        "MSFT,2026-01-15,12:00:00,400.50,400\n"
-        "MSFT,2026-01-15,15:00:00,400.20,300\n"
+        "product_id,trade_date,trade_time,trade_price,trade_quantity,"
+        "bid_price,ask_price,trade_condition\n"
+        "AAPL,2026-01-15,09:30:00,148.00,1000,147.99,148.01,@\n"
+        "AAPL,2026-01-15,10:00:00,149.50,800,149.49,149.51,@\n"
+        "AAPL,2026-01-15,11:00:00,151.00,1200,150.99,151.01,@\n"
+        "AAPL,2026-01-15,12:00:00,153.00,600,152.99,153.01,@\n"
+        "AAPL,2026-01-15,13:00:00,155.50,900,155.49,155.51,@\n"
+        "AAPL,2026-01-15,14:00:00,157.00,1100,156.99,157.01,@\n"
+        "AAPL,2026-01-15,15:00:00,158.00,700,157.99,158.01,@\n"
+        "MSFT,2026-01-15,09:30:00,400.00,500,399.99,400.01,@\n"
+        "MSFT,2026-01-15,12:00:00,400.50,400,400.49,400.51,@\n"
+        "MSFT,2026-01-15,15:00:00,400.20,300,400.19,400.21,@\n"
     )
 
-    # EOD market data (for market event window)
+    # EOD market data (10-column schema with prev_close, num_trades, vwap)
     (tmp_path / "data" / "csv" / "md_eod.csv").write_text(
-        "product_id,trade_date,open_price,high_price,low_price,close_price,volume\n"
-        "AAPL,2026-01-10,140.00,141.00,139.50,140.50,5000000\n"
-        "AAPL,2026-01-11,140.50,141.50,140.00,141.00,5200000\n"
-        "AAPL,2026-01-12,141.00,142.00,140.50,141.50,4800000\n"
-        "AAPL,2026-01-13,141.50,142.50,141.00,142.00,5100000\n"
-        "AAPL,2026-01-14,142.00,143.00,141.50,142.50,5000000\n"
-        "AAPL,2026-01-15,142.50,160.00,142.00,158.00,15000000\n"
+        "product_id,trade_date,open_price,high_price,low_price,close_price,volume,"
+        "prev_close,num_trades,vwap\n"
+        "AAPL,2026-01-10,140.00,141.00,139.50,140.50,5000000,,2000,140.38\n"
+        "AAPL,2026-01-11,140.50,141.50,140.00,141.00,5200000,140.50,2100,140.88\n"
+        "AAPL,2026-01-12,141.00,142.00,140.50,141.50,4800000,141.00,1900,141.38\n"
+        "AAPL,2026-01-13,141.50,142.50,141.00,142.00,5100000,141.50,2050,141.88\n"
+        "AAPL,2026-01-14,142.00,143.00,141.50,142.50,5000000,142.00,2000,142.38\n"
+        "AAPL,2026-01-15,142.50,160.00,142.00,158.00,15000000,142.50,5000,154.50\n"
     )
 
-    # Order data (for cancellation pattern)
+    # Order data (15-column schema for cancellation pattern)
     (tmp_path / "data" / "csv" / "order.csv").write_text(
-        "order_id,product_id,account_id,trader_id,side,order_time,order_date,status,quantity,price\n"
-        "O010,AAPL,ACC003,T003,BUY,10:00:00,2026-01-15,CANCELLED,100,150.00\n"
-        "O011,AAPL,ACC003,T003,BUY,10:00:05,2026-01-15,CANCELLED,200,150.10\n"
-        "O012,AAPL,ACC003,T003,BUY,10:00:10,2026-01-15,CANCELLED,150,150.05\n"
-        "O013,AAPL,ACC003,T003,BUY,10:00:15,2026-01-15,CANCELLED,100,150.15\n"
-        "O014,AAPL,ACC003,T003,SELL,10:00:20,2026-01-15,FILLED,500,150.20\n"
-        "O020,MSFT,ACC004,T004,SELL,11:00:00,2026-01-15,CANCELLED,50,400.00\n"
-        "O021,MSFT,ACC004,T004,BUY,11:00:10,2026-01-15,FILLED,100,399.50\n"
+        "order_id,product_id,account_id,trader_id,side,order_type,limit_price,"
+        "quantity,filled_quantity,order_date,order_time,status,time_in_force,"
+        "execution_id,venue_mic\n"
+        "O010,AAPL,ACC003,T003,BUY,LIMIT,150.00,100,0,2026-01-15,10:00:00,CANCELLED,DAY,,XNYS\n"
+        "O011,AAPL,ACC003,T003,BUY,LIMIT,150.10,200,0,2026-01-15,10:00:05,CANCELLED,DAY,,XNYS\n"
+        "O012,AAPL,ACC003,T003,BUY,LIMIT,150.05,150,0,2026-01-15,10:00:10,CANCELLED,DAY,,XNYS\n"
+        "O013,AAPL,ACC003,T003,BUY,LIMIT,150.15,100,0,2026-01-15,10:00:15,CANCELLED,DAY,,XNYS\n"
+        "O014,AAPL,ACC003,T003,SELL,MARKET,,500,500,2026-01-15,10:00:20,FILLED,DAY,E014,XNYS\n"
+        "O020,MSFT,ACC004,T004,SELL,LIMIT,400.00,50,0,2026-01-15,11:00:00,CANCELLED,DAY,,XNYS\n"
+        "O021,MSFT,ACC004,T004,BUY,MARKET,,100,100,2026-01-15,11:00:10,FILLED,DAY,E021,XNYS\n"
     )
 
     return tmp_path

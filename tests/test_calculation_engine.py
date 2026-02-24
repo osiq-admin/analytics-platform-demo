@@ -27,11 +27,15 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
-    # Product dimension table
+    # Product dimension table (17-column schema)
     (tmp_path / "data" / "csv" / "product.csv").write_text(
-        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
-        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
-        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+        "product_id,isin,sedol,ticker,name,asset_class,instrument_type,cfi_code,"
+        "underlying_product_id,contract_size,strike_price,expiry_date,exchange_mic,"
+        "currency,tick_size,lot_size,base_price\n"
+        "AAPL,US0378331005,,AAPL,Apple Inc.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,185.0\n"
+        "MSFT,US5949181045,,MSFT,Microsoft Corp.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,380.0\n"
     )
 
     # Create sample execution data (product fields now in product.csv)

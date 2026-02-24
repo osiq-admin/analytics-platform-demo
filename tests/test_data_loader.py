@@ -84,10 +84,16 @@ def test_product_csv_loads(workspace, db):
     path = workspace / "data" / "csv" / "product.csv"
     with open(path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["product_id", "name", "asset_class", "instrument_type",
-                         "contract_size", "option_type", "exchange", "currency"])
-        writer.writerow(["AAPL", "Apple Inc.", "equity", "stock", "", "", "NYSE", "USD"])
-        writer.writerow(["MSFT", "Microsoft Corp.", "equity", "stock", "", "", "NYSE", "USD"])
+        writer.writerow(["product_id", "isin", "sedol", "ticker", "name", "asset_class",
+                         "instrument_type", "cfi_code", "underlying_product_id",
+                         "contract_size", "strike_price", "expiry_date", "exchange_mic",
+                         "currency", "tick_size", "lot_size", "base_price"])
+        writer.writerow(["AAPL", "US0378331005", "", "AAPL", "Apple Inc.", "equity",
+                         "common_stock", "ESXXXX", "", "", "", "", "XNYS",
+                         "USD", "0.01", "100", "185.0"])
+        writer.writerow(["MSFT", "US5949181045", "", "MSFT", "Microsoft Corp.", "equity",
+                         "common_stock", "ESXXXX", "", "", "", "", "XNYS",
+                         "USD", "0.01", "100", "380.0"])
 
     loader = DataLoader(workspace, db)
     loader.load_all()

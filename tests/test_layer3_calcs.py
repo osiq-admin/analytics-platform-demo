@@ -29,11 +29,15 @@ def workspace(tmp_path):
     (tmp_path / "metadata" / "settings" / "thresholds").mkdir(parents=True)
     (tmp_path / "metadata" / "entities").mkdir(parents=True)
 
-    # Product dimension table
+    # Product dimension table (17-column schema)
     (tmp_path / "data" / "csv" / "product.csv").write_text(
-        "product_id,name,asset_class,instrument_type,contract_size,option_type,exchange,currency\n"
-        "AAPL,Apple Inc.,equity,stock,,,NYSE,USD\n"
-        "MSFT,Microsoft Corp.,equity,stock,,,NYSE,USD\n"
+        "product_id,isin,sedol,ticker,name,asset_class,instrument_type,cfi_code,"
+        "underlying_product_id,contract_size,strike_price,expiry_date,exchange_mic,"
+        "currency,tick_size,lot_size,base_price\n"
+        "AAPL,US0378331005,,AAPL,Apple Inc.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,185.0\n"
+        "MSFT,US5949181045,,MSFT,Microsoft Corp.,equity,common_stock,ESXXXX,,,,,"
+        "XNYS,USD,0.01,100,380.0\n"
     )
 
     # Execution data: ACC001 buys and sells AAPL (wash-like pattern)
@@ -48,16 +52,20 @@ def workspace(tmp_path):
 
     # Need intraday/eod/order data for L2 calcs (they run too)
     (tmp_path / "data" / "csv" / "md_intraday.csv").write_text(
-        "product_id,trade_date,trade_time,trade_price,trade_quantity\n"
-        "AAPL,2026-01-15,09:30:00,148.00,1000\n"
+        "product_id,trade_date,trade_time,trade_price,trade_quantity,"
+        "bid_price,ask_price,trade_condition\n"
+        "AAPL,2026-01-15,09:30:00,148.00,1000,147.99,148.01,@\n"
     )
     (tmp_path / "data" / "csv" / "md_eod.csv").write_text(
-        "product_id,trade_date,open_price,high_price,low_price,close_price,volume\n"
-        "AAPL,2026-01-15,148.00,158.00,147.00,157.00,10000000\n"
+        "product_id,trade_date,open_price,high_price,low_price,close_price,volume,"
+        "prev_close,num_trades,vwap\n"
+        "AAPL,2026-01-15,148.00,158.00,147.00,157.00,10000000,,2500,152.75\n"
     )
     (tmp_path / "data" / "csv" / "order.csv").write_text(
-        "order_id,product_id,account_id,trader_id,side,order_time,order_date,status,quantity,price\n"
-        "O001,AAPL,ACC001,T001,BUY,10:30:00,2026-01-15,FILLED,100,150.00\n"
+        "order_id,product_id,account_id,trader_id,side,order_type,limit_price,"
+        "quantity,filled_quantity,order_date,order_time,status,time_in_force,"
+        "execution_id,venue_mic\n"
+        "O001,AAPL,ACC001,T001,BUY,MARKET,,100,100,2026-01-15,10:30:00,FILLED,DAY,E001,XNYS\n"
     )
 
     return tmp_path
