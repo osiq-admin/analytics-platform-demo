@@ -133,8 +133,9 @@ class TestExecutionSchema:
         rows = _read_csv(workspace / "data" / "csv" / "execution.csv")
         assert len(rows) > 0
         expected_cols = {
-            "execution_id", "product_id", "account_id", "trader_id", "side",
-            "price", "quantity", "execution_date", "execution_time",
+            "execution_id", "order_id", "product_id", "account_id",
+            "trader_id", "side", "price", "quantity", "execution_date",
+            "execution_time", "venue_mic", "exec_type", "capacity",
         }
         assert set(rows[0].keys()) == expected_cols
 

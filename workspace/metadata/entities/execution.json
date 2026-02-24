@@ -1,13 +1,20 @@
 {
   "entity_id": "execution",
   "name": "Trade Execution",
-  "description": "Individual trade executions (fills) across all instrument types.",
+  "description": "Individual trade executions (fills) across all instrument types, with order linkage, venue routing, and capacity classification.",
   "fields": [
     {
       "name": "execution_id",
       "type": "string",
       "description": "Unique execution identifier",
       "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "order_id",
+      "type": "string",
+      "description": "Originating order identifier (FK to order)",
+      "is_key": false,
       "nullable": false
     },
     {
@@ -20,14 +27,14 @@
     {
       "name": "account_id",
       "type": "string",
-      "description": "Trading account identifier",
+      "description": "Trading account identifier (FK to account)",
       "is_key": false,
       "nullable": false
     },
     {
       "name": "trader_id",
       "type": "string",
-      "description": "Trader who executed the trade",
+      "description": "Trader who executed the trade (FK to trader)",
       "is_key": false,
       "nullable": false
     },
@@ -66,12 +73,48 @@
     {
       "name": "execution_time",
       "type": "string",
-      "description": "Time of execution (HH:MM:SS)",
+      "description": "Time of execution with milliseconds (HH:MM:SS.fff)",
       "is_key": false,
       "nullable": false
+    },
+    {
+      "name": "venue_mic",
+      "type": "string",
+      "description": "ISO 10383 MIC code of the execution venue (FK to venue)",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "exec_type",
+      "type": "string",
+      "description": "Execution type classification",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "FILL",
+        "PARTIAL_FILL"
+      ]
+    },
+    {
+      "name": "capacity",
+      "type": "string",
+      "description": "Broker capacity: AGENCY (on behalf of client) or PRINCIPAL (own account)",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "AGENCY",
+        "PRINCIPAL"
+      ]
     }
   ],
   "relationships": [
+    {
+      "target_entity": "order",
+      "join_fields": {
+        "order_id": "order_id"
+      },
+      "relationship_type": "many_to_one"
+    },
     {
       "target_entity": "product",
       "join_fields": {
@@ -80,10 +123,23 @@
       "relationship_type": "many_to_one"
     },
     {
-      "target_entity": "order",
+      "target_entity": "account",
       "join_fields": {
-        "product_id": "product_id",
         "account_id": "account_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "trader",
+      "join_fields": {
+        "trader_id": "trader_id"
+      },
+      "relationship_type": "many_to_one"
+    },
+    {
+      "target_entity": "venue",
+      "join_fields": {
+        "venue_mic": "mic"
       },
       "relationship_type": "many_to_one"
     },
