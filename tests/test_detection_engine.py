@@ -310,3 +310,79 @@ class TestEntityContext:
         results = engine.evaluate_model("wash_full_day")
         alert = results[0]
         assert len(alert.settings_trace) > 0
+
+
+class TestExplainabilityTrace:
+    """Alerts should contain full explainability data for drill-down."""
+
+    def test_executed_sql_captured(self, workspace, db, engine):
+        _create_wash_results(db)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert "SELECT" in alert.executed_sql
+        assert "calc_wash_detection" in alert.executed_sql
+
+    def test_sql_row_count(self, workspace, db, engine):
+        _create_wash_results(db)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert alert.sql_row_count == 1
+
+    def test_model_name_populated(self, workspace, db, engine):
+        _create_wash_results(db)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert alert.model_name == "Wash Trading Full Day"
+
+    def test_calculation_traces_populated(self, workspace, db, engine):
+        _create_wash_results(db, total_value=50000, qty_match=0.9, vwap_proximity=0.003)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert len(alert.calculation_traces) == 3
+        trace_ids = [t.calc_id for t in alert.calculation_traces]
+        assert "large_trading_activity" in trace_ids
+        assert "wash_qty_match" in trace_ids
+        assert "wash_vwap_proximity" in trace_ids
+
+    def test_calculation_trace_details(self, workspace, db, engine):
+        _create_wash_results(db, total_value=50000, qty_match=0.9, vwap_proximity=0.003)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        large_trace = next(t for t in alert.calculation_traces if t.calc_id == "large_trading_activity")
+        assert large_trace.value_field == "total_value"
+        assert large_trace.computed_value == 50000.0
+        assert large_trace.score_awarded == 3
+        assert large_trace.passed is True
+        assert large_trace.strictness == "MUST_PASS"
+
+    def test_scoring_breakdown(self, workspace, db, engine):
+        _create_wash_results(db, total_value=50000, qty_match=0.9, vwap_proximity=0.003)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert len(alert.scoring_breakdown) == 3
+        total_score = sum(s["score"] for s in alert.scoring_breakdown)
+        assert total_score == alert.accumulated_score
+
+    def test_resolved_settings_captured(self, workspace, db, engine):
+        _create_wash_results(db)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert len(alert.resolved_settings) > 0
+        for setting_id, info in alert.resolved_settings.items():
+            assert "value" in info
+            assert "why" in info
+
+    def test_entity_context_source(self, workspace, db, engine):
+        _create_wash_results(db)
+        _create_detection_model(workspace)
+        results = engine.evaluate_model("wash_full_day")
+        alert = results[0]
+        assert "product_id" in alert.entity_context_source
+        assert "account_id" in alert.entity_context_source

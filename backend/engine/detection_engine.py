@@ -5,7 +5,7 @@ from pathlib import Path
 
 from backend.db import DuckDBManager
 from backend.engine.settings_resolver import ResolutionResult, SettingsResolver
-from backend.models.alerts import AlertTrace, CalculationScore, SettingsTraceEntry
+from backend.models.alerts import AlertTrace, CalculationScore, CalculationTraceEntry, SettingsTraceEntry
 from backend.models.detection import DetectionModelDefinition, ModelCalculation, Strictness
 from backend.models.settings import ScoreStep, SettingDefinition
 from backend.services.metadata_service import MetadataService
@@ -40,7 +40,7 @@ class DetectionEngine:
 
         alerts = []
         for row in candidates:
-            alert = self._evaluate_candidate(model, row)
+            alert = self._evaluate_candidate(model, row, len(candidates))
             alerts.append(alert)
 
         return alerts
@@ -70,11 +70,16 @@ class DetectionEngine:
         finally:
             cursor.close()
 
-    def _evaluate_candidate(self, model: DetectionModelDefinition, row: dict) -> AlertTrace:
+    def _evaluate_candidate(self, model: DetectionModelDefinition, row: dict, sql_row_count: int = 0) -> AlertTrace:
         """Evaluate a single candidate row against the model's calculations."""
         entity_context = {
             k: str(v) for k, v in row.items()
             if k in model.context_fields and v is not None
+        }
+
+        # Track which query columns provided entity context
+        entity_context_source = {
+            k: k for k in entity_context
         }
 
         # Resolve score threshold for this entity context
@@ -83,6 +88,9 @@ class DetectionEngine:
         # Evaluate each calculation
         calc_scores: list[CalculationScore] = []
         settings_trace: list[SettingsTraceEntry] = []
+        calc_trace_entries: list[CalculationTraceEntry] = []
+        scoring_breakdown: list[dict] = []
+        resolved_settings: dict = {}
         accumulated_score = 0.0
 
         for mc in model.calculations:
@@ -90,6 +98,37 @@ class DetectionEngine:
             calc_scores.append(cs)
             settings_trace.extend(traces)
             accumulated_score += cs.score
+
+            # Build calculation trace entry
+            calc_trace_entries.append(CalculationTraceEntry(
+                calc_id=mc.calc_id,
+                value_field=mc.value_field or mc.calc_id,
+                computed_value=cs.computed_value,
+                threshold_setting_id=mc.threshold_setting,
+                score_steps_setting_id=mc.score_steps_setting,
+                score_awarded=cs.score,
+                score_step_matched=cs.score_step_matched,
+                passed=cs.threshold_passed,
+                strictness=mc.strictness.value,
+            ))
+
+            # Build scoring breakdown entry
+            scoring_breakdown.append({
+                "calc_id": mc.calc_id,
+                "value_field": mc.value_field or mc.calc_id,
+                "computed_value": cs.computed_value,
+                "score": cs.score,
+                "step_matched": cs.score_step_matched,
+                "passed": cs.threshold_passed,
+            })
+
+            # Capture resolved settings
+            for t in traces:
+                resolved_settings[t.setting_id] = {
+                    "value": t.resolved_value,
+                    "why": t.why,
+                    "matched_override": t.matched_override,
+                }
 
         # Determine alert trigger
         must_pass_ok = all(
@@ -114,12 +153,21 @@ class DetectionEngine:
         return AlertTrace(
             alert_id=alert_id,
             model_id=model.model_id,
+            model_name=model.name,
             entity_context=entity_context,
             calculation_scores=calc_scores,
             accumulated_score=accumulated_score,
             score_threshold=score_threshold,
             trigger_path=trigger_path,
             alert_fired=alert_fired,
+            # Explainability fields
+            executed_sql=model.query,
+            sql_row_count=sql_row_count,
+            resolved_settings=resolved_settings,
+            calculation_traces=calc_trace_entries,
+            scoring_breakdown=scoring_breakdown,
+            entity_context_source=entity_context_source,
+            # Legacy fields
             settings_trace=settings_trace,
             calculation_trace={"query_row": {k: str(v) for k, v in row.items()}},
         )
