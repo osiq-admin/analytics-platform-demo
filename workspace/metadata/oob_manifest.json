@@ -1,0 +1,204 @@
+{
+  "oob_version": "1.0.0",
+  "description": "Out-of-box metadata for Analytics Platform Demo v1.0",
+  "items": {
+    "entities": {
+      "account": {
+        "checksum": "d6329993f2068ac7",
+        "version": "1.0.0",
+        "path": "entities/account.json"
+      },
+      "execution": {
+        "checksum": "068f91049c998d7b",
+        "version": "1.0.0",
+        "path": "entities/execution.json"
+      },
+      "md_eod": {
+        "checksum": "3a8ce3434c9ab8e8",
+        "version": "1.0.0",
+        "path": "entities/md_eod.json"
+      },
+      "md_intraday": {
+        "checksum": "6c58569dfc0fc971",
+        "version": "1.0.0",
+        "path": "entities/md_intraday.json"
+      },
+      "order": {
+        "checksum": "a32ec19621fee842",
+        "version": "1.0.0",
+        "path": "entities/order.json"
+      },
+      "product": {
+        "checksum": "b59997b46eec04c8",
+        "version": "1.0.0",
+        "path": "entities/product.json"
+      },
+      "trader": {
+        "checksum": "417ef5eb8b0ea520",
+        "version": "1.0.0",
+        "path": "entities/trader.json"
+      },
+      "venue": {
+        "checksum": "c2e4d9f3cacbca22",
+        "version": "1.0.0",
+        "path": "entities/venue.json"
+      }
+    },
+    "calculations": {
+      "trading_activity_aggregation": {
+        "checksum": "a4963c30129670dc",
+        "version": "1.0.0",
+        "path": "calculations/aggregations/trading_activity_aggregation.json"
+      },
+      "vwap_calc": {
+        "checksum": "ce6c85e5ef106048",
+        "version": "1.0.0",
+        "path": "calculations/aggregations/vwap_calc.json"
+      },
+      "large_trading_activity": {
+        "checksum": "2581d2edc2cb11ad",
+        "version": "1.0.0",
+        "path": "calculations/derived/large_trading_activity.json"
+      },
+      "wash_detection": {
+        "checksum": "496833b4f768eeb1",
+        "version": "1.0.0",
+        "path": "calculations/derived/wash_detection.json"
+      },
+      "business_date_window": {
+        "checksum": "405b9ea83f183b97",
+        "version": "1.0.0",
+        "path": "calculations/time_windows/business_date_window.json"
+      },
+      "cancellation_pattern": {
+        "checksum": "1e4a9377d797eee4",
+        "version": "1.0.0",
+        "path": "calculations/time_windows/cancellation_pattern.json"
+      },
+      "market_event_window": {
+        "checksum": "7fb1511e242a6288",
+        "version": "1.0.0",
+        "path": "calculations/time_windows/market_event_window.json"
+      },
+      "trend_window": {
+        "checksum": "2b6c637f685e1b06",
+        "version": "1.0.0",
+        "path": "calculations/time_windows/trend_window.json"
+      },
+      "adjusted_direction": {
+        "checksum": "371f3e0a5e56cb48",
+        "version": "1.0.0",
+        "path": "calculations/transaction/adjusted_direction.json"
+      },
+      "value_calc": {
+        "checksum": "b010bb95b216468f",
+        "version": "1.0.0",
+        "path": "calculations/transaction/value_calc.json"
+      }
+    },
+    "settings": {
+      "large_activity_score_steps": {
+        "checksum": "3b06bcc2b877cdd3",
+        "version": "1.0.0",
+        "path": "settings/score_steps/large_activity_score_steps.json"
+      },
+      "market_event_score_steps": {
+        "checksum": "1452702a23178476",
+        "version": "1.0.0",
+        "path": "settings/score_steps/market_event_score_steps.json"
+      },
+      "quantity_match_score_steps": {
+        "checksum": "ccff5ca3f690359f",
+        "version": "1.0.0",
+        "path": "settings/score_steps/quantity_match_score_steps.json"
+      },
+      "same_side_pct_score_steps": {
+        "checksum": "4d365ee221ea573e",
+        "version": "1.0.0",
+        "path": "settings/score_steps/same_side_pct_score_steps.json"
+      },
+      "vwap_proximity_score_steps": {
+        "checksum": "085895953029ae90",
+        "version": "1.0.0",
+        "path": "settings/score_steps/vwap_proximity_score_steps.json"
+      },
+      "insider_score_threshold": {
+        "checksum": "9a83d1f4387ac3c3",
+        "version": "1.0.0",
+        "path": "settings/score_thresholds/insider_score_threshold.json"
+      },
+      "mpr_score_threshold": {
+        "checksum": "ab7d555436e39872",
+        "version": "1.0.0",
+        "path": "settings/score_thresholds/mpr_score_threshold.json"
+      },
+      "spoofing_score_threshold": {
+        "checksum": "2ca005d78f55589f",
+        "version": "1.0.0",
+        "path": "settings/score_thresholds/spoofing_score_threshold.json"
+      },
+      "wash_score_threshold": {
+        "checksum": "696c7e7b906749f4",
+        "version": "1.0.0",
+        "path": "settings/score_thresholds/wash_score_threshold.json"
+      },
+      "business_date_cutoff": {
+        "checksum": "ab673b0d62979653",
+        "version": "1.0.0",
+        "path": "settings/thresholds/business_date_cutoff.json"
+      },
+      "cancel_count_threshold": {
+        "checksum": "08c523cdffcfe38f",
+        "version": "1.0.0",
+        "path": "settings/thresholds/cancel_count_threshold.json"
+      },
+      "insider_lookback_days": {
+        "checksum": "e23f5cfa389e7f52",
+        "version": "1.0.0",
+        "path": "settings/thresholds/insider_lookback_days.json"
+      },
+      "large_activity_multiplier": {
+        "checksum": "72e507aef5fd2554",
+        "version": "1.0.0",
+        "path": "settings/thresholds/large_activity_multiplier.json"
+      },
+      "trend_sensitivity": {
+        "checksum": "3e6326b069ed24f6",
+        "version": "1.0.0",
+        "path": "settings/thresholds/trend_sensitivity.json"
+      },
+      "wash_vwap_threshold": {
+        "checksum": "df6b1720cf73473d",
+        "version": "1.0.0",
+        "path": "settings/thresholds/wash_vwap_threshold.json"
+      }
+    },
+    "detection_models": {
+      "insider_dealing": {
+        "checksum": "62b70d9956d40846",
+        "version": "1.0.0",
+        "path": "detection_models/insider_dealing.json"
+      },
+      "market_price_ramping": {
+        "checksum": "86f9e556a9235e50",
+        "version": "1.0.0",
+        "path": "detection_models/market_price_ramping.json"
+      },
+      "spoofing_layering": {
+        "checksum": "02dcd32e4b1015a0",
+        "version": "1.0.0",
+        "path": "detection_models/spoofing_layering.json"
+      },
+      "wash_full_day": {
+        "checksum": "d89d40413df7e101",
+        "version": "1.0.0",
+        "path": "detection_models/wash_full_day.json"
+      },
+      "wash_intraday": {
+        "checksum": "13cf9771d4bb6e49",
+        "version": "1.0.0",
+        "path": "detection_models/wash_intraday.json"
+      }
+    }
+  }
+}
