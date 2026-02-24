@@ -488,16 +488,52 @@ class SyntheticDataGenerator:
     def _build_traders(self) -> dict[str, dict]:
         traders: dict[str, dict] = {}
         account_ids = list(self.accounts.keys())
+
+        # Hire date range
+        hire_start = date(2018, 1, 1)
+        hire_days = (date(2023, 12, 31) - hire_start).days
+
         for i in range(50):
             tid = f"TRD-{i + 1:03d}"
+            trader_num = i + 1
+
             # Each trader manages 4-5 accounts
             start = i * 4
             managed = account_ids[start:start + 4]
             if not managed:
                 managed = [self.rng.choice(account_ids)]
+
+            # Desk assignment based on trader index ranges
+            if trader_num <= 25:
+                desk = "Equity Flow"
+            elif trader_num <= 35:
+                desk = "Derivatives"
+            elif trader_num <= 45:
+                desk = "FX Spot"
+            else:
+                desk = "Commodities"
+
+            # Trader type based on desk
+            if desk == "Equity Flow":
+                trader_type = "execution" if self.rng.random() < 0.6 else "portfolio"
+            elif desk == "Derivatives":
+                trader_type = "execution"
+            elif desk == "FX Spot":
+                trader_type = "algorithmic"
+            else:  # Commodities
+                trader_type = "execution"
+
+            # Random hire date between 2018-01-01 and 2023-12-31
+            hire_offset = self.rng.randint(0, hire_days)
+            hire_date_val = hire_start + timedelta(days=hire_offset)
+
             traders[tid] = {
                 "name": f"{FIRST_NAMES[i]} {LAST_NAMES[i]}",
                 "accounts": managed,
+                "desk": desk,
+                "trader_type": trader_type,
+                "hire_date": hire_date_val.isoformat(),
+                "status": "ACTIVE",
             }
         return traders
 
@@ -969,6 +1005,7 @@ class SyntheticDataGenerator:
         counts["product"] = self._write_product_csv()
         counts["venue"] = self._write_venue_csv()
         counts["account"] = self._write_account_csv()
+        counts["trader"] = self._write_trader_csv()
 
         counts["execution"] = self._write_csv(
             "execution.csv",
@@ -1076,6 +1113,24 @@ class SyntheticDataGenerator:
                 "onboarding_date": info.get("onboarding_date", ""),
             })
         return self._write_csv("account.csv", fieldnames, rows)
+
+    def _write_trader_csv(self) -> int:
+        """Write the trader dimension table CSV (50 rows, 6 columns)."""
+        fieldnames = [
+            "trader_id", "trader_name", "desk", "trader_type",
+            "hire_date", "status",
+        ]
+        rows = []
+        for tid, info in sorted(self.traders.items()):
+            rows.append({
+                "trader_id": tid,
+                "trader_name": info["name"],
+                "desk": info["desk"],
+                "trader_type": info["trader_type"],
+                "hire_date": info.get("hire_date", ""),
+                "status": info["status"],
+            })
+        return self._write_csv("trader.csv", fieldnames, rows)
 
     def _write_csv(self, filename: str, fieldnames: list[str], rows: list[dict]) -> int:
         path = self.csv_dir / filename
@@ -1228,6 +1283,26 @@ class SyntheticDataGenerator:
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},
                     {"target_entity": "order", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},
+                ],
+            },
+            "trader": {
+                "entity_id": "trader",
+                "name": "Trader",
+                "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution via trader_id.",
+                "fields": [
+                    {"name": "trader_id", "type": "string", "description": "Unique trader identifier", "is_key": True, "nullable": False},
+                    {"name": "trader_name", "type": "string", "description": "Full name of the trader", "is_key": False, "nullable": False},
+                    {"name": "desk", "type": "string", "description": "Trading desk assignment", "is_key": False, "nullable": False,
+                     "domain_values": ["Equity Flow", "Derivatives", "FX Spot", "Commodities"]},
+                    {"name": "trader_type", "type": "string", "description": "Trader role type", "is_key": False, "nullable": False,
+                     "domain_values": ["execution", "portfolio", "algorithmic"]},
+                    {"name": "hire_date", "type": "date", "description": "Trader start date (YYYY-MM-DD)", "is_key": False, "nullable": True},
+                    {"name": "status", "type": "string", "description": "Trader status", "is_key": False, "nullable": False,
+                     "domain_values": ["ACTIVE"]},
+                ],
+                "relationships": [
+                    {"target_entity": "execution", "join_fields": {"trader_id": "trader_id"}, "relationship_type": "one_to_many"},
+                    {"target_entity": "account", "join_fields": {"trader_id": "primary_trader_id"}, "relationship_type": "one_to_many"},
                 ],
             },
         }

@@ -1,0 +1,79 @@
+{
+  "entity_id": "trader",
+  "name": "Trader",
+  "description": "Trader dimension with desk assignment and role classification. Each trader manages multiple accounts and is referenced by execution via trader_id.",
+  "fields": [
+    {
+      "name": "trader_id",
+      "type": "string",
+      "description": "Unique trader identifier",
+      "is_key": true,
+      "nullable": false
+    },
+    {
+      "name": "trader_name",
+      "type": "string",
+      "description": "Full name of the trader",
+      "is_key": false,
+      "nullable": false
+    },
+    {
+      "name": "desk",
+      "type": "string",
+      "description": "Trading desk assignment",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "Equity Flow",
+        "Derivatives",
+        "FX Spot",
+        "Commodities"
+      ]
+    },
+    {
+      "name": "trader_type",
+      "type": "string",
+      "description": "Trader role type",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "execution",
+        "portfolio",
+        "algorithmic"
+      ]
+    },
+    {
+      "name": "hire_date",
+      "type": "date",
+      "description": "Trader start date (YYYY-MM-DD)",
+      "is_key": false,
+      "nullable": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Trader status",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "ACTIVE"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "target_entity": "execution",
+      "join_fields": {
+        "trader_id": "trader_id"
+      },
+      "relationship_type": "one_to_many"
+    },
+    {
+      "target_entity": "account",
+      "join_fields": {
+        "trader_id": "primary_trader_id"
+      },
+      "relationship_type": "one_to_many"
+    }
+  ]
+}
