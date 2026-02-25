@@ -21,6 +21,11 @@ class ChatRequest(BaseModel):
     messages: list[ChatMessage]
 
 
+class SuggestCalcRequest(BaseModel):
+    description: str
+    context: str = ""  # optional additional context
+
+
 @router.get("/mode")
 def get_mode(request: Request):
     return {"mode": _assistant(request).mode}
@@ -44,3 +49,47 @@ async def chat(req: ChatRequest, request: Request):
     assistant = _assistant(request)
     messages = [{"role": m.role, "content": m.content} for m in req.messages]
     return await assistant.chat(messages)
+
+
+@router.post("/suggest-calculation")
+def suggest_calculation(req: SuggestCalcRequest, request: Request):
+    """Suggest a calculation based on natural language description."""
+    from backend.services.ai_context_builder import AIContextBuilder
+    from backend.config import settings as app_settings
+
+    builder = AIContextBuilder(
+        app_settings.workspace_dir,
+        request.app.state.metadata,
+        request.app.state.db,
+    )
+    suggestion = builder.suggest_calculation(req.description)
+
+    # Include context summary
+    suggestion["metadata_context"] = {
+        "entities": len(request.app.state.metadata.list_entities()),
+        "calculations": len(request.app.state.metadata.list_calculations()),
+        "settings": len(request.app.state.metadata.list_settings()),
+    }
+
+    return suggestion
+
+
+@router.get("/context")
+def get_ai_context(request: Request):
+    """Get the full AI metadata context."""
+    from backend.services.ai_context_builder import AIContextBuilder
+    from backend.config import settings as app_settings
+
+    builder = AIContextBuilder(
+        app_settings.workspace_dir,
+        request.app.state.metadata,
+        request.app.state.db,
+    )
+    return {
+        "context": builder.build_full_context(),
+        "summary": {
+            "entities": len(request.app.state.metadata.list_entities()),
+            "calculations": len(request.app.state.metadata.list_calculations()),
+            "settings": len(request.app.state.metadata.list_settings()),
+        },
+    }
