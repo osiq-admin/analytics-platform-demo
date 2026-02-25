@@ -14,6 +14,7 @@ import ModelCreateForm, { type WizardState } from "./ModelCreateForm.tsx";
 import ValidationPanel from "../../components/ValidationPanel.tsx";
 import PreviewPanel from "../../components/PreviewPanel.tsx";
 import DependencyMiniDAG from "../../components/DependencyMiniDAG.tsx";
+import ExamplesDrawer from "../../components/ExamplesDrawer.tsx";
 
 interface DeployResult {
   model_id: string;
@@ -45,6 +46,7 @@ export default function ModelComposer() {
   const [aiLoading, setAiLoading] = useState(false);
   const [wizardState, setWizardState] = useState<WizardState | null>(null);
   const [rightTab, setRightTab] = useState<"validation" | "preview" | "dependencies">("validation");
+  const [examplesOpen, setExamplesOpen] = useState(false);
 
   const handleWizardStateChange = useCallback((state: WizardState) => {
     setWizardState(state);
@@ -128,16 +130,28 @@ export default function ModelComposer() {
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Model Composer</h2>
-        <button
-          onClick={() => setAiOpen(!aiOpen)}
-          className={`px-2 py-1 text-xs rounded border transition-colors ${
-            aiOpen
-              ? "border-accent bg-accent/15 text-accent"
-              : "border-border text-muted hover:text-foreground"
-          }`}
-        >
-          {aiOpen ? "Close AI" : "Ask AI"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setExamplesOpen(!examplesOpen)}
+            className={`px-2 py-1 text-xs rounded border transition-colors ${
+              examplesOpen
+                ? "border-accent bg-accent/15 text-accent"
+                : "border-border text-muted hover:text-foreground"
+            }`}
+          >
+            {examplesOpen ? "Close Examples" : "Examples"}
+          </button>
+          <button
+            onClick={() => setAiOpen(!aiOpen)}
+            className={`px-2 py-1 text-xs rounded border transition-colors ${
+              aiOpen
+                ? "border-accent bg-accent/15 text-accent"
+                : "border-border text-muted hover:text-foreground"
+            }`}
+          >
+            {aiOpen ? "Close AI" : "Ask AI"}
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-4 flex-1 min-h-0">
@@ -372,6 +386,17 @@ export default function ModelComposer() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setConfirmDelete(false)}
+      />
+
+      <ExamplesDrawer
+        open={examplesOpen}
+        onClose={() => setExamplesOpen(false)}
+        onUseAsStartingPoint={(_type, _config) => {
+          setExamplesOpen(false);
+          setMode("create");
+          setSelectedModel(null);
+          setDeployResult(null);
+        }}
       />
     </div>
   );
