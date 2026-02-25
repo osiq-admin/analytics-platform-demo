@@ -1,0 +1,14 @@
+{
+  "template_id": "percentage_standard",
+  "label": "Standard Percentage Tiers",
+  "description": "Standard scoring for percentage-based calculations",
+  "value_category": "percentage",
+  "steps": [
+    {"min_value": 0, "max_value": 5, "score": 1},
+    {"min_value": 5, "max_value": 15, "score": 3},
+    {"min_value": 15, "max_value": 30, "score": 7},
+    {"min_value": 30, "max_value": null, "score": 10}
+  ],
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

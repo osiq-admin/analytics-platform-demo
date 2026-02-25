@@ -6,6 +6,8 @@ from typing import Any
 from backend.models.calculations import CalculationDefinition
 from backend.models.detection import DetectionModelDefinition
 from backend.models.entities import EntityDefinition
+from backend.models.match_patterns import MatchPattern
+from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
 
 
@@ -698,3 +700,111 @@ class MetadataService:
                 "uncovered_articles": uncovered_articles,
             },
         }
+
+    # -- Match Patterns --
+
+    def _match_patterns_dir(self) -> Path:
+        return self._base / "match_patterns"
+
+    def save_match_pattern(self, pattern: MatchPattern) -> None:
+        folder = self._match_patterns_dir()
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{pattern.pattern_id}.json"
+        path.write_text(pattern.model_dump_json(indent=2))
+
+    def load_match_pattern(self, pattern_id: str) -> MatchPattern | None:
+        path = self._match_patterns_dir() / f"{pattern_id}.json"
+        if not path.exists():
+            return None
+        return MatchPattern.model_validate_json(path.read_text())
+
+    def list_match_patterns(self) -> list[MatchPattern]:
+        folder = self._match_patterns_dir()
+        if not folder.exists():
+            return []
+        patterns = []
+        for f in sorted(folder.glob("*.json")):
+            patterns.append(MatchPattern.model_validate_json(f.read_text()))
+        return patterns
+
+    def delete_match_pattern(self, pattern_id: str) -> bool:
+        path = self._match_patterns_dir() / f"{pattern_id}.json"
+        if path.exists():
+            path.unlink()
+            return True
+        return False
+
+    def get_match_pattern_usage_count(self, pattern_id: str) -> int:
+        """Count how many settings overrides use this pattern's match criteria."""
+        pattern = self.load_match_pattern(pattern_id)
+        if not pattern:
+            return 0
+        target_match = pattern.match
+        count = 0
+        for setting in self.list_settings():
+            for override in (setting.overrides or []):
+                override_match = override.match if hasattr(override, "match") else {}
+                if override_match == target_match:
+                    count += 1
+        return count
+
+    # -- Score Templates --
+
+    def _score_templates_dir(self) -> Path:
+        return self._base / "score_templates"
+
+    def save_score_template(self, template: ScoreTemplate) -> None:
+        folder = self._score_templates_dir()
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{template.template_id}.json"
+        path.write_text(template.model_dump_json(indent=2))
+
+    def load_score_template(self, template_id: str) -> ScoreTemplate | None:
+        path = self._score_templates_dir() / f"{template_id}.json"
+        if not path.exists():
+            return None
+        return ScoreTemplate.model_validate_json(path.read_text())
+
+    def list_score_templates(self, value_category: str | None = None) -> list[ScoreTemplate]:
+        folder = self._score_templates_dir()
+        if not folder.exists():
+            return []
+        templates = []
+        for f in sorted(folder.glob("*.json")):
+            t = ScoreTemplate.model_validate_json(f.read_text())
+            if value_category and t.value_category != value_category:
+                continue
+            templates.append(t)
+        return templates
+
+    def delete_score_template(self, template_id: str) -> bool:
+        path = self._score_templates_dir() / f"{template_id}.json"
+        if path.exists():
+            path.unlink()
+            return True
+        return False
+
+    def get_score_template_usage_count(self, template_id: str) -> int:
+        """Count how many score_steps settings reference this template's steps."""
+        template = self.load_score_template(template_id)
+        if not template:
+            return 0
+        # Serialize template steps for comparison
+        template_steps = [s.model_dump() for s in template.steps]
+        count = 0
+        for setting in self.list_settings():
+            if setting.value_type == "score_steps" and setting.default:
+                if isinstance(setting.default, list) and len(setting.default) == len(template_steps):
+                    match = True
+                    for s_step, t_step in zip(setting.default, template_steps):
+                        s_dict = s_step if isinstance(s_step, dict) else (
+                            s_step.model_dump() if hasattr(s_step, "model_dump") else {}
+                        )
+                        if (s_dict.get("min_value") != t_step["min_value"]
+                                or s_dict.get("max_value") != t_step["max_value"]
+                                or s_dict.get("score") != t_step["score"]):
+                            match = False
+                            break
+                    if match:
+                        count += 1
+        return count

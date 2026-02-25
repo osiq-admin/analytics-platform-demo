@@ -1,0 +1,8 @@
+{
+  "pattern_id": "index_instruments",
+  "label": "Index Instruments",
+  "description": "All index instruments",
+  "match": {"asset_class": "index"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

@@ -1,0 +1,8 @@
+{
+  "pattern_id": "nyse_listed",
+  "label": "NYSE Listed",
+  "description": "All instruments listed on New York Stock Exchange",
+  "match": {"exchange_mic": "XNYS"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

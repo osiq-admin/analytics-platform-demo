@@ -1,0 +1,8 @@
+{
+  "pattern_id": "equity_nyse",
+  "label": "Equity on NYSE",
+  "description": "Equity instruments listed on New York Stock Exchange",
+  "match": {"asset_class": "equity", "exchange_mic": "XNYS"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

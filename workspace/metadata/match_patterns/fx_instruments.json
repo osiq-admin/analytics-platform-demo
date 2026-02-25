@@ -1,0 +1,8 @@
+{
+  "pattern_id": "fx_instruments",
+  "label": "FX Instruments",
+  "description": "All foreign exchange instruments",
+  "match": {"asset_class": "fx"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

@@ -1,0 +1,8 @@
+{
+  "pattern_id": "nasdaq_listed",
+  "label": "NASDAQ Listed",
+  "description": "All instruments listed on NASDAQ",
+  "match": {"exchange_mic": "XNAS"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

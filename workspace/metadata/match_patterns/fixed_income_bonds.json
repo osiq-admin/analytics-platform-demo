@@ -1,0 +1,8 @@
+{
+  "pattern_id": "fixed_income_bonds",
+  "label": "Fixed Income Bonds",
+  "description": "All fixed income bond instruments across all venues",
+  "match": {"asset_class": "fixed_income", "instrument_type": "bond"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}

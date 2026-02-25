@@ -1,0 +1,8 @@
+{
+  "pattern_id": "commodity_instruments",
+  "label": "Commodity Instruments",
+  "description": "All commodity instruments",
+  "match": {"asset_class": "commodity"},
+  "created_at": "2026-02-25T10:00:00Z",
+  "layer": "oob"
+}
