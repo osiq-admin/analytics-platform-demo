@@ -16,9 +16,14 @@ interface ScoreBreakdownProps {
   alert: AlertTrace;
 }
 
+/** Format snake_case to Title Case */
+function formatLabel(value: string): string {
+  return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export default function ScoreBreakdown({ alert }: ScoreBreakdownProps) {
   const data = alert.calculation_scores.map((cs) => ({
-    name: cs.calc_id,
+    name: formatLabel(cs.calc_id),
     score: cs.score,
     strictness: cs.strictness,
     passed: cs.threshold_passed,
@@ -43,10 +48,10 @@ export default function ScoreBreakdown({ alert }: ScoreBreakdownProps) {
                 strokeDasharray="3 3"
                 label={{ value: "Threshold", fontSize: 10, fill: "var(--color-destructive)" }}
               />
-              <Bar dataKey="score" radius={[4, 4, 0, 0]}>
-                {data.map((entry, i) => (
+              <Bar dataKey="score" name="Score" radius={[4, 4, 0, 0]}>
+                {data.map((entry) => (
                   <Cell
-                    key={i}
+                    key={entry.name}
                     fill={
                       entry.strictness === "MUST_PASS"
                         ? entry.passed
@@ -74,7 +79,7 @@ export default function ScoreBreakdown({ alert }: ScoreBreakdownProps) {
           <tbody>
             {alert.calculation_scores.map((cs) => (
               <tr key={cs.calc_id} className="border-b border-border/50">
-                <td className="py-1">{cs.calc_id}</td>
+                <td className="py-1">{formatLabel(cs.calc_id)}</td>
                 <td className="py-1">
                   <StatusBadge
                     label={cs.strictness}
@@ -94,6 +99,14 @@ export default function ScoreBreakdown({ alert }: ScoreBreakdownProps) {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+            <tr className="border-t border-border">
+              <td className="py-1 font-semibold text-foreground">Total</td>
+              <td />
+              <td className="py-1 font-mono font-semibold text-accent">{alert.accumulated_score}</td>
+              <td />
+            </tr>
+          </tfoot>
         </table>
 
         {/* Summary */}

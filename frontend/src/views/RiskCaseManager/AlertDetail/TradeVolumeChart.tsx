@@ -66,10 +66,11 @@ export default function TradeVolumeChart({ productId, alertDate }: TradeVolumeCh
             tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v))}
           />
           <Tooltip
-            contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+            contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-foreground)" }}
             labelStyle={{ fontSize: 10, color: "var(--color-muted)" }}
+            itemStyle={{ color: "var(--color-muted)" }}
           />
-          <Bar dataKey="volume" fill="var(--color-accent)" opacity={0.7} radius={[2, 2, 0, 0]} />
+          <Bar dataKey="volume" name="Volume" fill="var(--color-accent)" opacity={0.7} radius={[2, 2, 0, 0]} />
           {alertDate && (
             <ReferenceLine x={alertDate} stroke="var(--color-error)" strokeDasharray="3 3" label="" />
           )}

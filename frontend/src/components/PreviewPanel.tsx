@@ -99,8 +99,10 @@ export default function PreviewPanel({
                   fontSize: 11,
                   color: "var(--color-foreground)",
                 }}
+                labelStyle={{ color: "var(--color-foreground)" }}
+                itemStyle={{ color: "var(--color-muted)" }}
               />
-              <Bar dataKey="maxScore" radius={[0, 3, 3, 0]}>
+              <Bar dataKey="maxScore" name="Max Score" radius={[0, 3, 3, 0]}>
                 {chartData.map((_entry, idx) => (
                   <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                 ))}
@@ -128,6 +130,8 @@ export default function PreviewPanel({
                   fontSize: 11,
                   color: "var(--color-foreground)",
                 }}
+                labelStyle={{ color: "var(--color-foreground)" }}
+                itemStyle={{ color: "var(--color-muted)" }}
               />
               {selectedCalcs.map((sc, idx) => {
                 const calc = calcMap.get(sc.calc_id);

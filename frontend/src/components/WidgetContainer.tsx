@@ -60,6 +60,7 @@ export default function WidgetContainer({
   return (
     <div
       className="rounded border border-border bg-surface flex flex-col overflow-hidden"
+      style={{ contain: "layout paint" }}
       data-widget={id}
       {...(dataTour ? { "data-tour": dataTour } : {})}
     >
@@ -92,7 +93,7 @@ export default function WidgetContainer({
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto p-3">
+      <div className="overflow-auto p-3" style={{ height: 240 }}>
         {children}
       </div>
     </div>

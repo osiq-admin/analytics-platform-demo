@@ -4,6 +4,11 @@ import DataGrid from "../../components/DataGrid.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import type { AlertSummary as AlertSummaryType } from "../../stores/alertStore.ts";
 
+/** Format snake_case to Title Case */
+function formatLabel(value: string): string {
+  return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 interface AlertSummaryProps {
   alerts: AlertSummaryType[];
   onSelect: (alert: AlertSummaryType) => void;
@@ -57,7 +62,7 @@ export default function AlertSummaryGrid({
         minWidth: 100,
         cellRenderer: (p: { value: string }) =>
           StatusBadge({
-            label: p.value ?? "",
+            label: formatLabel(p.value ?? ""),
             variant: p.value === "all_passed" ? "success" : "warning",
           }),
       },
