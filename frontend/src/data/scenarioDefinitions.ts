@@ -2156,6 +2156,860 @@ const S18_IMPLEMENT_FEEDBACK: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// Scenario Definitions — Entities (S19-S20)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// S19: Explore Entity Data Model (Beginner, 5 min)
+// --------------------------------------------------------------------------
+const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
+  id: "s19_explore_entity_model",
+  name: "Explore Entity Data Model",
+  description:
+    "Walk through the Entity Designer to understand the platform's 8-entity data model — fields, types, relationships, and how entities connect via foreign keys.",
+  category: "entities",
+  difficulty: "beginner",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='entity-list']",
+      title: "Entity Designer Overview",
+      content:
+        "Welcome to the Entity Designer. The left panel lists all 8 entities in the data model: product, execution, order, md_intraday, md_eod, venue, account, and trader. Each entity represents a core domain object in the trade surveillance system.",
+      placement: "right",
+      route: "/entities",
+      action: "navigate",
+      actionTarget: "[data-tour='entity-list']",
+      hint: "Navigate to the Entity Designer using the sidebar (under Explore).",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='entity-list'] .ag-body-viewport .ag-row:first-child",
+      title: "Select the Product Entity",
+      content:
+        "Click on 'product' to view its field definitions. Products are the core instruments — 50 rows covering equities, FX, and futures with ISO-standard identifiers.",
+      placement: "right",
+      action: "click",
+      actionTarget:
+        "[data-tour='entity-list'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click on the 'product' entity in the list to select it.",
+      validation: "[data-tour='entity-fields']",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='entity-fields']",
+      title: "Product Fields — ISO Identifiers",
+      content:
+        "The fields grid shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN (International Securities Identification Number), CFI (Classification of Financial Instruments), and MIC (Market Identifier Code). These follow ISO 6166, ISO 10962, and ISO 10383 respectively.",
+      placement: "bottom",
+      action: "wait",
+      hint: "Review the field definitions grid. Look for ISIN, CFI, and MIC columns — these are ISO-standard identifiers.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='entity-relationships']",
+      title: "Relationship Graph",
+      content:
+        "The relationship graph (React Flow) shows how entities connect. Product is referenced by executions and orders. The directed edges represent foreign key relationships — arrows point from the child entity to the parent.",
+      placement: "left",
+      action: "wait",
+      hint: "Look at the relationship graph to see how product connects to other entities.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='entity-list'] .ag-body-viewport .ag-row:nth-child(2)",
+      title: "Select the Execution Entity",
+      content:
+        "Click on 'execution' to see its 13 fields. Executions represent trade fills — 509 rows with FIX Protocol fields like exec_type and capacity. Each execution references an order via the order_id foreign key.",
+      placement: "right",
+      action: "click",
+      actionTarget:
+        "[data-tour='entity-list'] .ag-body-viewport .ag-row:nth-child(2)",
+      hint: "Click on the 'execution' entity to view its fields.",
+      validation: "[data-tour='entity-fields']",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='entity-fields']",
+      title: "Foreign Key: order_id",
+      content:
+        "Notice the order_id field — this is a foreign key linking each execution to its parent order. The execution also has venue_mic (FK to venue), enabling cross-venue analysis. These relationships power the detection models' ability to correlate trading activity across entities.",
+      placement: "bottom",
+      action: "wait",
+      hint: "Find the order_id and venue_mic fields in the grid. These are foreign keys to the order and venue entities.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='entity-relationships']",
+      title: "Full Relationship Map",
+      content:
+        "The graph now highlights execution's connections: order_id points to the order entity, venue_mic points to venue. Orders connect to trader and account. This web of relationships enables the surveillance engine to trace suspicious patterns across the entire trade lifecycle.",
+      placement: "left",
+      action: "wait",
+      hint: "Study the relationship graph to see execution's foreign keys. Trace the path: execution → order → trader/account.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='entity-list']",
+      title: "Entity Data Model Complete",
+      content:
+        "You've explored the core entities and their relationships. The 8-entity model covers: instruments (product), trading (order, execution), market data (md_eod, md_intraday), participants (trader, account), and infrastructure (venue). Next, try importing and previewing raw data (S20).",
+      placement: "right",
+      action: "wait",
+      delay: 3000,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// S20: Import and Preview Data (Beginner, 4 min)
+// --------------------------------------------------------------------------
+const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
+  id: "s20_import_preview_data",
+  name: "Import and Preview Data",
+  description:
+    "Explore raw data files, preview CSV contents in the Data Manager, verify loaded tables in the Schema Explorer, and run a query in the SQL Console.",
+  category: "entities",
+  difficulty: "beginner",
+  estimatedMinutes: 4,
+  prerequisites: ["s19_explore_entity_model"],
+  steps: [
+    {
+      target: "[data-tour='data-list']",
+      title: "Data Manager — File List",
+      content:
+        "The Data Manager shows all data files loaded into the platform. The left panel lists CSV and Parquet files for each entity — execution.csv, product.csv, order.csv, and more. Each file corresponds to one of the 8 entities you explored in the Entity Designer.",
+      placement: "right",
+      route: "/data",
+      action: "navigate",
+      actionTarget: "[data-tour='data-list']",
+      hint: "Navigate to the Data Manager using the sidebar (under Explore).",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='data-list'] .ag-body-viewport .ag-row:first-child",
+      title: "Preview execution.csv",
+      content:
+        "Click on execution.csv to preview its contents. The AG Grid on the right will show the raw data with all 13 columns — execution_id, order_id, product_id, venue_mic, price, quantity, exec_type, capacity, and more.",
+      placement: "right",
+      action: "click",
+      actionTarget:
+        "[data-tour='data-list'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click on execution.csv (or the first file) to preview its data.",
+      validation: "[data-tour='data-preview']",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='data-preview']",
+      title: "Inspect Column Count and Data",
+      content:
+        "The preview grid shows 509 execution rows with 13 columns. Scroll horizontally to see all fields. Notice the FIX Protocol fields: exec_type (TRADE, CANCEL), capacity (AGENCY, PRINCIPAL), and the venue_mic linking to ISO 10383 venue codes.",
+      placement: "left",
+      action: "wait",
+      hint: "Scroll through the preview grid. Count the columns and note the FIX Protocol field values.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='data-list'] .ag-body-viewport .ag-row:nth-child(3)",
+      title: "Preview product.csv",
+      content:
+        "Now click on product.csv to preview the instrument master data. This file has 50 rows covering equities, FX pairs, and futures, each with ISO identifiers (ISIN, CFI, MIC) and instrument-specific fields (underlying, strike, expiry).",
+      placement: "right",
+      action: "click",
+      actionTarget:
+        "[data-tour='data-list'] .ag-body-viewport .ag-row:nth-child(3)",
+      hint: "Click on product.csv to preview the instrument master data.",
+      validation: "[data-tour='data-preview']",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='data-preview']",
+      title: "ISO-Standard Fields",
+      content:
+        "Notice the ISO-standard fields in product.csv: ISIN (e.g., US0378331005 for AAPL), CFI code (ESVUFR for equity), and primary_mic (XNGS for NASDAQ). These standards ensure the demo data mirrors real-world trade surveillance data formats.",
+      placement: "left",
+      action: "wait",
+      hint: "Find the ISIN, CFI, and primary_mic columns. Note the standard codes used.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='sql-editor']",
+      title: "Query the Data",
+      content:
+        "Now let's query the loaded data using the SQL Console. DuckDB makes all CSV and Parquet files queryable via SQL. Try a simple query to see how entities join together.",
+      placement: "right",
+      route: "/sql",
+      action: "navigate",
+      actionTarget: "[data-tour='sql-editor']",
+      hint: "Navigate to the SQL Console using the sidebar (under Explore).",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='sql-presets']",
+      title: "Use a Preset Query",
+      content:
+        "The preset queries provide ready-made examples. Select one to see how entities are queried and joined — for example, a query that joins executions with products to show trading volume by instrument.",
+      placement: "left",
+      action: "click",
+      actionTarget: "[data-tour='sql-presets'] button:first-child",
+      hint: "Click a preset query button to load a pre-written SQL statement into the editor.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='sql-results']",
+      title: "View Query Results",
+      content:
+        "The results grid shows the query output with full AG Grid features — sorting, filtering, and column resizing. You've now traced the full data path: raw files → Data Manager → Schema Explorer → SQL Console. The same data feeds into the detection pipeline and alert generation.",
+      placement: "top",
+      action: "wait",
+      hint: "Review the query results. Try modifying the SQL and running it again.",
+      delay: 3000,
+    },
+  ],
+};
+
+// ==========================================================================
+// Scenario Definitions — Investigation (S21-S23)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// S21: Alert Investigation Workflow (Beginner, 8 min)
+// --------------------------------------------------------------------------
+const S21_ALERT_INVESTIGATION: ScenarioDefinition = {
+  id: "s21_alert_investigation",
+  name: "Alert Investigation Workflow",
+  description:
+    "Full investigation flow from the Dashboard summary metrics through the Risk Case Manager — sort, drill into an alert, review score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
+  category: "investigation",
+  difficulty: "beginner",
+  estimatedMinutes: 8,
+  steps: [
+    {
+      target: "[data-tour='dashboard-cards']",
+      title: "Dashboard — Summary Metrics",
+      content:
+        "Start your investigation on the Dashboard. The summary cards show key metrics: total alerts generated, alerts by severity, average score, and detection model coverage. These give you a high-level view of the current alert landscape before drilling in.",
+      placement: "bottom",
+      route: "/dashboard",
+      action: "navigate",
+      actionTarget: "[data-tour='dashboard-cards']",
+      hint: "Navigate to the Dashboard using the sidebar.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='dashboard-by-model']",
+      title: "Alerts by Detection Model",
+      content:
+        "The 'Alerts by Model' chart breaks down alerts across the 5 detection models: Wash Trading (Full Day), Wash Trading (Intraday), Market Price Ramping, Insider Dealing, and Spoofing/Layering. Note which model generates the most alerts — this indicates where to focus your investigation.",
+      placement: "right",
+      action: "wait",
+      hint: "Review the chart to identify which detection model has the most alerts.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='dashboard-scores']",
+      title: "Score Distribution",
+      content:
+        "The score distribution histogram shows how alert scores are spread across ranges. Scores near the top (80-100) are high-confidence alerts that warrant immediate attention. A healthy distribution shows most alerts in the mid-range with fewer extreme scores.",
+      placement: "left",
+      action: "wait",
+      hint: "Look at the score distribution. Identify the score range with the most alerts.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='alert-grid']",
+      title: "Risk Case Manager — Alert Grid",
+      content:
+        "Navigate to the Risk Case Manager to see individual alerts. The AG Grid displays every alert with columns for score, model, product, alert date, and status. We'll sort by score to find the highest-priority cases.",
+      placement: "bottom",
+      route: "/alerts",
+      action: "navigate",
+      actionTarget: "[data-tour='alert-grid']",
+      hint: "Navigate to the Risk Case Manager using the sidebar.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='alert-grid'] .ag-header-cell:first-child",
+      title: "Sort by Score",
+      content:
+        "Click the Score column header to sort alerts by score descending. The highest-scoring alerts appear first — these have the strongest detection signals and should be investigated first.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='alert-grid'] .ag-header-cell:first-child",
+      hint: "Click the Score column header to sort alerts. Click again to reverse the sort order.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='alert-grid'] .ag-body-viewport .ag-row:first-child",
+      title: "Open the Top Alert",
+      content:
+        "Click on the highest-scoring alert to open its detail view. The detail panel provides everything needed for investigation: score breakdown, calculation trace, market data, related orders, and settings context.",
+      placement: "bottom",
+      action: "click",
+      actionTarget:
+        "[data-tour='alert-grid'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click on the top row (highest score) to open the alert detail view.",
+      delay: 2500,
+    },
+    {
+      target: ".flex-1.overflow-auto",
+      title: "Score Breakdown",
+      content:
+        "The Score Breakdown panel shows how the total alert score was calculated. Each contributing calculation has its own sub-score, weight, and contribution to the final score. This explains *why* this alert was generated and which signals were strongest.",
+      placement: "left",
+      action: "wait",
+      hint: "Review the score breakdown. Identify which calculation contributed the most to the total score.",
+      delay: 3500,
+    },
+    {
+      target: ".flex-1.overflow-auto",
+      title: "Calculation Trace DAG",
+      content:
+        "The Calculation Trace DAG visualizes the dependency graph of calculations that produced this alert. Nodes represent individual calculations, edges show data flow. This lets you trace the logic from raw market data through intermediate calculations to the final alert score.",
+      placement: "left",
+      action: "wait",
+      hint: "Study the DAG to understand the calculation pipeline. Follow the arrows from inputs to outputs.",
+      delay: 3500,
+    },
+    {
+      target: ".flex-1.overflow-auto",
+      title: "Market Data Chart",
+      content:
+        "The OHLC candlestick chart shows the product's market data around the alert date. Price action, volume, and the alert event are overlaid. Look for unusual patterns — price spikes before the alert, abnormal volume, or price reversals that correlate with the suspicious activity.",
+      placement: "left",
+      action: "wait",
+      hint: "Examine the candlestick chart. Look for price/volume anomalies around the alert date.",
+      delay: 3500,
+    },
+    {
+      target: ".flex-1.overflow-auto",
+      title: "Related Orders",
+      content:
+        "The Related Orders table shows all orders and executions linked to this alert — the specific trades that triggered the detection. Check order types (MARKET vs LIMIT), timing, quantities, and whether the same account appears on both sides (wash trading indicator).",
+      placement: "left",
+      action: "wait",
+      hint: "Review the related orders. Look for suspicious patterns: same account, opposing sides, close timestamps.",
+      delay: 3500,
+    },
+    {
+      target: ".flex-1.overflow-auto",
+      title: "Settings Trace",
+      content:
+        "The Settings Trace shows which threshold values were applied to generate this alert and how they resolved. It reveals the full resolution chain: default → asset class override → product-specific override. This helps you understand whether the alert reflects standard or customized sensitivity.",
+      placement: "left",
+      action: "wait",
+      hint: "Check the settings trace to see which thresholds applied and whether any overrides were active.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='alert-grid']",
+      title: "Investigation Complete",
+      content:
+        "You've completed a full alert investigation: Dashboard overview → Risk Case Manager → score breakdown → calculation trace → market data → related orders → settings trace. This workflow covers every dimension needed to assess whether an alert represents genuine market abuse or a false positive.",
+      placement: "bottom",
+      action: "wait",
+      delay: 3000,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// S22: Cross-Alert Analysis (Intermediate, 6 min)
+// --------------------------------------------------------------------------
+const S22_CROSS_ALERT_ANALYSIS: ScenarioDefinition = {
+  id: "s22_cross_alert_analysis",
+  name: "Cross-Alert Analysis",
+  description:
+    "Compare alerts across detection models to find patterns — filter alerts by model, analyze scores with SQL queries, and use the AI Assistant to identify cross-model correlations.",
+  category: "investigation",
+  difficulty: "intermediate",
+  estimatedMinutes: 6,
+  prerequisites: ["s21_alert_investigation"],
+  steps: [
+    {
+      target: "[data-tour='alert-grid']",
+      title: "Start with the Alert Grid",
+      content:
+        "We'll compare alerts across detection models to identify patterns. The Risk Case Manager grid shows all alerts — we'll filter by model to isolate specific detection types and compare their characteristics.",
+      placement: "bottom",
+      route: "/alerts",
+      action: "navigate",
+      actionTarget: "[data-tour='alert-grid']",
+      hint: "Navigate to the Risk Case Manager.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='alert-filters']",
+      title: "Filter by Detection Model",
+      content:
+        "Use the column filters to isolate alerts from a single detection model — for example, 'Wash Trading (Full Day)'. This lets you analyze one model's output in isolation. Notice the score range and product distribution for this model type.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='alert-filters']",
+      hint: "Click the filter icon on the Model column. Select 'Wash Trading (Full Day)' to filter.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='alert-grid'] .ag-body-viewport",
+      title: "Compare Scores Within Model",
+      content:
+        "With the filter active, compare the scores across alerts from the same model. Look for clustering — are most scores in a narrow range (consistent detection) or widely spread (variable signal strength)? High-variance models may need threshold tuning.",
+      placement: "bottom",
+      action: "wait",
+      hint: "Review the filtered results. Note the score range and any clustering patterns.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='sql-editor']",
+      title: "Analyze with SQL",
+      content:
+        "Switch to the SQL Console for deeper analysis. Run an analytical query to aggregate alerts by model — for example, 'SELECT model, COUNT(*) as count, AVG(score) as avg_score, MIN(score), MAX(score) FROM alerts GROUP BY model'. This reveals cross-model patterns that aren't visible in the grid.",
+      placement: "right",
+      route: "/sql",
+      action: "navigate",
+      actionTarget: "[data-tour='sql-editor']",
+      hint: "Navigate to the SQL Console and write a GROUP BY query to compare alert statistics across models.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='sql-results']",
+      title: "Review Aggregate Statistics",
+      content:
+        "The query results show aggregate metrics per model: alert count, average score, min/max scores. Compare models side by side — a model with very high average scores might be too sensitive, while one with few alerts might have thresholds set too high.",
+      placement: "top",
+      action: "wait",
+      hint: "Review the aggregated results. Compare average scores and alert counts across detection models.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='assistant-chat']",
+      title: "Ask the AI Assistant",
+      content:
+        "Use the AI Assistant to ask about cross-model patterns. Try: 'Which products have alerts from multiple detection models?' or 'Are there traders who appear frequently across different alert types?' The assistant can synthesize patterns across the entire data set.",
+      placement: "right",
+      route: "/assistant",
+      action: "navigate",
+      actionTarget: "[data-tour='assistant-chat']",
+      hint: "Navigate to the AI Assistant and ask about cross-model alert patterns.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='assistant-scenarios']",
+      title: "Use Built-in Scenarios",
+      content:
+        "The AI Assistant has built-in analysis scenarios that run pre-defined investigative queries. These cover common patterns: trader-level risk aggregation, product heat maps, and temporal clustering. Select a scenario to see a structured analysis without writing custom queries.",
+      placement: "left",
+      action: "wait",
+      hint: "Browse the scenario buttons on the right. Click one to run a pre-built analysis.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='assistant-chat']",
+      title: "Cross-Alert Analysis Complete",
+      content:
+        "You've analyzed alerts across models using three approaches: grid filtering for visual comparison, SQL queries for aggregate statistics, and AI-assisted pattern recognition. This multi-tool approach reveals correlations that single-view analysis would miss.",
+      placement: "right",
+      action: "wait",
+      delay: 3000,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// S23: Regulatory Coverage Audit (Advanced, 7 min)
+// --------------------------------------------------------------------------
+const S23_REGULATORY_AUDIT: ScenarioDefinition = {
+  id: "s23_regulatory_audit",
+  name: "Regulatory Coverage Audit",
+  description:
+    "Audit regulatory coverage using the Regulatory Map — review obligation cards, explore the traceability graph, identify coverage gaps, and navigate to the Model Composer to address them.",
+  category: "investigation",
+  difficulty: "advanced",
+  estimatedMinutes: 7,
+  prerequisites: ["s21_alert_investigation"],
+  steps: [
+    {
+      target: "[data-tour='regulatory-cards']",
+      title: "Regulatory Obligations Overview",
+      content:
+        "The Regulatory Map shows all regulatory obligations that your surveillance system must cover. Each card represents an obligation (e.g., MAR Article 12 — Market Manipulation) with its coverage status: covered (green), partial (amber), or gap (red).",
+      placement: "right",
+      route: "/regulatory",
+      action: "navigate",
+      actionTarget: "[data-tour='regulatory-cards']",
+      hint: "Navigate to the Regulatory Map using the sidebar.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='regulatory-cards']",
+      title: "Review Coverage Status",
+      content:
+        "Scan the obligation cards for their coverage status badges. Green cards have full model coverage — every required detection scenario is implemented. Amber cards have partial coverage — some but not all scenarios are addressed. Red cards represent gaps requiring immediate attention.",
+      placement: "right",
+      action: "wait",
+      hint: "Look at the coverage badges on each card. Count how many are green, amber, and red.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='regulatory-graph']",
+      title: "Traceability Graph",
+      content:
+        "The traceability graph (React Flow) visualizes the mapping from regulatory obligations to detection models to calculations. Follow the edges: an obligation node connects to the detection models that implement it, and those models connect to their underlying calculations. Gaps appear as unconnected obligation nodes.",
+      placement: "left",
+      action: "wait",
+      hint: "Study the graph. Trace paths from obligation nodes to model nodes. Look for obligations with no connected models.",
+      delay: 4000,
+    },
+    {
+      target: "[data-tour='regulatory-detail']",
+      title: "Drill Into an Obligation",
+      content:
+        "Click on an obligation card or graph node to see its detail view. This shows the full regulatory text, required detection capabilities, currently mapped models, and any identified gaps. The detail view is the starting point for addressing coverage shortfalls.",
+      placement: "left",
+      action: "click",
+      actionTarget: "[data-tour='regulatory-cards'] > div:first-child",
+      hint: "Click on an obligation card to view its full details and coverage analysis.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='regulatory-suggestions']",
+      title: "Review AI Suggestions",
+      content:
+        "The Suggestions panel shows AI-generated recommendations for improving coverage. Suggestions may include: creating a new detection model, adding calculations to an existing model, or adjusting thresholds. Each suggestion includes a rationale and priority level.",
+      placement: "left",
+      action: "wait",
+      hint: "Read the AI suggestions. Note which ones address coverage gaps and their priority levels.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='model-list']",
+      title: "Navigate to Model Composer",
+      content:
+        "To address a coverage gap, navigate to the Model Composer where you can create or modify detection models. The gap analysis from the Regulatory Map tells you exactly what detection capability is missing — now you'll implement it.",
+      placement: "right",
+      route: "/models",
+      action: "navigate",
+      actionTarget: "[data-tour='model-list']",
+      hint: "Navigate to the Model Composer to create or modify a detection model that addresses the gap.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='model-list']",
+      title: "Address the Gap",
+      content:
+        "In the Model Composer, you can create a new detection model or enhance an existing one based on the regulatory suggestions. Add the required calculations, configure thresholds, and define the detection query. When saved, the model will automatically appear in the Regulatory Map's traceability graph.",
+      placement: "right",
+      action: "wait",
+      hint: "Review existing models and identify which one to enhance, or create a new model for the uncovered obligation.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='regulatory-cards']",
+      title: "Regulatory Audit Complete",
+      content:
+        "You've completed a full regulatory coverage audit: reviewed obligation cards, explored the traceability graph, identified gaps, reviewed AI suggestions, and navigated to the Model Composer to address shortfalls. This closed-loop workflow ensures continuous regulatory compliance.",
+      placement: "right",
+      route: "/regulatory",
+      action: "navigate",
+      actionTarget: "[data-tour='regulatory-cards']",
+      hint: "Return to the Regulatory Map to verify the coverage status has improved.",
+      delay: 3000,
+    },
+  ],
+};
+
+// ==========================================================================
+// Scenario Definitions — Admin (S24-S25)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// S24: OOB vs Custom Metadata Review (Intermediate, 6 min)
+// --------------------------------------------------------------------------
+const S24_OOB_METADATA_REVIEW: ScenarioDefinition = {
+  id: "s24_oob_metadata_review",
+  name: "OOB vs Custom Metadata Review",
+  description:
+    "Understand the Out-of-Box (OOB) layer system — view layer badges, edit an OOB item to create a custom override, reset to OOB defaults, and use the version comparison panel to simulate an upgrade path.",
+  category: "admin",
+  difficulty: "intermediate",
+  estimatedMinutes: 6,
+  steps: [
+    {
+      target: "[data-tour='editor-type-selector']",
+      title: "Metadata Editor — Layer System",
+      content:
+        "The Metadata Editor manages all configuration in the platform. A key concept is the layer system: 'OOB' (Out-of-Box) items ship with the platform, while 'Custom' items are user modifications. This separation enables safe upgrades — your customizations are preserved when the platform updates its defaults.",
+      placement: "bottom",
+      route: "/editor",
+      action: "navigate",
+      actionTarget: "[data-tour='editor-type-selector']",
+      hint: "Navigate to the Metadata Editor using the sidebar (under Configure).",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='editor-layer-badge']",
+      title: "Layer Badges",
+      content:
+        "Each metadata item displays a layer badge: 'OOB' (blue) for factory defaults, 'Custom' (purple) for user-created items, and 'Modified' (amber) for OOB items that have been customized. The badge tells you at a glance whether an item has been changed from its original state.",
+      placement: "bottom",
+      action: "wait",
+      hint: "Look for the layer badge next to the item name. Note the color: blue = OOB, purple = Custom, amber = Modified.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='editor-json']",
+      title: "Select an OOB Item",
+      content:
+        "Select an item with an 'OOB' badge using the item dropdown. The JSON editor shows the factory-default configuration. This is the baseline that the platform ships with — any edits you make will create a custom layer on top.",
+      placement: "right",
+      action: "wait",
+      hint: "Use the item dropdown to select an item with a blue 'OOB' badge. Read the JSON to understand the default configuration.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='editor-json']",
+      title: "Edit to Create a Custom Override",
+      content:
+        "Make a small edit to the JSON — for example, change a description or adjust a threshold value. When you save, the item's badge will change from 'OOB' (blue) to 'Modified' (amber), indicating this is now a customized version of the factory default.",
+      placement: "right",
+      action: "type",
+      actionTarget: "[data-tour='editor-json'] .monaco-editor textarea",
+      actionValue: "custom",
+      hint: "Edit a value in the JSON editor. Watch the layer badge change from OOB to Modified after saving.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='editor-save']",
+      title: "Save the Modification",
+      content:
+        "Click Save to persist your change. The layer badge updates to 'Modified' — this tells reviewers and administrators that this item has been customized and differs from the factory default.",
+      placement: "top",
+      action: "click",
+      actionTarget: "[data-tour='editor-save'] button:last-child",
+      hint: "Click Save and observe the layer badge change to 'Modified' (amber).",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='editor-oob-banner']",
+      title: "OOB Conflict Banner",
+      content:
+        "When a platform upgrade ships a new version of an item you've modified, an OOB conflict banner appears. This warns you that the factory default has changed and your customization may need review. The banner shows the version difference and offers options to resolve the conflict.",
+      placement: "bottom",
+      action: "wait",
+      hint: "Look for the OOB conflict banner at the top of the editor. It appears when the factory default has been updated.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='editor-reset-oob']",
+      title: "Reset to OOB Default",
+      content:
+        "Click the Reset button to discard your customization and restore the factory default. This is useful when an upgrade provides better defaults or when a customization is no longer needed. The badge reverts from 'Modified' back to 'OOB'.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='editor-reset-oob']",
+      hint: "Click the Reset to OOB button to restore the factory default. Watch the badge revert to 'OOB' (blue).",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='editor-visual']",
+      title: "Version Comparison",
+      content:
+        "The Visual Editor includes a version comparison panel with dual dropdowns and a color-coded diff table. Compare your custom version against the OOB baseline or between different saved versions. Green rows are additions, red rows are removals, and amber rows are modifications. This is essential for upgrade planning and audit trails.",
+      placement: "left",
+      action: "wait",
+      hint: "Open the Visual Editor tab. Use the version dropdowns to compare OOB vs Custom. Review the color-coded diff.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='editor-type-selector']",
+      title: "OOB Metadata Review Complete",
+      content:
+        "You've learned the layer system: OOB defaults provide a stable baseline, Custom overrides preserve your changes, and the version comparison panel enables safe upgrades. This architecture ensures platform updates never silently overwrite your customizations.",
+      placement: "bottom",
+      action: "wait",
+      delay: 3000,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// S25: Full Platform Demo Walkthrough (Advanced, 12 min)
+// --------------------------------------------------------------------------
+const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
+  id: "s25_full_platform_demo",
+  name: "Full Platform Demo Walkthrough",
+  description:
+    "Complete end-to-end demo covering the entire platform: data ingestion, entity model, pipeline execution, alert investigation, threshold tuning, model review, regulatory compliance, and governance submission — all in one guided flow.",
+  category: "admin",
+  difficulty: "advanced",
+  estimatedMinutes: 12,
+  prerequisites: ["s21_alert_investigation", "s24_oob_metadata_review"],
+  steps: [
+    {
+      target: "[data-tour='data-list']",
+      title: "Step 1: Data Ingestion",
+      content:
+        "We begin at the Data Manager — the entry point for all trade data. The platform ingests CSV files for 8 entity types: products, orders, executions, market data, venues, accounts, and traders. This raw data feeds into everything downstream.",
+      placement: "right",
+      route: "/data",
+      action: "navigate",
+      actionTarget: "[data-tour='data-list']",
+      hint: "Navigate to the Data Manager to see the raw data files loaded into the platform.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='data-preview']",
+      title: "Preview Raw Data",
+      content:
+        "Click on a file to preview its contents. The Data Manager provides a quick-look grid for any loaded file — useful for verifying data quality before running detection. Notice the ISO-standard fields (ISIN, MIC) and FIX Protocol values (OrdType, ExecType).",
+      placement: "left",
+      action: "click",
+      actionTarget:
+        "[data-tour='data-list'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click on a data file to preview it in the right panel.",
+      validation: "[data-tour='data-preview']",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='entity-list']",
+      title: "Step 2: Entity Data Model",
+      content:
+        "The Entity Designer shows how data is structured. Eight entities with typed fields and foreign key relationships form the data model. The relationship graph visualizes how entities connect — executions reference orders, orders reference traders and accounts.",
+      placement: "right",
+      route: "/entities",
+      action: "navigate",
+      actionTarget: "[data-tour='entity-list']",
+      hint: "Navigate to the Entity Designer to see the data model.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='entity-relationships']",
+      title: "Entity Relationships",
+      content:
+        "The relationship graph shows the full data model topology. These connections power the detection engine — by following foreign keys, it can correlate a suspicious execution back to its order, the trader who placed it, and the account that funded it.",
+      placement: "left",
+      action: "wait",
+      hint: "Study the relationship graph. Trace connections from execution through order to trader and account.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='pipeline-dag']",
+      title: "Step 3: Run the Detection Pipeline",
+      content:
+        "The Pipeline Monitor shows the detection DAG — the sequence of calculations and detection models that process raw data into alerts. Each node represents a calculation step; edges show dependencies. The DAG ensures calculations execute in the correct order.",
+      placement: "right",
+      route: "/pipeline",
+      action: "navigate",
+      actionTarget: "[data-tour='pipeline-dag']",
+      hint: "Navigate to the Pipeline Monitor to see the detection pipeline.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='pipeline-run']",
+      title: "Execute the Pipeline",
+      content:
+        "Click 'Run Pipeline' to execute all detection models on the loaded data. The DAG nodes animate as each calculation completes — green for success, red for failure. When finished, new alerts appear in the Risk Case Manager.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='pipeline-run']",
+      hint: "Click the Run Pipeline button. Watch the DAG nodes animate as calculations execute.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='alert-grid']",
+      title: "Step 4: Investigate Alerts",
+      content:
+        "The Risk Case Manager shows all generated alerts. Sort by score to find the highest-priority cases. Each alert includes a full investigation package: score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
+      placement: "bottom",
+      route: "/alerts",
+      action: "navigate",
+      actionTarget: "[data-tour='alert-grid']",
+      hint: "Navigate to the Risk Case Manager and sort by score to find the top alert.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='alert-grid'] .ag-body-viewport .ag-row:first-child",
+      title: "Drill Into an Alert",
+      content:
+        "Click the top alert to open its detail view. Review the score breakdown to understand why it triggered, the market data chart for price context, and related orders for the specific trades involved. This is the core investigation workflow.",
+      placement: "bottom",
+      action: "click",
+      actionTarget:
+        "[data-tour='alert-grid'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click the top alert row to open its detail panel and review the investigation data.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='settings-list']",
+      title: "Step 5: Tune Thresholds",
+      content:
+        "Based on the investigation, you may want to adjust detection sensitivity. The Settings Manager lets you modify thresholds — lower them to catch more activity, raise them to reduce false positives. Use the Resolution Tester to verify how changes affect specific products.",
+      placement: "right",
+      route: "/settings",
+      action: "navigate",
+      actionTarget: "[data-tour='settings-list']",
+      hint: "Navigate to the Settings Manager to review and tune detection thresholds.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='model-list']",
+      title: "Step 6: Review Detection Models",
+      content:
+        "The Model Composer lets you review and modify the detection models that generated the alerts. Each model defines which calculations to run, how to score them, and what thresholds trigger alerts. Use the validation panel to ensure model integrity.",
+      placement: "right",
+      route: "/models",
+      action: "navigate",
+      actionTarget: "[data-tour='model-list']",
+      hint: "Navigate to the Model Composer to review the detection models.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='regulatory-cards']",
+      title: "Step 7: Regulatory Compliance",
+      content:
+        "The Regulatory Map shows how your detection models map to regulatory obligations. Coverage cards indicate which obligations are fully covered, partially covered, or have gaps. The traceability graph provides end-to-end lineage from regulation to detection logic.",
+      placement: "right",
+      route: "/regulatory",
+      action: "navigate",
+      actionTarget: "[data-tour='regulatory-cards']",
+      hint: "Navigate to the Regulatory Map to check compliance coverage.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='regulatory-graph']",
+      title: "Regulatory Traceability",
+      content:
+        "The traceability graph connects regulatory obligations to detection models to calculations. This proves to regulators that every required surveillance capability is implemented and can be traced to specific detection logic.",
+      placement: "left",
+      action: "wait",
+      hint: "Review the traceability graph. Ensure all obligations have at least one connected detection model.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='dashboard-cards']",
+      title: "Step 8: Return to Dashboard",
+      content:
+        "Complete the loop by returning to the Dashboard. The summary metrics now reflect the full detection run — total alerts, score distributions, and model coverage. From here you can start a new investigation cycle or drill into any area for deeper analysis.",
+      placement: "bottom",
+      route: "/dashboard",
+      action: "navigate",
+      actionTarget: "[data-tour='dashboard-cards']",
+      hint: "Navigate back to the Dashboard to see the full picture.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='dashboard-triggers']",
+      title: "Full Platform Demo Complete",
+      content:
+        "You've completed the full platform walkthrough: data ingestion → entity model → pipeline execution → alert investigation → threshold tuning → model review → regulatory compliance → dashboard summary. This end-to-end flow demonstrates every capability of the trade surveillance platform.",
+      placement: "left",
+      action: "wait",
+      delay: 3500,
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -2177,4 +3031,11 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s16_submit_use_case: S16_SUBMIT_USE_CASE,
   s17_review_submission: S17_REVIEW_SUBMISSION,
   s18_implement_feedback: S18_IMPLEMENT_FEEDBACK,
+  s19_explore_entity_model: S19_EXPLORE_ENTITY_MODEL,
+  s20_import_preview_data: S20_IMPORT_PREVIEW_DATA,
+  s21_alert_investigation: S21_ALERT_INVESTIGATION,
+  s22_cross_alert_analysis: S22_CROSS_ALERT_ANALYSIS,
+  s23_regulatory_audit: S23_REGULATORY_AUDIT,
+  s24_oob_metadata_review: S24_OOB_METADATA_REVIEW,
+  s25_full_platform_demo: S25_FULL_PLATFORM_DEMO,
 };
