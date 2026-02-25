@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../../api/client.ts";
 import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
+import SuggestionInput from "../../components/SuggestionInput.tsx";
 
 interface ResolveResult {
   setting_id: string;
@@ -16,13 +17,30 @@ interface OverrideEditorProps {
 }
 
 export default function OverrideEditor({ settingId, valueType }: OverrideEditorProps) {
-  const [context, setContext] = useState<Record<string, string>>({
-    asset_class: "",
-    product_id: "",
-  });
+  const [matchKeys, setMatchKeys] = useState<Array<{ key: string; entity: string }>>([]);
+  const [context, setContext] = useState<Record<string, string>>({});
   const [result, setResult] = useState<ResolveResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/metadata/domain-values/match-keys")
+      .then((r) => r.json())
+      .then((d) => {
+        const raw = (d.match_keys || []) as Array<{ key: string; entity: string }>;
+        const uniqueKeys = [...new Set(raw.map((mk) => mk.key))];
+        setMatchKeys(raw);
+        const initial: Record<string, string> = {};
+        uniqueKeys.slice(0, 4).forEach((k) => (initial[k] = ""));
+        setContext(initial);
+      })
+      .catch(() => {
+        setMatchKeys([{ key: "asset_class", entity: "product" }, { key: "product_id", entity: "product" }]);
+        setContext({ asset_class: "", product_id: "" });
+      });
+  }, []);
+
+  const contextKeys = Object.keys(context);
 
   const handleResolve = async () => {
     setLoading(true);
@@ -52,24 +70,20 @@ export default function OverrideEditor({ settingId, valueType }: OverrideEditorP
           Test how setting <span className="text-accent">{settingId}</span> ({valueType}) resolves for a given entity context.
         </p>
         <div className="grid grid-cols-2 gap-2">
-          <label className="flex flex-col gap-1">
-            <span className="text-muted">Asset Class</span>
-            <input
-              className="px-2 py-1 rounded border border-border bg-background text-foreground text-xs"
-              value={context.asset_class}
-              onChange={(e) => setContext({ ...context, asset_class: e.target.value })}
-              placeholder="e.g. equity"
+          {contextKeys.map((key) => (
+            <SuggestionInput
+              key={key}
+              value={context[key] || ""}
+              onChange={(val) =>
+                setContext({ ...context, [key]: Array.isArray(val) ? val[0] || "" : val })
+              }
+              entityId={matchKeys.find((mk) => mk.key === key)?.entity}
+              fieldName={key}
+              placeholder={`e.g. ${key === "asset_class" ? "equity" : key === "product_id" ? "AAPL" : ""}`}
+              label={key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+              allowFreeform={true}
             />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-muted">Product ID</span>
-            <input
-              className="px-2 py-1 rounded border border-border bg-background text-foreground text-xs"
-              value={context.product_id}
-              onChange={(e) => setContext({ ...context, product_id: e.target.value })}
-              placeholder="e.g. AAPL"
-            />
-          </label>
+          ))}
         </div>
 
         <button

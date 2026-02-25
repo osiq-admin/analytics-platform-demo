@@ -1,6 +1,10 @@
-import { useState } from "react";
-import type { SettingDef, SettingOverride } from "../../stores/metadataStore.ts";
+import { useState, useEffect } from "react";
+import type { SettingDef, SettingOverride, ScoreStepDef } from "../../stores/metadataStore.ts";
 import Panel from "../../components/Panel.tsx";
+import SuggestionInput from "../../components/SuggestionInput.tsx";
+import MatchPatternPicker from "../../components/MatchPatternPicker.tsx";
+import ScoreStepBuilder from "../../components/ScoreStepBuilder.tsx";
+import Tooltip from "../../components/Tooltip.tsx";
 
 interface SettingFormProps {
   setting: SettingDef;
@@ -27,8 +31,23 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
     typeof setting.default === "object" ? JSON.stringify(setting.default) : String(setting.default ?? "")
   );
   const [overrides, setOverrides] = useState<SettingOverride[]>(setting.overrides ?? []);
+  const [scoreSteps, setScoreSteps] = useState<ScoreStepDef[]>(
+    valueType === "score_steps" && typeof setting.default === "object" && Array.isArray(setting.default)
+      ? (setting.default as ScoreStepDef[])
+      : []
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch match keys for SuggestionInput domain values
+  const [matchKeysData, setMatchKeysData] = useState<Array<{ key: string; entity: string; domain_values: string[] | null }>>([]);
+  useEffect(() => {
+    fetch("/api/metadata/domain-values/match-keys")
+      .then((r) => r.json())
+      .then((d) => setMatchKeysData(d.match_keys || []))
+      .catch(() => {});
+  }, []);
+  const matchKeyNames = [...new Set(matchKeysData.map((mk) => mk.key))];
 
   const parseDefault = (raw: string): unknown => {
     if (valueType === "decimal") return parseFloat(raw) || 0;
@@ -86,7 +105,7 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
         description,
         value_type: valueType,
         match_type: matchType,
-        default: parseDefault(defaultValue),
+        default: valueType === "score_steps" ? scoreSteps : parseDefault(defaultValue),
         overrides,
       });
     } catch (e) {
@@ -110,7 +129,9 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
       <div className="space-y-3">
         {/* Setting ID */}
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Setting ID</span>
+          <Tooltip content="Unique identifier for this setting">
+            <span className="text-muted">Setting ID</span>
+          </Tooltip>
           <input
             className={inputCls}
             value={settingId}
@@ -122,7 +143,9 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
 
         {/* Name */}
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Name</span>
+          <Tooltip content="Display name for the setting">
+            <span className="text-muted">Name</span>
+          </Tooltip>
           <input
             className={inputCls}
             value={name}
@@ -133,7 +156,9 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
 
         {/* Description */}
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Description</span>
+          <Tooltip content="Purpose of this setting">
+            <span className="text-muted">Description</span>
+          </Tooltip>
           <input
             className={inputCls}
             value={description}
@@ -144,7 +169,9 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
 
         {/* Value Type */}
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Value Type</span>
+          <Tooltip content="Data type for the setting value">
+            <span className="text-muted">Value Type</span>
+          </Tooltip>
           <select
             className={inputCls}
             value={valueType}
@@ -158,7 +185,9 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
 
         {/* Match Type */}
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Match Type</span>
+          <Tooltip content="How overrides are matched to context">
+            <span className="text-muted">Match Type</span>
+          </Tooltip>
           <select
             className={inputCls}
             value={matchType}
@@ -171,19 +200,28 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
         </label>
 
         {/* Default Value */}
-        <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Default Value</span>
-          <input
-            className={inputCls}
-            value={defaultValue}
-            onChange={(e) => setDefaultValue(e.target.value)}
-            placeholder={valueType === "decimal" ? "0.00" : "value"}
-          />
-        </label>
+        <div className="flex flex-col gap-1 text-xs">
+          <Tooltip content="Value when no override matches">
+            <span className="text-muted">Default Value</span>
+          </Tooltip>
+          {valueType === "score_steps" ? (
+            <ScoreStepBuilder
+              value={scoreSteps}
+              onChange={(steps) => setScoreSteps(steps)}
+            />
+          ) : (
+            <input
+              className={inputCls}
+              value={defaultValue}
+              onChange={(e) => setDefaultValue(e.target.value)}
+              placeholder={valueType === "decimal" ? "0.00" : "value"}
+            />
+          )}
+        </div>
 
         {/* Overrides */}
         <Panel
-          title={`Overrides (${overrides.length})`}
+          title={<Tooltip content="Context-specific value overrides">{`Overrides (${overrides.length})`}</Tooltip>}
           actions={
             <button className={btnCls} onClick={addOverride}>
               + Add Override
@@ -209,6 +247,12 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
                     </button>
                   </div>
 
+                  {/* Match Pattern Picker */}
+                  <MatchPatternPicker
+                    onSelect={(match) => updateOverride(idx, { match })}
+                    currentMatch={ovr.match}
+                  />
+
                   {/* Match patterns */}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
@@ -222,18 +266,23 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
                     </div>
                     {Object.entries(ovr.match).map(([k, v], mIdx) => (
                       <div key={mIdx} className="flex items-center gap-1">
-                        <input
-                          className="px-1 py-0.5 rounded border border-border bg-surface text-foreground text-xs flex-1"
+                        <SuggestionInput
                           value={k}
-                          onChange={(e) => updateMatchKey(idx, k, e.target.value, v)}
-                          placeholder="key"
+                          onChange={(newKey) => updateMatchKey(idx, k, Array.isArray(newKey) ? newKey[0] || "" : newKey, v)}
+                          suggestions={matchKeyNames}
+                          placeholder="key (e.g. asset_class)"
+                          allowFreeform={true}
+                          className="flex-1"
                         />
                         <span className="text-muted">=</span>
-                        <input
-                          className="px-1 py-0.5 rounded border border-border bg-surface text-foreground text-xs flex-1"
+                        <SuggestionInput
                           value={v}
-                          onChange={(e) => updateMatchKey(idx, k, k, e.target.value)}
+                          onChange={(newVal) => updateMatchKey(idx, k, k, Array.isArray(newVal) ? newVal[0] || "" : newVal)}
+                          entityId={matchKeysData.find((mk) => mk.key === k)?.entity}
+                          fieldName={k}
                           placeholder="value"
+                          allowFreeform={true}
+                          className="flex-1"
                         />
                         <button
                           className="text-red-400 hover:text-red-300 px-1"

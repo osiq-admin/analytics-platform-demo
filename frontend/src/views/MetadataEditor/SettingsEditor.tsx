@@ -1,4 +1,9 @@
-import type { SettingOverride } from "../../stores/metadataStore.ts";
+import { useState, useEffect } from "react";
+import type { SettingOverride, ScoreStepDef } from "../../stores/metadataStore.ts";
+import SuggestionInput from "../../components/SuggestionInput.tsx";
+import MatchPatternPicker from "../../components/MatchPatternPicker.tsx";
+import ScoreStepBuilder from "../../components/ScoreStepBuilder.tsx";
+import Tooltip from "../../components/Tooltip.tsx";
 
 interface EditorProps {
   value: Record<string, unknown>;
@@ -85,6 +90,16 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
     onChange({ ...value, ...patch });
   };
 
+  // Fetch match keys for SuggestionInput domain values
+  const [matchKeysData, setMatchKeysData] = useState<Array<{ key: string; entity: string; domain_values: string[] | null }>>([]);
+  useEffect(() => {
+    fetch("/api/metadata/domain-values/match-keys")
+      .then((r) => r.json())
+      .then((d) => setMatchKeysData(d.match_keys || []))
+      .catch(() => {});
+  }, []);
+  const matchKeyNames = [...new Set(matchKeysData.map((mk) => mk.key))];
+
   /* ── Override helpers ── */
   const updateOverride = (idx: number, patch: Partial<SettingOverride>) => {
     const next = overrides.map((o, i) => (i === idx ? { ...o, ...patch } : o));
@@ -129,7 +144,9 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
     <div className="p-4 space-y-4 overflow-auto">
       {/* ── Name ── */}
       <div>
-        <label className={labelCls}>Name</label>
+        <Tooltip content="Display name for the setting">
+          <label className={labelCls}>Name</label>
+        </Tooltip>
         <input
           className={inputCls}
           value={String(value.name ?? "")}
@@ -140,7 +157,9 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
 
       {/* ── Description ── */}
       <div>
-        <label className={labelCls}>Description</label>
+        <Tooltip content="Purpose of this setting">
+          <label className={labelCls}>Description</label>
+        </Tooltip>
         <input
           className={inputCls}
           value={String(value.description ?? "")}
@@ -151,7 +170,9 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
 
       {/* ── Value Type ── */}
       <div>
-        <label className={labelCls}>Value Type</label>
+        <Tooltip content="Data type for the setting value">
+          <label className={labelCls}>Value Type</label>
+        </Tooltip>
         <select
           className={inputCls}
           value={valueType}
@@ -167,7 +188,9 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
 
       {/* ── Match Type ── */}
       <div>
-        <label className={labelCls}>Match Type</label>
+        <Tooltip content="How overrides are matched to context">
+          <label className={labelCls}>Match Type</label>
+        </Tooltip>
         <select
           className={inputCls}
           value={String(value.match_type ?? "hierarchy")}
@@ -183,18 +206,33 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
 
       {/* ── Default Value ── */}
       <div>
-        <label className={labelCls}>Default Value</label>
-        <ValueInput
-          valueType={valueType}
-          currentValue={value.default}
-          onValueChange={(v) => update({ default: v })}
-        />
+        <Tooltip content="Value when no override matches">
+          <label className={labelCls}>Default Value</label>
+        </Tooltip>
+        {valueType === "score_steps" ? (
+          <ScoreStepBuilder
+            value={
+              Array.isArray(value.default)
+                ? (value.default as ScoreStepDef[])
+                : []
+            }
+            onChange={(steps) => update({ default: steps })}
+          />
+        ) : (
+          <ValueInput
+            valueType={valueType}
+            currentValue={value.default}
+            onValueChange={(v) => update({ default: v })}
+          />
+        )}
       </div>
 
       {/* ── Overrides ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className={labelCls}>Overrides ({overrides.length})</span>
+          <Tooltip content="Context-specific value overrides">
+            <span className={labelCls}>Overrides ({overrides.length})</span>
+          </Tooltip>
           <button className={btnCls} onClick={addOverride}>
             + Add Override
           </button>
@@ -214,6 +252,12 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
               </button>
             </div>
 
+            {/* Match Pattern Picker */}
+            <MatchPatternPicker
+              onSelect={(match) => updateOverride(idx, { match })}
+              currentMatch={ovr.match}
+            />
+
             {/* Match Patterns */}
             <div className="space-y-1">
               <div className="flex items-center justify-between">
@@ -227,18 +271,23 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
               </div>
               {Object.entries(ovr.match).map(([k, v], mIdx) => (
                 <div key={mIdx} className="flex items-center gap-2">
-                  <input
-                    className="px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm flex-1"
+                  <SuggestionInput
                     value={k}
-                    onChange={(e) => updateMatchKey(idx, k, e.target.value, v)}
-                    placeholder="key"
+                    onChange={(newKey) => updateMatchKey(idx, k, Array.isArray(newKey) ? newKey[0] || "" : newKey, v)}
+                    suggestions={matchKeyNames}
+                    placeholder="key (e.g. asset_class)"
+                    allowFreeform={true}
+                    className="flex-1"
                   />
                   <span className="text-xs text-[var(--color-text)] opacity-50">=</span>
-                  <input
-                    className="px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm flex-1"
+                  <SuggestionInput
                     value={v}
-                    onChange={(e) => updateMatchKey(idx, k, k, e.target.value)}
+                    onChange={(newVal) => updateMatchKey(idx, k, k, Array.isArray(newVal) ? newVal[0] || "" : newVal)}
+                    entityId={matchKeysData.find((mk) => mk.key === k)?.entity}
+                    fieldName={k}
                     placeholder="value"
+                    allowFreeform={true}
+                    className="flex-1"
                   />
                   <button className={btnDangerCls} onClick={() => removeMatchKey(idx, k)}>
                     &times;
@@ -255,11 +304,22 @@ export default function SettingsEditor({ value, onChange }: EditorProps) {
             {/* Override Value */}
             <div>
               <label className="text-xs text-[var(--color-text)] opacity-70">Value</label>
-              <ValueInput
-                valueType={valueType}
-                currentValue={ovr.value}
-                onValueChange={(v) => updateOverride(idx, { value: v })}
-              />
+              {valueType === "score_steps" ? (
+                <ScoreStepBuilder
+                  value={
+                    Array.isArray(ovr.value)
+                      ? (ovr.value as ScoreStepDef[])
+                      : []
+                  }
+                  onChange={(steps) => updateOverride(idx, { value: steps })}
+                />
+              ) : (
+                <ValueInput
+                  valueType={valueType}
+                  currentValue={ovr.value}
+                  onValueChange={(v) => updateOverride(idx, { value: v })}
+                />
+              )}
             </div>
 
             {/* Priority */}

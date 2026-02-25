@@ -1,6 +1,7 @@
 import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
-import type { SettingDef } from "../../stores/metadataStore.ts";
+import ScoreStepBuilder from "../../components/ScoreStepBuilder.tsx";
+import type { SettingDef, ScoreStepDef } from "../../stores/metadataStore.ts";
 
 interface SettingDetailProps {
   setting: SettingDef & {
@@ -25,6 +26,12 @@ export default function SettingDetail({ setting, onEdit, onDelete }: SettingDeta
   const isScoreSteps =
     setting.value_type === "score_steps" && Array.isArray(setting.default);
   const steps = isScoreSteps ? (setting.default as ScoreStep[]) : [];
+  // Convert to ScoreStepDef for ScoreStepBuilder (coerce nullable min_value to number)
+  const scoreStepDefs: ScoreStepDef[] = steps.map((s) => ({
+    min_value: s.min_value ?? 0,
+    max_value: s.max_value,
+    score: s.score,
+  }));
 
   return (
     <div className="flex flex-col gap-3 overflow-auto">
@@ -63,24 +70,11 @@ export default function SettingDetail({ setting, onEdit, onDelete }: SettingDeta
       {/* Default value */}
       <Panel title="Default Value" dataTour="settings-score-steps" tooltip="Default value or score step configuration">
         {isScoreSteps ? (
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-left text-muted border-b border-border">
-                <th className="pb-1">Min</th>
-                <th className="pb-1">Max</th>
-                <th className="pb-1">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {steps.map((step, i) => (
-                <tr key={i} className="border-b border-border/50">
-                  <td className="py-1">{step.min_value ?? "-inf"}</td>
-                  <td className="py-1">{step.max_value ?? "+inf"}</td>
-                  <td className="py-1 font-mono text-accent">{step.score}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ScoreStepBuilder
+            value={scoreStepDefs}
+            onChange={() => {}}
+            readOnly
+          />
         ) : (
           <span className="text-sm font-mono">{JSON.stringify(setting.default)}</span>
         )}

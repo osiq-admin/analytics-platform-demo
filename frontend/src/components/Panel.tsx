@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import HelpButton from "./HelpButton.tsx";
 
 interface PanelProps {
-  title: string;
+  title: ReactNode;
   children: ReactNode;
   actions?: ReactNode;
   className?: string;
