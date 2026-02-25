@@ -4,6 +4,10 @@ import WizardProgress from "./WizardProgress.tsx";
 import DefineStep from "./steps/DefineStep.tsx";
 import SelectCalcsStep, { type SelectedCalc } from "./steps/SelectCalcsStep.tsx";
 import ConfigureScoringStep from "./steps/ConfigureScoringStep.tsx";
+import QueryStep from "./steps/QueryStep.tsx";
+import ReviewStep from "./steps/ReviewStep.tsx";
+import TestRunStep from "./steps/TestRunStep.tsx";
+import DeployStep from "./steps/DeployStep.tsx";
 
 interface ModelCreateFormProps {
   calculations: CalculationDef[];
@@ -189,24 +193,49 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
           />
         )}
         {step === 4 && (
-          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
-            Step 4: Query (coming in M102)
-          </div>
+          <QueryStep
+            query={query}
+            setQuery={setQuery}
+            selectedCalcs={selectedCalcs}
+            calculations={calculations}
+          />
         )}
         {step === 5 && (
-          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
-            Step 5: Review (coming in M102)
-          </div>
+          <ReviewStep
+            modelId={modelId}
+            name={name}
+            description={description}
+            timeWindow={timeWindow}
+            granularity={granularity}
+            contextFields={contextFields}
+            selectedCalcs={selectedCalcs}
+            scoreThresholdSetting={scoreThresholdSetting}
+            query={query}
+            calculations={calculations}
+          />
         )}
         {step === 6 && (
-          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
-            Step 6: Test Run (coming in M102)
-          </div>
+          <TestRunStep
+            modelId={modelId}
+            query={query}
+            name={name}
+            description={description}
+            timeWindow={timeWindow}
+            granularity={granularity}
+            contextFields={contextFields}
+            selectedCalcs={selectedCalcs}
+            scoreThresholdSetting={scoreThresholdSetting}
+          />
         )}
         {step === 7 && (
-          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
-            Step 7: Deploy (coming in M102)
-          </div>
+          <DeployStep
+            modelId={modelId}
+            name={name}
+            isEdit={isEdit}
+            onSave={handleSave}
+            saving={saving}
+            error={error}
+          />
         )}
 
         {error && <p className="text-xs text-destructive mt-2">{error}</p>}
