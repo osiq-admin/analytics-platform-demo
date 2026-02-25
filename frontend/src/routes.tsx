@@ -12,6 +12,7 @@ import SchemaExplorer from "./views/SchemaExplorer/index.tsx";
 import SQLConsole from "./views/SQLConsole/index.tsx";
 import ModelComposer from "./views/ModelComposer/index.tsx";
 import DataManager from "./views/DataManager/index.tsx";
+import UseCaseStudio from "./views/UseCaseStudio/index.tsx";
 import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
 import AIAssistant from "./views/AIAssistant/index.tsx";
 import Dashboard from "./views/Dashboard/index.tsx";
@@ -45,6 +46,7 @@ export const routes: RouteObject[] = [
 
       // Compose
       { path: "models", element: <ModelComposer /> },
+      { path: "use-cases", element: <UseCaseStudio /> },
       { path: "data", element: <DataManager /> },
 
       // Investigate

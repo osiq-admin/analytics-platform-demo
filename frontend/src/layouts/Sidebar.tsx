@@ -43,6 +43,7 @@ const navigation: NavGroup[] = [
     title: "Compose",
     items: [
       { label: "Models", path: "/models" },
+      { label: "Use Cases", path: "/use-cases" },
       { label: "Data", path: "/data" },
     ],
   },
