@@ -15,6 +15,18 @@
       "match": { "asset_class": "fx" },
       "value": 12,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 8,
+      "priority": 1,
+      "description": "Lower threshold for fixed income — fewer wash trading signals"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 7,
+      "priority": 1,
+      "description": "Moderate threshold for index instruments"
     }
   ]
 }

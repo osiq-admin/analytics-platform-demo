@@ -20,6 +20,18 @@
       "match": { "instrument_type": "put_option" },
       "value": 8,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 5,
+      "priority": 1,
+      "description": "Higher threshold for fixed income — lower cancellation frequency"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 4,
+      "priority": 1,
+      "description": "Moderate threshold for index instruments"
     }
   ]
 }

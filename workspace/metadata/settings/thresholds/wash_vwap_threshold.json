@@ -20,6 +20,18 @@
       "match": { "product": "AAPL" },
       "value": 0.01,
       "priority": 100
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 0.01,
+      "priority": 1,
+      "description": "Tighter threshold for fixed income — less volatile markets"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 0.015,
+      "priority": 1,
+      "description": "Slightly tighter threshold for index instruments"
     }
   ]
 }

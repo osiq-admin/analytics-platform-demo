@@ -20,6 +20,18 @@
       "match": { "instrument_type": "put_option" },
       "value": 10,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 14,
+      "priority": 1,
+      "description": "Extended lookback for fixed income — slower information diffusion"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 10,
+      "priority": 1,
+      "description": "Moderate lookback for index instruments"
     }
   ]
 }

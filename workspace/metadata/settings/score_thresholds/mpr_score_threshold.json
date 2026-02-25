@@ -10,6 +10,18 @@
       "match": { "asset_class": "equity" },
       "value": 10,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 7,
+      "priority": 1,
+      "description": "Lower threshold for fixed income — price movements more significant"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 6,
+      "priority": 1,
+      "description": "Moderate threshold for index instruments"
     }
   ]
 }

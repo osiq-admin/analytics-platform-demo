@@ -20,6 +20,18 @@
       "match": { "asset_class": "commodity" },
       "value": 2.5,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 2.5,
+      "priority": 1,
+      "description": "Higher multiplier for fixed income — lower baseline volumes"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 2.0,
+      "priority": 1,
+      "description": "Standard multiplier for index instruments"
     }
   ]
 }

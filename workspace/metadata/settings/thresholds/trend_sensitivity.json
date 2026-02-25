@@ -15,6 +15,18 @@
       "match": { "asset_class": "fx" },
       "value": 2.0,
       "priority": 1
+    },
+    {
+      "match": { "asset_class": "fixed_income" },
+      "value": 1.2,
+      "priority": 1,
+      "description": "Lower sensitivity for fixed income — detect subtle rate movements"
+    },
+    {
+      "match": { "asset_class": "index" },
+      "value": 1.3,
+      "priority": 1,
+      "description": "Moderate sensitivity for index instruments"
     }
   ]
 }
