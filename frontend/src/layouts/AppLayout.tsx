@@ -4,9 +4,11 @@ import Sidebar from "./Sidebar.tsx";
 import DemoToolbar from "../components/DemoToolbar.tsx";
 import TourOverlay from "../components/TourOverlay.tsx";
 import OnboardingModal from "../components/OnboardingModal.tsx";
+import OperationScripts from "../components/TourEngine/OperationScripts.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
 import { TOURS } from "../data/tourDefinitions.ts";
+import { VIEW_OPERATIONS } from "../data/operationScripts.ts";
 
 /** Map pathname segments to tour IDs */
 function getTourIdForPath(pathname: string): string | null {
@@ -35,6 +37,10 @@ export default function AppLayout() {
   useEffect(() => {
     registerTours(TOURS);
   }, [registerTours]);
+
+  // Derive view ID for operation scripts
+  const viewId = location.pathname.replace("/", "") || "dashboard";
+  const viewOps = VIEW_OPERATIONS[viewId] ?? null;
 
   const handleTour = () => {
     if (activeTour) return; // already running
@@ -79,6 +85,7 @@ export default function AppLayout() {
 
       <TourOverlay />
       <OnboardingModal />
+      <OperationScripts viewOperations={viewOps} />
     </div>
   );
 }
