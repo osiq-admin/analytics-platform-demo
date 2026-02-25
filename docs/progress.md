@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-24 (Phase 12 complete — UI/UX Usability)
+**Last Updated**: 2026-02-25 (Phase 7B designed — Metadata UX, Guided Demo, Use Case Studio)
 
 ---
 
@@ -33,6 +33,7 @@
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 | UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
+| Metadata UX & Guided Demo (Phase 7B) | DESIGNED | M93-M120 (est.): Gap fixes, domain value suggestions, match pattern bank, score step builder, model wizard, use case studio, submissions, guided tours — design approved 2026-02-25 |
 
 ---
 
@@ -133,6 +134,35 @@
 | M90 | Per-View Column & Layout Optimization | COMPLETE | 6 | 6 | EntityDesigner, EntityDetail, MetadataExplorer, SettingsManager, RiskCaseManager, MetadataEditor |
 | M91 | Visual Editor Field Grid Fix | COMPLETE | 1 | 1 | CSS grid template fix — Description column now visible |
 | M92 | E2E Viewport Verification, Tours & Docs | COMPLETE | 4 | 4 | 12 new E2E tests, UX features tour, progress tracker, demo guide |
+| | **Phase 7B: Metadata UX & Guided Demo** | **DESIGNED** | | | **Design approved 2026-02-25** |
+| M93 | Gap Fix: $param Migration | PLANNED | 4 | 0 | Migrate 10 calc JSONs to $param placeholders, regression verify |
+| M94 | Gap Fix: TimeRangeSelector + Settings Overrides | PLANNED | 3 | 0 | Data-driven date range, fixed_income/index overrides |
+| M95 | Backend: Domain Values API | PLANNED | 4 | 0 | /domain-values endpoints, cardinality tiers, server-side search |
+| M96 | Backend: Match Patterns + Score Templates | PLANNED | 4 | 0 | CRUD APIs, usage counts, OOB pre-created patterns/templates |
+| M97 | Frontend: SuggestionInput + useDomainValues | PLANNED | 3 | 0 | Reusable autocomplete component, tiered loading strategy |
+| M98 | Frontend: MatchPatternPicker | PLANNED | 3 | 0 | Pattern bank UI, override integration, save-as-pattern prompt |
+| M99 | Frontend: ScoreStepBuilder + Templates | PLANNED | 4 | 0 | Visual range bar, drag-to-reorder, gap/overlap detection, template picker |
+| M100 | Frontend: Settings Manager Form Upgrades | PLANNED | 4 | 0 | Wire SuggestionInput, ScoreStepBuilder, MatchPatternPicker into forms |
+| M101 | Frontend: Model Composer Wizard (Steps 1-3) | PLANNED | 5 | 0 | 7-step wizard, Define/Select/Scoring steps with suggestions |
+| M102 | Frontend: Model Composer Wizard (Steps 4-7) | PLANNED | 5 | 0 | Query editor (Monaco), Review/Validate, Test Run, Deploy steps |
+| M103 | Frontend: Preview + Validation + Dependencies | PLANNED | 5 | 0 | Live score simulation, best practices engine, dependency DAG, data coverage |
+| M104 | Frontend: Example & Use Case Library UI | PLANNED | 3 | 0 | Annotated examples drawer, "Use as starting point" |
+| M105 | Backend: Validation Service (5 Layers) | PLANNED | 5 | 0 | Static analysis, schema compat, sandbox exec, impact analysis, regression |
+| M106 | Backend: Use Cases API | PLANNED | 4 | 0 | CRUD, pipeline execution, data isolation, AI data generation |
+| M107 | Backend: Submissions API + Recommendations | PLANNED | 4 | 0 | Submission workflow, status lifecycle, change classification, similarity analysis |
+| M108 | Frontend: Use Case Studio View | PLANNED | 5 | 0 | Use case builder wizard, sample data editor, expected results, run & validate |
+| M109 | Frontend: Submissions Review Queue | PLANNED | 4 | 0 | Queue AG Grid, review detail, validation/recommendations/impact tabs, actions |
+| M110 | Backend: AI Context Builder + Calc Generation | PLANNED | 4 | 0 | Metadata context for LLM, calculation suggestion, iterative refinement |
+| M111 | Frontend: AI Calculation Builder | PLANNED | 3 | 0 | Natural language input, split review view, refine loop, validate & save |
+| M112 | Version Management + Comparison | PLANNED | 3 | 0 | Version tracking, side-by-side diff, A/B alert comparison, rollback |
+| M113 | Tour Engine Upgrade | PLANNED | 4 | 0 | Dual-mode (watch/try), mode selector, replay/reset, scenario runner |
+| M114 | Scenarios: Settings & Thresholds (S1-S6) | PLANNED | 3 | 0 | 6 scenarios with full step definitions and auto-fill data |
+| M115 | Scenarios: Calculations (S7-S10) | PLANNED | 3 | 0 | 4 scenarios: DAG explore, manual calc, AI calc, parameterization |
+| M116 | Scenarios: Detection Models (S11-S14) | PLANNED | 3 | 0 | 4 scenarios: full wizard, clone/modify, add calc, best practices |
+| M117 | Scenarios: Use Cases & Submissions (S15-S18) | PLANNED | 3 | 0 | 4 scenarios: create, submit, review, implement |
+| M118 | Scenarios: Entities, Investigation, Admin (S19-S25) | PLANNED | 3 | 0 | 7 scenarios: entity explore, data import, alert investigation, OOB review |
+| M119 | Per-Screen Operation Scripts | PLANNED | 3 | 0 | Contextual help (?) button per view, operation list, quick actions |
+| M120 | Testing & Documentation | PLANNED | 5 | 0 | ~98 unit tests, ~61 E2E tests, BDD scenarios, demo guide Acts 4-7, progress update |
 
 ---
 
@@ -506,6 +536,25 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] Metadata Editor: JSON + Visual Editor side by side, field names visible ("account_id", "registration_..."), all 5 grid columns present
 - [x] Settings Manager: all 5 columns visible, full IDs readable, no truncation
 - [x] Risk Case Manager: all 8 columns visible, model names identifiable, colored score/trigger badges
+
+### 2026-02-25 (Phase 7B: Metadata UX & Guided Demo — Design)
+- [x] **Phase 7 Audit**: Comprehensive audit of M66-M69 implementation — all 4 tasks complete, 3 gaps identified
+  - G1: Calc SQL still has hardcoded thresholds ($param framework exists but no calc uses it)
+  - G2: TimeRangeSelector uses `new Date()` — demo data dates don't align
+  - G3: Missing settings overrides for `fixed_income` and `index` asset classes
+- [x] **Brainstorming session**: 4 clarifying questions answered, 8 design sections developed
+- [x] **Design decisions**:
+  - Match patterns: criteria + label + description (reusable pattern bank)
+  - Domain value sources: both metadata `domain_values` + live DuckDB distinct values
+  - Guided tours: dual-mode (narrated auto-play + interactive try-it-yourself) with per-scenario mode selection
+  - Score step builder: full visual builder with range bar, drag-to-reorder, gap/overlap detection
+  - Score templates: reusable with value_category semantic tags
+  - Use Case Studio: user-created scenarios with sample data, AI-assisted calc generation, 5-layer validation
+  - Submission pipeline: submit → review → approve/reject → implement, with system recommendations
+  - 25 guided scenarios covering all E2E business workflows
+- [x] **Design document**: Saved to `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md` (10 sections, ~750 lines)
+- [x] **Roadmap updated**: Phase 7B added as current priority, 28 milestones planned (M93-M120)
+- [x] **Progress tracker updated**: New milestones, work log, overall status
 
 ---
 

@@ -408,6 +408,37 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
+## Phase 7B: Metadata UX, Guided Demo & Use Case Studio — CURRENT PRIORITY
+
+**Goal:** Complete Phase 7 gaps, add intelligent domain value suggestions across all forms, reusable match pattern and score template libraries, a full visual score step builder, an enhanced model composer wizard with live preview/validation/explainability, a Use Case Studio with AI-assisted calculation building and submission review pipeline, and a comprehensive 25-scenario guided tour system covering all E2E business workflows.
+
+**Status:** DESIGNED (2026-02-25). Design doc: `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md`. Milestones M93-M120 planned.
+
+**Design doc:** `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md` (10 sections, ~750 lines)
+
+**Workstreams:**
+
+1. **Gap Fixes (M93-M94):** Migrate calc SQL to `$param` placeholders, fix TimeRangeSelector date defaults, add `fixed_income`/`index` settings overrides
+2. **Domain Value Suggestion System (M95, M97):** Backend API with cardinality-tiered loading (small=dropdown, medium=searchable, large=server-side search), `SuggestionInput` component, `useDomainValues` hook
+3. **Reusable Pattern Libraries (M96, M98-M99):** Match Pattern Bank (value-free criteria reuse), Score Step Template Bank (value-included tier reuse with semantic categories), Visual Score Step Builder (range bar, drag-to-reorder, gap/overlap detection)
+4. **Form Upgrades (M100-M104):** Settings Manager with SuggestionInput/ScoreStepBuilder/MatchPatternPicker; Model Composer 7-step wizard with Monaco SQL editor, live preview, validation engine, best practices, dependency DAG, test run, examples library
+5. **Validation & Safety (M105):** 5-layer sandbox validation (static analysis, schema compat, sandbox execution, impact analysis, regression safety); runtime isolation (user-layer failures never block OOB)
+6. **Use Case Studio (M106, M108):** Build/save/refine custom detection scenarios with sample data, AI-assisted data generation, expected outcomes, pipeline validation
+7. **Submission Pipeline (M107, M109):** Submit for review → validation report → system recommendations (change classification, similarity analysis) → reviewer actions (approve/reject/revise) → one-click implementation
+8. **AI-Assisted Calculation Builder (M110-M111):** Natural language → AI proposal → iterative refinement → 5-layer validation → save to user layer
+9. **Version Management (M112):** Version tracking, side-by-side diff, A/B alert comparison, rollback
+10. **Guided Tour System (M113-M119):** Tour engine with dual-mode (watch demo / try it yourself), 25 scenarios in 7 categories, per-screen operation scripts, contextual help
+11. **Testing & Documentation (M120):** ~98 unit tests, ~61 E2E tests, BDD scenarios, demo guide Acts 4-7
+
+**Key design decisions:**
+- Match patterns: criteria + label + description (reusable, value-free)
+- Domain values: metadata `domain_values` + live DuckDB distinct values, with tiered loading (≤50 full dropdown, 51-500 searchable, 500+ server-side search with debounce)
+- Score templates: value-included with `value_category` semantic tags (volume, ratio, count, percentage)
+- Tours: dual-mode per scenario with mode selector, replay/reset, completion tracking
+- Safety: OOB layer immutable, user layer validated, use case layer isolated, submissions don't affect system until implemented
+
+---
+
 ## Phase 13: AI-Assisted Configuration
 
 **Goal:** LLM understands the system's metadata schema, can suggest calculations, help configure models, and utilize the dynamic nature of the system.
@@ -701,23 +732,34 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | T1 | SQL string formatting (injection risk) | `query_service.py:39-46` | Phase 15 |
 | T2 | No input validation on API endpoints | `backend/api/*.py` | Phase 15 |
 | T3 | DuckDB single-writer lock | `backend/db.py` | Phase 20 |
-| T4 | Market data time range defaults to current date | `TimeRangeSelector.tsx` | Phase 7 |
+| T4 | Market data time range defaults to current date | `TimeRangeSelector.tsx` | Phase 7B (M94) — PLANNED |
 | T5 | No error boundaries in React | `frontend/src/views/**` | Phase 16 |
-| T6 | Stale `asset_class` in settings overrides | `workspace/metadata/settings/` | Phase 7 |
+| T6 | Stale `asset_class` in settings overrides | `workspace/metadata/settings/` | Phase 7B (M94) — PLANNED |
+| T8 | Calc SQL has hardcoded thresholds ($param framework exists but unused) | `workspace/metadata/calculations/**/*.json` | Phase 7B (M93) — PLANNED |
+| T9 | ModelCreateForm missing critical fields vs DetectionModelEditor | `frontend/src/views/ModelComposer/ModelCreateForm.tsx` | Phase 7B (M101-M102) — PLANNED |
+| T10 | No domain value suggestions on any form input | All form views | Phase 7B (M95-M100) — PLANNED |
+| T11 | No visual score step builder (raw JSON text input) | `SettingForm.tsx`, `SettingsEditor.tsx` | Phase 7B (M99) — PLANNED |
 | T7 | Demo state file not validated | `backend/api/demo.py` | Phase 15 |
 
 ---
 
-## Priority Matrix (User to Assign)
+## Priority Matrix
 
-| Priority | Suggested Phases | Rationale |
-|----------|-----------------|-----------|
-| **P0 — Must Have** | Phase 7 (Dynamic Foundation) | Everything else depends on this |
-| **P1 — Should Have** | Phase 8 (Explainability), Phase 9 (Metadata Editor) | Core differentiators |
-| **P1 — Critical** | Phase 12 (UI/UX Usability) | Platform usable at all viewports |
-| **P2 — Important** | Phase 10 (Regulatory), Phase 11 (OOB), Phase 13 (AI) | Advanced capabilities |
-| **P3 — Enhance** | Phase 14-15 (Tuning, Models), Phase 16-18 (Security, Test, Cloud) | Production readiness |
-| **P4 — Future** | Phase 18-20 (Analytics, Cases, Productization) | Long-term vision |
+| Priority | Phases | Status | Rationale |
+|----------|--------|--------|-----------|
+| **P0 — DONE** | Phase 7 (Dynamic Foundation) | COMPLETE (M66-M69) | Foundation for dynamic metadata |
+| **P0 — DONE** | Phase 8 (Explainability) | COMPLETE (M70-M73) | Alert traces and drill-down |
+| **P0 — DONE** | Phase 9 (Metadata Editor) | COMPLETE (M74-M78) | Side-by-side JSON + visual editor |
+| **P0 — DONE** | Phase 10 (Regulatory) | COMPLETE (M79-M83) | Regulatory traceability graph |
+| **P0 — DONE** | Phase 11 (OOB Separation) | COMPLETE (M84-M88) | Layer architecture |
+| **P0 — DONE** | Phase 12 (UI/UX Usability) | COMPLETE (M89-M92) | AG Grid + viewport fixes |
+| **P0 — CURRENT** | **Phase 7B (Metadata UX & Guided Demo)** | **DESIGNED (M93-M120)** | **Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios** |
+| **P2 — Important** | Phase 13 (AI-Assisted Configuration) | Planned | LLM metadata awareness (partially addressed in Phase 7B AI calc builder) |
+| **P3 — Enhance** | Phase 14 (Alert Tuning + Models) | Planned | Distribution analysis, 10 new detection models |
+| **P3 — Enhance** | Phase 15 (Security Hardening) | Planned | SQL injection fix, JWT, CORS |
+| **P3 — Enhance** | Phase 16 (Testing Expansion) | Planned | Frontend tests, security tests |
+| **P3 — Enhance** | Phase 17 (Cloud & Deployment) | Planned | Docker, CI/CD |
+| **P4 — Future** | Phase 18-20 (Analytics, Cases, Productization) | Planned | Long-term vision |
 
 ---
 
