@@ -108,6 +108,15 @@ body {
   white-space: nowrap;
 }
 
+/* ── Slide-in animations ── */
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.2s ease-out;
+}
+
 /* ── Monaco editor background sync ── */
 .monaco-themed .monaco-editor,
 .monaco-themed .monaco-editor .margin {
