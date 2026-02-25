@@ -110,6 +110,23 @@ export interface MatchPatternDef {
   created_at: string;
 }
 
+export interface ScoreStepDef {
+  min_value: number;
+  max_value: number | null;
+  score: number;
+}
+
+export interface ScoreTemplateDef {
+  template_id: string;
+  label: string;
+  description: string;
+  value_category: string;
+  steps: ScoreStepDef[];
+  usage_count: number;
+  layer: string;
+  created_at: string;
+}
+
 interface MetadataState {
   entities: EntityDef[];
   calculations: CalculationDef[];
@@ -141,6 +158,10 @@ interface MetadataState {
   fetchMatchPatterns: () => Promise<void>;
   saveMatchPattern: (pattern: MatchPatternDef) => Promise<void>;
   deleteMatchPattern: (patternId: string) => Promise<void>;
+  scoreTemplates: ScoreTemplateDef[];
+  fetchScoreTemplates: (valueCategory?: string) => Promise<void>;
+  saveScoreTemplate: (template: ScoreTemplateDef) => Promise<void>;
+  deleteScoreTemplate: (templateId: string) => Promise<void>;
 }
 
 export const useMetadataStore = create<MetadataState>((set) => ({
@@ -317,5 +338,29 @@ export const useMetadataStore = create<MetadataState>((set) => ({
     await api.delete(`/metadata/match-patterns/${patternId}`);
     const data = await api.get<{ patterns: MatchPatternDef[] }>("/metadata/match-patterns");
     set({ matchPatterns: data.patterns });
+  },
+
+  scoreTemplates: [],
+
+  fetchScoreTemplates: async (valueCategory) => {
+    try {
+      const qs = valueCategory ? `?value_category=${valueCategory}` : "";
+      const data = await api.get<{ templates: ScoreTemplateDef[] }>(`/metadata/score-templates${qs}`);
+      set({ scoreTemplates: data.templates });
+    } catch (e) {
+      set({ error: String(e) });
+    }
+  },
+
+  saveScoreTemplate: async (template) => {
+    await api.put(`/metadata/score-templates/${template.template_id}`, template);
+    const data = await api.get<{ templates: ScoreTemplateDef[] }>("/metadata/score-templates");
+    set({ scoreTemplates: data.templates });
+  },
+
+  deleteScoreTemplate: async (templateId) => {
+    await api.delete(`/metadata/score-templates/${templateId}`);
+    const data = await api.get<{ templates: ScoreTemplateDef[] }>("/metadata/score-templates");
+    set({ scoreTemplates: data.templates });
   },
 }));
