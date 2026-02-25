@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLin
 import { api } from "../../../api/client.ts";
 import Panel from "../../../components/Panel.tsx";
 import LoadingSpinner from "../../../components/LoadingSpinner.tsx";
+import { TOOLTIP_STYLE, TOOLTIP_LABEL_STYLE, TOOLTIP_ITEM_STYLE, TICK_STYLE } from "../../../constants/chartStyles.ts";
 
 interface TradeVolumeChartProps {
   productId: string;
@@ -56,19 +57,19 @@ export default function TradeVolumeChart({ productId, alertDate }: TradeVolumeCh
         <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
           <XAxis
             dataKey="date"
-            tick={{ fontSize: 9, fill: "var(--color-muted)" }}
+            tick={TICK_STYLE}
             tickFormatter={(v: string) => v.slice(5)}
             interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fontSize: 9, fill: "var(--color-muted)" }}
+            tick={TICK_STYLE}
             width={50}
             tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v))}
           />
           <Tooltip
-            contentStyle={{ fontSize: 11, background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-foreground)" }}
-            labelStyle={{ fontSize: 10, color: "var(--color-muted)" }}
-            itemStyle={{ color: "var(--color-muted)" }}
+            contentStyle={TOOLTIP_STYLE}
+            labelStyle={TOOLTIP_LABEL_STYLE}
+            itemStyle={TOOLTIP_ITEM_STYLE}
           />
           <Bar dataKey="volume" name="Volume" fill="var(--color-accent)" opacity={0.7} radius={[2, 2, 0, 0]} />
           {alertDate && (

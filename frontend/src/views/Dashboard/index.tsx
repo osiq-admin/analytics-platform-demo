@@ -12,6 +12,8 @@ import SummaryCard from "../../components/SummaryCard.tsx";
 import WidgetContainer from "../../components/WidgetContainer.tsx";
 import ChartTypeSwitcher from "../../components/ChartTypeSwitcher.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import { TOOLTIP_STYLE, TOOLTIP_LABEL_STYLE, TOOLTIP_ITEM_STYLE, TICK_STYLE } from "../../constants/chartStyles.ts";
+import { formatLabel } from "../../utils/format.ts";
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"];
 
@@ -24,18 +26,6 @@ const ASSET_CLASS_COLORS: Record<string, string> = {
   fixed_income: "#8b5cf6",
 };
 
-const TOOLTIP_STYLE = {
-  fontSize: 11,
-  background: "var(--color-surface)",
-  border: "1px solid var(--color-border)",
-  color: "var(--color-foreground)",
-};
-
-const TOOLTIP_LABEL_STYLE = { color: "var(--color-foreground)" };
-const TOOLTIP_ITEM_STYLE = { color: "var(--color-muted)" };
-
-const TICK_STYLE = { fontSize: 9, fill: "var(--color-muted)" };
-
 /** Widget definitions for config panel */
 const WIDGETS = [
   { id: "alerts-by-model", label: "Alerts by Model" },
@@ -43,11 +33,6 @@ const WIDGETS = [
   { id: "alerts-by-trigger", label: "Alerts by Trigger" },
   { id: "alerts-by-asset", label: "Alerts by Asset Class" },
 ] as const;
-
-/** Format snake_case to Title Case (e.g. "market_price_ramping" → "Market Price Ramping") */
-function formatLabel(value: string): string {
-  return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 /* ---------- Generic table renderer ---------- */
 function DataTable({ data, labelKey, valueKey, labelHeader, valueHeader }: {

@@ -26,6 +26,8 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 - Dual storage: CSV (human-editable) + Parquet (engine)
 - Tests run from repo root: `uv run pytest tests/ -v`
 - Frontend build output: `frontend/dist/` (served by FastAPI SPA handler)
+- **ALWAYS follow `docs/development-guidelines.md`** for all frontend work — covers Recharts patterns, tooltip styling, label formatting, table conventions, Zustand selectors, CSS containment
+- Shared utilities: `frontend/src/utils/format.ts` (formatLabel), `frontend/src/constants/chartStyles.ts` (tooltip/tick styles)
 
 ## Data Model (8 entities, ISO/FIX-aligned)
 - **product** (50): ISIN, CFI, MIC, asset_class, instrument_type, underlying, strike, expiry
@@ -58,4 +60,5 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - Progress tracker: `docs/progress.md` (M0-M120 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
+- Development guidelines: `docs/development-guidelines.md`
 - Testing checklist: `docs/phase7b-testing-checklist.md`

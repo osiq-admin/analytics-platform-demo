@@ -3,11 +3,7 @@ import type { ColDef } from "ag-grid-community";
 import DataGrid from "../../components/DataGrid.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import type { AlertSummary as AlertSummaryType } from "../../stores/alertStore.ts";
-
-/** Format snake_case to Title Case */
-function formatLabel(value: string): string {
-  return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
+import { formatLabel } from "../../utils/format.ts";
 
 interface AlertSummaryProps {
   alerts: AlertSummaryType[];

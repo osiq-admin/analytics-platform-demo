@@ -9,6 +9,7 @@ import {
   Cell,
 } from "recharts";
 import type { CalculationDef } from "../stores/metadataStore.ts";
+import { TOOLTIP_LABEL_STYLE, TOOLTIP_ITEM_STYLE, TICK_STYLE } from "../constants/chartStyles.ts";
 
 interface PreviewPanelProps {
   selectedCalcs: Array<{
@@ -84,12 +85,12 @@ export default function PreviewPanel({
         <div className="h-40">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ left: 4, right: 8, top: 4, bottom: 4 }}>
-              <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 10, fill: "var(--color-muted)" }} />
+              <XAxis type="number" domain={[0, 10]} tick={TICK_STYLE} />
               <YAxis
                 type="category"
                 dataKey="name"
                 width={70}
-                tick={{ fontSize: 9, fill: "var(--color-muted)" }}
+                tick={TICK_STYLE}
               />
               <Tooltip
                 contentStyle={{
@@ -99,12 +100,12 @@ export default function PreviewPanel({
                   fontSize: 11,
                   color: "var(--color-foreground)",
                 }}
-                labelStyle={{ color: "var(--color-foreground)" }}
-                itemStyle={{ color: "var(--color-muted)" }}
+                labelStyle={TOOLTIP_LABEL_STYLE}
+                itemStyle={TOOLTIP_ITEM_STYLE}
               />
               <Bar dataKey="maxScore" name="Max Score" radius={[0, 3, 3, 0]}>
-                {chartData.map((_entry, idx) => (
-                  <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
+                {chartData.map((entry, idx) => (
+                  <Cell key={entry.name} fill={COLORS[idx % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>
@@ -130,8 +131,8 @@ export default function PreviewPanel({
                   fontSize: 11,
                   color: "var(--color-foreground)",
                 }}
-                labelStyle={{ color: "var(--color-foreground)" }}
-                itemStyle={{ color: "var(--color-muted)" }}
+                labelStyle={TOOLTIP_LABEL_STYLE}
+                itemStyle={TOOLTIP_ITEM_STYLE}
               />
               {selectedCalcs.map((sc, idx) => {
                 const calc = calcMap.get(sc.calc_id);

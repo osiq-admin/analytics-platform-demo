@@ -11,14 +11,10 @@ import {
 import Panel from "../../../components/Panel.tsx";
 import StatusBadge from "../../../components/StatusBadge.tsx";
 import type { AlertTrace } from "../../../stores/alertStore.ts";
+import { formatLabel } from "../../../utils/format.ts";
 
 interface ScoreBreakdownProps {
   alert: AlertTrace;
-}
-
-/** Format snake_case to Title Case */
-function formatLabel(value: string): string {
-  return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export default function ScoreBreakdown({ alert }: ScoreBreakdownProps) {
