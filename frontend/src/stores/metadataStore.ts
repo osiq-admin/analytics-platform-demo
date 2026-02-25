@@ -100,6 +100,16 @@ export interface RegulatoryCoverage {
   description?: string;
 }
 
+export interface MatchPatternDef {
+  pattern_id: string;
+  label: string;
+  description: string;
+  match: Record<string, string>;
+  usage_count: number;
+  layer: string;
+  created_at: string;
+}
+
 interface MetadataState {
   entities: EntityDef[];
   calculations: CalculationDef[];
@@ -127,6 +137,10 @@ interface MetadataState {
   getLayerInfo: (type: string, id: string) => Promise<LayerInfo>;
   resetToOob: (type: string, id: string) => Promise<void>;
   getDiff: (type: string, id: string) => Promise<{ has_diff: boolean; changes: Array<Record<string, unknown>> }>;
+  matchPatterns: MatchPatternDef[];
+  fetchMatchPatterns: () => Promise<void>;
+  saveMatchPattern: (pattern: MatchPatternDef) => Promise<void>;
+  deleteMatchPattern: (patternId: string) => Promise<void>;
 }
 
 export const useMetadataStore = create<MetadataState>((set) => ({
@@ -280,5 +294,28 @@ export const useMetadataStore = create<MetadataState>((set) => ({
     return api.get<{ has_diff: boolean; changes: Array<Record<string, unknown>> }>(
       `/metadata/layers/${type}/${id}/diff`
     );
+  },
+
+  matchPatterns: [],
+
+  fetchMatchPatterns: async () => {
+    try {
+      const data = await api.get<{ patterns: MatchPatternDef[] }>("/metadata/match-patterns");
+      set({ matchPatterns: data.patterns });
+    } catch (e) {
+      set({ error: String(e) });
+    }
+  },
+
+  saveMatchPattern: async (pattern) => {
+    await api.put(`/metadata/match-patterns/${pattern.pattern_id}`, pattern);
+    const data = await api.get<{ patterns: MatchPatternDef[] }>("/metadata/match-patterns");
+    set({ matchPatterns: data.patterns });
+  },
+
+  deleteMatchPattern: async (patternId) => {
+    await api.delete(`/metadata/match-patterns/${patternId}`);
+    const data = await api.get<{ patterns: MatchPatternDef[] }>("/metadata/match-patterns");
+    set({ matchPatterns: data.patterns });
   },
 }));
