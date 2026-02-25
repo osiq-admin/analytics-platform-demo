@@ -53,7 +53,10 @@ const navigation: NavGroup[] = [
   },
   {
     title: "Governance",
-    items: [{ label: "Regulatory Map", path: "/regulatory" }],
+    items: [
+      { label: "Regulatory Map", path: "/regulatory" },
+      { label: "Submissions", path: "/submissions" },
+    ],
   },
   {
     title: "AI",

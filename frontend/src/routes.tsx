@@ -17,6 +17,7 @@ import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
 import AIAssistant from "./views/AIAssistant/index.tsx";
 import Dashboard from "./views/Dashboard/index.tsx";
 import MetadataEditor from "./views/MetadataEditor/index.tsx";
+import Submissions from "./views/Submissions/index.tsx";
 
 // Lazy-loaded views
 const RegulatoryMap = lazy(() => import("./views/RegulatoryMap/index.tsx"));
@@ -55,6 +56,7 @@ export const routes: RouteObject[] = [
 
       // Governance
       { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
+      { path: "submissions", element: <Submissions /> },
 
       // AI
       { path: "assistant", element: <AIAssistant /> },
