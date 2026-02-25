@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-25 (Phase 7B designed — Metadata UX, Guided Demo, Use Case Studio)
+**Last Updated**: 2026-02-25 (Phase 7B in progress — M93-M105 complete, M106+ in progress)
 
 ---
 
@@ -33,7 +33,7 @@
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 | UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
-| Metadata UX & Guided Demo (Phase 7B) | DESIGNED | M93-M120 (est.): Gap fixes, domain value suggestions, match pattern bank, score step builder, model wizard, use case studio, submissions, guided tours — design approved 2026-02-25 |
+| Metadata UX & Guided Demo (Phase 7B) | IN PROGRESS | M93-M105 complete, M106+ in progress — gap fixes, domain values, match patterns, score templates, model wizard, validation service, examples library |
 
 ---
 
@@ -134,20 +134,20 @@
 | M90 | Per-View Column & Layout Optimization | COMPLETE | 6 | 6 | EntityDesigner, EntityDetail, MetadataExplorer, SettingsManager, RiskCaseManager, MetadataEditor |
 | M91 | Visual Editor Field Grid Fix | COMPLETE | 1 | 1 | CSS grid template fix — Description column now visible |
 | M92 | E2E Viewport Verification, Tours & Docs | COMPLETE | 4 | 4 | 12 new E2E tests, UX features tour, progress tracker, demo guide |
-| | **Phase 7B: Metadata UX & Guided Demo** | **DESIGNED** | | | **Design approved 2026-02-25** |
-| M93 | Gap Fix: $param Migration | PLANNED | 4 | 0 | Migrate 10 calc JSONs to $param placeholders, regression verify |
-| M94 | Gap Fix: TimeRangeSelector + Settings Overrides | PLANNED | 3 | 0 | Data-driven date range, fixed_income/index overrides |
-| M95 | Backend: Domain Values API | PLANNED | 4 | 0 | /domain-values endpoints, cardinality tiers, server-side search |
-| M96 | Backend: Match Patterns + Score Templates | PLANNED | 4 | 0 | CRUD APIs, usage counts, OOB pre-created patterns/templates |
-| M97 | Frontend: SuggestionInput + useDomainValues | PLANNED | 3 | 0 | Reusable autocomplete component, tiered loading strategy |
-| M98 | Frontend: MatchPatternPicker | PLANNED | 3 | 0 | Pattern bank UI, override integration, save-as-pattern prompt |
-| M99 | Frontend: ScoreStepBuilder + Templates | PLANNED | 4 | 0 | Visual range bar, drag-to-reorder, gap/overlap detection, template picker |
-| M100 | Frontend: Settings Manager Form Upgrades | PLANNED | 4 | 0 | Wire SuggestionInput, ScoreStepBuilder, MatchPatternPicker into forms |
-| M101 | Frontend: Model Composer Wizard (Steps 1-3) | PLANNED | 5 | 0 | 7-step wizard, Define/Select/Scoring steps with suggestions |
-| M102 | Frontend: Model Composer Wizard (Steps 4-7) | PLANNED | 5 | 0 | Query editor (Monaco), Review/Validate, Test Run, Deploy steps |
-| M103 | Frontend: Preview + Validation + Dependencies | PLANNED | 5 | 0 | Live score simulation, best practices engine, dependency DAG, data coverage |
-| M104 | Frontend: Example & Use Case Library UI | PLANNED | 3 | 0 | Annotated examples drawer, "Use as starting point" |
-| M105 | Backend: Validation Service (5 Layers) | PLANNED | 5 | 0 | Static analysis, schema compat, sandbox exec, impact analysis, regression |
+| | **Phase 7B: Metadata UX & Guided Demo** | **IN PROGRESS** | | | **M93-M105 complete, M106+ in progress** |
+| M93 | Gap Fix: $param Migration | COMPLETE | 4 | 4 | Migrated 10 calc JSONs to $param placeholders, regression verified — 323 tests |
+| M94 | Gap Fix: TimeRangeSelector + Settings Overrides | COMPLETE | 3 | 3 | Data-driven date range API, 8 fixed_income/index overrides, 5 new tests — 323 tests |
+| M95 | Backend: Domain Values API | COMPLETE | 4 | 4 | 4 endpoints, cardinality tiers, server-side search, 14 new tests — 337 tests |
+| M96 | Backend: Match Patterns + Score Templates | COMPLETE | 4 | 4 | CRUD APIs, usage counts, 9 OOB patterns, 7 OOB templates, 12 new tests — 349 tests |
+| M97 | Frontend: SuggestionInput + useDomainValues | COMPLETE | 3 | 3 | Autocomplete with @floating-ui, tiered loading, caching, freeform warning — 917 modules |
+| M98 | Frontend: MatchPatternPicker | COMPLETE | 3 | 3 | Two-tab picker (existing/create), searchable, save-as-pattern — 917 modules |
+| M99 | Frontend: ScoreStepBuilder + Templates | COMPLETE | 4 | 4 | Visual range bar, editable table, gap/overlap validation, template picker — 917 modules |
+| M100 | Frontend: Settings Manager Form Upgrades | COMPLETE | 4 | 4 | SuggestionInput, ScoreStepBuilder, MatchPatternPicker wired into forms — 922 modules |
+| M101 | Frontend: Model Composer Wizard (Steps 1-3) | COMPLETE | 5 | 5 | 7-step wizard, Define/Select/Scoring with suggestions — 926 modules |
+| M102 | Frontend: Model Composer Wizard (Steps 4-7) | COMPLETE | 5 | 5 | Monaco SQL editor, Review, Test Run (AG Grid), Deploy + dry run endpoint, 3 tests — 930 modules, 352 tests |
+| M103 | Frontend: Preview + Validation + Dependencies | COMPLETE | 5 | 5 | ValidationPanel, PreviewPanel (Recharts), DependencyMiniDAG (React Flow) — 933 modules |
+| M104 | Frontend: Example & Use Case Library UI | COMPLETE | 3 | 3 | ExamplesDrawer with 15 annotated examples, "Use as starting point" — 937 modules |
+| M105 | Backend: Validation Service (5 Layers) | COMPLETE | 5 | 5 | Static analysis, schema compat, sandbox exec, impact analysis, regression, 7 new tests — 359 tests |
 | M106 | Backend: Use Cases API | PLANNED | 4 | 0 | CRUD, pipeline execution, data isolation, AI data generation |
 | M107 | Backend: Submissions API + Recommendations | PLANNED | 4 | 0 | Submission workflow, status lifecycle, change classification, similarity analysis |
 | M108 | Frontend: Use Case Studio View | PLANNED | 5 | 0 | Use case builder wizard, sample data editor, expected results, run & validate |
@@ -555,6 +555,21 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **Design document**: Saved to `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md` (10 sections, ~750 lines)
 - [x] **Roadmap updated**: Phase 7B added as current priority, 28 milestones planned (M93-M120)
 - [x] **Progress tracker updated**: New milestones, work log, overall status
+
+### 2026-02-25 (Phase 7B: Implementation — M93-M105)
+- [x] **M93**: Migrated 10 calc JSONs from hardcoded thresholds to `$param` placeholders — `e14b511`
+- [x] **M94**: Data-driven TimeRangeSelector (new `/api/data/date-range/{entity_id}` endpoint), added fixed_income/index overrides to 8 settings — `694141c`, 5 new tests, 323 total
+- [x] **M95**: Domain Values API with 4 endpoints (match-keys, setting-ids, calculation-ids, field values), cardinality-tier loading, 14 new tests — `b773b73`, 337 total
+- [x] **M96**: Match Pattern bank (9 OOB patterns) + Score Template library (7 OOB templates) with CRUD APIs and usage counts, 12 new tests — `c503240`, 349 total
+- [x] **M97**: SuggestionInput autocomplete with @floating-ui, useDomainValues hook with 60s cache, tiered loading — `4dff06f`, 917 modules
+- [x] **M98**: MatchPatternPicker with two-tab UI (existing/create new), searchable, save-as-pattern — `2e79310`, 917 modules
+- [x] **M99**: ScoreStepBuilder visual range bar, editable table, gap/overlap validation + ScoreTemplatePicker — `b9dbb0f`
+- [x] **M100**: Settings Manager + MetadataEditor form upgrades — SuggestionInput, MatchPatternPicker, ScoreStepBuilder, Tooltips — `37d8799`, 922 modules
+- [x] **M101**: Model Composer 7-step wizard (Steps 1-3: Define, Select Calcs, Configure Scoring) — `c96c7d6`, 926 modules
+- [x] **M102**: Wizard Steps 4-7 (Query/Monaco, Review, Test Run/AG Grid, Deploy) + dry run backend endpoint, 3 new tests — `404970a`, 930 modules, 352 tests
+- [x] **M103**: ValidationPanel (real-time checks), PreviewPanel (Recharts score sim), DependencyMiniDAG (React Flow) — `de11e95`, 933 modules
+- [x] **M104**: ExamplesDrawer with 15 annotated examples (5 models, 5 settings, 5 calcs), slide-out panel — `3bb9213`, 937 modules
+- [x] **M105**: 5-layer ValidationService (static, schema, sandbox, impact, regression) + validation API, 7 new tests — `8862284`, 359 tests
 
 ---
 
