@@ -6,7 +6,7 @@ from starlette.responses import FileResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from backend.db import lifespan
-from backend.api import metadata, query, pipeline, alerts, demo, data, ws, ai, dashboard, trace, data_info, domain_values, match_patterns, score_templates, detection_dry_run, validation
+from backend.api import metadata, query, pipeline, alerts, demo, data, ws, ai, dashboard, trace, data_info, domain_values, match_patterns, score_templates, detection_dry_run, validation, use_cases
 
 app = FastAPI(title="Analytics Platform Demo", version="0.1.0", lifespan=lifespan)
 
@@ -27,6 +27,7 @@ app.include_router(match_patterns.router)
 app.include_router(score_templates.router)
 app.include_router(detection_dry_run.router)
 app.include_router(validation.router)
+app.include_router(use_cases.router)
 
 
 @app.get("/api/health")
