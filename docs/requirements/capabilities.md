@@ -280,3 +280,134 @@
 - [ ] Demo guide with step-by-step instructions
 - [ ] Data dictionary with all entity/field descriptions
 - [ ] API documentation (auto-generated from FastAPI)
+
+---
+
+## Capability 10: Use Case Studio & AI-Assisted Building
+
+### US-10.1: Create Custom Detection Use Cases
+**As a** compliance analyst / quant
+**I want to** build and validate custom detection scenarios with sample data and expected outcomes
+**So that** I can prototype new surveillance ideas before deploying them
+
+**Acceptance Criteria:**
+- [ ] 5-step wizard: Define, Components, Sample Data, Expected Results, Validate
+- [ ] Components reference existing calculations with configurable parameters
+- [ ] Sample data editor with Monaco JSON input
+- [ ] Expected outcomes validation against actual results
+- [ ] Use cases saved as JSON in workspace
+
+### US-10.2: AI-Assisted Calculation Builder
+**As a** compliance analyst
+**I want to** describe a calculation in natural language and have AI generate the metadata
+**So that** I can create calculations without writing SQL manually
+
+**Acceptance Criteria:**
+- [ ] Natural language input field
+- [ ] AI generates calc_id, name, layer, SQL template, inputs, outputs, parameters
+- [ ] Iterative refinement loop (refine button)
+- [ ] 5-layer validation before save (static, schema, sandbox, impact, regression)
+- [ ] Saved to user metadata layer
+
+---
+
+## Capability 11: Submission Review Pipeline
+
+### US-11.1: Submit for Review
+**As a** compliance analyst
+**I want to** submit my use case or calculation for review before it affects the production system
+**So that** changes go through a governed approval process
+
+**Acceptance Criteria:**
+- [ ] Submit button on validated use cases
+- [ ] Automatic system recommendations (change classification, similarity, impact, risk)
+- [ ] Submission enters review queue with "pending" status
+- [ ] Reviewer can view 5-tab detail: Overview, Validation, Recommendations, Components, History
+
+### US-11.2: Review and Approve Submissions
+**As a** reviewer / administrator
+**I want to** review, approve, or reject submissions with feedback
+**So that** only validated and approved changes reach the production system
+
+**Acceptance Criteria:**
+- [ ] Submissions queue with AG Grid (filterable, sortable)
+- [ ] Approve/Reject/Request Revisions actions
+- [ ] One-click implementation for approved submissions
+- [ ] Full audit trail of review decisions
+
+---
+
+## Capability 12: Guided Tour & Scenario System
+
+### US-12.1: Guided Scenarios (Watch Demo / Try It Yourself)
+**As a** new user or demo presenter
+**I want to** follow guided scenarios that walk me through platform features
+**So that** I can learn the platform step-by-step
+
+**Acceptance Criteria:**
+- [ ] 25 guided scenarios across 7 categories
+- [ ] Dual-mode per scenario: Watch Demo (auto-play) and Try It Yourself (interactive)
+- [ ] Spotlight overlay highlighting target elements
+- [ ] Step counter, progress indicator, navigation controls
+- [ ] Completion tracking persisted to localStorage
+- [ ] Scenario Selector accessible from top toolbar
+
+### US-12.2: Per-View Operation Scripts
+**As a** user on any view
+**I want to** see what operations are available on the current view
+**So that** I know what I can do without reading documentation
+
+**Acceptance Criteria:**
+- [ ] "?" help button on each view
+- [ ] 3-8 operations listed per view with title and description
+- [ ] 71 total operations across 16 views
+- [ ] Contextual — shows only operations relevant to current view
+
+---
+
+## Capability 13: Version Management
+
+### US-13.1: Version Tracking and Comparison
+**As a** platform administrator
+**I want to** track version history of metadata items and compare versions
+**So that** I can audit changes and understand what was modified
+
+**Acceptance Criteria:**
+- [ ] Version history list with timestamps and descriptions
+- [ ] Side-by-side diff view between any two versions
+- [ ] Rollback to any previous version
+- [ ] Audit trail maintained (rollback creates new version)
+
+---
+
+## Capability 14: Validation Service
+
+### US-14.1: 5-Layer Metadata Validation
+**As a** platform administrator
+**I want to** validate metadata changes through multiple safety layers before saving
+**So that** invalid or dangerous changes are caught before affecting the system
+
+**Acceptance Criteria:**
+- [ ] Layer 1: Static analysis (syntax, required fields)
+- [ ] Layer 2: Schema compatibility (field types, references)
+- [ ] Layer 3: Sandbox execution (test SQL runs without errors)
+- [ ] Layer 4: Impact analysis (what would change if applied)
+- [ ] Layer 5: Regression safety (existing functionality preserved)
+- [ ] User-layer failures never block OOB operation
+
+---
+
+## Capability 15: OOB vs User Layer Separation
+
+### US-15.1: Layer Architecture
+**As a** platform administrator
+**I want to** separate vendor-provided (OOB) metadata from user customizations
+**So that** upgrades don't overwrite my changes
+
+**Acceptance Criteria:**
+- [ ] OOB layer (read-only for users) and User layer (customizable)
+- [ ] Layer badges (OOB/Custom) visible on all metadata items
+- [ ] Edit of OOB items creates user-layer override
+- [ ] "Reset to OOB" button removes user override
+- [ ] OOB manifest tracking all vendor-provided items
+- [ ] Version tracking for OOB upgrades

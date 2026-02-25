@@ -16,7 +16,7 @@
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 12 frontend views, 193+ tests, E2E Playwright verified
+- 16 frontend views, 473 tests (386 backend + 87 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 
 **What's already metadata-driven (~70%):**
@@ -408,11 +408,11 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
-## Phase 7B: Metadata UX, Guided Demo & Use Case Studio — CURRENT PRIORITY
+## Phase 7B: Metadata UX, Guided Demo & Use Case Studio — COMPLETE
 
 **Goal:** Complete Phase 7 gaps, add intelligent domain value suggestions across all forms, reusable match pattern and score template libraries, a full visual score step builder, an enhanced model composer wizard with live preview/validation/explainability, a Use Case Studio with AI-assisted calculation building and submission review pipeline, and a comprehensive 25-scenario guided tour system covering all E2E business workflows.
 
-**Status:** DESIGNED (2026-02-25). Design doc: `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md`. Milestones M93-M120 planned.
+**Status:** COMPLETE (2026-02-25). Design doc: `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md`. All milestones M93-M120 done. 386 backend tests, 87 E2E tests, 952 frontend modules, 25 guided scenarios, 71 operations, 16 views.
 
 **Design doc:** `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md` (10 sections, ~750 lines)
 
@@ -579,11 +579,12 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 - Create: `tests/test_security.py` — SQL injection, XSS, CORS, auth tests
 - Target: 20+ negative test cases
 
-### Task 16.3: E2E Playwright automation
+### Task 16.3: E2E Playwright automation — PARTIALLY COMPLETE
 
 **Files:**
-- Create: `tests/e2e/` — automated Playwright tests
-- Target: 15+ E2E scenarios covering all 12 views
+- `tests/e2e/` — 87 automated Playwright tests across 12 test classes
+- Covers all 16 views, API endpoints, guided scenarios, viewport responsiveness
+- Target was 15+, achieved 87. Remaining: security-focused E2E tests
 
 ### Task 16.4: Performance tests
 
@@ -717,8 +718,8 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Feature | Description |
 |---|---------|-------------|
-| P1 | Guided Demo Mode | Pre-scripted walkthrough with narration |
-| P2 | Scenario Library | Multiple pre-built scenarios |
+| ~~P1~~ | ~~Guided Demo Mode~~ | ~~Pre-scripted walkthrough with narration~~ — DONE (Phase 7B: dual-mode tour engine with Watch Demo + Try It Yourself) |
+| ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B: 25 scenarios in 7 categories) |
 | P3 | Live Data Simulation | Streaming real-time alert generation |
 | P4 | Comparison Mode | Before/after detection effectiveness |
 | P5 | Performance Metrics | Detection rates, false positive rates |
@@ -732,13 +733,13 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | T1 | SQL string formatting (injection risk) | `query_service.py:39-46` | Phase 15 |
 | T2 | No input validation on API endpoints | `backend/api/*.py` | Phase 15 |
 | T3 | DuckDB single-writer lock | `backend/db.py` | Phase 20 |
-| T4 | Market data time range defaults to current date | `TimeRangeSelector.tsx` | Phase 7B (M94) — PLANNED |
+| T4 | ~~Market data time range defaults to current date~~ | `TimeRangeSelector.tsx` | ~~Phase 7B (M94)~~ — RESOLVED (data-driven date range API) |
 | T5 | No error boundaries in React | `frontend/src/views/**` | Phase 16 |
-| T6 | Stale `asset_class` in settings overrides | `workspace/metadata/settings/` | Phase 7B (M94) — PLANNED |
-| T8 | Calc SQL has hardcoded thresholds ($param framework exists but unused) | `workspace/metadata/calculations/**/*.json` | Phase 7B (M93) — PLANNED |
-| T9 | ModelCreateForm missing critical fields vs DetectionModelEditor | `frontend/src/views/ModelComposer/ModelCreateForm.tsx` | Phase 7B (M101-M102) — PLANNED |
-| T10 | No domain value suggestions on any form input | All form views | Phase 7B (M95-M100) — PLANNED |
-| T11 | No visual score step builder (raw JSON text input) | `SettingForm.tsx`, `SettingsEditor.tsx` | Phase 7B (M99) — PLANNED |
+| T6 | ~~Stale `asset_class` in settings overrides~~ | `workspace/metadata/settings/` | ~~Phase 7B (M94)~~ — RESOLVED (added fixed_income/index overrides) |
+| T8 | ~~Calc SQL has hardcoded thresholds~~ | `workspace/metadata/calculations/**/*.json` | ~~Phase 7B (M93)~~ — RESOLVED (migrated all 10 calcs to $param placeholders) |
+| T9 | ~~ModelCreateForm missing critical fields~~ | `frontend/src/views/ModelComposer/ModelCreateForm.tsx` | ~~Phase 7B (M101-M102)~~ — RESOLVED (7-step wizard with all fields) |
+| T10 | ~~No domain value suggestions on any form input~~ | All form views | ~~Phase 7B (M95-M100)~~ — RESOLVED (SuggestionInput + useDomainValues across all forms) |
+| T11 | ~~No visual score step builder~~ | `SettingForm.tsx`, `SettingsEditor.tsx` | ~~Phase 7B (M99)~~ — RESOLVED (ScoreStepBuilder with visual range bar, gap/overlap detection) |
 | T7 | Demo state file not validated | `backend/api/demo.py` | Phase 15 |
 
 ---
@@ -753,7 +754,7 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | **P0 — DONE** | Phase 10 (Regulatory) | COMPLETE (M79-M83) | Regulatory traceability graph |
 | **P0 — DONE** | Phase 11 (OOB Separation) | COMPLETE (M84-M88) | Layer architecture |
 | **P0 — DONE** | Phase 12 (UI/UX Usability) | COMPLETE (M89-M92) | AG Grid + viewport fixes |
-| **P0 — CURRENT** | **Phase 7B (Metadata UX & Guided Demo)** | **DESIGNED (M93-M120)** | **Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios** |
+| **P0 — DONE** | Phase 7B (Metadata UX & Guided Demo) | COMPLETE (M93-M120) | Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios, 87 E2E tests |
 | **P2 — Important** | Phase 13 (AI-Assisted Configuration) | Planned | LLM metadata awareness (partially addressed in Phase 7B AI calc builder) |
 | **P3 — Enhance** | Phase 14 (Alert Tuning + Models) | Planned | Distribution analysis, 10 new detection models |
 | **P3 — Enhance** | Phase 15 (Security Hardening) | Planned | SQL injection fix, JWT, CORS |
@@ -766,11 +767,11 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 ## Verification Plan
 
 After each phase:
-1. `npm run build` — no TypeScript errors
-2. `uv run pytest tests/ -v` — all tests pass
-3. Playwright E2E verification of affected views
-4. Metadata editor: create/edit/save round-trip test
-5. Explainability: drill-down from alert to raw data verified
+1. `cd frontend && npm run build` — no TypeScript errors (952 modules)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (386)
+3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (87) — stop port 8000 first
+4. Playwright MCP visual walkthrough at 1440px and 1024px
+5. Reference `docs/feature-development-checklist.md` for all new features
 6. Regression: existing demo checkpoints still work
 
 ---

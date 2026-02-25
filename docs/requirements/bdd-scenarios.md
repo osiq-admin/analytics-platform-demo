@@ -487,3 +487,273 @@ And the Pipeline Monitor shows progress
 When I click "Step ▶" again
 Then the state advances to the next checkpoint
 ```
+
+---
+
+## Feature: Domain Value Suggestions
+
+### Scenario: Autocomplete Suggestions for Entity Fields
+```gherkin
+Given I am editing a setting override in Settings Manager
+When I click on the "asset_class" input field
+Then I see a dropdown of known asset_class values from entity metadata
+And the values include: equity, fx, commodity, option, future, fixed_income, index
+When I type "eq"
+Then the dropdown filters to show only "equity"
+When I select "equity"
+Then the input is filled with "equity"
+```
+
+### Scenario: Tiered Loading Based on Cardinality
+```gherkin
+Given entity "product" has 50 distinct product_id values
+When I request domain values for product_id
+Then all 50 values are loaded as a full dropdown (cardinality ≤ 50)
+Given entity "execution" has 509 distinct execution_id values
+When I request domain values for execution_id
+Then values are loaded as a searchable input with server-side filtering (cardinality > 500)
+```
+
+---
+
+## Feature: Match Pattern Library
+
+### Scenario: Reuse an Existing Match Pattern
+```gherkin
+Given 9 OOB match patterns exist in the pattern bank
+When I open the MatchPatternPicker in Settings Manager
+Then I see a searchable list of existing patterns with usage counts
+When I select "US Equity Markets" pattern
+Then the match criteria are populated: {asset_class: "equity", country: "US"}
+And I can adjust values for my specific override
+```
+
+### Scenario: Save a New Match Pattern
+```gherkin
+Given I have defined a custom match criteria {asset_class: "fx", region: "APAC"}
+When I click "Save as Pattern" in the MatchPatternPicker
+And I enter label "APAC FX Markets" and description "All FX products in Asia-Pacific"
+Then the pattern is saved to the pattern bank
+And it appears in future pattern picker searches
+```
+
+---
+
+## Feature: Score Step Builder
+
+### Scenario: Visual Score Step Configuration
+```gherkin
+Given I am configuring score steps for a setting
+When I open the ScoreStepBuilder
+Then I see a visual range bar showing score tiers
+And an editable table with min_value, max_value, and score columns
+When I add a new row: min=100000, max=500000, score=7
+Then the range bar updates to show the new tier
+And gap/overlap detection runs automatically
+```
+
+### Scenario: Gap and Overlap Detection
+```gherkin
+Given score steps: [0-10000: 0, 10000-100000: 3, 200000-500000: 7]
+When the validation runs
+Then it detects a gap between 100000 and 200000
+And highlights the gap in the visual range bar
+And shows a warning: "Gap detected between ranges 100000-200000"
+```
+
+### Scenario: Apply Score Template
+```gherkin
+Given 7 OOB score templates exist (e.g., "Standard Volume Tiers", "Ratio Thresholds")
+When I click "Use Template" in the ScoreStepBuilder
+Then I see templates filtered by value_category matching my setting type
+When I select "Standard Volume Tiers"
+Then the score steps are populated from the template
+And I can adjust individual values while keeping the tier structure
+```
+
+---
+
+## Feature: Model Composer Wizard
+
+### Scenario: Create Detection Model via 7-Step Wizard
+```gherkin
+Given I click "+ New Model" in Model Composer
+Then I see a 7-step wizard: Define, Select Calcs, Scoring, Query, Review, Test, Deploy
+When I complete Step 1 (name, description, regulatory tags)
+And Step 2 (select 3 calculations with MUST_PASS/OPTIONAL)
+And Step 3 (configure score steps and threshold setting)
+And Step 4 (review/edit SQL query in Monaco editor)
+And Step 5 (review summary with validation checks)
+And Step 6 (run test execution and see results in AG Grid)
+And Step 7 (deploy to production)
+Then the model is saved and alerts are generated
+And the validation panel shows all checks passed
+```
+
+### Scenario: Live Validation During Wizard
+```gherkin
+Given I am on Step 1 of the Model Composer wizard
+When I leave the name field empty
+Then the validation panel shows: "Name is required"
+When I enter a name
+Then the validation check turns green
+And the overall validation score updates in real-time
+```
+
+### Scenario: Preview Panel Shows Score Distribution
+```gherkin
+Given I have selected 3 calculations with score steps
+When I switch to the Preview tab in the right panel
+Then I see a Recharts bar chart showing simulated score distribution
+And the score threshold line is marked
+And a summary shows estimated alert count
+```
+
+---
+
+## Feature: Use Case Studio
+
+### Scenario: Create a Custom Detection Use Case
+```gherkin
+Given I navigate to Use Case Studio
+When I click "New Use Case"
+Then I see a 5-step wizard: Define, Components, Sample Data, Expected Results, Validate
+When I define name "High-Value FX Wash" and description
+And I add 2 calculation components with parameters
+And I define sample data for testing
+And I set expected outcomes (alert count, score range)
+And I click "Validate"
+Then the use case is saved and validation runs against sample data
+And results show whether expected outcomes match actual
+```
+
+### Scenario: AI-Assisted Calculation Building
+```gherkin
+Given I am in the AI Calc Builder
+When I type "Detect accounts with FX trading volume exceeding 3x their 30-day average"
+Then the AI generates a calculation proposal with:
+  - calc_id, name, layer, SQL template
+  - Input entities and fields
+  - Parameter suggestions (threshold, lookback period)
+  - Regulatory tag suggestions
+When I click "Refine"
+Then the AI adjusts based on my feedback
+When I click "Validate & Save"
+Then the 5-layer validation runs (static, schema, sandbox, impact, regression)
+And the calculation is saved to the user metadata layer
+```
+
+---
+
+## Feature: Submission Review Pipeline
+
+### Scenario: Submit a Use Case for Review
+```gherkin
+Given I have a validated use case "High-Value FX Wash"
+When I click "Submit for Review"
+Then the submission enters the review queue with status "pending"
+And the system generates recommendations:
+  - Change classification (new model vs modification)
+  - Similarity analysis (% overlap with existing models)
+  - Impact assessment (estimated alert volume)
+  - Risk rating (low/medium/high based on scope)
+```
+
+### Scenario: Review and Approve a Submission
+```gherkin
+Given submission "High-Value FX Wash" is in the review queue
+When I open the submission detail
+Then I see 5 tabs: Overview, Validation, Recommendations, Components, History
+When I review the validation results and recommendations
+And I click "Approve"
+Then the submission status changes to "approved"
+And the "Implement" button becomes available
+When I click "Implement"
+Then the use case components are deployed to the system
+And alerts begin generating
+```
+
+---
+
+## Feature: Version Management
+
+### Scenario: View Version History
+```gherkin
+Given a calculation "value_calc" has been modified 3 times
+When I open Version Management for value_calc
+Then I see a version history list with timestamps and descriptions
+When I select two versions for comparison
+Then I see a side-by-side diff showing what changed
+```
+
+### Scenario: Rollback to Previous Version
+```gherkin
+Given calculation "value_calc" has version 3 (current) and version 2 (previous)
+When I click "Rollback to v2"
+And I confirm the rollback
+Then version 2 becomes the active version
+And a new version 4 is created (copy of v2) for audit trail
+```
+
+---
+
+## Feature: Guided Tour System
+
+### Scenario: Watch Demo Mode (Auto-Play)
+```gherkin
+Given I open the Scenario Selector
+And I select scenario "Configure Score Threshold" in category "Settings & Thresholds"
+When I choose "Watch Demo" mode
+Then the tour auto-navigates to Settings Manager
+And highlights the first element with a spotlight overlay
+And shows step description with title and content
+And auto-advances through all steps with smooth transitions
+When the scenario completes
+Then a completion message is shown
+And the scenario is marked as completed in the selector
+```
+
+### Scenario: Try It Yourself Mode (Interactive)
+```gherkin
+Given I select scenario "Create Your First Detection Model"
+When I choose "Try It Yourself" mode
+Then the tour shows the first step with a hint
+And waits for me to perform the action manually
+When I complete the action (e.g., click "+ New Model")
+Then the tour validates my action and advances to the next step
+If I perform the wrong action
+Then the tour shows a corrective hint
+```
+
+### Scenario: Per-View Operation Scripts
+```gherkin
+Given I am on the Settings Manager view
+When I click the "?" help button
+Then I see a list of 3-8 operations available on this view
+Each operation has a title and description
+And describes what the user can do on this specific view
+```
+
+---
+
+## Feature: OOB vs User Layer Separation
+
+### Scenario: OOB Items are Protected
+```gherkin
+Given a calculation "value_calc" with metadata_layer "oob"
+When I try to delete it
+Then the system shows: "Cannot delete OOB items. Create a user-layer override instead."
+When I edit it
+Then the changes are saved as a user-layer override
+And the original OOB definition is preserved
+And a "Custom" badge appears next to the item
+```
+
+### Scenario: Reset to OOB Default
+```gherkin
+Given calculation "value_calc" has a user-layer override
+When I click "Reset to OOB"
+Then the user-layer override is removed
+And the OOB default is restored
+And the badge changes from "Custom" to "OOB"
+```

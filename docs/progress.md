@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-25 (Phase 7B complete — M93-M120 all done, 386 tests, 952 modules)
+**Last Updated**: 2026-02-25 (Phase 12 + 7B complete — 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
 
 ---
 
@@ -34,6 +34,8 @@
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 | UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
 | Metadata UX & Guided Demo (Phase 7B) | COMPLETE | M93-M120: domain values, patterns, templates, wizard, validation, use cases, submissions, AI calc, versioning, dual-mode tour engine, 25 scenarios, per-screen operation scripts — 386 backend tests, 952 modules |
+| E2E Playwright Testing (Phase 7B-12) | COMPLETE | 87 E2E tests across 12 test classes — all views, APIs, scenarios, viewport tests — 473 total tests |
+| Feature Development Checklist | COMPLETE | 10-section mandatory checklist for all new features with broad system integration triggers |
 
 ---
 
@@ -163,6 +165,10 @@
 | M118 | Scenarios: Entities, Investigation, Admin (S19-S25) | COMPLETE | 3 | 3 | 7 scenarios: entity explore, data import, alert investigation, OOB review |
 | M119 | Per-Screen Operation Scripts | COMPLETE | 3 | 3 | OperationScripts component, 12 view operation definitions, contextual help panel |
 | M120 | Testing & Documentation | COMPLETE | 5 | 5 | 386 backend tests pass, frontend builds (952 modules), scenarios wired into AppLayout, progress updated |
+| | **E2E Testing & Documentation** | **COMPLETE** | | | **87 E2E tests, browser walkthrough, feature checklist** |
+| — | E2E Test Suite (Phase 7B-12) | COMPLETE | 3 | 3 | 87 Playwright E2E tests pass (12 test classes), ExamplesDrawer CSS fix, all views + APIs verified |
+| — | Browser Walkthrough Verification | COMPLETE | 2 | 2 | Full visual walkthrough with Playwright MCP at 1440px + 1024px, 23 screenshots |
+| — | Feature Development Checklist | COMPLETE | 1 | 1 | 10-section checklist with broad system integration triggers at `docs/feature-development-checklist.md` |
 
 ---
 
@@ -570,6 +576,25 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **M103**: ValidationPanel (real-time checks), PreviewPanel (Recharts score sim), DependencyMiniDAG (React Flow) — `de11e95`, 933 modules
 - [x] **M104**: ExamplesDrawer with 15 annotated examples (5 models, 5 settings, 5 calcs), slide-out panel — `3bb9213`, 937 modules
 - [x] **M105**: 5-layer ValidationService (static, schema, sandbox, impact, regression) + validation API, 7 new tests — `8862284`, 359 tests
+
+### 2026-02-25 (E2E Testing, Browser Walkthrough & Feature Checklist)
+- [x] **Browser Walkthrough**: Full Playwright MCP visual walkthrough of all 16 views at 1440px
+  - Dashboard, Entity Designer, Metadata Explorer, Settings Manager, Model Composer
+  - Use Case Studio, Submissions Queue, AI Assistant, Risk Case Manager
+  - Regulatory Map (100% coverage), Schema Explorer, SQL Console
+  - Pipeline Monitor, Data Manager, Mapping Studio, Metadata Editor
+  - 23 screenshots captured across all views and key interactions
+- [x] **Guided Scenario Verification**: Ran "Explore Entity Data Model" Watch Demo (8 steps) through Playwright MCP
+- [x] **E2E Playwright Tests**: 87/87 passing (12 test classes)
+  - Fixed `test_examples_drawer_close` — ExamplesDrawer uses CSS `translate-x-full` to slide off-screen, keeping DOM element present; changed assertion to check button text reverts
+  - Port conflict fix: E2E tests use port 8333, must stop any server on 8000 first (DuckDB lock)
+- [x] **Backend Tests**: 386/386 passing
+- [x] **Feature Development Checklist**: Created `docs/feature-development-checklist.md`
+  - 10 sections: Backend, Frontend, Sidebar/Nav, Backend Tests, E2E Playwright, Tours/Scenarios/Operations, Demo/Presentation, Documentation/Tracking, Git/CI/Release, Broad System Integration Triggers
+  - Self-updating Section 10: triggers for new views, entities, calculations, models, settings, API endpoints, tour changes, AG Grid changes
+- [x] **Updated CLAUDE.md**: Test counts (473), view count (16), workflow preferences, broad systems section
+- [x] **Updated MEMORY.md**: Current state, E2E port note, checklist reference
+- **Total**: 473 tests passing (386 backend + 87 E2E), 952 frontend modules, 16 views
 
 ---
 
