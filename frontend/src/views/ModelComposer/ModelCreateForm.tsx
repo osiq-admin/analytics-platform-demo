@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useMetadataStore, type CalculationDef, type DetectionModelDef } from "../../stores/metadataStore.ts";
-import Panel from "../../components/Panel.tsx";
-import StatusBadge from "../../components/StatusBadge.tsx";
+import WizardProgress from "./WizardProgress.tsx";
+import DefineStep from "./steps/DefineStep.tsx";
+import SelectCalcsStep, { type SelectedCalc } from "./steps/SelectCalcsStep.tsx";
+import ConfigureScoringStep from "./steps/ConfigureScoringStep.tsx";
 
 interface ModelCreateFormProps {
   calculations: CalculationDef[];
@@ -10,21 +12,49 @@ interface ModelCreateFormProps {
   existingModel?: DetectionModelDef;
 }
 
-interface SelectedCalc {
-  calc_id: string;
-  strictness: "MUST_PASS" | "OPTIONAL";
-}
+const STEPS = [
+  { label: "Define" },
+  { label: "Calculations" },
+  { label: "Scoring" },
+  { label: "Query" },
+  { label: "Review" },
+  { label: "Test Run" },
+  { label: "Deploy" },
+];
 
 export default function ModelCreateForm({ calculations, onSaved, onCancel, existingModel }: ModelCreateFormProps) {
   const { saveDetectionModel, updateDetectionModel } = useMetadataStore();
+
+  // Wizard step
+  const [step, setStep] = useState(1);
+
+  // Step 1: Define
   const [name, setName] = useState(existingModel?.name ?? "");
   const [description, setDescription] = useState(existingModel?.description ?? "");
+  const [timeWindow, setTimeWindow] = useState(existingModel?.time_window ?? "business_date_window");
+  const [granularity, setGranularity] = useState<string[]>(existingModel?.granularity ?? ["product_id", "account_id"]);
+  const [contextFields, setContextFields] = useState<string[]>(existingModel?.context_fields ?? ["product_id", "account_id"]);
+
+  // Step 2: Calculations
   const [selectedCalcs, setSelectedCalcs] = useState<SelectedCalc[]>(
     existingModel?.calculations.map((c) => ({
       calc_id: c.calc_id,
       strictness: c.strictness,
-    })) ?? []
+      threshold_setting: c.threshold_setting ?? undefined,
+      score_steps_setting: c.score_steps_setting ?? undefined,
+      value_field: c.value_field ?? undefined,
+    })) ?? [],
   );
+
+  // Step 3: Scoring
+  const [scoreThresholdSetting, setScoreThresholdSetting] = useState(
+    existingModel?.score_threshold_setting ?? "",
+  );
+
+  // Step 4: Query (placeholder)
+  const [query, setQuery] = useState(existingModel?.query ?? "");
+
+  // Save state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,34 +68,37 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
     if (existingModel) {
       setName(existingModel.name);
       setDescription(existingModel.description);
+      setTimeWindow(existingModel.time_window ?? "business_date_window");
+      setGranularity(existingModel.granularity ?? ["product_id", "account_id"]);
+      setContextFields(existingModel.context_fields ?? ["product_id", "account_id"]);
       setSelectedCalcs(
         existingModel.calculations.map((c) => ({
           calc_id: c.calc_id,
           strictness: c.strictness,
-        }))
+          threshold_setting: c.threshold_setting ?? undefined,
+          score_steps_setting: c.score_steps_setting ?? undefined,
+          value_field: c.value_field ?? undefined,
+        })),
       );
+      setScoreThresholdSetting(existingModel.score_threshold_setting ?? "");
+      setQuery(existingModel.query ?? "");
+      setStep(1);
     }
   }, [existingModel]);
 
-  const toggleCalc = (calcId: string) => {
-    setSelectedCalcs((prev) => {
-      const exists = prev.find((c) => c.calc_id === calcId);
-      if (exists) {
-        return prev.filter((c) => c.calc_id !== calcId);
-      }
-      return [...prev, { calc_id: calcId, strictness: "OPTIONAL" as const }];
-    });
-  };
-
-  const toggleStrictness = (calcId: string) => {
-    setSelectedCalcs((prev) =>
-      prev.map((c) =>
-        c.calc_id === calcId
-          ? { ...c, strictness: c.strictness === "MUST_PASS" ? "OPTIONAL" : "MUST_PASS" }
-          : c
-      )
-    );
-  };
+  // Validation for each step
+  const canProceed = useMemo(() => {
+    switch (step) {
+      case 1:
+        return name.trim().length > 0;
+      case 2:
+        return selectedCalcs.length > 0;
+      case 3:
+        return scoreThresholdSetting.trim().length > 0;
+      default:
+        return true;
+    }
+  }, [step, name, selectedCalcs, scoreThresholdSetting]);
 
   const handleSave = async () => {
     if (!name || selectedCalcs.length === 0) return;
@@ -76,11 +109,18 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
         model_id: modelId,
         name,
         description,
-        time_window: existingModel?.time_window ?? "business_date",
-        granularity: existingModel?.granularity ?? ["product_id", "account_id"],
-        calculations: selectedCalcs,
-        score_threshold_setting: existingModel?.score_threshold_setting ?? "wash_score_threshold",
-        query: existingModel?.query ?? "",
+        time_window: timeWindow,
+        granularity,
+        context_fields: contextFields,
+        calculations: selectedCalcs.map((sc) => ({
+          calc_id: sc.calc_id,
+          strictness: sc.strictness,
+          threshold_setting: sc.threshold_setting || null,
+          score_steps_setting: sc.score_steps_setting || null,
+          value_field: sc.value_field || null,
+        })),
+        score_threshold_setting: scoreThresholdSetting || "wash_score_threshold",
+        query,
       };
 
       if (isEdit) {
@@ -96,84 +136,115 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
     }
   };
 
+  // Allow clicking to completed or current steps only
+  const handleStepClick = (targetStep: number) => {
+    if (targetStep <= step || targetStep === step + 1) {
+      if (targetStep > step && !canProceed) return;
+      setStep(targetStep);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-3 min-w-0">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">
           {isEdit ? `Edit: ${existingModel.name}` : "Create New Model"}
         </h3>
+      </div>
+
+      {/* Progress bar */}
+      <WizardProgress currentStep={step} steps={STEPS} onStepClick={handleStepClick} />
+
+      {/* Step content */}
+      <div className="flex-1 overflow-auto">
+        {step === 1 && (
+          <DefineStep
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+            timeWindow={timeWindow}
+            setTimeWindow={setTimeWindow}
+            granularity={granularity}
+            setGranularity={setGranularity}
+            contextFields={contextFields}
+            setContextFields={setContextFields}
+          />
+        )}
+        {step === 2 && (
+          <SelectCalcsStep
+            calculations={calculations}
+            selectedCalcs={selectedCalcs}
+            setSelectedCalcs={setSelectedCalcs}
+          />
+        )}
+        {step === 3 && (
+          <ConfigureScoringStep
+            selectedCalcs={selectedCalcs}
+            setSelectedCalcs={setSelectedCalcs}
+            scoreThresholdSetting={scoreThresholdSetting}
+            setScoreThresholdSetting={setScoreThresholdSetting}
+            calculations={calculations}
+          />
+        )}
+        {step === 4 && (
+          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
+            Step 4: Query (coming in M102)
+          </div>
+        )}
+        {step === 5 && (
+          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
+            Step 5: Review (coming in M102)
+          </div>
+        )}
+        {step === 6 && (
+          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
+            Step 6: Test Run (coming in M102)
+          </div>
+        )}
+        {step === 7 && (
+          <div className="flex items-center justify-center h-32 text-sm text-muted border border-dashed border-border rounded">
+            Step 7: Deploy (coming in M102)
+          </div>
+        )}
+
+        {error && <p className="text-xs text-destructive mt-2">{error}</p>}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between pt-2 border-t border-border">
         <button onClick={onCancel} className="text-xs text-muted hover:text-foreground">
           Cancel
         </button>
-      </div>
-
-      <div className="space-y-3">
-        <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Model Name</span>
-          <input
-            className="px-2 py-1.5 rounded border border-border bg-background text-foreground text-xs"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Custom Wash Detection"
-          />
-          {modelId && <span className="text-muted">ID: {modelId}</span>}
-        </label>
-
-        <label className="flex flex-col gap-1 text-xs">
-          <span className="text-muted">Description</span>
-          <textarea
-            className="px-2 py-1.5 rounded border border-border bg-background text-foreground text-xs resize-none"
-            rows={2}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="What does this model detect?"
-          />
-        </label>
-
-        <Panel title="Select Calculations">
-          <div className="space-y-1">
-            {calculations.map((c) => {
-              const selected = selectedCalcs.find((sc) => sc.calc_id === c.calc_id);
-              return (
-                <div
-                  key={c.calc_id}
-                  className={`flex items-center justify-between p-2 rounded border text-xs cursor-pointer transition-colors ${
-                    selected ? "border-accent bg-accent/10" : "border-border bg-background hover:border-accent/30"
-                  }`}
-                  onClick={() => toggleCalc(c.calc_id)}
-                >
-                  <div>
-                    <span className="font-medium">{c.name}</span>
-                    <span className="text-muted ml-2">({c.layer})</span>
-                  </div>
-                  {selected && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleStrictness(c.calc_id);
-                      }}
-                    >
-                      <StatusBadge
-                        label={selected.strictness}
-                        variant={selected.strictness === "MUST_PASS" ? "error" : "warning"}
-                      />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Panel>
-
-        {error && <p className="text-xs text-destructive">{error}</p>}
-
-        <button
-          onClick={handleSave}
-          disabled={saving || !name || selectedCalcs.length === 0}
-          className="px-4 py-2 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
-        >
-          {saving ? "Saving..." : isEdit ? `Save Changes (${selectedCalcs.length} calcs)` : `Save Model (${selectedCalcs.length} calcs)`}
-        </button>
+        <div className="flex gap-2">
+          {step > 1 && (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="px-3 py-1.5 text-xs border border-border rounded hover:bg-accent/10 transition-colors"
+            >
+              Back
+            </button>
+          )}
+          {step < 7 && (
+            <button
+              onClick={() => setStep(step + 1)}
+              className="px-3 py-1.5 text-xs bg-accent text-white rounded hover:bg-accent/80 disabled:opacity-50 transition-colors"
+              disabled={!canProceed}
+            >
+              Next
+            </button>
+          )}
+          {step === 7 && (
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 bg-accent text-white rounded text-xs font-medium hover:bg-accent/80 disabled:opacity-50 transition-colors"
+              disabled={saving}
+            >
+              {saving ? "Saving..." : isEdit ? "Save Changes" : "Save Model"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
