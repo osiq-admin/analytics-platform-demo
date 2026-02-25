@@ -39,6 +39,7 @@ async def lifespan(app: FastAPI):
     from backend.engine.settings_resolver import SettingsResolver
     from backend.engine.detection_engine import DetectionEngine
     from backend.services.alert_service import AlertService
+    from backend.services.validation_service import ValidationService
 
     db_manager.connect(str(settings.workspace_dir / "analytics.duckdb"))
 
@@ -51,6 +52,9 @@ async def lifespan(app: FastAPI):
     )
     app.state.alerts = AlertService(
         settings.workspace_dir, db_manager, app.state.detection
+    )
+    app.state.validation = ValidationService(
+        settings.workspace_dir, db_manager, app.state.metadata
     )
 
     yield
