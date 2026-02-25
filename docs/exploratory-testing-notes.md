@@ -90,6 +90,36 @@
   5. Added `tickFormatter` with `formatLabel()` to all Dashboard chart XAxis/YAxis rendering snake_case fields, added `formatLabel()` to all Pie label functions, added `formatter` to all Legend components
 - **Status**: FIXED
 
+### F-007: Charts and Tables Should Show Percentages, Not Just Absolute Numbers
+- **Screen**: Dashboard (all 4 chart widgets)
+- **Observation**: All charts and tables only show absolute counts. Users expect to see percentages alongside counts — e.g., "Market Price Ramping: 414 (96.3%)" — to quickly understand relative distribution without mental math.
+- **Requirements**:
+  - Pie chart labels: show "Label (count, pct%)"
+  - Bar chart tooltips: show count and percentage
+  - Table views: add a "%" column
+  - H-Bar chart bar labels: include percentage
+- **Status**: FIXED
+
+### F-008: "Fired %" Card Is Confusing and Always Shows 0%
+- **Screen**: Dashboard (summary cards)
+- **Observation**: The "Fired %" card shows 0% with "0 of 430 alerts". Users don't understand what "Fired" means or why it's 0. Root cause: the code looks for `trigger_path === "fired"` but that value doesn't exist in the data — trigger paths are "all_passed" and "score_based". All stored alerts have `alert_fired === true` by design (the engine only saves fired alerts), so this metric is meaningless.
+- **Fix**: Replace with "Score Triggered %" — shows percentage of alerts triggered by score threshold breach vs. all calculations passing. This is meaningful surveillance information (tells you whether alerts come from threshold breaches or full rule compliance).
+- **Status**: FIXED
+
+### F-009: Demo Toolbar Buttons Lack Context — Act 1/2, Tour, Scenarios, Theme Toggle
+- **Screen**: Top toolbar (all views)
+- **Observation**:
+  1. "Act 1" and "Act 2" buttons have no tooltips — unclear what they do or represent
+  2. "Tour", "Scenarios", "Light"/"Dark" buttons are bare text with no descriptions
+  3. The toolbar layout doesn't clearly separate demo controls from utility controls
+  4. No visual grouping between "demo progression" (Reset/Step/End/Act) vs. "help & settings" (Tour/Scenarios/Theme)
+- **Requirements**:
+  - Add descriptive tooltips to Act 1, Act 2, Reset, Step, End, Guide
+  - Add tooltips to Tour, Scenarios, Theme toggle
+  - Better visual grouping: separate demo controls from utility controls with a divider
+  - Consider adding brief descriptions or icons to clarify purpose
+- **Status**: FIXED
+
 ---
 
 ## Notes & Observations

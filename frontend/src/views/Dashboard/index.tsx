@@ -34,6 +34,12 @@ const WIDGETS = [
   { id: "alerts-by-asset", label: "Alerts by Asset Class" },
 ] as const;
 
+/** Format a percentage to one decimal place */
+function pct(value: number, total: number): string {
+  if (total === 0) return "0%";
+  return `${((value / total) * 100).toFixed(1)}%`;
+}
+
 /* ---------- Generic table renderer ---------- */
 function DataTable({ data, labelKey, valueKey, labelHeader, valueHeader }: {
   data: Record<string, unknown>[]; labelKey: string; valueKey: string;
@@ -47,20 +53,26 @@ function DataTable({ data, labelKey, valueKey, labelHeader, valueHeader }: {
           <tr className="border-b border-border">
             <th className="text-left py-1 px-2 text-muted font-semibold uppercase tracking-wide">{labelHeader ?? labelKey}</th>
             <th className="text-right py-1 px-2 text-muted font-semibold uppercase tracking-wide">{valueHeader ?? valueKey}</th>
+            <th className="text-right py-1 px-2 text-muted font-semibold uppercase tracking-wide">%</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
-            <tr key={i} className="border-b border-border/50 hover:bg-surface-elevated/50">
-              <td className="py-1 px-2 text-foreground/80">{formatLabel(String(row[labelKey] ?? ""))}</td>
-              <td className="py-1 px-2 text-right text-foreground">{String(row[valueKey] ?? "")}</td>
-            </tr>
-          ))}
+          {data.map((row, i) => {
+            const val = Number(row[valueKey]) || 0;
+            return (
+              <tr key={i} className="border-b border-border/50 hover:bg-surface-elevated/50">
+                <td className="py-1 px-2 text-foreground/80">{formatLabel(String(row[labelKey] ?? ""))}</td>
+                <td className="py-1 px-2 text-right text-foreground">{String(val)}</td>
+                <td className="py-1 px-2 text-right text-muted">{pct(val, total)}</td>
+              </tr>
+            );
+          })}
         </tbody>
         <tfoot>
           <tr className="border-t border-border">
             <td className="py-1 px-2 text-foreground font-semibold">Total</td>
             <td className="py-1 px-2 text-right text-foreground font-semibold">{total}</td>
+            <td className="py-1 px-2 text-right text-muted font-semibold">100%</td>
           </tr>
         </tfoot>
       </table>
@@ -71,6 +83,7 @@ function DataTable({ data, labelKey, valueKey, labelHeader, valueHeader }: {
 /* ---------- Multi-type chart renderers ---------- */
 
 function AlertsByModelChart({ data, chartType }: { data: { model_id: string; cnt: number }[]; chartType: string }) {
+  const total = data.reduce((s, d) => s + d.cnt, 0);
   if (chartType === "table") {
     return <DataTable data={data} labelKey="model_id" valueKey="cnt" labelHeader="Model" valueHeader="Count" />;
   }
@@ -79,7 +92,7 @@ function AlertsByModelChart({ data, chartType }: { data: { model_id: string; cnt
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie data={data} dataKey="cnt" nameKey="model_id" cx="50%" cy="50%" outerRadius={65}
-            isAnimationActive={false} label={(p: PieLabelRenderProps) => `${formatLabel(String(p.name ?? ""))} (${p.value ?? 0})`} labelLine fontSize={10}>
+            isAnimationActive={false} label={(p: PieLabelRenderProps) => `${formatLabel(String(p.name ?? ""))} (${p.value ?? 0}, ${pct(Number(p.value ?? 0), total)})`} labelLine fontSize={10}>
             {data.map((d, i) => <Cell key={d.model_id} fill={COLORS[i % COLORS.length]} />)}
           </Pie>
           <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => formatLabel(v)} />
@@ -117,11 +130,13 @@ function AlertsByModelChart({ data, chartType }: { data: { model_id: string; cnt
   /* default: horizontal_bar (original) */
   return (
     <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 40, left: 10, bottom: 0 }}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 60, left: 10, bottom: 0 }}>
         <XAxis type="number" tick={TICK_STYLE} />
         <YAxis type="category" dataKey="model_id" tick={TICK_STYLE} width={130} tickFormatter={(v: string) => formatLabel(v)} />
-        <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-        <Bar dataKey="cnt" name="Count" radius={[0, 4, 4, 0]} isAnimationActive={false} label={{ position: "right", fontSize: 10, fill: "var(--color-muted)" }}>
+        <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE}
+          formatter={(value: unknown) => [`${value} (${pct(Number(value), total)})`, "Count"]} />
+        <Bar dataKey="cnt" name="Count" radius={[0, 4, 4, 0]} isAnimationActive={false}
+          label={{ position: "right", fontSize: 10, fill: "var(--color-muted)", formatter: (v: unknown) => `${v} (${pct(Number(v), total)})` }}>
           {data.map((d, i) => <Cell key={d.model_id} fill={COLORS[i % COLORS.length]} />)}
         </Bar>
       </BarChart>
@@ -173,6 +188,7 @@ function ScoreDistributionChart({ data, chartType }: { data: { bucket: number; c
 }
 
 function AlertsByTriggerChart({ data, chartType }: { data: { trigger_path: string; cnt: number }[]; chartType: string }) {
+  const total = data.reduce((s, d) => s + d.cnt, 0);
   if (chartType === "table") {
     return <DataTable data={data} labelKey="trigger_path" valueKey="cnt" labelHeader="Trigger Path" valueHeader="Count" />;
   }
@@ -181,7 +197,7 @@ function AlertsByTriggerChart({ data, chartType }: { data: { trigger_path: strin
       <ResponsiveContainer width="100%" height={180}>
         <PieChart>
           <Pie data={data} dataKey="cnt" nameKey="trigger_path" cx="50%" cy="50%" outerRadius={60}
-            isAnimationActive={false} label={(p: PieLabelRenderProps) => `${formatLabel(String(p.name ?? ""))} (${p.value ?? 0})`} labelLine fontSize={10}>
+            isAnimationActive={false} label={(p: PieLabelRenderProps) => `${formatLabel(String(p.name ?? ""))} (${p.value ?? 0}, ${pct(Number(p.value ?? 0), total)})`} labelLine fontSize={10}>
             {data.map((d, i) => <Cell key={d.trigger_path} fill={COLORS[i % COLORS.length]} />)}
           </Pie>
           <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => formatLabel(v)} />
@@ -228,6 +244,7 @@ function AlertsByTriggerChart({ data, chartType }: { data: { trigger_path: strin
 }
 
 function AlertsByAssetChart({ data, chartType }: { data: { asset_class: string; cnt: number }[]; chartType: string }) {
+  const total = data.reduce((s, d) => s + d.cnt, 0);
   if (chartType === "table") {
     return <DataTable data={data} labelKey="asset_class" valueKey="cnt" labelHeader="Asset Class" valueHeader="Count" />;
   }
@@ -280,7 +297,7 @@ function AlertsByAssetChart({ data, chartType }: { data: { asset_class: string; 
     <ResponsiveContainer width="100%" height={180}>
       <PieChart>
         <Pie data={data} dataKey="cnt" nameKey="asset_class" cx="50%" cy="50%" outerRadius={65}
-          isAnimationActive={false} label={(props: PieLabelRenderProps) => `${formatLabel(String(props.name ?? ""))} (${props.value ?? 0})`}
+          isAnimationActive={false} label={(props: PieLabelRenderProps) => `${formatLabel(String(props.name ?? ""))} (${props.value ?? 0}, ${pct(Number(props.value ?? 0), total)})`}
           labelLine fontSize={10}>
           {data.map((entry, i) => (
             <Cell key={entry.asset_class} fill={ASSET_CLASS_COLORS[entry.asset_class] ?? COLORS[i % COLORS.length]} />
@@ -399,10 +416,10 @@ export default function Dashboard() {
 
   if (!stats) return null;
 
-  const firedPct = stats.by_trigger.find((t) => t.trigger_path === "fired");
-  const firedPercent = stats.total_alerts > 0 && firedPct
-    ? Math.round((firedPct.cnt / stats.total_alerts) * 100)
-    : 0;
+  const scoreBased = stats.by_trigger.find((t) => t.trigger_path === "score_based");
+  const scoreTriggeredPct = stats.total_alerts > 0 && scoreBased
+    ? ((scoreBased.cnt / stats.total_alerts) * 100).toFixed(1)
+    : "0";
 
   return (
     <div className="flex flex-col gap-4" data-tour="dashboard">
@@ -430,8 +447,8 @@ export default function Dashboard() {
       {/* Row 1: Summary Cards (always visible) */}
       <div className="grid grid-cols-4 gap-4" data-tour="dashboard-cards">
         <SummaryCard label="Total Alerts" value={stats.total_alerts} />
-        <SummaryCard label="Fired %" value={`${firedPercent}%`}
-          subtitle={`${firedPct?.cnt ?? 0} of ${stats.total_alerts} alerts`} />
+        <SummaryCard label="Score Triggered" value={`${scoreTriggeredPct}%`}
+          subtitle={`${scoreBased?.cnt ?? 0} of ${stats.total_alerts} exceeded threshold`} />
         <SummaryCard label="Avg Score" value={stats.avg_scores?.avg_score ?? "\u2014"}
           subtitle={`Threshold: ${stats.avg_scores?.avg_threshold ?? "\u2014"}`} />
         <SummaryCard label="Active Models" value={stats.by_model.length} />

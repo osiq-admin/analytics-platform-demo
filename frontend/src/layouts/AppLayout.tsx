@@ -64,25 +64,35 @@ export default function AppLayout() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top toolbar */}
         <header className="h-10 shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
+          {/* Left: Demo progression controls */}
           <div data-tour="demo-toolbar"><DemoToolbar /></div>
-          <div className="flex items-center gap-2" data-tour="theme-toggle">
+
+          {/* Right: Help & settings */}
+          <div className="flex items-center gap-1.5 text-xs" data-tour="theme-toggle">
+            {/* Learning tools */}
             <button
               onClick={handleTour}
-              className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
-              title="Start guided tour for this view"
+              className="px-2 py-0.5 rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+              title="Start guided tour — interactive walkthrough of the current view's features and controls"
             >
               Tour
             </button>
             <button
               onClick={() => setShowScenarios(true)}
-              className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
-              title="Browse guided scenarios"
+              className="px-2 py-0.5 rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+              title="Browse scenarios — 25 guided workflows covering surveillance use cases (entity setup, model tuning, alert investigation, etc.)"
             >
               Scenarios
             </button>
+
+            {/* Divider */}
+            <div className="w-px h-4 bg-border mx-0.5" />
+
+            {/* Theme toggle */}
             <button
               onClick={toggle}
-              className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+              className="px-2 py-0.5 rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+              title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             >
               {theme === "dark" ? "Light" : "Dark"}
             </button>
