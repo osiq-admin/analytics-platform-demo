@@ -19,7 +19,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         id: "view_summary",
         name: "View Alert Summary",
         description:
-          "Review key metrics at a glance: total alerts, fired percentage, average scores, and active detection models.",
+          "Review key metrics at a glance: total alerts, score-triggered percentage, average scores, and active detection models.",
         scenarioId: "s21_alert_investigation",
       },
       {

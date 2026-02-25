@@ -54,7 +54,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 ## Dashboard (Overview → Dashboard)
 
 The Dashboard provides a summary analytics view:
-- **Row 1:** 4 summary cards — Total Alerts, Fired %, Average Score, Active Models
+- **Row 1:** 4 summary cards — Total Alerts, Score Triggered %, Average Score, Active Models
 - **Row 2:** Alerts by Model (horizontal bar) | Score Distribution (bar histogram)
 - **Row 3:** Alerts by Trigger Path (horizontal bar) | Alerts by Asset Class (pie chart)
 

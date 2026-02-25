@@ -240,7 +240,37 @@ A fix applied to one chart but not its siblings creates inconsistency.
 
 ---
 
-## 15. Build → Restart → Hard Reload
+## 15. UI Label/Metric Changes Must Update All Dependent Systems
+
+Any change to a user-visible label, metric name, card title, or column header **must** trigger a search across all dependent systems. Even a "small rename" affects tours, scenarios, operation scripts, and documentation.
+
+**Mandatory grep after any UI text change:**
+
+```bash
+# Search for the OLD text across all dependent systems
+grep -r "old text" \
+  frontend/src/data/tourDefinitions.ts \
+  frontend/src/data/scenarioDefinitions.ts \
+  frontend/src/data/operationScripts.ts \
+  docs/demo-guide.md \
+  docs/schemas/ \
+  CLAUDE.md
+```
+
+**Systems to check:**
+
+| System | File | What to update |
+|--------|------|----------------|
+| Tour definitions | `frontend/src/data/tourDefinitions.ts` | Step content referencing the label |
+| Scenario definitions | `frontend/src/data/scenarioDefinitions.ts` | Scenario descriptions |
+| Operation scripts | `frontend/src/data/operationScripts.ts` | Operation descriptions |
+| Demo guide | `docs/demo-guide.md` | Feature descriptions |
+| Data dictionary | `docs/schemas/data-dictionary.md` | Column/field descriptions |
+| Project docs | `CLAUDE.md`, `docs/progress.md` | Any references |
+
+---
+
+## 16. Build → Restart → Hard Reload
 
 After any frontend change:
 1. `cd frontend && npm run build`

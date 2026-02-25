@@ -150,9 +150,19 @@
 - **Related**: F-001 (alert distribution imbalance) — both are data generation calibration issues
 - **Status**: OPEN — future fix (data regeneration required)
 
+### F-011: Process Gap — Feature Changes Must Update All Dependent Systems
+- **Screen**: N/A (process issue)
+- **Observation**: When F-008 renamed "Fired %" to "Score Triggered", the tour definitions, operation scripts, and demo guide were NOT updated in the same commit. This created stale references that a user following the tour would see. The feature development checklist (`docs/feature-development-checklist.md`) already lists these systems, but the checklist was not followed during the fix.
+- **Root Cause**: Quick fixes/renames are treated as "small changes" that don't trigger the full checklist review. But even a label rename affects: tours, scenarios, operation scripts, demo guide, data dictionary, and any documentation referencing the old label.
+- **Process Improvement Required**:
+  1. Any UI-visible change (label, metric, card, column rename) MUST trigger a grep for the old text across ALL of: `frontend/src/data/tourDefinitions.ts`, `frontend/src/data/scenarioDefinitions.ts`, `frontend/src/data/operationScripts.ts`, `docs/demo-guide.md`, `docs/schemas/`, `CLAUDE.md`
+  2. Add this as a mandatory step in `docs/development-guidelines.md`
+  3. Consider adding a pre-commit check or CI lint that detects stale references
+- **Status**: FIXED (stale references updated) + PROCESS NOTE
+
 ---
 
 ## Notes & Observations
 - Dashboard gives a good high-level overview but the data imbalance immediately stands out
-- The "Fired %" at 0% is also notable — none of the 430 alerts have been escalated yet
+- The original "Fired %" card was misleading (always 0%) — replaced with "Score Triggered" (12.6%) in F-008
 - Cross-project consistency is critical — a pattern fix in one view should be applied everywhere

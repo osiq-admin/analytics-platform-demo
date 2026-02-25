@@ -35,7 +35,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='dashboard-cards']",
         title: "Summary Metrics",
-        content: "Key performance indicators: total alerts generated, fired percentage, average scores, and active detection models.",
+        content: "Key performance indicators: total alerts generated, score-triggered percentage (alerts exceeding threshold), average scores, and active detection models.",
         placement: "bottom",
         route: "/dashboard",
       },
@@ -54,7 +54,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='dashboard-triggers']",
         title: "Trigger Paths",
-        content: "Shows how alerts reached their current state — fired, escalated, or pending review.",
+        content: "Shows how alerts were triggered — score-based (exceeded threshold) or all-passed (all calculations passed their criteria).",
         placement: "right",
       },
     ],
@@ -358,7 +358,7 @@ export const TOURS: Record<string, TourDefinition> = {
   act1_guide: {
     id: "act1_guide",
     name: "Act 1: Data-to-Alerts Workflow",
-    description: "Walk through the complete pipeline from raw data to fired alerts.",
+    description: "Walk through the complete pipeline from raw data to generated alerts.",
     steps: [
       {
         target: "[data-tour='sidebar']",
