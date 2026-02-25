@@ -28,10 +28,9 @@
       {"name": "price_change_pct", "type": "decimal"}
     ]
   },
-  "logic": "WITH price_stats AS (SELECT product_id, trade_date, MIN(trade_price) AS day_low, MAX(trade_price) AS day_high, FIRST(trade_price ORDER BY trade_time) AS open_price, LAST(trade_price ORDER BY trade_time) AS close_price, MIN(trade_time) AS first_trade, MAX(trade_time) AS last_trade, STDDEV(trade_price) AS price_stddev FROM md_intraday GROUP BY product_id, trade_date), trends AS (SELECT product_id, trade_date, CASE WHEN close_price > open_price + (price_stddev * 1.5) THEN 'up' WHEN close_price < open_price - (price_stddev * 1.5) THEN 'down' ELSE NULL END AS trend_type, first_trade AS window_start, last_trade AS window_end, open_price AS start_price, close_price AS end_price, ROUND((close_price - open_price) / NULLIF(open_price, 0) * 100, 4) AS price_change_pct FROM price_stats WHERE price_stddev > 0) SELECT product_id || '_' || trade_date || '_' || trend_type AS trend_id, product_id, trend_type, window_start, window_end, start_price, end_price, price_change_pct FROM trends WHERE trend_type IS NOT NULL",
+  "logic": "WITH price_stats AS (SELECT product_id, trade_date, MIN(trade_price) AS day_low, MAX(trade_price) AS day_high, FIRST(trade_price ORDER BY trade_time) AS open_price, LAST(trade_price ORDER BY trade_time) AS close_price, MIN(trade_time) AS first_trade, MAX(trade_time) AS last_trade, STDDEV(trade_price) AS price_stddev FROM md_intraday GROUP BY product_id, trade_date), trends AS (SELECT product_id, trade_date, CASE WHEN close_price > open_price + (price_stddev * $trend_multiplier) THEN 'up' WHEN close_price < open_price - (price_stddev * $trend_multiplier) THEN 'down' ELSE NULL END AS trend_type, first_trade AS window_start, last_trade AS window_end, open_price AS start_price, close_price AS end_price, ROUND((close_price - open_price) / NULLIF(open_price, 0) * 100, 4) AS price_change_pct FROM price_stats WHERE price_stddev > 0) SELECT product_id || '_' || trade_date || '_' || trend_type AS trend_id, product_id, trend_type, window_start, window_end, start_price, end_price, price_change_pct FROM trends WHERE trend_type IS NOT NULL",
   "parameters": {
-    "default_sensitivity": 1.5,
-    "note": "Sensitivity multiplier applied to stddev to determine trend significance. Resolved via settings engine per entity context."
+    "trend_multiplier": {"source": "setting", "setting_id": "trend_sensitivity", "default": 1.5}
   },
   "display": {
     "label": "Price Trend",

@@ -31,11 +31,10 @@
       {"name": "is_wash_candidate", "type": "boolean"}
     ]
   },
-  "logic": "SELECT lta.product_id, lta.account_id, lta.business_date, lta.total_value, lta.buy_value, lta.sell_value, lta.buy_qty, lta.sell_qty, lta.total_trades, lta.same_side_pct, lta.is_large, lta.threshold_used, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 THEN ROUND(LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty), 4) ELSE 0 END AS qty_match_ratio, v.vwap_buy, v.vwap_sell, v.vwap_spread, COALESCE(v.vwap_proximity, 1.0) AS vwap_proximity, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 AND LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty) > 0.5 AND COALESCE(v.vwap_proximity, 1.0) < 0.02 THEN TRUE ELSE FALSE END AS is_wash_candidate FROM calc_large_trading_activity lta LEFT JOIN calc_vwap v ON lta.product_id = v.product_id AND lta.account_id = v.account_id AND lta.business_date = v.business_date",
+  "logic": "SELECT lta.product_id, lta.account_id, lta.business_date, lta.total_value, lta.buy_value, lta.sell_value, lta.buy_qty, lta.sell_qty, lta.total_trades, lta.same_side_pct, lta.is_large, lta.threshold_used, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 THEN ROUND(LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty), 4) ELSE 0 END AS qty_match_ratio, v.vwap_buy, v.vwap_sell, v.vwap_spread, COALESCE(v.vwap_proximity, 1.0) AS vwap_proximity, CASE WHEN lta.buy_qty > 0 AND lta.sell_qty > 0 AND LEAST(lta.buy_qty, lta.sell_qty) / GREATEST(lta.buy_qty, lta.sell_qty) > $qty_threshold AND COALESCE(v.vwap_proximity, 1.0) < $vwap_threshold THEN TRUE ELSE FALSE END AS is_wash_candidate FROM calc_large_trading_activity lta LEFT JOIN calc_vwap v ON lta.product_id = v.product_id AND lta.account_id = v.account_id AND lta.business_date = v.business_date",
   "parameters": {
-    "default_qty_threshold": 0.5,
-    "default_vwap_threshold": 0.02,
-    "note": "VWAP threshold resolved via settings engine. Using 0.02 default in SQL."
+    "qty_threshold": {"source": "literal", "value": 0.5},
+    "vwap_threshold": {"source": "setting", "setting_id": "wash_vwap_threshold", "default": 0.02}
   },
   "display": {
     "label": "Wash Detection",

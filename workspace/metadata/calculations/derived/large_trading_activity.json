@@ -26,10 +26,9 @@
       {"name": "threshold_used", "type": "decimal"}
     ]
   },
-  "logic": "WITH activity_with_total AS (SELECT product_id, account_id, business_date, buy_value + sell_value AS total_value, buy_value, sell_value, buy_qty, sell_qty, total_trades, same_side_pct FROM calc_trading_activity), avg_activity AS (SELECT product_id, AVG(total_value) AS avg_daily_value FROM activity_with_total GROUP BY product_id) SELECT a.product_id, a.account_id, a.business_date, a.total_value, a.buy_value, a.sell_value, a.buy_qty, a.sell_qty, a.total_trades, a.same_side_pct, CASE WHEN a.total_value > COALESCE(avg.avg_daily_value, 0) * 2.0 THEN TRUE ELSE FALSE END AS is_large, COALESCE(avg.avg_daily_value, 0) * 2.0 AS threshold_used FROM activity_with_total a LEFT JOIN avg_activity avg ON a.product_id = avg.product_id",
+  "logic": "WITH activity_with_total AS (SELECT product_id, account_id, business_date, buy_value + sell_value AS total_value, buy_value, sell_value, buy_qty, sell_qty, total_trades, same_side_pct FROM calc_trading_activity), avg_activity AS (SELECT product_id, AVG(total_value) AS avg_daily_value FROM activity_with_total GROUP BY product_id) SELECT a.product_id, a.account_id, a.business_date, a.total_value, a.buy_value, a.sell_value, a.buy_qty, a.sell_qty, a.total_trades, a.same_side_pct, CASE WHEN a.total_value > COALESCE(avg.avg_daily_value, 0) * $activity_multiplier THEN TRUE ELSE FALSE END AS is_large, COALESCE(avg.avg_daily_value, 0) * $activity_multiplier AS threshold_used FROM activity_with_total a LEFT JOIN avg_activity avg ON a.product_id = avg.product_id",
   "parameters": {
-    "default_multiplier": 2.0,
-    "note": "Multiplier resolved via settings engine. Using 2.0 default in SQL. In production, the SQL template would reference the resolved setting value."
+    "activity_multiplier": {"source": "setting", "setting_id": "large_activity_multiplier", "default": 2.0}
   },
   "display": {
     "label": "Large Activity",

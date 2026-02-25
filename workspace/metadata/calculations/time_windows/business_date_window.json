@@ -26,10 +26,9 @@
       {"name": "window_end", "type": "timestamp"}
     ]
   },
-  "logic": "SELECT execution_id, product_id, account_id, trader_id, adjusted_side, instrument_type, asset_class, price, quantity, calculated_value, execution_date, execution_time, CAST(CASE WHEN execution_time > '17:00:00' THEN CAST(execution_date AS DATE) + INTERVAL 1 DAY ELSE CAST(execution_date AS DATE) END AS DATE) AS business_date, CAST(execution_date AS TIMESTAMP) AS window_start, CAST(execution_date AS TIMESTAMP) + INTERVAL 1 DAY AS window_end FROM calc_adjusted_direction",
+  "logic": "SELECT execution_id, product_id, account_id, trader_id, adjusted_side, instrument_type, asset_class, price, quantity, calculated_value, execution_date, execution_time, CAST(CASE WHEN execution_time > $cutoff_time THEN CAST(execution_date AS DATE) + INTERVAL 1 DAY ELSE CAST(execution_date AS DATE) END AS DATE) AS business_date, CAST(execution_date AS TIMESTAMP) AS window_start, CAST(execution_date AS TIMESTAMP) + INTERVAL 1 DAY AS window_end FROM calc_adjusted_direction",
   "parameters": {
-    "default_cutoff": "17:00:00",
-    "note": "In production, cutoff is resolved per entity context via settings engine. For the demo, using a default cutoff in the SQL."
+    "cutoff_time": {"source": "setting", "setting_id": "business_date_cutoff", "default": "17:00:00"}
   },
   "display": {
     "label": "Business Date"
