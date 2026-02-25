@@ -41,6 +41,7 @@ async def lifespan(app: FastAPI):
     from backend.services.alert_service import AlertService
     from backend.services.validation_service import ValidationService
     from backend.services.recommendation_service import RecommendationService
+    from backend.services.version_service import VersionService
 
     db_manager.connect(str(settings.workspace_dir / "analytics.duckdb"))
 
@@ -60,6 +61,7 @@ async def lifespan(app: FastAPI):
     app.state.recommendations = RecommendationService(
         settings.workspace_dir, app.state.metadata
     )
+    app.state.versions = VersionService(settings.workspace_dir, app.state.metadata)
 
     yield
     db_manager.close()
