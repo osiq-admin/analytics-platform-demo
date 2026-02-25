@@ -134,7 +134,7 @@
 | M90 | Per-View Column & Layout Optimization | COMPLETE | 6 | 6 | EntityDesigner, EntityDetail, MetadataExplorer, SettingsManager, RiskCaseManager, MetadataEditor |
 | M91 | Visual Editor Field Grid Fix | COMPLETE | 1 | 1 | CSS grid template fix — Description column now visible |
 | M92 | E2E Viewport Verification, Tours & Docs | COMPLETE | 4 | 4 | 12 new E2E tests, UX features tour, progress tracker, demo guide |
-| | **Phase 7B: Metadata UX & Guided Demo** | **IN PROGRESS** | | | **M93-M112 complete (WS1-WS6), WS7 tours pending** |
+| | **Phase 7B: Metadata UX & Guided Demo** | **COMPLETE** | | | **M93-M120 all done — 7 workstreams, 25 scenarios, 71 ops, 386 tests, 952 modules** |
 | M93 | Gap Fix: $param Migration | COMPLETE | 4 | 4 | Migrated 10 calc JSONs to $param placeholders, regression verified — 323 tests |
 | M94 | Gap Fix: TimeRangeSelector + Settings Overrides | COMPLETE | 3 | 3 | Data-driven date range API, 8 fixed_income/index overrides, 5 new tests — 323 tests |
 | M95 | Backend: Domain Values API | COMPLETE | 4 | 4 | 4 endpoints, cardinality tiers, server-side search, 14 new tests — 337 tests |

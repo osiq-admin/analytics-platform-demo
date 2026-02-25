@@ -29,7 +29,10 @@ The top toolbar shows demo controls:
 
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
+- **Scenarios** — Open the guided scenario browser (25 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
+
+Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
 
 ## Guided Tours & Onboarding
 
@@ -41,6 +44,10 @@ The top-right toolbar area has:
 - **Act 1 Guide** (9 steps): Raw data → Entity model → Pipeline → Schema → SQL → Settings → Models → Alerts
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
+
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 25 guided scenarios in 7 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin). Each scenario supports:
+- **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
+- **Try It Yourself** — Interactive mode with hints and validation
 
 **Tooltips:** Hover over the `?` help buttons next to panel titles throughout the app for contextual help about what each section does.
 
@@ -329,12 +336,178 @@ Click **Skip to End** to show the final state.
 
 ### 3.3 Summary Points
 
-- **Everything is metadata**: entities, calculations, settings, detection models, mappings — all JSON
+- **Everything is metadata**: entities, calculations, settings, detection models, mappings, use cases, scenarios — all JSON
 - **Production-grade data model**: 8 entities aligned with FIX Protocol and ISO standards (ISO 10383 MIC, ISO 6166 ISIN, ISO 10962 CFI)
 - **Graduated scoring**: flexible alert triggering (all-pass OR score-based)
 - **Full traceability**: every alert shows exactly why it fired
-- **AI-assisted**: natural language → SQL → investigation
+- **AI-assisted**: natural language → SQL → investigation, AI calc generation
+- **Governance workflow**: use cases → submissions → review → approve/reject
+- **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
+- **25 guided scenarios**: Watch Demo or Try It Yourself mode across 7 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
+
+## Act 4: Model Composition Wizard — Phase 7B
+
+### 4.1 Seven-Step Model Wizard (Compose → Models)
+
+**Key Points:**
+- The Model Composer now features a full 7-step wizard for building detection models from scratch
+- Steps: Define → Calculations → Scoring → Query → Review → Test Run → Deploy
+- Right panel shows real-time Validation, Preview (score simulation), and Dependency DAG
+
+**Interactive: Build a Detection Model**
+1. Navigate to **Compose → Models**
+2. Click **+ New Model**
+3. **Step 1 (Define):** Enter name "Order Cancellation Surge", description, select time window, check granularity fields
+4. **Step 2 (Calculations):** Select 3-4 calculations across layers — click to select, click OPTIONAL badge to toggle to MUST_PASS
+5. **Step 3 (Scoring):** Configure per-calc thresholds, select score threshold setting
+6. **Step 4 (Query):** Click "Generate from selections" to auto-build SQL, or edit in Monaco editor
+7. **Step 5 (Review):** Read-only summary of all choices
+8. **Step 6 (Test Run):** Click "Run Test" → dry-run API returns preview alerts in AG Grid (50 rows max)
+9. **Step 7 (Deploy):** Click "Save Model" to persist
+
+**Validation Panel (right sidebar):** Shows real-time completeness checks — missing fields highlighted, progress bar tracks completion.
+
+**Preview Panel (right sidebar):** Recharts bar chart simulating score distribution based on selected calculations.
+
+**Dependency DAG (right sidebar):** React Flow graph showing calculation dependencies for selected calcs.
+
+### 4.2 Examples Library
+
+**Interactive: Browse Examples**
+1. In Model Composer, click the **Examples** button
+2. A 400px drawer slides in from the right
+3. Three tabs: **Models**, **Settings**, **Calculations**
+4. Each example has annotations explaining design rationale
+5. Click **"Use as Starting Point"** to pre-populate the wizard
+
+### 4.3 Domain-Aware Inputs
+
+**Key Points:**
+- **SuggestionInput:** Autocomplete with domain values from the API — small entities show dropdown, large entities use search
+- **MatchPatternPicker:** Browse or create reusable override patterns (two-tab UI)
+- **ScoreStepBuilder:** Visual range bar with gap/overlap detection, template library
+- These components are used throughout Settings Manager, Metadata Editor, and Model Composer
+
+## Act 5: Use Cases & Governance — Phase 7B
+
+### 5.1 Use Case Studio (Compose → Use Cases)
+
+**Key Points:**
+- Create test scenarios ("use cases") to validate detection model behavior
+- 5-step wizard: Describe → Components → Sample Data → Expected Results → Review
+- Sample Data editor uses Monaco JSON with entity-specific tabs
+- Run pipeline on sample data to verify expected alerts
+
+**Interactive: Create a Use Case**
+1. Navigate to **Compose → Use Cases**
+2. Click **+ New Use Case**
+3. **Step 1:** Enter name "Wash Trading — Same Account, Same Day", pick a model
+4. **Step 2:** Review auto-selected calculations and settings
+5. **Step 3:** Enter sample data as JSON (execution, order, product records)
+6. **Step 4:** Toggle "Should Fire Alert", set expected count, add notes
+7. **Step 5:** Review and **Save as Draft**
+8. To submit: click **Submit for Review** → use case enters governance workflow
+
+### 5.2 Submissions Queue (Governance → Submissions)
+
+**Key Points:**
+- AG Grid queue showing all submitted changes with status badges (pending/approved/rejected/changes_requested)
+- 5-tab detail view: Summary, Components, Recommendations, Comments, Impact
+- Auto-recommendations generated on submission (change classification, similarity analysis, consistency checks, best practices)
+- Approve, Reject, or Request Changes with comment
+
+**Interactive: Review a Submission**
+1. Navigate to **Governance → Submissions**
+2. Select a pending submission row
+3. Read the **Summary** tab for overview
+4. Check **Recommendations** tab — auto-generated governance advice
+5. Write a comment in the **Comments** tab
+6. Click **Approve** or **Request Changes**
+7. Key takeaway: "Every metadata change goes through a governance review workflow"
+
+### 5.3 Five-Layer Validation
+
+**Key Points:**
+- Backend validation API checks models, calculations, and settings across 5 layers:
+  1. Static analysis (SQL syntax, table/column existence)
+  2. Schema compatibility (input/output matching, dependency order)
+  3. Sandbox execution (read-only run, timing checks)
+  4. Impact analysis (affected models)
+  5. Regression safety (before/after comparison)
+
+## Act 6: AI-Assisted Building — Phase 7B
+
+### 6.1 AI Calculation Builder
+
+**Key Points:**
+- Describe what you want in natural language → AI generates a calculation definition
+- Split review view: Monaco JSON editor (left) + summary with confidence/suggestions (right)
+- Iterative refinement: adjust description → regenerate → compare
+- Mock mode uses keyword-based template matching (ratio, aggregation, time_window, derived)
+
+**Interactive: Generate a Calculation**
+1. Open the AI Calc Builder (accessible from Model Composer or AI Assistant)
+2. Enter: "Calculate the ratio of cancelled orders to total orders per account"
+3. Click **Generate** → AI returns a calculation JSON
+4. Review the JSON, confidence score, and suggestions
+5. Click **Refine** to adjust, or **Accept** to save
+
+### 6.2 Version Management
+
+**Key Points:**
+- All metadata changes are version-tracked (snapshot-based)
+- Compare any two versions side-by-side with color-coded field-level diffs
+- Rollback to a previous version with one click
+- Version history available for all metadata types
+
+**Interactive: Compare Versions**
+1. Open the Version Comparison panel (available in Metadata Editor)
+2. Select two versions from the dropdowns
+3. View color-coded diff: green = added, red = removed, amber = changed
+4. Click **Rollback** to restore a previous version
+
+## Act 7: Guided Scenarios — Phase 7B
+
+### 7.1 Scenario Browser
+
+**Key Points:**
+- 25 guided scenarios organized in 7 categories
+- Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
+- Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
+- Completed scenarios get a checkmark
+
+**Interactive: Run a Guided Scenario**
+1. Click the **Scenarios** button in the top toolbar
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin
+3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
+4. Select a scenario (e.g., "S1: View Settings Overview")
+5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
+6. In Watch mode: steps auto-advance, forms auto-fill, buttons auto-click
+7. In Try mode: follow hints, complete each step yourself, validation confirms your actions
+8. Key takeaway: "Every platform feature has a guided walkthrough — watch or try it yourself"
+
+### 7.2 Per-View Help
+
+**Key Points:**
+- Every view has a **(?)** button in the bottom-right corner
+- Opens a slide-in panel with:
+  - **Available Operations** — what you can do on this screen
+  - **Related Scenarios** — links to relevant guided scenarios
+  - **Quick Tips** — context-specific advice
+- 71 operations defined across 16 views
+
+### 7.3 Scenario Categories
+
+| Category | Scenarios | Difficulty Range |
+|---|---|---|
+| Settings & Thresholds | S1-S6 | Beginner → Advanced |
+| Calculations | S7-S10 | Beginner → Advanced |
+| Detection Models | S11-S14 | Beginner → Advanced |
+| Use Cases & Submissions | S15-S18 | Beginner → Advanced |
+| Entities | S19-S20 | Beginner |
+| Investigation | S21-S23 | Beginner → Advanced |
+| Admin | S24-S25 | Intermediate → Advanced |
 
 ## Troubleshooting
 
