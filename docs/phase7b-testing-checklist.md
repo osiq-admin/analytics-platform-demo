@@ -1,7 +1,7 @@
 # Phase 7B — Testing Checklist
 
 **Created**: 2026-02-25
-**Status**: IN PROGRESS — milestones being implemented, testing deferred to consolidation pass
+**Status**: IN PROGRESS — M93-M112 complete (WS1-WS6), WS7 pending. Testing deferred to consolidation pass.
 
 This document tracks what needs testing for Phase 7B. Backend API tests are written alongside implementation. Frontend components need browser-level testing (Playwright E2E + manual walkthrough).
 
@@ -17,13 +17,13 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 | M96 | `tests/test_score_templates.py` | 6 | PASSING |
 | M102 | `tests/test_detection_dry_run.py` | 3 | PASSING |
 | M105 | `tests/test_validation_service.py` | 7 | PASSING |
-| M106 | `tests/test_use_cases.py` | TBD | PENDING |
-| M107 | `tests/test_submissions.py` | TBD | PENDING |
-| M107 | `tests/test_recommendations.py` | TBD | PENDING |
-| M110 | `tests/test_ai_calc_generation.py` | TBD | PENDING |
-| M112 | `tests/test_version_management.py` | TBD | PENDING |
+| M106 | `tests/test_use_cases.py` | 6 | PASSING |
+| M107 | `tests/test_submissions.py` | 6 | PASSING |
+| M107 | `tests/test_recommendations.py` | 5 | PASSING |
+| M110 | `tests/test_ai_calc_generation.py` | 5 | PASSING |
+| M112 | `tests/test_version_management.py` | 5 | PASSING |
 
-**Total backend tests as of M105**: 359 passing
+**Total backend tests as of M112**: 386 passing
 
 ---
 
@@ -65,14 +65,29 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 | DependencyMiniDAG | `frontend/src/components/DependencyMiniDAG.tsx` | React Flow graph with selected + dependency nodes | MEDIUM |
 | ExamplesDrawer | `frontend/src/components/ExamplesDrawer.tsx` | Slide-in animation, tab switching, expand examples, JSON display | MEDIUM |
 
-### WS6: Advanced Frontend (M108-M112) — PENDING IMPLEMENTATION
+### WS5: Backend Services (M105-M107)
 
 | Component | File | What to Test | Priority |
 |---|---|---|---|
-| Use Case Studio | `frontend/src/views/UseCaseStudio/` | Full wizard flow, sample data, expected results | HIGH |
-| Submissions Queue | `frontend/src/views/Submissions/` | AG Grid queue, detail view, review actions | HIGH |
-| AI Calc Builder | `frontend/src/components/AICalcBuilder.tsx` | NL input, proposal display, refine loop | MEDIUM |
-| Version Comparison | `frontend/src/components/VersionComparison.tsx` | Side-by-side diff display | LOW |
+| ValidationService | `backend/services/validation_service.py` | 5-layer validation for models, calc validation, setting validation | HIGH |
+| Use Cases API | `backend/api/use_cases.py` | CRUD, run endpoint, status transitions | HIGH |
+| Submissions API | `backend/api/submissions.py` | CRUD, status lifecycle, auto-recommendations | HIGH |
+| RecommendationService | `backend/services/recommendation_service.py` | Change classification, similarity, consistency, best practices | MEDIUM |
+
+### WS6: Advanced Frontend (M108-M112) — IMPLEMENTED, BROWSER TESTING NEEDED
+
+| Component | File | What to Test | Priority |
+|---|---|---|---|
+| Use Case Studio | `frontend/src/views/UseCaseStudio/index.tsx` | List view, create new, status badges | HIGH |
+| UseCaseBuilder | `frontend/src/views/UseCaseStudio/UseCaseBuilder.tsx` | 5-step wizard, component selection, navigation | HIGH |
+| SampleDataEditor | `frontend/src/views/UseCaseStudio/SampleDataEditor.tsx` | Monaco JSON editor, entity tabs, validation | HIGH |
+| ExpectedResults | `frontend/src/views/UseCaseStudio/ExpectedResults.tsx` | Toggle, number input, textarea | MEDIUM |
+| Submissions Queue | `frontend/src/views/Submissions/index.tsx` | AG Grid queue, status filtering, row selection | HIGH |
+| SubmissionDetail | `frontend/src/views/Submissions/SubmissionDetail.tsx` | 5-tab detail (Summary, Components, Recommendations, Comments, Impact) | HIGH |
+| ReviewActions | `frontend/src/views/Submissions/ReviewActions.tsx` | Approve/Reject/Request Changes with comment | HIGH |
+| AICalcBuilder | `frontend/src/components/AICalcBuilder.tsx` | NL input, generate, example prompts | MEDIUM |
+| AICalcReview | `frontend/src/components/AICalcReview.tsx` | Monaco JSON editor, summary panel, refine/accept | MEDIUM |
+| VersionComparison | `frontend/src/components/VersionComparison.tsx` | Dual-dropdown version selector, color-coded diff table | LOW |
 
 ### WS7: Guided Tours (M113-M120) — PENDING IMPLEMENTATION
 
@@ -95,8 +110,11 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 - [ ] `POST /api/validation/detection-model` — model validation
 - [ ] `POST /api/validation/calculation` — calc validation
 - [ ] `POST /api/validation/setting` — setting validation
-- [ ] `GET/PUT/DELETE /api/use-cases/*` — use case CRUD (when M106 done)
-- [ ] `GET/POST/PUT /api/submissions/*` — submission CRUD (when M107 done)
+- [ ] `GET/PUT/DELETE /api/use-cases/*` — use case CRUD
+- [ ] `GET/POST/PUT /api/submissions/*` — submission CRUD + recommendations
+- [ ] `POST /api/ai/suggest-calculation` — AI calc generation
+- [ ] `GET /api/ai/context` — AI context builder
+- [ ] `GET/POST /api/versions/*` — version history, compare, rollback
 
 ### Frontend Flows to Cover
 - [ ] Create new detection model via 7-step wizard (full flow)
@@ -107,6 +125,10 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 - [ ] ExamplesDrawer opens, tabs switch, examples expand
 - [ ] Dry run returns results in AG Grid
 - [ ] DependencyMiniDAG renders for selected calcs
+- [ ] Use Case Studio: create use case, add components, enter sample data, set expected results
+- [ ] Submissions Queue: view queue, open detail, approve/reject with comment
+- [ ] AI Calc Builder: enter NL description, generate, review in Monaco, refine, accept
+- [ ] Version Comparison: select two versions, view color-coded diff
 
 ---
 
@@ -120,6 +142,12 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 - [ ] Create and apply a match pattern to a setting override
 - [ ] Create and apply a score template to a setting
 - [ ] Full domain value flow: small entity (dropdown) vs large entity (search)
+- [ ] Create a use case with sample data, run pipeline, verify expected results
+- [ ] Submit a use case for review, verify auto-recommendations generated
+- [ ] Review a submission: approve with comment, verify status transition
+- [ ] Use AI Calc Builder: describe a calculation, generate, review, refine, accept
+- [ ] Version a detection model, make changes, compare versions side-by-side
+- [ ] Rollback a model to a previous version, verify state restored
 
 ---
 

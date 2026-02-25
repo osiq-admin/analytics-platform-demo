@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-25 (Phase 7B in progress — M93-M105 complete, M106+ in progress)
+**Last Updated**: 2026-02-25 (Phase 7B in progress — M93-M112 complete (WS1-WS6), WS7 tours next)
 
 ---
 
@@ -33,7 +33,7 @@
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 | UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
-| Metadata UX & Guided Demo (Phase 7B) | IN PROGRESS | M93-M105 complete, M106+ in progress — gap fixes, domain values, match patterns, score templates, model wizard, validation service, examples library |
+| Metadata UX & Guided Demo (Phase 7B) | IN PROGRESS | M93-M112 complete (WS1-WS6), WS7 tours pending — domain values, patterns, templates, wizard, validation, use cases, submissions, AI calc, versioning |
 
 ---
 
@@ -134,7 +134,7 @@
 | M90 | Per-View Column & Layout Optimization | COMPLETE | 6 | 6 | EntityDesigner, EntityDetail, MetadataExplorer, SettingsManager, RiskCaseManager, MetadataEditor |
 | M91 | Visual Editor Field Grid Fix | COMPLETE | 1 | 1 | CSS grid template fix — Description column now visible |
 | M92 | E2E Viewport Verification, Tours & Docs | COMPLETE | 4 | 4 | 12 new E2E tests, UX features tour, progress tracker, demo guide |
-| | **Phase 7B: Metadata UX & Guided Demo** | **IN PROGRESS** | | | **M93-M105 complete, M106+ in progress** |
+| | **Phase 7B: Metadata UX & Guided Demo** | **IN PROGRESS** | | | **M93-M112 complete (WS1-WS6), WS7 tours pending** |
 | M93 | Gap Fix: $param Migration | COMPLETE | 4 | 4 | Migrated 10 calc JSONs to $param placeholders, regression verified — 323 tests |
 | M94 | Gap Fix: TimeRangeSelector + Settings Overrides | COMPLETE | 3 | 3 | Data-driven date range API, 8 fixed_income/index overrides, 5 new tests — 323 tests |
 | M95 | Backend: Domain Values API | COMPLETE | 4 | 4 | 4 endpoints, cardinality tiers, server-side search, 14 new tests — 337 tests |
@@ -148,13 +148,13 @@
 | M103 | Frontend: Preview + Validation + Dependencies | COMPLETE | 5 | 5 | ValidationPanel, PreviewPanel (Recharts), DependencyMiniDAG (React Flow) — 933 modules |
 | M104 | Frontend: Example & Use Case Library UI | COMPLETE | 3 | 3 | ExamplesDrawer with 15 annotated examples, "Use as starting point" — 937 modules |
 | M105 | Backend: Validation Service (5 Layers) | COMPLETE | 5 | 5 | Static analysis, schema compat, sandbox exec, impact analysis, regression, 7 new tests — 359 tests |
-| M106 | Backend: Use Cases API | PLANNED | 4 | 0 | CRUD, pipeline execution, data isolation, AI data generation |
-| M107 | Backend: Submissions API + Recommendations | PLANNED | 4 | 0 | Submission workflow, status lifecycle, change classification, similarity analysis |
-| M108 | Frontend: Use Case Studio View | PLANNED | 5 | 0 | Use case builder wizard, sample data editor, expected results, run & validate |
-| M109 | Frontend: Submissions Review Queue | PLANNED | 4 | 0 | Queue AG Grid, review detail, validation/recommendations/impact tabs, actions |
-| M110 | Backend: AI Context Builder + Calc Generation | PLANNED | 4 | 0 | Metadata context for LLM, calculation suggestion, iterative refinement |
-| M111 | Frontend: AI Calculation Builder | PLANNED | 3 | 0 | Natural language input, split review view, refine loop, validate & save |
-| M112 | Version Management + Comparison | PLANNED | 3 | 0 | Version tracking, side-by-side diff, A/B alert comparison, rollback |
+| M106 | Backend: Use Cases API | COMPLETE | 4 | 4 | CRUD + run endpoint, UseCase/UseCaseComponent models, 6 new tests — 365 tests |
+| M107 | Backend: Submissions API + Recommendations | COMPLETE | 4 | 4 | Submission workflow, RecommendationService (4 checks), 11 new tests — 376 tests |
+| M108 | Frontend: Use Case Studio View | COMPLETE | 5 | 5 | 5-step wizard, sample data editor (Monaco), expected results, stores — 942 modules |
+| M109 | Frontend: Submissions Review Queue | COMPLETE | 4 | 4 | AG Grid queue, 5-tab detail view, ReviewActions, stores — 946 modules |
+| M110 | Backend+Frontend: AI Calc Builder | COMPLETE | 4 | 4 | AI context builder, mock suggest_calculation, AICalcBuilder + AICalcReview, 5 tests — 381 tests |
+| M111 | (merged with M110) | COMPLETE | — | — | Combined with M110 — NL input, split review, refine loop |
+| M112 | Version Management + Comparison | COMPLETE | 3 | 3 | VersionService (snapshot, diff, rollback), VersionComparison UI, 5 tests — 386 tests, 946 modules |
 | M113 | Tour Engine Upgrade | PLANNED | 4 | 0 | Dual-mode (watch/try), mode selector, replay/reset, scenario runner |
 | M114 | Scenarios: Settings & Thresholds (S1-S6) | PLANNED | 3 | 0 | 6 scenarios with full step definitions and auto-fill data |
 | M115 | Scenarios: Calculations (S7-S10) | PLANNED | 3 | 0 | 4 scenarios: DAG explore, manual calc, AI calc, parameterization |
