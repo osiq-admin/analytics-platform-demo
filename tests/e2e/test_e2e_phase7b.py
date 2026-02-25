@@ -788,9 +788,11 @@ class TestExamplesDrawer:
         close_btn.first.click()
         loaded_page.wait_for_timeout(500)
 
-        # Drawer title should be gone
-        drawer_title = loaded_page.locator("text=Examples & Use Cases")
-        expect(drawer_title).to_have_count(0)
+        # Drawer closed — button text reverts to "Examples" (drawer uses CSS
+        # translate-x-full so it stays in DOM but is off-screen)
+        examples_btn_text = loaded_page.locator("button:has-text('Examples')").first
+        expect(examples_btn_text).to_be_visible()
+        expect(examples_btn_text).not_to_have_text("Close Examples")
 
     def test_examples_button_toggles_to_close(self, loaded_page: Page):
         """The button text changes to 'Close Examples' when open."""
