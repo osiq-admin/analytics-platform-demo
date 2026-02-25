@@ -120,6 +120,36 @@
   - Consider adding brief descriptions or icons to clarify purpose
 - **Status**: FIXED
 
+### F-010: Only Equity and Commodity Alerts — No FX, Fixed Income, or Index
+- **Screen**: Dashboard (Alerts by Asset Class)
+- **Observation**: 363 equity alerts (84.4%) + 67 commodity (15.6%) = 100%. Zero alerts for FX, fixed_income, or index — despite the platform having 6 FX pairs, 1 fixed income product (ZB_FUT), and 2 index futures (ES_FUT, NQ_FUT).
+- **Root Cause Analysis**: The detection engine is asset-class agnostic — it would generate alerts for ANY product with sufficient trading activity. The gap is entirely in `scripts/generate_data.py`:
+
+  | Component | Equity | Commodity | FX | Index | Fixed Income |
+  |-----------|--------|-----------|----|----|---|
+  | Products | 31 | 10 | 6 | 2 | 1 |
+  | EOD market data | Yes | Yes | Yes | Yes | Yes |
+  | Intraday data | Yes | Only futures | Yes | Yes | No |
+  | Normal daily executions | ~8/day | Patterns only | None | ~1/day | None |
+  | Embedded detection patterns | 12 | 1 | 0 | 0 | 0 |
+  | **Alerts generated** | **363** | **67** | **0** | **0** | **0** |
+
+  - FX products have no regular executions in the normal trading loop (only exist in spoofing pattern data which doesn't trigger enough)
+  - Fixed income (ZB_FUT) has zero executions — not in normal trading loop or any pattern
+  - Index futures (ES_FUT, NQ_FUT) have ~1/day normal execution — too few to trigger detection thresholds
+  - All 13 embedded detection patterns use equity or commodity products exclusively
+
+- **Fix Required** (in `scripts/generate_data.py`):
+  1. Add FX pairs to the normal daily trading loop (2-4 FX trades/day)
+  2. Add ZB_FUT to normal daily trading (0-1 trades/day)
+  3. Increase index futures daily volume (2-3 trades/day)
+  4. Add embedded detection patterns for FX (e.g., FX wash trading on EURUSD)
+  5. Add embedded detection patterns for fixed income (e.g., ramping on ZB_FUT)
+  6. Add embedded detection patterns for index futures (e.g., spoofing on ES_FUT)
+  7. Regenerate CSVs, run pipeline, regenerate alerts
+- **Related**: F-001 (alert distribution imbalance) — both are data generation calibration issues
+- **Status**: OPEN — future fix (data regeneration required)
+
 ---
 
 ## Notes & Observations
