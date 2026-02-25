@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-25 (Phase 7B in progress — M93-M112 complete (WS1-WS6), WS7 tours next)
+**Last Updated**: 2026-02-25 (Phase 7B complete — M93-M120 all done, 386 tests, 952 modules)
 
 ---
 
@@ -33,7 +33,7 @@
 | Regulatory Traceability (Phase 10) | COMPLETE | M79-M83: Regulatory tags, traceability graph, coverage analysis, suggestions — 13 new API tests |
 | OOB vs User-Defined Separation (Phase 11) | COMPLETE | M84-M88: OOB manifest, layer resolution, layer API, frontend badges, version tracking — 309 backend + 71 E2E tests |
 | UI/UX Usability (Phase 12) | COMPLETE | M89-M92: AG Grid global defaults, per-view column optimization, Visual Editor grid fix, E2E viewport tests — 12 new E2E tests |
-| Metadata UX & Guided Demo (Phase 7B) | IN PROGRESS | M93-M112 complete (WS1-WS6), WS7 tours pending — domain values, patterns, templates, wizard, validation, use cases, submissions, AI calc, versioning |
+| Metadata UX & Guided Demo (Phase 7B) | COMPLETE | M93-M120: domain values, patterns, templates, wizard, validation, use cases, submissions, AI calc, versioning, dual-mode tour engine, 25 scenarios, per-screen operation scripts — 386 backend tests, 952 modules |
 
 ---
 
@@ -155,14 +155,14 @@
 | M110 | Backend+Frontend: AI Calc Builder | COMPLETE | 4 | 4 | AI context builder, mock suggest_calculation, AICalcBuilder + AICalcReview, 5 tests — 381 tests |
 | M111 | (merged with M110) | COMPLETE | — | — | Combined with M110 — NL input, split review, refine loop |
 | M112 | Version Management + Comparison | COMPLETE | 3 | 3 | VersionService (snapshot, diff, rollback), VersionComparison UI, 5 tests — 386 tests, 946 modules |
-| M113 | Tour Engine Upgrade | PLANNED | 4 | 0 | Dual-mode (watch/try), mode selector, replay/reset, scenario runner |
-| M114 | Scenarios: Settings & Thresholds (S1-S6) | PLANNED | 3 | 0 | 6 scenarios with full step definitions and auto-fill data |
-| M115 | Scenarios: Calculations (S7-S10) | PLANNED | 3 | 0 | 4 scenarios: DAG explore, manual calc, AI calc, parameterization |
-| M116 | Scenarios: Detection Models (S11-S14) | PLANNED | 3 | 0 | 4 scenarios: full wizard, clone/modify, add calc, best practices |
-| M117 | Scenarios: Use Cases & Submissions (S15-S18) | PLANNED | 3 | 0 | 4 scenarios: create, submit, review, implement |
-| M118 | Scenarios: Entities, Investigation, Admin (S19-S25) | PLANNED | 3 | 0 | 7 scenarios: entity explore, data import, alert investigation, OOB review |
-| M119 | Per-Screen Operation Scripts | PLANNED | 3 | 0 | Contextual help (?) button per view, operation list, quick actions |
-| M120 | Testing & Documentation | PLANNED | 5 | 0 | ~98 unit tests, ~61 E2E tests, BDD scenarios, demo guide Acts 4-7, progress update |
+| M113 | Tour Engine Upgrade | COMPLETE | 4 | 4 | Dual-mode (watch/try), StepOverlay, ScenarioRunner, ScenarioSelector, tourStore scenario state |
+| M114 | Scenarios: Settings & Thresholds (S1-S6) | COMPLETE | 3 | 3 | 6 scenarios with full step definitions, auto-fill data, validation selectors |
+| M115 | Scenarios: Calculations (S7-S10) | COMPLETE | 3 | 3 | 4 scenarios: DAG explore, manual calc, AI calc, parameterization |
+| M116 | Scenarios: Detection Models (S11-S14) | COMPLETE | 3 | 3 | 4 scenarios: full wizard, clone/modify, add calc, best practices |
+| M117 | Scenarios: Use Cases & Submissions (S15-S18) | COMPLETE | 3 | 3 | 4 scenarios: create, submit, review, implement |
+| M118 | Scenarios: Entities, Investigation, Admin (S19-S25) | COMPLETE | 3 | 3 | 7 scenarios: entity explore, data import, alert investigation, OOB review |
+| M119 | Per-Screen Operation Scripts | COMPLETE | 3 | 3 | OperationScripts component, 12 view operation definitions, contextual help panel |
+| M120 | Testing & Documentation | COMPLETE | 5 | 5 | 386 backend tests pass, frontend builds (952 modules), scenarios wired into AppLayout, progress updated |
 
 ---
 

@@ -1,7 +1,7 @@
 # Phase 7B — Testing Checklist
 
 **Created**: 2026-02-25
-**Status**: IN PROGRESS — M93-M112 complete (WS1-WS6), WS7 pending. Testing deferred to consolidation pass.
+**Status**: COMPLETE — M93-M120 all implemented. Testing deferred to consolidation pass.
 
 This document tracks what needs testing for Phase 7B. Backend API tests are written alongside implementation. Frontend components need browser-level testing (Playwright E2E + manual walkthrough).
 
@@ -23,7 +23,7 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 | M110 | `tests/test_ai_calc_generation.py` | 5 | PASSING |
 | M112 | `tests/test_version_management.py` | 5 | PASSING |
 
-**Total backend tests as of M112**: 386 passing
+**Total backend tests as of M120**: 386 passing
 
 ---
 
@@ -89,13 +89,18 @@ This document tracks what needs testing for Phase 7B. Backend API tests are writ
 | AICalcReview | `frontend/src/components/AICalcReview.tsx` | Monaco JSON editor, summary panel, refine/accept | MEDIUM |
 | VersionComparison | `frontend/src/components/VersionComparison.tsx` | Dual-dropdown version selector, color-coded diff table | LOW |
 
-### WS7: Guided Tours (M113-M120) — PENDING IMPLEMENTATION
+### WS7: Guided Tours (M113-M120) — IMPLEMENTED, BROWSER TESTING NEEDED
 
 | Component | File | What to Test | Priority |
 |---|---|---|---|
-| Tour engine dual-mode | TBD | Watch Demo + Try It Yourself modes | HIGH |
-| 25 tour scenarios | TBD | Each scenario completes without errors | HIGH |
-| Per-screen operation scripts | TBD | Help button, operation list renders | MEDIUM |
+| ScenarioRunner | `frontend/src/components/TourEngine/ScenarioRunner.tsx` | Watch mode auto-advance, try mode validation polling, mode switching, replay | HIGH |
+| ScenarioSelector | `frontend/src/components/TourEngine/ScenarioSelector.tsx` | Category accordion, difficulty filter, Watch Demo / Try It Yourself buttons, scenario counts | HIGH |
+| StepOverlay | `frontend/src/components/TourEngine/StepOverlay.tsx` | Spotlight positioning, step content, navigation buttons, mode toggle, auto-play indicator | HIGH |
+| OperationScripts | `frontend/src/components/TourEngine/OperationScripts.tsx` | Per-view help panel, operation list, expand/collapse | MEDIUM |
+| 25 scenarios (S1-S25) | `frontend/src/data/scenarioDefinitions.ts` | Each scenario loads, steps render, watch mode completes, try mode hints display | HIGH |
+| 12 view operations | `frontend/src/data/operationScripts.ts` | Each view shows correct operations, descriptions accurate | MEDIUM |
+| Scenarios button in header | `frontend/src/layouts/AppLayout.tsx` | Button visible, opens ScenarioSelector, closes on start/dismiss | MEDIUM |
+| tourStore scenario state | `frontend/src/stores/tourStore.ts` | registerScenarios, startScenario, endScenario, completedScenarios persistence | MEDIUM |
 
 ---
 

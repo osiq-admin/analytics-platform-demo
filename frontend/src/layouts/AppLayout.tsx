@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar.tsx";
 import DemoToolbar from "../components/DemoToolbar.tsx";
 import TourOverlay from "../components/TourOverlay.tsx";
 import OnboardingModal from "../components/OnboardingModal.tsx";
 import OperationScripts from "../components/TourEngine/OperationScripts.tsx";
+import ScenarioSelector from "../components/TourEngine/ScenarioSelector.tsx";
+import ScenarioRunner from "../components/TourEngine/ScenarioRunner.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
 import { TOURS } from "../data/tourDefinitions.ts";
+import { SCENARIOS } from "../data/scenarioDefinitions.ts";
 import { VIEW_OPERATIONS } from "../data/operationScripts.ts";
 
 /** Map pathname segments to tour IDs */
@@ -32,11 +35,13 @@ function getTourIdForPath(pathname: string): string | null {
 export default function AppLayout() {
   const { theme, toggle } = useTheme();
   const location = useLocation();
-  const { startTour, activeTour, definitions, registerTours } = useTourStore();
+  const [showScenarios, setShowScenarios] = useState(false);
+  const { startTour, activeTour, definitions, registerTours, registerScenarios, activeScenario } = useTourStore();
 
   useEffect(() => {
     registerTours(TOURS);
-  }, [registerTours]);
+    registerScenarios(SCENARIOS);
+  }, [registerTours, registerScenarios]);
 
   // Derive view ID for operation scripts
   const viewId = location.pathname.replace("/", "") || "dashboard";
@@ -69,6 +74,13 @@ export default function AppLayout() {
               Tour
             </button>
             <button
+              onClick={() => setShowScenarios(true)}
+              className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+              title="Browse guided scenarios"
+            >
+              Scenarios
+            </button>
+            <button
               onClick={toggle}
               className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
             >
@@ -86,6 +98,8 @@ export default function AppLayout() {
       <TourOverlay />
       <OnboardingModal />
       <OperationScripts viewOperations={viewOps} />
+      <ScenarioSelector open={showScenarios} onClose={() => setShowScenarios(false)} />
+      {activeScenario && <ScenarioRunner />}
     </div>
   );
 }
