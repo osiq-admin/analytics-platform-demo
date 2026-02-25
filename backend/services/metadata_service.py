@@ -498,6 +498,130 @@ class MetadataService:
 
         return {"nodes": nodes, "edges": edges}
 
+    # -- Domain Values --
+
+    def get_domain_values(self, entity_id: str, field_name: str, db=None,
+                          search: str | None = None, limit: int = 50) -> dict:
+        """Get domain values for an entity field from metadata and live data."""
+        entity = self.load_entity(entity_id)
+
+        # Metadata values from entity definition domain_values
+        metadata_values = []
+        if entity:
+            field_def = next(
+                (f for f in (entity.fields or []) if f.name == field_name), None
+            )
+            if field_def and field_def.domain_values:
+                metadata_values = list(field_def.domain_values)
+
+        # Data values from DuckDB
+        data_values = []
+        total_count = 0
+        if db:
+            data_values, total_count = self._query_distinct_values(
+                db, entity_id, field_name, search, limit
+            )
+
+        # Combined: metadata first, then data-only values
+        seen = set(metadata_values)
+        combined = list(metadata_values)
+        for v in data_values:
+            if v not in seen:
+                combined.append(v)
+                seen.add(v)
+
+        # Apply search filter to metadata values too
+        if search:
+            search_lower = search.lower()
+            combined = [v for v in combined if search_lower in str(v).lower()]
+
+        # Cardinality tier
+        effective_count = total_count or len(combined)
+        if effective_count <= 50:
+            cardinality = "small"
+        elif effective_count <= 500:
+            cardinality = "medium"
+        else:
+            cardinality = "large"
+
+        return {
+            "entity_id": entity_id,
+            "field_name": field_name,
+            "metadata_values": metadata_values if not search else [
+                v for v in metadata_values if search.lower() in str(v).lower()
+            ],
+            "data_values": data_values,
+            "combined": combined[:limit],
+            "total_count": effective_count,
+            "cardinality": cardinality,
+        }
+
+    def _query_distinct_values(self, db, table: str, field: str,
+                               search: str | None, limit: int) -> tuple[list, int]:
+        """Query distinct values from DuckDB."""
+        try:
+            cursor = db.cursor()
+
+            # Count total distinct
+            count_sql = f'SELECT COUNT(DISTINCT "{field}") FROM "{table}" WHERE "{field}" IS NOT NULL'
+            total = cursor.execute(count_sql).fetchone()[0]
+
+            # Fetch values with optional search
+            sql = f'SELECT DISTINCT "{field}" FROM "{table}" WHERE "{field}" IS NOT NULL'
+            if search:
+                sql += f" AND CAST(\"{field}\" AS VARCHAR) ILIKE '%{search}%'"
+            sql += f' ORDER BY "{field}" LIMIT {limit}'
+
+            rows = cursor.execute(sql).fetchall()
+            cursor.close()
+            return [str(r[0]) for r in rows], total
+        except Exception:
+            return [], 0
+
+    def get_match_keys(self) -> list[dict]:
+        """Get all entity fields usable as match keys."""
+        keys = []
+        for entity in self.list_entities():
+            for field in (entity.fields or []):
+                if field.type in ("string", "varchar"):
+                    keys.append({
+                        "key": field.name,
+                        "entity": entity.entity_id,
+                        "type": field.type,
+                        "domain_values": list(field.domain_values) if field.domain_values else None,
+                        "description": field.description or f"{entity.entity_id}.{field.name}",
+                    })
+        return keys
+
+    def get_setting_ids(self, value_type: str | None = None) -> list[dict]:
+        """Get setting IDs with metadata, optionally filtered by value_type."""
+        settings = self.list_settings()
+        result = []
+        for s in settings:
+            if value_type and s.value_type != value_type:
+                continue
+            result.append({
+                "setting_id": s.setting_id,
+                "name": s.name,
+                "value_type": s.value_type,
+                "default": s.default,
+            })
+        return result
+
+    def get_calculation_ids(self, layer: str | None = None) -> list[dict]:
+        """Get calculation IDs with metadata, optionally filtered by layer."""
+        calcs = self.list_calculations(layer=layer)
+        result = []
+        for c in calcs:
+            result.append({
+                "calc_id": c.calc_id,
+                "name": c.name,
+                "layer": c.layer.value if hasattr(c.layer, 'value') else str(c.layer),
+                "value_field": c.value_field,
+                "description": c.description or "",
+            })
+        return result
+
     # -- Regulation Registry --
 
     def load_regulation_registry(self) -> dict:
