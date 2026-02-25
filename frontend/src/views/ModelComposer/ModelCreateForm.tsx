@@ -9,11 +9,23 @@ import ReviewStep from "./steps/ReviewStep.tsx";
 import TestRunStep from "./steps/TestRunStep.tsx";
 import DeployStep from "./steps/DeployStep.tsx";
 
+export interface WizardState {
+  name: string;
+  description: string;
+  selectedCalcs: SelectedCalc[];
+  scoreThresholdSetting: string;
+  query: string;
+  contextFields: string[];
+  granularity: string[];
+  step: number;
+}
+
 interface ModelCreateFormProps {
   calculations: CalculationDef[];
   onSaved: (modelId: string) => void;
   onCancel: () => void;
   existingModel?: DetectionModelDef;
+  onStateChange?: (state: WizardState) => void;
 }
 
 const STEPS = [
@@ -26,7 +38,7 @@ const STEPS = [
   { label: "Deploy" },
 ];
 
-export default function ModelCreateForm({ calculations, onSaved, onCancel, existingModel }: ModelCreateFormProps) {
+export default function ModelCreateForm({ calculations, onSaved, onCancel, existingModel, onStateChange }: ModelCreateFormProps) {
   const { saveDetectionModel, updateDetectionModel } = useMetadataStore();
 
   // Wizard step
@@ -89,6 +101,20 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
       setStep(1);
     }
   }, [existingModel]);
+
+  // Notify parent of wizard state changes
+  useEffect(() => {
+    onStateChange?.({
+      name,
+      description,
+      selectedCalcs,
+      scoreThresholdSetting,
+      query,
+      contextFields,
+      granularity,
+      step,
+    });
+  }, [name, description, selectedCalcs, scoreThresholdSetting, query, contextFields, granularity, step, onStateChange]);
 
   // Validation for each step
   const canProceed = useMemo(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   useMetadataStore,
   type CalculationDef,
@@ -10,7 +10,10 @@ import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import ConfirmDialog from "../../components/ConfirmDialog.tsx";
 import ChatPanel from "../AIAssistant/ChatPanel.tsx";
-import ModelCreateForm from "./ModelCreateForm.tsx";
+import ModelCreateForm, { type WizardState } from "./ModelCreateForm.tsx";
+import ValidationPanel from "../../components/ValidationPanel.tsx";
+import PreviewPanel from "../../components/PreviewPanel.tsx";
+import DependencyMiniDAG from "../../components/DependencyMiniDAG.tsx";
 
 interface DeployResult {
   model_id: string;
@@ -40,6 +43,12 @@ export default function ModelComposer() {
   const [aiOpen, setAiOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
+  const [wizardState, setWizardState] = useState<WizardState | null>(null);
+  const [rightTab, setRightTab] = useState<"validation" | "preview" | "dependencies">("validation");
+
+  const handleWizardStateChange = useCallback((state: WizardState) => {
+    setWizardState(state);
+  }, []);
 
   useEffect(() => {
     fetchCalculations();
@@ -186,6 +195,7 @@ export default function ModelComposer() {
             calculations={calculations}
             onSaved={handleModelCreated}
             onCancel={() => setMode("browse")}
+            onStateChange={handleWizardStateChange}
           />
         ) : mode === "edit" && selectedModel ? (
           <ModelCreateForm
@@ -193,6 +203,7 @@ export default function ModelComposer() {
             existingModel={selectedModel}
             onSaved={handleModelEdited}
             onCancel={() => setMode("browse")}
+            onStateChange={handleWizardStateChange}
           />
         ) : selectedModel ? (
           <div className="flex-1 flex flex-col gap-3 min-w-0" data-tour="model-detail">
@@ -269,20 +280,68 @@ export default function ModelComposer() {
           </div>
         )}
 
-        {/* Right: Available calculations */}
-        <Panel title="Available Calculations" className="w-64 shrink-0">
-          <div className="space-y-1">
-            {calculations.map((c) => (
-              <div
-                key={c.calc_id}
-                className="px-2 py-1 text-xs rounded border border-border bg-background"
-              >
-                <div className="font-medium">{c.name}</div>
-                <div className="text-muted">{c.layer}</div>
-              </div>
-            ))}
+        {/* Right: Tabbed panels in create/edit, Available Calculations in browse */}
+        {(mode === "create" || mode === "edit") && wizardState ? (
+          <div className="w-64 shrink-0 rounded border border-border bg-surface flex flex-col overflow-hidden">
+            {/* Tab bar */}
+            <div className="h-8 shrink-0 flex items-center border-b border-border bg-surface-elevated">
+              {(["validation", "preview", "dependencies"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setRightTab(tab)}
+                  className={`flex-1 h-full text-[10px] font-semibold uppercase tracking-wide transition-colors ${
+                    rightTab === tab
+                      ? "text-accent border-b-2 border-accent"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {tab === "validation" ? "Validate" : tab === "preview" ? "Preview" : "Deps"}
+                </button>
+              ))}
+            </div>
+            {/* Tab content */}
+            <div className="flex-1 overflow-auto p-3">
+              {rightTab === "validation" && (
+                <ValidationPanel
+                  name={wizardState.name}
+                  description={wizardState.description}
+                  selectedCalcs={wizardState.selectedCalcs}
+                  scoreThresholdSetting={wizardState.scoreThresholdSetting}
+                  query={wizardState.query}
+                  contextFields={wizardState.contextFields}
+                  granularity={wizardState.granularity}
+                />
+              )}
+              {rightTab === "preview" && (
+                <PreviewPanel
+                  selectedCalcs={wizardState.selectedCalcs}
+                  scoreThresholdSetting={wizardState.scoreThresholdSetting}
+                  calculations={calculations}
+                />
+              )}
+              {rightTab === "dependencies" && (
+                <DependencyMiniDAG
+                  selectedCalcIds={wizardState.selectedCalcs.map((c) => c.calc_id)}
+                  calculations={calculations}
+                />
+              )}
+            </div>
           </div>
-        </Panel>
+        ) : (
+          <Panel title="Available Calculations" className="w-64 shrink-0">
+            <div className="space-y-1">
+              {calculations.map((c) => (
+                <div
+                  key={c.calc_id}
+                  className="px-2 py-1 text-xs rounded border border-border bg-background"
+                >
+                  <div className="font-medium">{c.name}</div>
+                  <div className="text-muted">{c.layer}</div>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        )}
 
         {/* AI chat panel (collapsible) */}
         {aiOpen && (
