@@ -16,6 +16,8 @@ Covers:
 """
 import json
 
+import re
+
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -1064,85 +1066,85 @@ class TestUxUsability:
 class TestArchitectureTraceability:
     """Tests for the Architecture Traceability toggle mode."""
 
-    def test_trace_toggle_button_visible(self, wide_page):
+    def test_trace_toggle_button_visible(self, loaded_page):
         """Trace button should be visible in toolbar."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
-        trace_btn = wide_page.locator("button", has_text="Trace")
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        trace_btn = loaded_page.get_by_role("button", name="Trace", exact=True)
         expect(trace_btn).to_be_visible(timeout=5000)
 
-    def test_trace_toggle_activates(self, wide_page):
+    def test_trace_toggle_activates(self, loaded_page):
         """Clicking Trace button should activate it with accent styling."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
-        trace_btn = wide_page.locator("button", has_text="Trace")
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        trace_btn = loaded_page.get_by_role("button", name="Trace", exact=True)
         trace_btn.click()
         # Active state should have accent border color
-        expect(trace_btn).to_have_class(lambda c: "border-accent" in c, timeout=3000)
+        expect(trace_btn).to_have_class(re.compile(r"border-accent"), timeout=3000)
 
-    def test_trace_icons_appear_on_dashboard(self, wide_page):
+    def test_trace_icons_appear_on_dashboard(self, loaded_page):
         """Enabling Trace mode should render info icons near data-trace elements."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Enable trace mode
-        wide_page.locator("button", has_text="Trace").click()
-        wide_page.wait_for_timeout(500)
+        loaded_page.get_by_role("button", name="Trace", exact=True).click()
+        loaded_page.wait_for_timeout(500)
         # data-trace elements should exist on dashboard
-        trace_elements = wide_page.locator("[data-trace]")
+        trace_elements = loaded_page.locator("[data-trace]")
         expect(trace_elements.first).to_be_visible(timeout=5000)
 
-    def test_trace_popup_opens(self, wide_page):
+    def test_trace_popup_opens(self, loaded_page):
         """Clicking a trace info icon should open the architecture popup."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Enable trace mode
-        wide_page.locator("button", has_text="Trace").click()
-        wide_page.wait_for_timeout(500)
+        loaded_page.get_by_role("button", name="Trace", exact=True).click()
+        loaded_page.wait_for_timeout(500)
         # Click the first trace info icon (title contains "Architecture trace:")
-        trace_icon = wide_page.locator("button[title^='Architecture trace:']")
+        trace_icon = loaded_page.locator("button[title^='Architecture trace:']")
         if trace_icon.count() > 0:
             trace_icon.first.click()
-            wide_page.wait_for_timeout(300)
+            loaded_page.wait_for_timeout(300)
             # Popup should show section name or "No registry entry found"
-            popup = wide_page.locator(".animate-slide-in-right")
+            popup = loaded_page.locator(".animate-slide-in-right")
             expect(popup).to_be_visible(timeout=3000)
 
-    def test_trace_toggle_deactivates(self, wide_page):
+    def test_trace_toggle_deactivates(self, loaded_page):
         """Toggling Trace off should remove all info icons."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
-        trace_btn = wide_page.locator("button", has_text="Trace")
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        trace_btn = loaded_page.get_by_role("button", name="Trace", exact=True)
         # Enable
         trace_btn.click()
-        wide_page.wait_for_timeout(500)
+        loaded_page.wait_for_timeout(500)
         # Disable
         trace_btn.click()
-        wide_page.wait_for_timeout(300)
+        loaded_page.wait_for_timeout(300)
         # Trace icons should be gone
-        icons = wide_page.locator("button[title^='Architecture trace:']")
+        icons = loaded_page.locator("button[title^='Architecture trace:']")
         assert icons.count() == 0, "Trace icons should disappear after toggle off"
 
-    def test_trace_persists_across_navigation(self, wide_page):
+    def test_trace_persists_across_navigation(self, loaded_page):
         """Trace mode should remain active when navigating to another view."""
-        wide_page.goto(f"{APP_URL}/dashboard")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Enable trace mode
-        wide_page.locator("button", has_text="Trace").click()
-        wide_page.wait_for_timeout(300)
+        loaded_page.get_by_role("button", name="Trace", exact=True).click()
+        loaded_page.wait_for_timeout(300)
         # Navigate to entities
-        wide_page.goto(f"{APP_URL}/entities")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Trace button should still be active
-        trace_btn = wide_page.locator("button", has_text="Trace")
-        expect(trace_btn).to_have_class(lambda c: "border-accent" in c, timeout=3000)
+        trace_btn = loaded_page.get_by_role("button", name="Trace", exact=True)
+        expect(trace_btn).to_have_class(re.compile(r"border-accent"), timeout=3000)
 
-    def test_trace_works_on_entities(self, wide_page):
+    def test_trace_works_on_entities(self, loaded_page):
         """Trace mode should show data-trace elements on the entities view."""
-        wide_page.goto(f"{APP_URL}/entities")
-        wide_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Enable trace mode
-        wide_page.locator("button", has_text="Trace").click()
-        wide_page.wait_for_timeout(500)
+        loaded_page.get_by_role("button", name="Trace", exact=True).click()
+        loaded_page.wait_for_timeout(500)
         # Should have entity-related trace elements
-        trace_elements = wide_page.locator("[data-trace^='entities.']")
+        trace_elements = loaded_page.locator("[data-trace^='entities.']")
         expect(trace_elements.first).to_be_visible(timeout=5000)
