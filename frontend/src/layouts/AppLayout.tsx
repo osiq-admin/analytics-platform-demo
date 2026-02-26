@@ -17,17 +17,22 @@ import { VIEW_OPERATIONS } from "../data/operationScripts.ts";
 function getTourIdForPath(pathname: string): string | null {
   const seg = pathname.split("/").filter(Boolean).pop() ?? "";
   const map: Record<string, string> = {
+    dashboard: "dashboard",
     entities: "entities",
+    metadata: "overview",
     settings: "settings",
-    models: "models",
-    alerts: "alerts",
-    sql: "sql",
+    mappings: "mappings",
+    editor: "editor",
     pipeline: "pipeline",
     schema: "schema",
-    mappings: "mappings",
+    sql: "sql",
+    models: "models",
+    "use-cases": "overview",
     data: "data",
+    alerts: "alerts",
+    regulatory: "regulatory",
+    submissions: "overview",
     assistant: "assistant",
-    dashboard: "dashboard",
   };
   return map[seg] ?? "overview";
 }

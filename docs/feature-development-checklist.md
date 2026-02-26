@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-26 (M124 — 473 total tests, 25 scenarios, 16 views, 21 exploratory findings)
+**Last Updated**: 2026-02-26 (M127 — 483 total tests: 390 backend + 93 E2E, 25 scenarios, 16 views, 24 exploratory findings)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
 
 ---
 
@@ -57,7 +57,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 386)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
 
 ---
 
@@ -69,8 +69,8 @@
 - [ ] **UI interaction tests**: Click, type, navigate — verify expected state changes
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
-- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 87 Phase 7B)
-- [ ] **Visual verification**: Run with Playwright MCP browser to screenshot and verify visually
+- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 93)
+- [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
 ---
 

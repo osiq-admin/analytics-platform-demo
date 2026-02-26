@@ -76,7 +76,8 @@ The dashboard is the default landing page. Navigate to it from the sidebar under
 - Execution references Product via product_id, Order via order_id (normalized, FIX Protocol-aligned data model)
 - **Two-tab layout**: Toggle between "Entity Details" and "Relationship Graph" using the tab switcher in the top-right corner
 - **Entity Details tab**: Full-width entity list (top pane) + entity detail (bottom pane) with Fields and Relationships sub-tabs. Drag the divider to resize.
-- **Relationship Graph tab**: Full-width entity list (top pane) + React Flow graph (bottom pane) with dagre auto-layout, minimap, zoom controls. Click nodes to navigate; selected entity highlighted with connected edges.
+- **Domain Values**: The Fields grid includes a "Domain" column showing value counts (e.g., "3 vals"). Click any field row to open the Domain Values pane — view metadata-defined values (editable: add/remove), data-only values (read-only, from DuckDB), and add new values. Changes save immediately.
+- **Relationship Graph tab**: Full-width entity list (top pane) + React Flow graph (bottom pane) with dagre auto-layout, smoothstep edges with label backgrounds, arrowheads, minimap, and zoom controls. Click nodes to navigate; selected entity highlighted with connected edges.
 - **Bidirectional selection**: Selecting an entity in the list highlights it in the graph (and vice versa). Selection persists across tabs.
 - **Resizable panes**: Drag the horizontal divider between the entity list and detail/graph panes. Sizes persist across sessions.
 - Highlight: "Everything is metadata — entities are JSON definitions, not hardcoded schemas"
@@ -246,30 +247,40 @@ The Metadata Editor provides side-by-side JSON + visual editing for all 4 metada
 The Regulatory Map provides end-to-end traceability from regulatory requirements to detection logic.
 
 ### Key Points
+- **Two-tab layout**: Toggle between "Traceability Map" and "Regulation Details" using the tab switcher in the top-right corner
 - **Coverage Summary Cards**: Total requirements, covered count, uncovered count, coverage percentage
-- **Interactive Traceability Graph**: React Flow visualization showing Regulations → Articles → Detection Models → Calculations
+- **Traceability Map tab**: Interactive React Flow graph with resizable panes (graph top, detail bottom)
+  - Smoothstep edges with labels ("contains", "detected by", "uses") and arrowheads
+  - MiniMap (bottom-left) and zoom Controls (zoom in/out, fit view)
   - Blue nodes = Regulations (MAR, MiFID II, Dodd-Frank, FINRA)
   - Green nodes = Covered regulatory articles
   - Red nodes = Uncovered regulatory articles (gaps)
   - Orange nodes = Detection models
   - Purple nodes = Calculations
-- **Node Detail Panel**: Click any node to see full metadata — regulation descriptions, model parameters, calculation tags
+- **Node Detail Pane**: Click any node to see full metadata in the bottom pane — type, title, description text, coverage status, layer
+- **Regulation Details tab**: AG Grid table listing all regulations and articles with columns: Regulation, Jurisdiction, Article, Title, Coverage (green/red badges). Click any row to see full article description in the bottom pane.
+- **Resizable panes**: Drag the horizontal divider between graph/grid and detail panes. Sizes persist across sessions.
 - **Suggestions Panel**: Automated gap analysis with actionable recommendations
 
 ### Interactive: Explore the Traceability Chain
 1. Navigate to **Governance → Regulatory Map**
 2. See 4 coverage summary cards at the top
-3. In the graph, find a **red node** — this is an uncovered regulatory requirement
-4. Click the red node to see why it's uncovered
-5. Trace from a **blue regulation node** → green articles → orange models → purple calculations
-6. Expand the **Suggestions** panel at the bottom
-7. Key takeaway: "Every detection model is traceable to the regulations it covers"
+3. In the Traceability Map, follow edges from **blue regulation node** → green articles → orange models → purple calculations
+4. Use edge labels to understand relationships: "contains", "detected by", "uses"
+5. Click any node to see details with description text in the bottom pane
+6. Switch to **Regulation Details** tab for a structured table view
+7. Click an article row to see its full description
+8. Expand the **Suggestions** panel at the bottom
+9. Key takeaway: "Every detection model is traceable to the regulations it covers — with full descriptions and structured table views"
 
 ### Interactive: Review Coverage Gaps
-1. Expand the **Suggestions** panel
-2. See **Coverage Gaps** (red) — regulatory articles without detection models
-3. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
-4. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
+1. In the Traceability Map, find a **red node** — this is an uncovered regulatory requirement
+2. Click the red node to see why it's uncovered
+3. Switch to **Regulation Details** tab and sort by Coverage column to see uncovered articles
+4. Expand the **Suggestions** panel
+5. See **Coverage Gaps** (red) — regulatory articles without detection models
+6. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
+7. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
 
 ## Act 2: Model Composition
 
@@ -592,7 +603,7 @@ Hover over any grid cell for **300ms** to see a tooltip with the full cell conte
 ### Responsive Layouts
 
 Panel widths have been optimized across all split-panel views:
-- **Entity Designer** — left panel 320px, right graph panel collapsible (40px strip) or expandable (50% width), center panel fills remaining space with tabbed Fields/Relationships layout
+- **Entity Designer** — vertical two-tab layout with `react-resizable-panels`: entity list (top) + detail/graph (bottom), drag divider to resize, sizes persist
 - **Metadata Explorer** — calculation list panel expanded to 440px for better column readability
 - **Settings Manager** — settings list panel expanded to 480px
 

@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (Exploratory Testing Round 5 — F-022/F-023/F-024 fixes: Entity Designer domain values, relationship graph visuals, Regulatory Map redesign; 397 total tests: 390 backend + 93 E2E, 16 views)
+**Last Updated**: 2026-02-26 (Exploratory Testing Round 5 — F-022/F-023/F-024 fixes + layout fix + tour mapping fix; 483 total tests: 390 backend + 93 E2E, 16 views, 24 findings)
 
 ---
 
@@ -175,6 +175,10 @@
 | M121 | Entity Designer Layout Overhaul (F-012) | COMPLETE | 8 | 8 | Collapsible Panel component, tab-based EntityDetail, dagre RelationshipGraph with MiniMap/Controls, row selection, bidirectional navigation, useLocalStorage hook, tour/scenario/ops updates |
 | M122 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | 7 | 7 | formatTimestamp utility, formatLabel applied to Risk Case Manager grid/Alert Detail/Calc Trace DAG/Explainability panel, Model Composer description overlap fix |
 | M123 | Exploratory Testing Round 3 (F-016/F-017/F-018/F-019/F-020) | COMPLETE | 5 | 5 | Tested 6 untested views. Pipeline Monitor steps table + layer labels, AI Assistant markdown rendering, Use Case Studio component IDs + run results table. 955 modules. |
+| M124 | Entity Designer Vertical 2-Tab Layout (F-021) | COMPLETE | 8 | 8 | react-resizable-panels, vertical 2-tab layout, useDefaultLayout persistence, removed 3-pane horizontal layout — 956 modules |
+| M125 | Domain Values Management (F-022) | COMPLETE | 8 | 8 | Domain column in Fields AG Grid, DomainValuesPane side panel, EntityForm domain editor, 2 backend + 2 E2E tests — 957 modules |
+| M126 | Relationship Graph Visual Improvements (F-023) | COMPLETE | 1 | 1 | Smoothstep edges, label backgrounds, ArrowClosed arrowheads, increased dagre spacing |
+| M127 | Regulatory Map Redesign (F-024) | COMPLETE | 7 | 7 | Resizable panels, 2 tabs (Map + Details AG Grid), backend description fields, MiniMap, Controls, edge labels, h-full layout fix, tour path mapping fix — 957 modules |
 
 ---
 
@@ -647,8 +651,11 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
   - Full-width detail pane with descriptions shown from regulation registry
   - 2 new backend tests, 3 new E2E tests
   - Updated tours, operations, scenarios
-- [x] Updated: exploratory-testing-notes.md, progress.md, CLAUDE.md, MEMORY.md
-- **Total**: 390 backend + 93 E2E = 483 tests passing, 16 views, 24 findings (F-001 through F-024)
+- [x] **Layout fix**: Changed RegulatoryMap outer div from `flex-1` to `h-full` — `<main>` is display:block, so flex-1 had no effect (Group collapsed to 6px)
+- [x] **Tour path mapping fix**: Added `regulatory` and `editor` entries to `getTourIdForPath` in AppLayout.tsx — Tour button now works on Regulatory Map and Metadata Editor views
+- [x] Updated: exploratory-testing-notes.md, progress.md, demo-guide.md, CLAUDE.md, MEMORY.md, feature-development-checklist.md
+- [x] Verified all features with Playwright MCP browser: screenshots of Traceability Map, Regulation Details, Entity Designer domain values, Relationship Graph
+- **Total**: 390 backend + 93 E2E = 483 tests passing, 957 frontend modules, 16 views, 24 findings (F-001 through F-024)
 
 ---
 

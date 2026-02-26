@@ -238,7 +238,7 @@
 ### Views with No Issues Found
 
 - **Metadata Editor** (`/editor`): Excellent design. All 4 tabs (Entities, Calculations, Settings, Models) work correctly. Side-by-side JSON + Visual editors. Monaco JSON editor, OOB versioning with badges, match pattern picker with catalog. Both dark and light themes clean.
-- **Regulatory Map** (`/regulatory`): Clean layout. Summary cards (9/9 covered, 100%), traceability graph with color-coded nodes (Regulation → Article → Model → Calculation), detail panel populates on node click, legend, "Suggestions — All clear" section. Both themes work well.
+- **Regulatory Map** (`/regulatory`): Clean layout at the time of Round 3 testing. Summary cards (9/9 covered, 100%), traceability graph with color-coded nodes. _Note: Later addressed in Round 5 (F-024) with complete redesign — resizable panels, two tabs, descriptions, AG Grid._
 - **Submissions** (`/submissions`): Clean empty state. "No submissions yet. Submit a use case from the Use Case Studio." Both themes work. Limited testing since no submission data available (use case Run doesn't create a submission — separate governance workflow).
 
 ---
