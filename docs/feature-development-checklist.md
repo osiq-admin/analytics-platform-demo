@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-26 (M127 — 483 total tests: 390 backend + 93 E2E, 25 scenarios, 16 views, 24 exploratory findings)
+**Last Updated**: 2026-02-26 (M128 — 490 total tests: 390 backend + 100 E2E, 26 scenarios, 16 views, 74 traced architecture sections)
 
 ---
 
@@ -26,6 +26,7 @@
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
 - [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
+- [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
 
@@ -58,6 +59,7 @@
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
 - [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
+- [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
 
@@ -69,7 +71,7 @@
 - [ ] **UI interaction tests**: Click, type, navigate — verify expected state changes
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
-- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 93)
+- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 100)
 - [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
 ---
@@ -245,15 +247,29 @@
 - [ ] Column resize works
 - [ ] Both dark and light themes render correctly
 
+### When Modifying Any View Section:
+- [ ] Update or add `data-trace` attribute on the section wrapper (e.g., `data-trace="dashboard-summary-cards"`)
+- [ ] Update the section entry in `frontend/src/data/architectureRegistry.ts`
+- [ ] Verify `metadataMaturity` rating is still accurate after changes
+- [ ] If new files/APIs/metadata involved, add them to the registry entry's `sourceFiles`, `apiEndpoints`, `metadataSources`, or `technologies` arrays
+- [ ] If adding a completely new section/panel, create a new registry entry with all fields
+
+### When Adding a New View:
+*(Additional to existing "When Adding a New View" trigger above)*
+- [ ] Add `data-trace` attributes to all major sections in the new view (3-6 sections typical)
+- [ ] Add registry entries for each section in `frontend/src/data/architectureRegistry.ts`
+- [ ] Assign accurate `metadataMaturity` ratings with explanations
+- [ ] Add `architecture_trace` operation to the view in `operationScripts.ts`
+
 ---
 
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (386+)
+# Backend tests (390+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (87+)
+# E2E Playwright tests (100+)
 uv run pytest tests/e2e/ -v
 
 # Single E2E test class
@@ -278,3 +294,4 @@ uv run python -m scripts.generate_snapshots
 |---|---|---|
 | 2026-02-25 | Initial creation — covers all systems through Phase 7B (M120) | Claude Opus 4.6 |
 | 2026-02-26 | Updated for M124 (F-021 Entity Designer layout redesign) | Claude Opus 4.6 |
+| 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 490 (390+100), 26 scenarios | Claude Opus 4.6 |

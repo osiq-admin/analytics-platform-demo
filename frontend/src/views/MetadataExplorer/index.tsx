@@ -140,6 +140,7 @@ export default function MetadataExplorer() {
           title="Calculations"
           className="w-[440px] shrink-0"
           noPadding
+          dataTrace="metadata.calculation-list"
           actions={
             <button
               onClick={() => {
@@ -163,7 +164,7 @@ export default function MetadataExplorer() {
         </Panel>
 
         {/* Center: DAG */}
-        <Panel title="Calculation DAG" className="flex-1 min-w-[300px]" noPadding>
+        <Panel title="Calculation DAG" className="flex-1 min-w-[300px]" noPadding dataTrace="metadata.calculation-dag">
           <CalculationDAG
             calculations={calculations}
             onSelectCalc={handleDagSelect}
@@ -171,7 +172,7 @@ export default function MetadataExplorer() {
         </Panel>
 
         {/* Right: Detail or Form */}
-        <div className="w-80 shrink-0">
+        <div className="w-80 shrink-0" data-trace="metadata.calculation-detail">
           {mode === "create" ? (
             <CalculationForm
               calc={emptyCalc}

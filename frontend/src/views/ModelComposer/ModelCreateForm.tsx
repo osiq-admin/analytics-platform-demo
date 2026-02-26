@@ -175,7 +175,7 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
   };
 
   return (
-    <div className="flex-1 flex flex-col gap-3 min-w-0">
+    <div className="flex-1 flex flex-col gap-3 min-w-0" data-trace="models.create-wizard">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">

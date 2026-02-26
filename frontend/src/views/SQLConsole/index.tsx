@@ -70,7 +70,7 @@ export default function SQLConsole() {
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">SQL Console</h2>
-        <div className="flex items-center gap-2" data-tour="sql-presets">
+        <div className="flex items-center gap-2" data-tour="sql-presets" data-trace="sql.presets">
           {presets.map((p) => (
             <button
               key={p.name}
@@ -103,6 +103,7 @@ export default function SQLConsole() {
             noPadding
             dataTour="sql-editor"
             tooltip="Write and execute SQL queries against your data"
+            dataTrace="sql.query-editor"
             actions={
               <button
                 onClick={execute}
@@ -130,6 +131,7 @@ export default function SQLConsole() {
             noPadding
             dataTour="sql-results"
             tooltip="Query results displayed in a sortable grid"
+            dataTrace="sql.results-grid"
           >
             <ResultsGrid
               columns={result.columns ?? []}
@@ -140,7 +142,7 @@ export default function SQLConsole() {
 
         {/* Right: AI chat panel (collapsible) */}
         {aiOpen && (
-          <Panel title="AI Assistant" className="w-80 shrink-0" noPadding>
+          <Panel title="AI Assistant" className="w-80 shrink-0" noPadding dataTrace="sql.chat-panel">
             <ChatPanel
               messages={messages}
               onSend={handleAiSend}

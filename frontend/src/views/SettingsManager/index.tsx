@@ -101,6 +101,7 @@ export default function SettingsManager() {
           className="w-[480px] shrink-0"
           noPadding
           dataTour="settings-list"
+          dataTrace="settings.settings-list"
           tooltip="Browse system settings and their overrides"
           actions={
             <button
@@ -130,7 +131,7 @@ export default function SettingsManager() {
         </Panel>
 
         {/* Right: Detail + Override editor or Form */}
-        <div className="flex-1 min-w-0 flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3" data-trace="settings.setting-detail">
           {mode === "create" ? (
             <SettingForm
               setting={emptySetting}

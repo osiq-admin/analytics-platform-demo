@@ -66,7 +66,7 @@ const navigation: NavGroup[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 shrink-0 border-r border-border bg-surface overflow-y-auto" data-tour="sidebar">
+    <aside className="w-56 shrink-0 border-r border-border bg-surface overflow-y-auto" data-tour="sidebar" data-trace="app.sidebar">
       <div className="px-4 py-4">
         <h1 className="text-sm font-bold tracking-wider text-accent uppercase">
           Surveillance

@@ -79,12 +79,12 @@ export default function AIAssistant() {
       </div>
 
       {/* Mock scenario picker */}
-      {mode === "mock" && <div data-tour="assistant-scenarios"><MockPlayer onLoadMessages={handleLoadMockMessages} /></div>}
+      {mode === "mock" && <div data-tour="assistant-scenarios" data-trace="assistant.mock-player"><MockPlayer onLoadMessages={handleLoadMockMessages} /></div>}
 
       {/* Main content: Chat + Query Preview side by side */}
       <div className="flex-1 flex gap-4 min-h-0">
         {/* Chat */}
-        <Panel title="Chat" className="flex-1" noPadding dataTour="assistant-chat" tooltip="Chat with the AI assistant about your data">
+        <Panel title="Chat" className="flex-1" noPadding dataTour="assistant-chat" dataTrace="assistant.chat-panel" tooltip="Chat with the AI assistant about your data">
           <ChatPanel
             messages={messages}
             onSend={handleSend}
@@ -95,7 +95,7 @@ export default function AIAssistant() {
 
         {/* Query preview sidebar */}
         {pendingQuery && (
-          <div className="w-[400px] shrink-0">
+          <div className="w-[400px] shrink-0" data-trace="assistant.query-preview">
             <QueryPreview sql={pendingQuery} onClear={() => setPendingQuery(null)} />
           </div>
         )}

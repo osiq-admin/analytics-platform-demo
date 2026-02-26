@@ -238,7 +238,7 @@ export default function RegulatoryMap() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-3 shrink-0" data-tour="regulatory-cards">
+      <div className="grid grid-cols-4 gap-3 shrink-0" data-tour="regulatory-cards" data-trace="regulatory.summary-cards">
         <SummaryCard label="Total Requirements" value={coverage?.total_articles ?? 0} />
         <SummaryCard label="Covered" value={coverage?.covered ?? 0} accent="text-green-500" />
         <SummaryCard label="Uncovered" value={coverage?.uncovered ?? 0} accent="text-red-500" />
@@ -258,7 +258,7 @@ export default function RegulatoryMap() {
       >
         <ResizablePanel id="regulatory-top" defaultSize="60%" minSize="25%">
           {activeTab === "graph" ? (
-            <Panel title="Traceability Graph" className="h-full" noPadding dataTour="regulatory-graph">
+            <Panel title="Traceability Graph" className="h-full" noPadding dataTour="regulatory-graph" dataTrace="regulatory.traceability-graph">
               <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -281,7 +281,7 @@ export default function RegulatoryMap() {
               </ReactFlow>
             </Panel>
           ) : (
-            <Panel title="Regulation Details" className="h-full" noPadding dataTour="regulatory-details-grid">
+            <Panel title="Regulation Details" className="h-full" noPadding dataTour="regulatory-details-grid" dataTrace="regulatory.coverage-grid">
               <DataGrid
                 rowData={regulationRows}
                 columnDefs={regulationColumns}
@@ -485,6 +485,7 @@ function SuggestionsPanel({
     <div
       className="rounded border border-border bg-surface shrink-0"
       data-tour="regulatory-suggestions"
+      data-trace="regulatory.suggestions"
     >
       <button
         type="button"

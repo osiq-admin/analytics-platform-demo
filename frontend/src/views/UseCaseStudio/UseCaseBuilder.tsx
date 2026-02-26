@@ -114,7 +114,7 @@ export default function UseCaseBuilder({
   };
 
   return (
-    <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex-1 flex flex-col min-w-0" data-trace="use-cases.builder">
       {/* Step indicator */}
       <div className="flex items-center gap-1 mb-3">
         {STEPS.map((s, i) => (

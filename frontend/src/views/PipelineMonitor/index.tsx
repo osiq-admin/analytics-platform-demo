@@ -13,6 +13,7 @@ export default function PipelineMonitor() {
         <h2 className="text-lg font-semibold">Pipeline Monitor</h2>
         <button
           data-tour="pipeline-run"
+          data-trace="pipeline.run-button"
           onClick={() => { void runPipeline(); }}
           disabled={running}
           className="px-3 py-1.5 text-xs rounded border border-accent text-accent hover:bg-accent/10 disabled:opacity-50 transition-colors"
@@ -34,13 +35,13 @@ export default function PipelineMonitor() {
       )}
 
       {/* DAG visualization */}
-      <Panel title="Execution Graph" className="h-[350px] shrink-0" noPadding dataTour="pipeline-dag" tooltip="DAG visualization of calculation execution order">
+      <Panel title="Execution Graph" className="h-[350px] shrink-0" noPadding dataTour="pipeline-dag" tooltip="DAG visualization of calculation execution order" dataTrace="pipeline.execution-dag">
         <PipelineDAG steps={steps} />
       </Panel>
 
       {/* Step table */}
       {steps.length > 0 && (
-        <Panel title="Steps" className="flex-1 overflow-y-auto">
+        <Panel title="Steps" className="flex-1 overflow-y-auto" dataTrace="pipeline.steps-table">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-left text-muted border-b border-border">

@@ -53,7 +53,7 @@ export default function CalculationForm({ calc, isNew, onSave, onCancel }: Calcu
   };
 
   return (
-    <div className="flex flex-col gap-3 overflow-auto">
+    <div className="flex flex-col gap-3 overflow-auto" data-trace="metadata.calculation-form">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">
           {isNew ? "New Calculation" : `Edit: ${calc.name}`}

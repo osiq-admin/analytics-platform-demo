@@ -116,7 +116,7 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
   };
 
   return (
-    <div className="flex flex-col gap-3 overflow-auto">
+    <div className="flex flex-col gap-3 overflow-auto" data-trace="settings.setting-form">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">
           {isNew ? "New Setting" : `Edit: ${setting.name}`}

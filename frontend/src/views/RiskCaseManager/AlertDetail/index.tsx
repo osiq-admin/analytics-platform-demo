@@ -96,7 +96,7 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
   return (
     <div className="flex flex-col gap-4 h-full overflow-auto">
       {/* Header bar */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3" data-trace="alerts.detail-header">
         <button
           onClick={onBack}
           className="px-2 py-1 text-xs rounded border border-border text-muted hover:text-foreground transition-colors"
@@ -148,12 +148,12 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       {(panelConfig.business || panelConfig.entity) && (
         <div className={`grid gap-4 ${panelConfig.business && panelConfig.entity ? "grid-cols-2" : "grid-cols-1"}`}>
           {panelConfig.business && (
-            <div className={isEmphasized("business") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+            <div className={isEmphasized("business") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.business-description">
               <BusinessDescription alert={alert} />
             </div>
           )}
           {panelConfig.entity && (
-            <div className={isEmphasized("entity") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+            <div className={isEmphasized("entity") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.entity-context">
               <EntityContext alert={alert} />
             </div>
           )}
@@ -164,12 +164,12 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       {(panelConfig.calcTrace || panelConfig.marketData) && (
         <div className={`grid gap-4 ${panelConfig.calcTrace && panelConfig.marketData ? "grid-cols-2" : "grid-cols-1"}`}>
           {panelConfig.calcTrace && (
-            <Panel title="Calculation Trace" noPadding className={`min-h-[250px] ${isEmphasized("calcTrace") ? "ring-1 ring-accent/30" : ""}`}>
+            <Panel title="Calculation Trace" noPadding dataTrace="alerts.calculation-trace" className={`min-h-[250px] ${isEmphasized("calcTrace") ? "ring-1 ring-accent/30" : ""}`}>
               <CalculationTrace alert={alert} />
             </Panel>
           )}
           {panelConfig.marketData && (
-            <div className={isEmphasized("marketData") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+            <div className={isEmphasized("marketData") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.market-data">
               {productId ? (
                 <MarketDataChart productId={productId} />
               ) : (
@@ -184,7 +184,7 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
 
       {/* Row 3: Trade Volume */}
       {panelConfig.volume && productId && (
-        <div className={isEmphasized("volume") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+        <div className={isEmphasized("volume") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.trade-volume">
           <TradeVolumeChart productId={productId} alertDate={alert.entity_context?.business_date} />
         </div>
       )}
@@ -193,12 +193,12 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       {(panelConfig.settings || panelConfig.scores) && (
         <div className={`grid gap-4 ${panelConfig.settings && panelConfig.scores ? "grid-cols-2" : "grid-cols-1"}`}>
           {panelConfig.settings && (
-            <div className={isEmphasized("settings") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+            <div className={isEmphasized("settings") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.settings-trace">
               <SettingsTrace entries={alert.settings_trace ?? []} />
             </div>
           )}
           {panelConfig.scores && (
-            <div className={isEmphasized("scores") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+            <div className={isEmphasized("scores") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.score-breakdown">
               <ScoreBreakdown alert={alert} />
             </div>
           )}
@@ -207,7 +207,7 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
 
       {/* Row 5: Related Orders (full width) */}
       {panelConfig.orders && productId && accountId && (
-        <div className={isEmphasized("orders") ? "ring-1 ring-accent/30 rounded-lg" : ""}>
+        <div className={isEmphasized("orders") ? "ring-1 ring-accent/30 rounded-lg" : ""} data-trace="alerts.related-orders">
           <RelatedOrders productId={productId} accountId={accountId} />
         </div>
       )}

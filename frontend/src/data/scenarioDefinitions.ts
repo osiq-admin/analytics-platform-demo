@@ -3019,6 +3019,80 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
   ],
 };
 
+// --------------------------------------------------------------------------
+// S26: Architecture Traceability Tour (Beginner, 3 min)
+// --------------------------------------------------------------------------
+const S26_ARCHITECTURE_TRACE: ScenarioDefinition = {
+  id: "s26_architecture_trace",
+  name: "Architecture Traceability Tour",
+  description:
+    "Learn how to explore the architecture behind each section of the platform using the Trace toggle mode.",
+  category: "admin",
+  difficulty: "beginner",
+  estimatedMinutes: 3,
+  steps: [
+    {
+      target: "button:has-text('Trace')",
+      title: "Enable Trace Mode",
+      content:
+        "Click the **Trace** button in the top toolbar to enable architecture traceability mode.",
+      placement: "bottom",
+      route: "/dashboard",
+      action: "click",
+      actionTarget: "button:has-text('Trace')",
+      hint: "Click the Trace button in the top toolbar to enable architecture traceability mode.",
+      delay: 2500,
+    },
+    {
+      target: "button[title^='Architecture trace:']",
+      title: "Click an Info Icon",
+      content:
+        "Notice the blue **i** icons that appear on each section. Click any icon on the Dashboard to open the architecture trace popup.",
+      placement: "bottom",
+      route: "/dashboard",
+      action: "click",
+      actionTarget: "button[title^='Architecture trace:']",
+      hint: "Click any blue info icon on the Dashboard to open the architecture trace popup.",
+      delay: 2500,
+    },
+    {
+      target: ".animate-slide-in-right",
+      title: "Explore the Trace Popup",
+      content:
+        "The popup shows source files, API endpoints, Zustand stores, metadata files, technologies, and a metadata-maturity rating. Scroll through the sections to explore.",
+      placement: "left",
+      route: "/dashboard",
+      action: "wait",
+      hint: "Scroll through the trace popup to see source files, APIs, stores, metadata, technologies, and maturity rating.",
+      delay: 3500,
+    },
+    {
+      target: "[data-trace^='entities.']",
+      title: "Navigate to Entity Designer",
+      content:
+        "Close the popup and navigate to **Entity Designer** to see architecture traces on entity-related sections.",
+      placement: "right",
+      route: "/entities",
+      action: "navigate",
+      actionTarget: "[data-trace^='entities.']",
+      hint: "Navigate to the Entity Designer view to see architecture traces on entity-related sections.",
+      delay: 2500,
+    },
+    {
+      target: "button[title^='Architecture trace:']",
+      title: "Trace Entity Architecture",
+      content:
+        "Click an entity section's trace icon to see how entities are fully metadata-driven — loaded from JSON files on disk with no code changes needed.",
+      placement: "bottom",
+      route: "/entities",
+      action: "click",
+      actionTarget: "button[title^='Architecture trace:']",
+      hint: "Click an entity section's trace icon to see how entities are fully metadata-driven.",
+      delay: 3000,
+    },
+  ],
+};
+
 // ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
@@ -3048,4 +3122,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s23_regulatory_audit: S23_REGULATORY_AUDIT,
   s24_oob_metadata_review: S24_OOB_METADATA_REVIEW,
   s25_full_platform_demo: S25_FULL_PLATFORM_DEMO,
+  s26_architecture_trace: S26_ARCHITECTURE_TRACE,
 };

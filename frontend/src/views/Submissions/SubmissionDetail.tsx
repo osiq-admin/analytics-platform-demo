@@ -116,7 +116,7 @@ export default function SubmissionDetail({
       </div>
 
       {/* Review actions */}
-      <div className="shrink-0 px-3 pb-3">
+      <div className="shrink-0 px-3 pb-3" data-trace="submissions.review-actions">
         <ReviewActions
           submission={submission}
           onApprove={(comment) => onStatusUpdate("approved", comment)}

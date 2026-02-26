@@ -213,6 +213,7 @@ export default function Submissions() {
         title={`Submissions (${submissions.length})`}
         className={selected ? "h-[280px] shrink-0" : "flex-1"}
         noPadding
+        dataTrace="submissions.grid"
       >
         {submissions.length === 0 ? (
           <div className="flex items-center justify-center h-full text-xs text-muted">
@@ -243,6 +244,7 @@ export default function Submissions() {
           }
           className="flex-1 min-h-[300px]"
           noPadding
+          dataTrace="submissions.detail"
           actions={
             <button
               onClick={() => setSelected(null)}

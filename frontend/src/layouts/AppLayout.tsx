@@ -7,6 +7,8 @@ import OnboardingModal from "../components/OnboardingModal.tsx";
 import OperationScripts from "../components/TourEngine/OperationScripts.tsx";
 import ScenarioSelector from "../components/TourEngine/ScenarioSelector.tsx";
 import ScenarioRunner from "../components/TourEngine/ScenarioRunner.tsx";
+import TraceToggleButton from "../components/TraceabilityMode/TraceToggleButton.tsx";
+import TraceOverlay from "../components/TraceabilityMode/TraceOverlay.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
 import { TOURS } from "../data/tourDefinitions.ts";
@@ -70,10 +72,10 @@ export default function AppLayout() {
         {/* Top toolbar */}
         <header className="h-10 shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
           {/* Left: Demo progression controls */}
-          <div data-tour="demo-toolbar"><DemoToolbar /></div>
+          <div data-tour="demo-toolbar" data-trace="app.demo-toolbar"><DemoToolbar /></div>
 
           {/* Right: Help & settings */}
-          <div className="flex items-center gap-1.5 text-xs" data-tour="theme-toggle">
+          <div className="flex items-center gap-1.5 text-xs" data-tour="theme-toggle" data-trace="app.toolbar">
             {/* Learning tools */}
             <button
               onClick={handleTour}
@@ -85,10 +87,11 @@ export default function AppLayout() {
             <button
               onClick={() => setShowScenarios(true)}
               className="px-2 py-0.5 rounded border border-border text-muted hover:text-foreground hover:border-foreground/30 transition-colors"
-              title="Browse scenarios — 25 guided workflows covering surveillance use cases (entity setup, model tuning, alert investigation, etc.)"
+              title="Browse scenarios — 26 guided workflows covering surveillance use cases (entity setup, model tuning, alert investigation, etc.)"
             >
               Scenarios
             </button>
+            <TraceToggleButton />
 
             {/* Divider */}
             <div className="w-px h-4 bg-border mx-0.5" />
@@ -111,6 +114,7 @@ export default function AppLayout() {
       </div>
 
       <TourOverlay />
+      <TraceOverlay />
       <OnboardingModal />
       <OperationScripts viewOperations={viewOps} />
       <ScenarioSelector open={showScenarios} onClose={() => setShowScenarios(false)} />

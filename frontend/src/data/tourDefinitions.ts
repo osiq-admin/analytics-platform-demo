@@ -24,6 +24,12 @@ export const TOURS: Record<string, TourDefinition> = {
         content: "Toggle light/dark mode, or start a guided tour for the current view.",
         placement: "bottom",
       },
+      {
+        target: "[data-tour='theme-toggle']",
+        title: "Architecture Traceability",
+        content: "Click the Trace button to overlay architecture info icons on every section. Each icon reveals which files, APIs, metadata, stores, and technologies control that section, plus a metadata-maturity analysis.",
+        placement: "bottom" as const,
+      },
     ],
   },
 

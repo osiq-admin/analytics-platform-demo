@@ -29,7 +29,8 @@ The top toolbar shows demo controls:
 
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
-- **Scenarios** — Open the guided scenario browser (25 scenarios in Watch Demo or Try It Yourself mode)
+- **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
+- **Scenarios** — Open the guided scenario browser (26 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -45,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 25 guided scenarios in 7 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 26 guided scenarios in 7 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -358,7 +359,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **25 guided scenarios**: Watch Demo or Try It Yourself mode across 7 categories
+- **26 guided scenarios**: Watch Demo or Try It Yourself mode across 7 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -487,7 +488,7 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 25 guided scenarios organized in 7 categories
+- 26 guided scenarios organized in 7 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
@@ -510,7 +511,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 71 operations defined across 16 views
+- 73 operations defined across 16 views
 
 ### 7.3 Scenario Categories
 
@@ -522,7 +523,59 @@ Click **Skip to End** to show the final state.
 | Use Cases & Submissions | S15-S18 | Beginner → Advanced |
 | Entities | S19-S20 | Beginner |
 | Investigation | S21-S23 | Beginner → Advanced |
-| Admin | S24-S25 | Intermediate → Advanced |
+| Admin | S24-S26 | Intermediate → Advanced |
+
+## Architecture Traceability Mode — M128
+
+Architecture Traceability Mode lets you inspect the technical architecture of every section in the platform. It reveals which source files, Zustand stores, API endpoints, metadata files, and technologies power each UI component — and rates how metadata-driven each section is.
+
+### How to Use
+
+1. Click the **Trace** button in the top-right toolbar area to activate Architecture Traceability Mode
+2. Blue info icons (i) appear on every traced section throughout the current view
+3. Click any info icon to open a **400px slide-in panel** from the right showing:
+   - **Source Files** — React components, TypeScript files that render this section
+   - **Zustand Stores** — State management stores used by the section
+   - **API Endpoints** — Backend endpoints the section calls (with HTTP methods)
+   - **Metadata & Data Sources** — JSON metadata files, CSV/Parquet data, DuckDB tables
+   - **Technologies** — Libraries and frameworks used (React Flow, AG Grid, Monaco, Recharts, etc.)
+   - **Metadata Maturity Rating** — Color-coded badge showing how metadata-driven the section is
+   - **Maturity Explanation** — Why the section received its rating
+   - **Improvement Opportunities** — What could make the section more metadata-driven
+4. Click the **Trace** button again (or click outside the panel) to deactivate traceability mode
+
+### Metadata Maturity Ratings
+
+Each section is rated on a 5-level metadata maturity scale:
+
+| Rating | Color | Meaning |
+|--------|-------|---------|
+| Fully Metadata-Driven | Green | Everything rendered from metadata definitions — zero hardcoded logic |
+| Mostly Metadata-Driven | Blue | Core behavior from metadata, minor presentation logic in code |
+| Mixed | Amber | Significant metadata usage but also substantial hardcoded elements |
+| Code-Driven | Orange | Primarily implemented in code with limited metadata |
+| Infrastructure | Gray | System-level component (layout, navigation) — metadata-driven by nature of hosting metadata content |
+
+### Coverage
+
+- **74 traced sections** across all 16 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
+- Every view has 3-6 traced sections covering its major panels and features
+- Cross-cutting sections cover: sidebar navigation, demo toolbar, theme switcher, tour system, scenario system, help system
+
+### Interactive: Explore Architecture Traceability
+
+1. Navigate to any view (e.g., **Dashboard**)
+2. Click **Trace** in the toolbar — info icons appear on each panel
+3. Click the info icon on "Summary Cards" — see that it reads from alert trace Parquet files and uses the dashboardStore
+4. Navigate to **Entity Designer** — click Trace again
+5. Click the info icon on "Entity List" — see it uses entityStore, reads entity JSON metadata, and is rated "fully-metadata-driven"
+6. Click the info icon on "Relationship Graph" — see it uses React Flow, reads relationships from entity metadata
+7. Compare maturity ratings across sections to understand which parts are most metadata-driven
+8. Key takeaway: "Every section is architecturally traceable — you can see exactly what code, stores, APIs, and metadata power each part of the UI"
+
+### Guided Scenario
+
+**S26: Explore Architecture Traceability** (Admin category, intermediate difficulty) — available in the Scenarios browser. Walks through activating traceability, reading architecture details, and understanding maturity ratings.
 
 ## Troubleshooting
 

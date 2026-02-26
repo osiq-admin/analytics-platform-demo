@@ -64,7 +64,7 @@ export default function EntityDetail({ entity, onEdit, onDelete, onFieldSelect }
   const relCount = entity.relationships?.length ?? 0;
 
   return (
-    <div className="flex flex-col h-full rounded border border-border bg-surface overflow-hidden">
+    <div className="flex flex-col h-full rounded border border-border bg-surface overflow-hidden" data-trace="entities.entity-detail">
       {/* Compact header */}
       <div className="shrink-0 flex items-center justify-between px-3 py-2 border-b border-border bg-surface-elevated">
         <div className="min-w-0 flex-1">

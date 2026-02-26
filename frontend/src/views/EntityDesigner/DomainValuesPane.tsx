@@ -50,7 +50,7 @@ export default function DomainValuesPane({
   };
 
   return (
-    <div className="flex flex-col h-full" data-tour="domain-values-pane">
+    <div className="flex flex-col h-full" data-tour="domain-values-pane" data-trace="entities.domain-values">
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-3 py-2 border-b border-border bg-surface-elevated">
         <div className="min-w-0">

@@ -11,6 +11,8 @@ interface PanelProps {
   tooltip?: string;
   /** data-tour attribute for tour targeting */
   dataTour?: string;
+  /** data-trace attribute for architecture traceability */
+  dataTrace?: string;
   /** Show collapse/expand chevron in header */
   collapsible?: boolean;
   /** Controlled collapsed state */
@@ -29,6 +31,7 @@ export default function Panel({
   noPadding,
   tooltip,
   dataTour,
+  dataTrace,
   collapsible,
   collapsed,
   onToggleCollapse,
@@ -44,6 +47,7 @@ export default function Panel({
         onClick={onToggleCollapse}
         title={`Expand ${typeof title === "string" ? title : ""}`}
         {...(dataTour ? { "data-tour": dataTour } : {})}
+        {...(dataTrace ? { "data-trace": dataTrace } : {})}
       >
         <div className="flex-1 flex items-center justify-center">
           <span className="text-[10px] font-semibold text-foreground/60 uppercase tracking-widest [writing-mode:vertical-lr] rotate-180 select-none">
@@ -76,6 +80,7 @@ export default function Panel({
         className
       )}
       {...(dataTour ? { "data-tour": dataTour } : {})}
+      {...(dataTrace ? { "data-trace": dataTrace } : {})}
     >
       <div className="h-8 shrink-0 flex items-center justify-between px-3 border-b border-border bg-surface-elevated">
         <span className="text-xs font-semibold text-foreground/80 uppercase tracking-wide flex items-center gap-1.5">

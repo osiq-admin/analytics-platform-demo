@@ -81,6 +81,7 @@ export default function UseCaseStudio() {
         <Panel
           title="Use Cases"
           className="w-72 shrink-0"
+          dataTrace="use-cases.use-case-list"
           tooltip="Detection use cases bundle models, sample data, and expected results"
         >
           <div className="space-y-1">
@@ -234,7 +235,7 @@ export default function UseCaseStudio() {
 
             {/* Sample Data & Expected Results side by side */}
             <div className="flex gap-3 flex-1 min-h-0">
-              <Panel title="Sample Data" className="flex-1">
+              <Panel title="Sample Data" className="flex-1" dataTrace="use-cases.sample-data">
                 {Object.keys(selected.sample_data).length > 0 ? (
                   <div className="space-y-1.5">
                     {Object.entries(selected.sample_data).map(([key, rows]) => (
@@ -257,7 +258,7 @@ export default function UseCaseStudio() {
                 )}
               </Panel>
 
-              <Panel title="Expected Results" className="flex-1">
+              <Panel title="Expected Results" className="flex-1" dataTrace="use-cases.expected-results">
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-muted">Should fire:</span>

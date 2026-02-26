@@ -64,7 +64,7 @@ export default function OverrideEditor({ settingId, valueType }: OverrideEditorP
   };
 
   return (
-    <Panel title="Resolution Tester" dataTour="settings-resolver" tooltip="Test how a setting resolves for a given entity context">
+    <Panel title="Resolution Tester" dataTour="settings-resolver" dataTrace="settings.override-editor" tooltip="Test how a setting resolves for a given entity context">
       <div className="space-y-3 text-xs">
         <p className="text-muted">
           Test how setting <span className="text-accent">{settingId}</span> ({valueType}) resolves for a given entity context.

@@ -8,6 +8,8 @@ interface WidgetContainerProps {
   onToggle: () => void;
   chartTypeSwitcher?: ReactNode;
   dataTour?: string;
+  /** data-trace attribute for architecture traceability */
+  dataTrace?: string;
 }
 
 export default function WidgetContainer({
@@ -18,6 +20,7 @@ export default function WidgetContainer({
   onToggle,
   chartTypeSwitcher,
   dataTour,
+  dataTrace,
 }: WidgetContainerProps) {
   if (!visible) {
     return (
@@ -25,6 +28,7 @@ export default function WidgetContainer({
         className="rounded border border-border bg-surface/60 flex items-center"
         data-widget={id}
         {...(dataTour ? { "data-tour": dataTour } : {})}
+        {...(dataTrace ? { "data-trace": dataTrace } : {})}
       >
         <div className="h-8 w-full flex items-center justify-between px-3">
           <span className="text-xs font-semibold text-muted uppercase tracking-wide">
@@ -63,6 +67,7 @@ export default function WidgetContainer({
       style={{ contain: "layout paint" }}
       data-widget={id}
       {...(dataTour ? { "data-tour": dataTour } : {})}
+      {...(dataTrace ? { "data-trace": dataTrace } : {})}
     >
       <div className="h-8 shrink-0 flex items-center justify-between px-3 border-b border-border bg-surface-elevated">
         <span className="text-xs font-semibold text-foreground/80 uppercase tracking-wide">

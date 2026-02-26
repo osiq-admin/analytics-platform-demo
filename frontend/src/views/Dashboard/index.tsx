@@ -321,6 +321,7 @@ function ModelWidget({ data }: { data: { model_id: string; cnt: number }[] }) {
     <WidgetContainer
       id="alerts-by-model" title="Alerts by Model" visible={visible}
       onToggle={() => toggle("alerts-by-model")} dataTour="dashboard-by-model"
+      dataTrace="dashboard.alerts-by-model"
       chartTypeSwitcher={
         <ChartTypeSwitcher chartId="alerts-by-model" currentType={chartType}
           options={["horizontal_bar", "bar", "line", "pie", "table"]}
@@ -341,6 +342,7 @@ function ScoreWidget({ data }: { data: { bucket: number; cnt: number }[] }) {
     <WidgetContainer
       id="score-distribution" title="Score Distribution" visible={visible}
       onToggle={() => toggle("score-distribution")} dataTour="dashboard-scores"
+      dataTrace="dashboard.score-distribution"
       chartTypeSwitcher={
         <ChartTypeSwitcher chartId="score-distribution" currentType={chartType}
           options={["bar", "horizontal_bar", "line", "table"]}
@@ -361,6 +363,7 @@ function TriggerWidget({ data }: { data: { trigger_path: string; cnt: number }[]
     <WidgetContainer
       id="alerts-by-trigger" title="Alerts by Trigger Path" visible={visible}
       onToggle={() => toggle("alerts-by-trigger")} dataTour="dashboard-triggers"
+      dataTrace="dashboard.alerts-by-trigger"
       chartTypeSwitcher={
         <ChartTypeSwitcher chartId="alerts-by-trigger" currentType={chartType}
           options={["horizontal_bar", "bar", "line", "pie", "table"]}
@@ -381,6 +384,7 @@ function AssetWidget({ data }: { data: { asset_class: string; cnt: number }[] })
     <WidgetContainer
       id="alerts-by-asset" title="Alerts by Asset Class" visible={visible}
       onToggle={() => toggle("alerts-by-asset")}
+      dataTrace="dashboard.alerts-by-asset"
       chartTypeSwitcher={
         <ChartTypeSwitcher chartId="alerts-by-asset" currentType={chartType}
           options={["pie", "bar", "horizontal_bar", "line", "table"]}
@@ -445,7 +449,7 @@ export default function Dashboard() {
       {showConfig && <WidgetConfigPanel />}
 
       {/* Row 1: Summary Cards (always visible) */}
-      <div className="grid grid-cols-4 gap-4" data-tour="dashboard-cards">
+      <div className="grid grid-cols-4 gap-4" data-tour="dashboard-cards" data-trace="dashboard.summary-cards">
         <SummaryCard label="Total Alerts" value={stats.total_alerts} />
         <SummaryCard label="Score Triggered" value={`${scoreTriggeredPct}%`}
           subtitle={`${scoreBased?.cnt ?? 0} of ${stats.total_alerts} exceeded threshold`} />

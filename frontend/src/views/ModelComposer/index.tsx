@@ -156,7 +156,7 @@ export default function ModelComposer() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Detection models */}
-        <Panel title="Detection Models" className="w-72 shrink-0" dataTour="model-list" tooltip="List of detection models to compose and deploy">
+        <Panel title="Detection Models" className="w-72 shrink-0" dataTour="model-list" dataTrace="models.model-list" tooltip="List of detection models to compose and deploy">
           <div className="space-y-1">
             <button
               onClick={() => {
@@ -220,7 +220,7 @@ export default function ModelComposer() {
             onStateChange={handleWizardStateChange}
           />
         ) : selectedModel ? (
-          <div className="flex-1 flex flex-col gap-3 min-w-0" data-tour="model-detail">
+          <div className="flex-1 flex flex-col gap-3 min-w-0" data-tour="model-detail" data-trace="models.model-detail">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <h3 className="text-base font-semibold">{selectedModel.name}</h3>
@@ -316,28 +316,34 @@ export default function ModelComposer() {
             {/* Tab content */}
             <div className="flex-1 overflow-auto p-3">
               {rightTab === "validation" && (
-                <ValidationPanel
-                  name={wizardState.name}
-                  description={wizardState.description}
-                  selectedCalcs={wizardState.selectedCalcs}
-                  scoreThresholdSetting={wizardState.scoreThresholdSetting}
-                  query={wizardState.query}
-                  contextFields={wizardState.contextFields}
-                  granularity={wizardState.granularity}
-                />
+                <div data-trace="models.validation-panel">
+                  <ValidationPanel
+                    name={wizardState.name}
+                    description={wizardState.description}
+                    selectedCalcs={wizardState.selectedCalcs}
+                    scoreThresholdSetting={wizardState.scoreThresholdSetting}
+                    query={wizardState.query}
+                    contextFields={wizardState.contextFields}
+                    granularity={wizardState.granularity}
+                  />
+                </div>
               )}
               {rightTab === "preview" && (
-                <PreviewPanel
-                  selectedCalcs={wizardState.selectedCalcs}
-                  scoreThresholdSetting={wizardState.scoreThresholdSetting}
-                  calculations={calculations}
-                />
+                <div data-trace="models.preview-panel">
+                  <PreviewPanel
+                    selectedCalcs={wizardState.selectedCalcs}
+                    scoreThresholdSetting={wizardState.scoreThresholdSetting}
+                    calculations={calculations}
+                  />
+                </div>
               )}
               {rightTab === "dependencies" && (
-                <DependencyMiniDAG
-                  selectedCalcIds={wizardState.selectedCalcs.map((c) => c.calc_id)}
-                  calculations={calculations}
-                />
+                <div data-trace="models.dependency-dag">
+                  <DependencyMiniDAG
+                    selectedCalcIds={wizardState.selectedCalcs.map((c) => c.calc_id)}
+                    calculations={calculations}
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -359,7 +365,7 @@ export default function ModelComposer() {
 
         {/* AI chat panel (collapsible) */}
         {aiOpen && (
-          <Panel title="AI Assistant" className="w-72 shrink-0" noPadding>
+          <Panel title="AI Assistant" className="w-72 shrink-0" noPadding dataTrace="models.ai-chat">
             <ChatPanel
               messages={messages}
               onSend={handleAiSend}

@@ -176,7 +176,7 @@ export default function MetadataEditor() {
       {/* Top bar: type selector + item selector */}
       <div className="flex items-center gap-3">
         <h2 className="text-lg font-semibold shrink-0">Metadata Editor</h2>
-        <div className="flex items-center gap-2 ml-4" data-tour="editor-type-selector">
+        <div className="flex items-center gap-2 ml-4" data-tour="editor-type-selector" data-trace="editor.type-selector">
           {TYPE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -195,6 +195,7 @@ export default function MetadataEditor() {
           value={selectedIndex}
           onChange={(e) => setSelectedIndex(Number(e.target.value))}
           className="ml-2 px-2 py-1.5 rounded border border-border bg-surface text-sm text-foreground min-w-[200px] max-w-[400px]"
+          data-trace="editor.item-list"
         >
           {items.map((item, idx) => (
             <option key={getItemId(selectedType, item)} value={idx}>
@@ -219,7 +220,9 @@ export default function MetadataEditor() {
       </div>
 
       {/* OOB Version Panel */}
-      <OobVersionPanel />
+      <div data-trace="editor.oob-version">
+        <OobVersionPanel />
+      </div>
 
       {/* OOB info banner */}
       {items.length > 0 && items[Math.min(selectedIndex, items.length - 1)]?.metadata_layer === "oob" && (
@@ -234,14 +237,14 @@ export default function MetadataEditor() {
       {/* Main editor panels */}
       <div className="flex gap-3 flex-1 min-h-0">
         {/* Left panel: JSON editor */}
-        <Panel title="JSON Editor" className="flex-1 min-w-0" noPadding dataTour="editor-json">
+        <Panel title="JSON Editor" className="flex-1 min-w-0" noPadding dataTour="editor-json" dataTrace="editor.json-panel">
           <div className="h-full">
             <JsonPanel value={jsonText} onChange={handleJsonChange} />
           </div>
         </Panel>
 
         {/* Right panel: Visual editor */}
-        <Panel title="Visual Editor" className="flex-1 min-w-0 overflow-auto" dataTour="editor-visual">
+        <Panel title="Visual Editor" className="flex-1 min-w-0 overflow-auto" dataTour="editor-visual" dataTrace="editor.visual-panel">
           <VisualPanel
             type={selectedType}
             data={editorData}
@@ -251,7 +254,7 @@ export default function MetadataEditor() {
       </div>
 
       {/* Bottom bar: save + validation + reset */}
-      <div className="flex items-center justify-between px-1 py-1" data-tour="editor-save">
+      <div className="flex items-center justify-between px-1 py-1" data-tour="editor-save" data-trace="editor.save-controls">
         <div className="flex items-center gap-2">
           {isJsonValid ? (
             <span className="flex items-center gap-1 text-xs text-green-400">

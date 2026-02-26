@@ -4,7 +4,7 @@ import type { ViewOperations } from "../components/TourEngine/OperationScripts.t
 // Operation Scripts — Per-view help metadata (M119)
 // ==========================================================================
 // Each view defines 3-6 operations and 2-4 tips that appear in the (?) panel.
-// Operations may link to guided scenarios (S1-S25) via scenarioId.
+// Operations may link to guided scenarios (S1-S26) via scenarioId.
 // ==========================================================================
 
 export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
@@ -39,6 +39,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Review Trigger Analysis",
         description:
           "See which detection rules fire most frequently and identify patterns across the alert population.",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [
@@ -93,6 +99,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Import CSV data for any entity and preview the rows before committing changes.",
         scenarioId: "s20_import_preview_data",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Click any entity to see its Fields and Relationships tabs in the detail pane below the list",
@@ -141,6 +153,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "Define a new calculation with SQL, parameters, and input mappings. Use AI assistance for complex expressions.",
         scenarioId: "s8_create_manual_calc",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [
@@ -192,6 +210,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Browse the pattern library for common threshold configurations and apply them as templates.",
         scenarioId: "s5_match_patterns",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Product-specific overrides always win over hierarchy and default values",
@@ -231,6 +255,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Save Mappings",
         description:
           "Save your mapping configuration. Mappings are persisted as metadata and used during pipeline execution.",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [
@@ -278,6 +308,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "Revert a custom metadata item back to its original out-of-box definition.",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "The visual editor and JSON editor stay in sync — changes in one appear in the other",
@@ -318,6 +354,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "Browse past pipeline runs to compare timing, identify bottlenecks, and track changes in detection results over time.",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Green nodes are completed, yellow are running, red indicate failures",
@@ -357,6 +399,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "View sample rows from any table to understand the data content and validate the schema against actual data.",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Tables are grouped by category: entities, calculations, alerts, and system",
@@ -395,6 +443,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Use AI SQL Assistant",
         description:
           "Describe what you want in natural language and let the AI assistant generate the SQL query for you.",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [
@@ -446,6 +500,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Browse pre-built model examples (wash trading, spoofing, insider dealing, ramping) for reference and learning.",
         scenarioId: "s14_model_best_practices",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Start with the wizard for guided model creation — it walks through each step",
@@ -494,6 +554,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Submit a completed use case to the review queue for approval by compliance or model validation teams.",
         scenarioId: "s16_submit_use_case",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Use cases serve as living documentation of detection requirements",
@@ -534,6 +600,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Manage Data Sources",
         description:
           "Add, remove, or refresh data sources. Re-generate CSV data or re-import from external feeds.",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [
@@ -583,6 +655,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "View OHLC candlestick charts and intraday price data around the alert time window to assess market context.",
         scenarioId: "s22_cross_alert_analysis",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "The score breakdown shows exactly which rules contributed to the alert score",
@@ -630,6 +708,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "See AI-generated suggestions for new detection models that would address identified regulatory gaps.",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Green nodes indicate covered articles; red indicates gaps requiring attention",
@@ -674,6 +758,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         description:
           "Add comments to a submission with specific feedback, questions, or required changes before approval.",
       },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
+      },
     ],
     tips: [
       "Submissions are sorted by priority and submission date by default",
@@ -713,6 +803,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Generate SQL Queries",
         description:
           "Describe what data you need in natural language and the assistant will generate optimized DuckDB SQL queries.",
+      },
+      {
+        id: "architecture_trace",
+        name: "Explore Architecture Trace",
+        description:
+          "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
       },
     ],
     tips: [

@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (Exploratory Testing Round 5 — F-022/F-023/F-024 fixes + layout fix + tour mapping fix; 483 total tests: 390 backend + 93 E2E, 16 views, 24 findings)
+**Last Updated**: 2026-02-26 (M128 Architecture Traceability Mode; 490 total tests: 390 backend + 100 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -38,6 +38,7 @@
 | Feature Development Checklist | COMPLETE | 10-section mandatory checklist for all new features with broad system integration triggers |
 | Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
+| Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 490 total tests, 964 modules |
 
 ---
 
@@ -179,6 +180,7 @@
 | M125 | Domain Values Management (F-022) | COMPLETE | 8 | 8 | Domain column in Fields AG Grid, DomainValuesPane side panel, EntityForm domain editor, 2 backend + 2 E2E tests — 957 modules |
 | M126 | Relationship Graph Visual Improvements (F-023) | COMPLETE | 1 | 1 | Smoothstep edges, label backgrounds, ArrowClosed arrowheads, increased dagre spacing |
 | M127 | Regulatory Map Redesign (F-024) | COMPLETE | 7 | 7 | Resizable panels, 2 tabs (Map + Details AG Grid), backend description fields, MiniMap, Controls, edge labels, h-full layout fix, tour path mapping fix — 957 modules |
+| M128 | Architecture Traceability Mode | COMPLETE | 12 | 12 | Toolbar toggle, TraceOverlay with info icons on 74 sections, TracePopup slide-in panel (source files, stores, APIs, metadata, technologies, maturity rating, improvements), architectureRegistry.ts (2,978 lines), MetadataMaturity badges, S26 scenario, overview tour updated, architecture_trace op on all 16 views, 7 new E2E tests — 964 modules |
 
 ---
 
@@ -656,6 +658,35 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] Updated: exploratory-testing-notes.md, progress.md, demo-guide.md, CLAUDE.md, MEMORY.md, feature-development-checklist.md
 - [x] Verified all features with Playwright MCP browser: screenshots of Traceability Map, Regulation Details, Entity Designer domain values, Relationship Graph
 - **Total**: 390 backend + 93 E2E = 483 tests passing, 957 frontend modules, 16 views, 24 findings (F-001 through F-024)
+
+### 2026-02-26 (Architecture Traceability Mode — M128)
+- [x] **Architecture Traceability Mode**: Full-feature implementation for tracing every UI section to its architecture
+  - Toolbar toggle button in AppLayout (Trace on/off)
+  - TraceOverlay renders info icons on every traced section using `data-trace` attributes
+  - TracePopup: 400px slide-in panel showing source files, Zustand stores, API endpoints, metadata & data sources, technologies, metadata-maturity rating with explanation, and improvement opportunities
+  - 74 traceable sections registered in `architectureRegistry.ts` (2,978 lines) across 16 views + cross-cutting concerns
+  - MetadataMaturity rating system: fully-metadata-driven, mostly-metadata-driven, mixed, code-driven, infrastructure
+  - MetadataMaturityBadge component with color-coded badges and maturity explanations
+  - `data-trace` attributes added to all 16 view files + sub-components + Panel + WidgetContainer + Sidebar
+  - Zustand store (`traceabilityStore.ts`) for toggle state and selected section
+  - TypeScript interfaces in `architectureRegistryTypes.ts`
+- [x] **New components created**:
+  - `frontend/src/components/TraceabilityMode/TraceToggleButton.tsx`
+  - `frontend/src/components/TraceabilityMode/TraceIcon.tsx`
+  - `frontend/src/components/TraceabilityMode/TraceOverlay.tsx`
+  - `frontend/src/components/TraceabilityMode/TracePopup.tsx`
+  - `frontend/src/components/TraceabilityMode/MetadataMaturityBadge.tsx`
+  - `frontend/src/data/architectureRegistryTypes.ts`
+  - `frontend/src/data/architectureRegistry.ts` (74 sections, 2,978 lines)
+  - `frontend/src/stores/traceabilityStore.ts`
+- [x] **S26 scenario**: "Explore Architecture Traceability" added to scenarioDefinitions.ts (Admin category, intermediate difficulty)
+- [x] **Overview tour updated**: Added architecture traceability step to the overview tour in tourDefinitions.ts
+- [x] **Operation scripts**: Added `architecture_trace` operation to all 16 views in operationScripts.ts
+- [x] **7 new E2E tests**: TestArchitectureTraceability class in test_e2e_views.py
+- [x] **Feature spec**: `docs/architecture-traceability.md`
+- [x] Updated: progress.md, demo-guide.md, CLAUDE.md, feature-development-checklist.md, roadmap
+- [x] Frontend build clean: 964 modules
+- **Total**: 390 backend + 100 E2E = 490 tests passing, 964 frontend modules, 16 views, 26 scenarios, 74 traced sections
 
 ---
 

@@ -72,7 +72,7 @@ export default function DataManager() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: File list */}
-        <Panel title="Data Sources" className="w-72 shrink-0" noPadding dataTour="data-list" tooltip="Uploaded data files and tables">
+        <Panel title="Data Sources" className="w-72 shrink-0" noPadding dataTour="data-list" dataTrace="data.tables-list" tooltip="Uploaded data files and tables">
           <DataGrid
             rowData={tables}
             columnDefs={fileColumns}
@@ -89,6 +89,7 @@ export default function DataManager() {
           className="flex-1"
           noPadding
           dataTour="data-preview"
+          dataTrace="data.data-grid"
           tooltip="Preview rows from the selected data source"
         >
           {preview ? (

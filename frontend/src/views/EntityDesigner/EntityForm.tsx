@@ -69,7 +69,7 @@ export default function EntityForm({ entity, isNew, onSave, onCancel }: EntityFo
   };
 
   return (
-    <div className="flex flex-col gap-3 h-full overflow-auto">
+    <div className="flex flex-col gap-3 h-full overflow-auto" data-trace="entities.entity-form">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">
           {isNew ? "Create New Entity" : `Edit: ${entity.name}`}

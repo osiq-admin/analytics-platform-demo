@@ -16,7 +16,7 @@
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 16 frontend views, 473 tests (386 backend + 87 E2E), Playwright verified
+- 16 frontend views, 490 tests (390 backend + 100 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 
 **What's already metadata-driven (~70%):**
@@ -455,6 +455,21 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
+## Architecture Traceability Mode (M128) — COMPLETE
+
+**Goal:** Enable developers and reviewers to inspect the technical architecture behind every UI section directly in the platform, without reading source code. Show which files, stores, APIs, metadata, and technologies power each section, and rate how metadata-driven each section is.
+
+**Status:** COMPLETE (2026-02-26). 74 traced sections across 16 views + cross-cutting concerns. Toolbar toggle, info icon overlay, 400px slide-in architecture panel, metadata maturity rating system (5 levels), S26 scenario, overview tour updated, architecture_trace operation on all 16 views, 7 new E2E tests.
+
+**Key files:**
+- `frontend/src/data/architectureRegistry.ts` — 74-section registry (2,978 lines)
+- `frontend/src/data/architectureRegistryTypes.ts` — TypeScript interfaces
+- `frontend/src/stores/traceabilityStore.ts` — Zustand store
+- `frontend/src/components/TraceabilityMode/` — TraceToggleButton, TraceIcon, TraceOverlay, TracePopup, MetadataMaturityBadge
+- `docs/architecture-traceability.md` — Feature specification
+
+---
+
 ## Phase 13: AI-Assisted Configuration
 
 **Goal:** LLM understands the system's metadata schema, can suggest calculations, help configure models, and utilize the dynamic nature of the system.
@@ -735,7 +750,7 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | # | Feature | Description |
 |---|---------|-------------|
 | ~~P1~~ | ~~Guided Demo Mode~~ | ~~Pre-scripted walkthrough with narration~~ — DONE (Phase 7B: dual-mode tour engine with Watch Demo + Try It Yourself) |
-| ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B: 25 scenarios in 7 categories) |
+| ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B + M128: 26 scenarios in 7 categories) |
 | P3 | Live Data Simulation | Streaming real-time alert generation |
 | P4 | Comparison Mode | Before/after detection effectiveness |
 | P5 | Performance Metrics | Detection rates, false positive rates |
@@ -771,6 +786,7 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | **P0 — DONE** | Phase 11 (OOB Separation) | COMPLETE (M84-M88) | Layer architecture |
 | **P0 — DONE** | Phase 12 (UI/UX Usability) | COMPLETE (M89-M92) | AG Grid + viewport fixes |
 | **P0 — DONE** | Phase 7B (Metadata UX & Guided Demo) | COMPLETE (M93-M120) | Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios, 87 E2E tests |
+| **P0 — DONE** | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections, slide-in architecture panel, metadata maturity ratings, 7 new E2E tests |
 | **P2 — Important** | Phase 13 (AI-Assisted Configuration) | Planned | LLM metadata awareness (partially addressed in Phase 7B AI calc builder) |
 | **P3 — Enhance** | Phase 14 (Alert Tuning + Models) | Planned | Distribution analysis, 10 new detection models |
 | **P3 — Enhance** | Phase 15 (Security Hardening) | Planned | SQL injection fix, JWT, CORS |
@@ -783,9 +799,9 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 ## Verification Plan
 
 After each phase:
-1. `cd frontend && npm run build` — no TypeScript errors (952 modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (386)
-3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (87) — stop port 8000 first
+1. `cd frontend && npm run build` — no TypeScript errors (964 modules)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (390)
+3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (100) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
 6. Regression: existing demo checkpoints still work

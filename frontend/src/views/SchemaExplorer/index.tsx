@@ -75,7 +75,7 @@ export default function SchemaExplorer() {
 
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Left: Table list */}
-        <Panel title="Tables" className="w-72 shrink-0" noPadding dataTour="schema-tables" tooltip="Database tables available for querying">
+        <Panel title="Tables" className="w-72 shrink-0" noPadding dataTour="schema-tables" tooltip="Database tables available for querying" dataTrace="schema.tables-list">
           <DataGrid
             rowData={tables}
             columnDefs={tableColumns}
@@ -93,6 +93,7 @@ export default function SchemaExplorer() {
           noPadding
           dataTour="schema-columns"
           tooltip="Column details for the selected table"
+          dataTrace="schema.columns-grid"
         >
           {selectedTable ? (
             <DataGrid

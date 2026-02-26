@@ -96,7 +96,7 @@ export default function EntityDesigner() {
       {/* Header row: title + view tabs */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">Entity Designer</h2>
-        <div className="flex rounded border border-border overflow-hidden">
+        <div className="flex rounded border border-border overflow-hidden" data-trace="entities.view-tabs">
           {viewTabs.map((tab) => (
             <button
               key={tab.key}
@@ -127,6 +127,7 @@ export default function EntityDesigner() {
             className="h-full"
             noPadding
             dataTour="entity-list"
+            dataTrace="entities.entity-list"
             tooltip="Browse and select entity definitions"
             actions={
               <button
@@ -210,6 +211,7 @@ export default function EntityDesigner() {
               className="h-full"
               noPadding
               dataTour="entity-relationships"
+              dataTrace="entities.relationship-graph"
               tooltip="Visual graph of entity relationships"
             >
               <RelationshipGraph
