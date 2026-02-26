@@ -1,10 +1,11 @@
-import { useCallback } from "react";
-import type { ColDef } from "ag-grid-community";
+import { useCallback, useEffect, useRef } from "react";
+import type { ColDef, GridApi } from "ag-grid-community";
 import DataGrid from "../../components/DataGrid.tsx";
 import type { EntityDef } from "../../stores/metadataStore.ts";
 
 interface EntityListProps {
   entities: EntityDef[];
+  selectedId?: string;
   onSelect: (entity: EntityDef) => void;
 }
 
@@ -38,7 +39,9 @@ const columns: ColDef<EntityDef>[] = [
   },
 ];
 
-export default function EntityList({ entities, onSelect }: EntityListProps) {
+export default function EntityList({ entities, selectedId, onSelect }: EntityListProps) {
+  const apiRef = useRef<GridApi<EntityDef> | null>(null);
+
   const handleRowClick = useCallback(
     (e: { data: EntityDef | undefined }) => {
       if (e.data) onSelect(e.data);
@@ -46,11 +49,23 @@ export default function EntityList({ entities, onSelect }: EntityListProps) {
     [onSelect],
   );
 
+  useEffect(() => {
+    const api = apiRef.current;
+    if (!api) return;
+    api.forEachNode((node) => {
+      if (node.data?.entity_id === selectedId) {
+        node.setSelected(true);
+      }
+    });
+  }, [selectedId]);
+
   return (
     <div className="h-full">
       <DataGrid
         rowData={entities}
         columnDefs={columns}
+        rowSelection="single"
+        onGridReady={(e) => { apiRef.current = e.api; }}
         onRowClicked={handleRowClick}
         getRowId={(p) => p.data.entity_id}
       />

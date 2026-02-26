@@ -87,6 +87,7 @@ export default function EntityDesigner() {
           ) : (
             <EntityList
               entities={entities}
+              selectedId={selected?.entity_id}
               onSelect={(entity) => {
                 setSelected(entity);
                 setMode("browse");
