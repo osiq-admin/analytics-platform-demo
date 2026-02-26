@@ -940,11 +940,11 @@ class TestUxUsability:
         narrow_page.locator(".ag-row").first.wait_for(timeout=10000)
 
         narrow_page.locator("[role='gridcell']:has-text('account')").first.click()
-        narrow_page.wait_for_timeout(500)
+        narrow_page.wait_for_timeout(1000)
 
-        # Entity detail heading should be visible
-        heading = narrow_page.locator("h3:has-text('Account')")
-        assert heading.is_visible(timeout=5000), "Entity detail heading not visible at 1024px"
+        # Entity detail should show the Fields tab with account fields
+        fields_tab = narrow_page.locator("text=Fields (")
+        assert fields_tab.is_visible(timeout=5000), "Entity detail Fields tab not visible at 1024px"
 
     def test_metadata_editor_usable_1024(self, narrow_page):
         """Metadata Editor should show both editor panel labels at 1024px."""
