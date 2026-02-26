@@ -288,7 +288,8 @@
 - **Screen**: Entity Designer (`/entities`) → Relationship Graph tab
 - **Observation**: (a) Relationship labels have no background — text floats over edges and is hard to read. (b) Bezier edge routing creates messy line crossings. Organization is hard to follow. Lines overlap and crowd the graph.
 - **Root Cause**: Edge labels use plain `labelStyle.fill` with no `labelBgStyle`, `labelBgPadding`, or `labelBgBorderRadius`. Default bezier edge type creates curved crossings. Dagre spacing too tight (`nodesep: 40`, `ranksep: 60`). No arrowheads to indicate direction.
-- **Status**: OPEN
+- **Fix Applied**: Changed to smoothstep edges (right-angle routing), added `labelBgStyle`/`labelBgPadding`/`labelBgBorderRadius` for readable label backgrounds, added `MarkerType.ArrowClosed` arrowheads, increased dagre spacing (`nodesep: 60`, `ranksep: 100`) and node dimensions (160×44).
+- **Status**: FIXED
 
 ### F-024: Regulatory Map — Thin, Uninformative, Poor Readability
 - **Screen**: Regulatory Map (`/regulatory`)

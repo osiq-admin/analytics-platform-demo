@@ -4,6 +4,7 @@ import {
   Background,
   MiniMap,
   Controls,
+  MarkerType,
   type Node,
   type Edge,
 } from "@xyflow/react";
@@ -23,10 +24,10 @@ function layoutGraph(
 ) {
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: "TB", nodesep: 40, ranksep: 60 });
+  g.setGraph({ rankdir: "TB", nodesep: 60, ranksep: 100 });
 
   for (const entity of entities) {
-    g.setNode(entity.entity_id, { width: 140, height: 40 });
+    g.setNode(entity.entity_id, { width: 160, height: 44 });
   }
 
   // Collect connected entity IDs for the selected entity
@@ -70,7 +71,7 @@ function layoutGraph(
 
     return {
       id: entity.entity_id,
-      position: { x: pos.x - 70, y: pos.y - 20 },
+      position: { x: pos.x - 80, y: pos.y - 22 },
       data: { label: entity.name },
       style: {
         background: "var(--color-surface-elevated)",
@@ -80,8 +81,8 @@ function layoutGraph(
           : "1px solid var(--color-border)",
         borderRadius: 6,
         fontSize: 11,
-        padding: "6px 12px",
-        width: 140,
+        padding: "8px 14px",
+        width: 160,
         opacity: dimmed ? 0.4 : 1,
         transition: "opacity 0.2s, border 0.2s",
       },
@@ -101,20 +102,34 @@ function layoutGraph(
         id: key,
         source: entity.entity_id,
         target: rel.target_entity,
+        type: "smoothstep",
         label: rel.relationship_type,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 14,
+          height: 14,
+          color: isHighlighted ? "var(--color-accent)" : "var(--color-border)",
+        },
         style: {
           stroke: isHighlighted
             ? "var(--color-accent)"
             : "var(--color-border)",
           strokeWidth: isHighlighted ? 2 : 1,
-          opacity: dimmed ? 0.4 : 1,
+          opacity: dimmed ? 0.3 : 1,
           transition: "opacity 0.2s, stroke 0.2s",
         },
         labelStyle: {
           fill: dimmed ? "var(--color-muted)" : "var(--color-foreground)",
-          fontSize: 10,
-          opacity: dimmed ? 0.4 : 1,
+          fontSize: 9,
+          fontWeight: 500,
+          opacity: dimmed ? 0.3 : 1,
         },
+        labelBgStyle: {
+          fill: "var(--color-surface)",
+          fillOpacity: 0.9,
+        },
+        labelBgPadding: [4, 6] as [number, number],
+        labelBgBorderRadius: 4,
       });
     }
   }
