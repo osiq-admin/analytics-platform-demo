@@ -3,7 +3,7 @@ import type { ColDef } from "ag-grid-community";
 import DataGrid from "../../components/DataGrid.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import type { AlertSummary as AlertSummaryType } from "../../stores/alertStore.ts";
-import { formatLabel } from "../../utils/format.ts";
+import { formatLabel, formatTimestamp } from "../../utils/format.ts";
 
 interface AlertSummaryProps {
   alerts: AlertSummaryType[];
@@ -32,7 +32,13 @@ export default function AlertSummaryGrid({
           <span className="text-accent font-mono text-xs">{p.value?.slice(0, 12)}...</span>
         ),
       },
-      { field: "model_id", headerName: "Model", minWidth: 120, flex: 1 },
+      {
+        field: "model_id",
+        headerName: "Model",
+        minWidth: 120,
+        flex: 1,
+        valueFormatter: (p: { value: string }) => formatLabel(p.value ?? ""),
+      },
       { field: "product_id", headerName: "Product", width: 90 },
       { field: "account_id", headerName: "Account", width: 100 },
       {
@@ -62,7 +68,12 @@ export default function AlertSummaryGrid({
             variant: p.value === "all_passed" ? "success" : "warning",
           }),
       },
-      { field: "timestamp", headerName: "Time", minWidth: 180 },
+      {
+        field: "timestamp",
+        headerName: "Time",
+        minWidth: 180,
+        valueFormatter: (p: { value: string }) => formatTimestamp(p.value ?? ""),
+      },
     ],
     [],
   );
