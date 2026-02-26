@@ -198,3 +198,6 @@
 - Dashboard gives a good high-level overview but the data imbalance immediately stands out
 - The original "Fired %" card was misleading (always 0%) — replaced with "Score Triggered" (12.6%) in F-008
 - Cross-project consistency is critical — a pattern fix in one view should be applied everywhere
+- F-013 confirms cross-project consistency gap: formatLabel() was applied to Dashboard/charts but not to Risk Cases, Alert Detail, or Model Composer
+- Light theme works well across all tested views — no visibility issues found
+- Entity Designer F-012 fixes (tabs, collapsible graph, dagre, selection) verified working in both themes
