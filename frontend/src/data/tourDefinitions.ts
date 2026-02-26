@@ -75,13 +75,13 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='entity-fields']",
         title: "Field Definitions",
-        content: "Each entity has typed fields with nullability, keys, and domain values defined here.",
+        content: "Each entity has typed fields with nullability, keys, and domain values — shown in the Fields tab. Switch to the Relationships tab to see foreign key connections.",
         placement: "left",
       },
       {
         target: "[data-tour='entity-relationships']",
         title: "Relationships",
-        content: "Entities are linked through foreign key relationships. Product connects to execution, order, and market data.",
+        content: "The relationship graph uses auto-layout with minimap navigation and zoom controls. Collapse or expand the panel to adjust space. Click a node to select that entity.",
         placement: "top",
       },
     ],
@@ -376,7 +376,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='entity-list']",
         title: "Step 2: Data Model",
-        content: "The Entity Designer shows how data is structured. Note the Product entity linking to executions and market data.",
+        content: "The Entity Designer shows how data is structured with Fields and Relationships tabs. Click an entity to see its schema, or click nodes in the relationship graph.",
         placement: "right",
         route: "/entities",
       },
@@ -533,7 +533,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='entity-relationships']",
         title: "Relationship Graph",
-        content: "The entity relationship graph shows connections between all entities. Click nodes to navigate.",
+        content: "The relationship graph features auto-layout, minimap navigation, and zoom controls. Collapse the panel to reclaim space, or expand it to 50% width for detailed exploration.",
         placement: "left",
       },
       {

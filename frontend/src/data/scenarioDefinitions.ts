@@ -2175,7 +2175,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-list']",
       title: "Entity Designer Overview",
       content:
-        "Welcome to the Entity Designer. The left panel lists all 8 entities in the data model: product, execution, order, md_intraday, md_eod, venue, account, and trader. Each entity represents a core domain object in the trade surveillance system.",
+        "Welcome to the Entity Designer. The left panel lists all 8 entities with row selection highlighting. The center pane shows entity details in a tabbed layout (Fields/Relationships). The right panel has an auto-layout relationship graph with minimap, zoom controls, and collapse/expand capability.",
       placement: "right",
       route: "/entities",
       action: "navigate",
@@ -2200,7 +2200,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-fields']",
       title: "Product Fields — ISO Identifiers",
       content:
-        "The fields grid shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN (International Securities Identification Number), CFI (Classification of Financial Instruments), and MIC (Market Identifier Code). These follow ISO 6166, ISO 10962, and ISO 10383 respectively.",
+        "The Fields tab shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN (International Securities Identification Number), CFI (Classification of Financial Instruments), and MIC (Market Identifier Code). Switch to the Relationships tab to see this entity's foreign key connections.",
       placement: "bottom",
       action: "wait",
       hint: "Review the field definitions grid. Look for ISIN, CFI, and MIC columns — these are ISO-standard identifiers.",
@@ -2210,7 +2210,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-relationships']",
       title: "Relationship Graph",
       content:
-        "The relationship graph (React Flow) shows how entities connect. Product is referenced by executions and orders. The directed edges represent foreign key relationships — arrows point from the child entity to the parent.",
+        "The relationship graph uses dagre auto-layout with minimap and zoom controls. Product is highlighted with its connected edges. Click any node to navigate to that entity. Collapse the panel to reclaim space, or expand it to 50% width.",
       placement: "left",
       action: "wait",
       hint: "Look at the relationship graph to see how product connects to other entities.",
@@ -2243,7 +2243,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-relationships']",
       title: "Full Relationship Map",
       content:
-        "The graph now highlights execution's connections: order_id points to the order entity, venue_mic points to venue. Orders connect to trader and account. This web of relationships enables the surveillance engine to trace suspicious patterns across the entire trade lifecycle.",
+        "The graph highlights execution's connections with accent-colored edges: order_id points to order, venue_mic points to venue. Unrelated nodes are dimmed for focus. Use the minimap to orient yourself, or click nodes to navigate between entities.",
       placement: "left",
       action: "wait",
       hint: "Study the relationship graph to see execution's foreign keys. Trace the path: execution → order → trader/account.",
@@ -2874,7 +2874,7 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='entity-list']",
       title: "Step 2: Entity Data Model",
       content:
-        "The Entity Designer shows how data is structured. Eight entities with typed fields and foreign key relationships form the data model. The relationship graph visualizes how entities connect — executions reference orders, orders reference traders and accounts.",
+        "The Entity Designer shows how data is structured with tabbed Fields/Relationships views. Eight entities form the data model. The collapsible relationship graph with dagre auto-layout and minimap visualizes how entities connect.",
       placement: "right",
       route: "/entities",
       action: "navigate",
@@ -2886,7 +2886,7 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='entity-relationships']",
       title: "Entity Relationships",
       content:
-        "The relationship graph shows the full data model topology. These connections power the detection engine — by following foreign keys, it can correlate a suspicious execution back to its order, the trader who placed it, and the account that funded it.",
+        "The relationship graph uses dagre auto-layout with minimap navigation and zoom controls. Click nodes to navigate between entities — the selected entity is highlighted with connected edges emphasized. Collapse or expand the graph panel as needed.",
       placement: "left",
       action: "wait",
       hint: "Study the relationship graph. Trace connections from execution through order to trader and account.",

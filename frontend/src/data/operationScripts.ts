@@ -72,7 +72,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         id: "explore_relationships",
         name: "Explore Relationships",
         description:
-          "Use the relationship graph to visualize how entities connect — order to execution, product to market data, trader to account.",
+          "Use the collapsible relationship graph with dagre auto-layout, minimap, and zoom controls. Click nodes to navigate between entities. Expand the panel to 50% width for detailed exploration.",
       },
       {
         id: "search_fields",
@@ -89,8 +89,8 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       },
     ],
     tips: [
-      "Click any entity card to expand its field list in the detail panel",
-      "The relationship graph highlights foreign key connections between entities",
+      "Click any entity to see its Fields and Relationships tabs in the detail panel",
+      "The relationship graph features dagre auto-layout, minimap, zoom controls, and collapse/expand — click nodes to navigate between entities",
       "Use the field search to quickly locate columns like 'trader_id' across all entities",
     ],
   },
