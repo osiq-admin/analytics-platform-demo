@@ -254,3 +254,20 @@
 - Round 3: Pipeline Monitor has the most impactful issue (F-016) — users can't see half the pipeline steps
 - Round 3: The `formatLabel()` pattern continues to be missed in new views (F-017, F-019) — same pattern as F-005/F-006/F-013
 - Round 3: AI Assistant markdown rendering (F-018) affects demo readability — the mock responses contain carefully written markdown that doesn't display correctly
+
+---
+
+## Round 4 — User-Driven Exploratory Testing (2026-02-26)
+
+**Scope**: Live feedback from product owner during UI exploration.
+
+### F-021: Entity Designer — Vertical Layout + Tab-Based Pane Redesign
+- **Screen**: Entity Designer (`/entities`)
+- **Observation**: The 3-pane horizontal layout (entity list left w-80, detail center, graph right w-80) required horizontal scrolling in the entity list AG Grid. Bottom of entity list was empty. Left-to-right orientation wasted vertical space.
+- **Root Cause**: Fixed-width left pane (w-80) constrained AG Grid columns. No drag-to-resize capability. Three-pane horizontal layout inefficient for the content.
+- **Fix Applied**: Replaced with vertical 2-tab layout using `react-resizable-panels`:
+  - Tab 1 "Entity Details": Full-width entity list (top, resizable) + entity detail (bottom)
+  - Tab 2 "Relationship Graph": Full-width entity list (top, resizable) + React Flow graph (bottom)
+  - Removed collapsible graph panel, expand/shrink button, `graphCollapsed`/`graphExpanded` state
+  - Added `useDefaultLayout` for pane size persistence, `useLocalStorage` for tab persistence
+- **Status**: FIXED

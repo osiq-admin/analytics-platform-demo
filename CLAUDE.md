@@ -8,7 +8,7 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 ./start.sh                          # Start app on port 8000
 uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (386)
 uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (87)
-cd frontend && npm run build                  # Build frontend (955 modules)
+cd frontend && npm run build                  # Build frontend (956 modules)
 uv run python -m scripts.generate_data        # Regenerate CSVs
 uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 ```
@@ -28,6 +28,7 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 - Frontend build output: `frontend/dist/` (served by FastAPI SPA handler)
 - **ALWAYS follow `docs/development-guidelines.md`** for all frontend work — covers Recharts patterns, tooltip styling, label formatting, table conventions, Zustand selectors, CSS containment
 - Shared utilities: `frontend/src/utils/format.ts` (formatLabel), `frontend/src/constants/chartStyles.ts` (tooltip/tick styles)
+- **View layout**: Vertical resizable panes (`react-resizable-panels`) for list-detail views; see `docs/development-guidelines.md` View Layout Patterns section
 
 ## Data Model (8 entities, ISO/FIX-aligned)
 - **product** (50): ISIN, CFI, MIC, asset_class, instrument_type, underlying, strike, expiry
@@ -57,7 +58,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 
 ## Plans & Progress
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M123 complete)
+- Progress tracker: `docs/progress.md` (M0-M124 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

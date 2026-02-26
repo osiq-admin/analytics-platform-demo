@@ -59,20 +59,20 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         id: "browse_entities",
         name: "Browse Entities",
         description:
-          "Explore all 8 entities (product, execution, order, md_intraday, md_eod, venue, account, trader) and their field definitions.",
-        scenarioId: "s19_explore_entities",
+          "Explore all 8 entities (product, execution, order, md_intraday, md_eod, venue, account, trader) and their field definitions in the full-width entity list.",
+        scenarioId: "s19_explore_entity_model",
       },
       {
         id: "view_fields",
         name: "View Field Details",
         description:
-          "Select an entity to see all fields with their types, constraints, descriptions, and whether they are primary keys or foreign keys.",
+          "Select an entity to see all fields with their types, constraints, descriptions, and whether they are primary keys or foreign keys. The detail pane appears below the entity list — drag the divider to resize.",
       },
       {
         id: "explore_relationships",
         name: "Explore Relationships",
         description:
-          "Use the collapsible relationship graph with dagre auto-layout, minimap, and zoom controls. Click nodes to navigate between entities. Expand the panel to 50% width for detailed exploration.",
+          "Switch to the Relationship Graph tab to see the full entity graph with dagre auto-layout, minimap, and zoom controls. Click nodes to navigate between entities. Drag the divider to resize the graph pane.",
       },
       {
         id: "search_fields",
@@ -89,8 +89,9 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       },
     ],
     tips: [
-      "Click any entity to see its Fields and Relationships tabs in the detail panel",
-      "The relationship graph features dagre auto-layout, minimap, zoom controls, and collapse/expand — click nodes to navigate between entities",
+      "Click any entity to see its Fields and Relationships tabs in the detail pane below the list",
+      "Switch to the Relationship Graph tab to see dagre auto-layout, minimap, zoom controls — click nodes to navigate between entities",
+      "Drag the horizontal divider between panes to resize. Sizes persist across sessions.",
       "Use the field search to quickly locate columns like 'trader_id' across all entities",
     ],
   },

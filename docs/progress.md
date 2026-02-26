@@ -617,6 +617,18 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] Updated: exploratory-testing-notes.md, roadmap, progress.md, CLAUDE.md, MEMORY.md
 - **Total**: 473 tests passing, 955 frontend modules, 16 views, 20 findings (F-001 through F-020)
 
+### 2026-02-26 (Exploratory Testing Round 4 — M124)
+- [x] **Round 4 Exploratory Testing**: Live product owner feedback session
+- [x] **F-021**: Entity Designer — Replaced horizontal 3-pane layout with vertical 2-tab resizable layout
+  - Installed `react-resizable-panels` library
+  - Tab 1 "Entity Details": full-width entity list + detail pane (Fields/Relationships sub-tabs)
+  - Tab 2 "Relationship Graph": full-width entity list + React Flow graph
+  - Drag-to-resize dividers, pane size + tab persistence via localStorage
+  - Removed collapsible graph panel, expand/shrink button, graphCollapsed/graphExpanded state
+- [x] Updated: exploratory-testing-notes.md, demo-guide.md, tourDefinitions.ts, scenarioDefinitions.ts, operationScripts.ts, development-guidelines.md
+- [x] Layout improvement suggestions documented for other views
+- **Total**: 473 tests passing, 956 frontend modules, 16 views, 21 findings (F-001 through F-021)
+
 ---
 
 ## What Was NOT Done (Deferred / Blocked)
