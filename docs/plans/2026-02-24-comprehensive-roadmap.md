@@ -443,13 +443,15 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 **Goal:** Fix UX issues discovered during exploratory testing sessions.
 
-**Status:** COMPLETE (2026-02-26). 4 rounds of exploratory testing, 21 findings (F-001 through F-021), 18 FIXED, 2 OPEN (data generation — deferred), 1 NOTED (feature request).
+**Status:** COMPLETE (2026-02-26). 5 rounds of exploratory testing, 24 findings (F-001 through F-024), 21 FIXED, 2 OPEN (data generation — deferred), 1 NOTED (feature request).
 
 **Round 1-2 (F-001 through F-015):** Chart re-render flicker, tooltip visibility, snake_case labels, table formatting, cross-view consistency, Entity Designer layout overhaul, Risk Case label/timestamp formatting, Model Composer layout fix.
 
 **Round 3 (F-016 through F-020):** Tested 6 previously untested views (Pipeline Monitor, Metadata Editor, AI Assistant, Use Case Studio, Regulatory Map, Submissions). Fixed: Pipeline Monitor steps table clipping + layer labels, AI Assistant markdown rendering, Use Case Studio component IDs + run results table. No issues found in Metadata Editor, Regulatory Map, Submissions.
 
 **Round 4 (F-021):** Live product owner feedback session. Entity Designer replaced horizontal 3-pane layout with vertical 2-tab resizable layout (`react-resizable-panels`). Layout improvement suggestions documented for all 16 views.
+
+**Round 5 (F-022 through F-024):** Continued product owner feedback. F-022: Entity Designer domain values management (Domain column, DomainValuesPane, EntityForm editor). F-023: Relationship graph visual improvements (smoothstep edges, label backgrounds, arrowheads, spacing). F-024: Regulatory Map complete redesign (resizable panels, tabs, descriptions from backend, AG Grid details table, MiniMap, edge labels).
 
 ---
 

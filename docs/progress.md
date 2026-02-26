@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (Exploratory Testing Round 3 — F-016/F-017/F-018/F-019/F-020 fixes across Pipeline Monitor, AI Assistant, Use Case Studio; 473 total tests: 386 backend + 87 E2E, 955 modules, 16 views, all 16 views tested)
+**Last Updated**: 2026-02-26 (Exploratory Testing Round 5 — F-022/F-023/F-024 fixes: Entity Designer domain values, relationship graph visuals, Regulatory Map redesign; 397 total tests: 390 backend + 93 E2E, 16 views)
 
 ---
 
@@ -628,6 +628,27 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] Updated: exploratory-testing-notes.md, demo-guide.md, tourDefinitions.ts, scenarioDefinitions.ts, operationScripts.ts, development-guidelines.md
 - [x] Layout improvement suggestions documented for other views
 - **Total**: 473 tests passing, 956 frontend modules, 16 views, 21 findings (F-001 through F-021)
+
+### 2026-02-26 (Exploratory Testing Round 5 — M125-M127)
+- [x] **Round 5 Exploratory Testing**: Continued product owner feedback — Entity Designer fields, relationship graphs, Regulatory Map
+- [x] **F-022 (M125)**: Entity Designer — Domain Values management
+  - Added "Domain" column to Fields AG Grid showing value count badge
+  - Field row click handler opening DomainValuesPane side panel (metadata CRUD + data-only values)
+  - Domain values tag editor in EntityForm create/edit mode
+  - 2 new backend tests, 2 new E2E tests
+  - Updated tours, operations, scenarios
+- [x] **F-023 (M126)**: Entity Designer — Relationship Graph visual improvements
+  - Smoothstep edges (right-angle routing), label backgrounds, ArrowClosed arrowheads
+  - Increased dagre spacing (nodesep: 60, ranksep: 100) and node dimensions (160×44)
+- [x] **F-024 (M127)**: Regulatory Map — Complete redesign
+  - Replaced fixed w-72 detail panel with resizable vertical panels
+  - Two tabs: Traceability Map (graph + MiniMap + Controls + smoothstep edges + edge labels) and Regulation Details (AG Grid with coverage badges)
+  - Backend: added description fields to article, detection_model, calculation nodes
+  - Full-width detail pane with descriptions shown from regulation registry
+  - 2 new backend tests, 3 new E2E tests
+  - Updated tours, operations, scenarios
+- [x] Updated: exploratory-testing-notes.md, progress.md, CLAUDE.md, MEMORY.md
+- **Total**: 390 backend + 93 E2E = 483 tests passing, 16 views, 24 findings (F-001 through F-024)
 
 ---
 
