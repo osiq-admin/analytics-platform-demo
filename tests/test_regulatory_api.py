@@ -211,6 +211,28 @@ class TestTraceabilityGraph:
         assert len(art14_nodes) == 1
         assert art14_nodes[0]["covered"] is False
 
+    def test_traceability_graph_article_nodes_have_description(self, reg_client):
+        """Article nodes include description field from registry."""
+        resp = reg_client.get("/api/metadata/regulatory/traceability-graph")
+        nodes = resp.json()["nodes"]
+        article_nodes = [n for n in nodes if n["type"] == "article"]
+        assert len(article_nodes) > 0
+        for node in article_nodes:
+            assert "description" in node
+        # At least one article should have a non-empty description
+        assert any(n["description"] for n in article_nodes)
+
+    def test_traceability_graph_model_nodes_have_description(self, reg_client):
+        """Detection model nodes include description field."""
+        resp = reg_client.get("/api/metadata/regulatory/traceability-graph")
+        nodes = resp.json()["nodes"]
+        model_nodes = [n for n in nodes if n["type"] == "detection_model"]
+        assert len(model_nodes) > 0
+        for node in model_nodes:
+            assert "description" in node
+        # test_model has description "Covers wash trading"
+        assert any(n["description"] == "Covers wash trading" for n in model_nodes)
+
 
 # -- Suggestions --
 

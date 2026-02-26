@@ -2,14 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ReactFlow,
   Background,
+  MiniMap,
+  Controls,
+  MarkerType,
   type Node,
   type Edge,
 } from "@xyflow/react";
 import dagre from "@dagrejs/dagre";
 import "@xyflow/react/dist/style.css";
+import { Group, Panel as ResizablePanel, Separator, useDefaultLayout } from "react-resizable-panels";
+import type { ColDef } from "ag-grid-community";
 
 import Panel from "../../components/Panel.tsx";
+import DataGrid from "../../components/DataGrid.tsx";
+import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import {
   useRegulatoryStore,
   type TraceabilityNode,
@@ -19,8 +27,8 @@ import {
 
 /* ---------- Constants ---------- */
 
-const NODE_WIDTH = 180;
-const NODE_HEIGHT = 54;
+const NODE_WIDTH = 200;
+const NODE_HEIGHT = 60;
 
 const BORDER_COLORS: Record<string, string> = {
   regulation: "#3b82f6",
@@ -28,6 +36,12 @@ const BORDER_COLORS: Record<string, string> = {
   article_uncovered: "#ef4444",
   detection_model: "#f97316",
   calculation: "#a855f7",
+};
+
+const EDGE_LABELS: Record<string, string> = {
+  contains: "contains",
+  detected_by: "detected by",
+  uses_calc: "uses",
 };
 
 /* ---------- Dagre layout ---------- */
@@ -38,7 +52,7 @@ function layoutGraph(
 ) {
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: "LR", nodesep: 30, ranksep: 100 });
+  g.setGraph({ rankdir: "LR", nodesep: 40, ranksep: 120 });
 
   for (const n of rawNodes) {
     g.setNode(n.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
@@ -85,8 +99,26 @@ function layoutGraph(
     id: `e-${i}`,
     source: e.source,
     target: e.target,
-    style: { stroke: "var(--color-border)" },
-    animated: false,
+    type: "smoothstep",
+    label: EDGE_LABELS[e.type] ?? e.type,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 12,
+      height: 12,
+      color: "var(--color-border)",
+    },
+    style: { stroke: "var(--color-border)", strokeWidth: 1 },
+    labelStyle: {
+      fill: "var(--color-muted)",
+      fontSize: 8,
+      fontWeight: 500,
+    },
+    labelBgStyle: {
+      fill: "var(--color-surface)",
+      fillOpacity: 0.9,
+    },
+    labelBgPadding: [3, 5] as [number, number],
+    labelBgBorderRadius: 3,
   }));
 
   return { nodes, edges };
@@ -102,16 +134,35 @@ const LEGEND_ITEMS = [
   { color: BORDER_COLORS.calculation, label: "Calculation" },
 ];
 
+/* ---------- Regulation Details Grid Types ---------- */
+
+interface RegulationRow {
+  regulation: string;
+  jurisdiction: string;
+  article: string;
+  title: string;
+  description: string;
+  covered: boolean;
+  articleId: string;
+}
+
+type ViewTab = "graph" | "details";
+
 /* ---------- Component ---------- */
 
 export default function RegulatoryMap() {
-  const { coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll } =
+  const { regulations, coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll } =
     useRegulatoryStore();
 
-  const [selectedNode, setSelectedNode] = useState<TraceabilityNode | null>(
-    null
-  );
+  const [selectedNode, setSelectedNode] = useState<TraceabilityNode | null>(null);
+  const [selectedRow, setSelectedRow] = useState<RegulationRow | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeTab, setActiveTab] = useLocalStorage<ViewTab>("regulatory-map-tab", "graph");
+
+  const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+    id: "regulatory-map-layout",
+    storage: localStorage,
+  });
 
   useEffect(() => {
     fetchAll();
@@ -121,6 +172,27 @@ export default function RegulatoryMap() {
     () => layoutGraph(graphNodes, graphEdges),
     [graphNodes, graphEdges]
   );
+
+  // Flatten regulations → articles for the details grid
+  const regulationRows = useMemo<RegulationRow[]>(() => {
+    const coveredArticles = new Set(coverage?.covered_articles ?? []);
+    const rows: RegulationRow[] = [];
+    for (const reg of regulations) {
+      for (const art of reg.articles) {
+        const articleKey = `${reg.name} ${art.article}`;
+        rows.push({
+          regulation: reg.name,
+          jurisdiction: reg.jurisdiction ?? "",
+          article: art.article,
+          title: art.title,
+          description: art.description ?? "",
+          covered: coveredArticles.has(articleKey),
+          articleId: art.id,
+        });
+      }
+    }
+    return rows;
+  }, [regulations, coverage]);
 
   if (loading) {
     return (
@@ -138,89 +210,130 @@ export default function RegulatoryMap() {
     );
   }
 
-  return (
-    <div className="flex-1 flex flex-col gap-4 p-4 overflow-hidden">
-      <h2 className="text-lg font-semibold">Regulatory Traceability</h2>
+  const viewTabs: { key: ViewTab; label: string }[] = [
+    { key: "graph", label: "Traceability Map" },
+    { key: "details", label: "Regulation Details" },
+  ];
 
-      {/* Row 1: Coverage summary cards */}
-      <div className="grid grid-cols-4 gap-3" data-tour="regulatory-cards">
-        <SummaryCard
-          label="Total Requirements"
-          value={coverage?.total_articles ?? 0}
-        />
+  return (
+    <div className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
+      {/* Header + tabs */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Regulatory Traceability</h2>
+        <div className="flex rounded border border-border overflow-hidden">
+          {viewTabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-3 py-1 text-xs font-medium transition-colors ${
+                activeTab === tab.key
+                  ? "bg-accent text-white"
+                  : "bg-surface text-muted hover:text-foreground hover:bg-surface-elevated"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-4 gap-3 shrink-0" data-tour="regulatory-cards">
+        <SummaryCard label="Total Requirements" value={coverage?.total_articles ?? 0} />
         <SummaryCard label="Covered" value={coverage?.covered ?? 0} accent="text-green-500" />
         <SummaryCard label="Uncovered" value={coverage?.uncovered ?? 0} accent="text-red-500" />
         <SummaryCard
           label="Coverage %"
           value={`${coverage?.coverage_pct ?? 0}%`}
-          accent={
-            (coverage?.coverage_pct ?? 0) >= 70
-              ? "text-green-500"
-              : "text-amber-500"
-          }
+          accent={(coverage?.coverage_pct ?? 0) >= 70 ? "text-green-500" : "text-amber-500"}
         />
       </div>
 
-      {/* Row 2: Graph + Detail */}
-      <div className="flex-1 flex gap-3 min-h-0">
-        <Panel
-          title="Traceability Graph"
-          className="flex-[3]"
-          noPadding
-          dataTour="regulatory-graph"
-        >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            fitView
-            proOptions={{ hideAttribution: true }}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            onNodeClick={(_event, node) => {
-              const raw = (node.data as { raw: TraceabilityNode }).raw;
-              setSelectedNode(raw);
-            }}
-          >
-            <Background color="var(--color-border)" gap={20} size={1} />
-          </ReactFlow>
-        </Panel>
-
-        <Panel
-          title="Details"
-          className="w-72 shrink-0"
-          dataTour="regulatory-detail"
-        >
-          {selectedNode ? (
-            <NodeDetail node={selectedNode} />
+      {/* Tab content with resizable panels */}
+      <Group
+        orientation="vertical"
+        className="flex-1 min-h-0"
+        defaultLayout={defaultLayout}
+        onLayoutChanged={onLayoutChanged}
+      >
+        <ResizablePanel id="regulatory-top" defaultSize="60%" minSize="25%">
+          {activeTab === "graph" ? (
+            <Panel title="Traceability Graph" className="h-full" noPadding dataTour="regulatory-graph">
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                fitView
+                proOptions={{ hideAttribution: true }}
+                nodesDraggable={false}
+                nodesConnectable={false}
+                onNodeClick={(_event, node) => {
+                  const raw = (node.data as { raw: TraceabilityNode }).raw;
+                  setSelectedNode(raw);
+                }}
+              >
+                <Background color="var(--color-border)" gap={20} size={1} />
+                <MiniMap
+                  style={{ background: "var(--color-surface)", height: 60, width: 100 }}
+                  nodeColor="var(--color-accent)"
+                  maskColor="rgba(0,0,0,0.3)"
+                />
+                <Controls showInteractive={false} />
+              </ReactFlow>
+            </Panel>
           ) : (
-            <p className="text-xs text-muted">
-              Click a node in the graph to view details.
-            </p>
+            <Panel title="Regulation Details" className="h-full" noPadding dataTour="regulatory-details-grid">
+              <DataGrid
+                rowData={regulationRows}
+                columnDefs={regulationColumns}
+                getRowId={(p) => p.data.articleId}
+                rowSelection="single"
+                onRowClicked={(e) => {
+                  if (e.data) setSelectedRow(e.data);
+                }}
+              />
+            </Panel>
           )}
+        </ResizablePanel>
 
-          {/* Legend */}
-          <div className="mt-6 pt-4 border-t border-border">
-            <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-2">
-              Legend
-            </p>
-            <div className="flex flex-col gap-1.5">
-              {LEGEND_ITEMS.map((item) => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <span
-                    className="inline-block w-3 h-3 rounded-sm border-2"
-                    style={{ borderColor: item.color }}
-                  />
-                  <span className="text-xs text-foreground/70">
-                    {item.label}
-                  </span>
-                </div>
-              ))}
+        <Separator className="h-1.5 bg-border hover:bg-accent transition-colors cursor-row-resize" />
+
+        <ResizablePanel id="regulatory-bottom" defaultSize="40%" minSize="15%">
+          <Panel
+            title={activeTab === "graph" ? "Node Details" : "Article Details"}
+            className="h-full"
+            dataTour="regulatory-detail"
+          >
+            {activeTab === "graph" ? (
+              selectedNode ? (
+                <NodeDetail node={selectedNode} />
+              ) : (
+                <p className="text-xs text-muted">Click a node in the graph to view details.</p>
+              )
+            ) : (
+              selectedRow ? (
+                <ArticleDetail row={selectedRow} />
+              ) : (
+                <p className="text-xs text-muted">Click a row in the table to view article details.</p>
+              )
+            )}
+
+            {/* Legend */}
+            <div className="mt-4 pt-3 border-t border-border">
+              <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-1.5">Legend</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {LEGEND_ITEMS.map((item) => (
+                  <div key={item.label} className="flex items-center gap-1.5">
+                    <span className="inline-block w-2.5 h-2.5 rounded-sm border-2" style={{ borderColor: item.color }} />
+                    <span className="text-[10px] text-foreground/70">{item.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </Panel>
-      </div>
+          </Panel>
+        </ResizablePanel>
+      </Group>
 
-      {/* Row 3: Suggestions Panel */}
+      {/* Suggestions Panel */}
       {suggestions && (
         <SuggestionsPanel
           suggestions={suggestions}
@@ -231,6 +344,26 @@ export default function RegulatoryMap() {
     </div>
   );
 }
+
+/* ---------- Regulation Details Columns ---------- */
+
+const regulationColumns: ColDef<RegulationRow>[] = [
+  { field: "regulation", headerName: "Regulation", width: 100 },
+  { field: "jurisdiction", headerName: "Jurisdiction", width: 90 },
+  { field: "article", headerName: "Article", width: 120 },
+  { field: "title", headerName: "Title", minWidth: 150, flex: 1 },
+  {
+    headerName: "Coverage",
+    width: 100,
+    valueGetter: (p) => (p.data?.covered ? "Covered" : "Uncovered"),
+    cellRenderer: (p: { value: string }) => (
+      <StatusBadge
+        label={p.value}
+        variant={p.value === "Covered" ? "success" : "error"}
+      />
+    ),
+  },
+];
 
 /* ---------- Summary Card ---------- */
 
@@ -267,45 +400,67 @@ function NodeDetail({ node }: { node: TraceabilityNode }) {
 
   return (
     <div className="flex flex-col gap-2 text-xs">
-      <div>
-        <span className="font-semibold text-muted">Type:</span>{" "}
-        {typeLabels[node.type] ?? node.type}
-      </div>
-      <div>
-        <span className="font-semibold text-muted">Label:</span> {node.label}
+      <div className="flex items-center gap-2">
+        <StatusBadge label={typeLabels[node.type] ?? node.type} variant="info" />
+        <span className="font-semibold">{node.label}</span>
       </div>
       {node.full_name && (
         <div>
-          <span className="font-semibold text-muted">Full Name:</span>{" "}
-          {node.full_name}
+          <span className="font-semibold text-muted">Full Name:</span> {node.full_name}
         </div>
       )}
       {node.jurisdiction && (
         <div>
-          <span className="font-semibold text-muted">Jurisdiction:</span>{" "}
-          {node.jurisdiction}
+          <span className="font-semibold text-muted">Jurisdiction:</span> {node.jurisdiction}
         </div>
       )}
       {node.title && (
         <div>
-          <span className="font-semibold text-muted">Title:</span>{" "}
-          {node.title}
+          <span className="font-semibold text-muted">Title:</span> {node.title}
         </div>
       )}
       {node.type === "article" && (
         <div>
           <span className="font-semibold text-muted">Status:</span>{" "}
-          <span
-            className={node.covered ? "text-green-500" : "text-red-500"}
-          >
+          <span className={node.covered ? "text-green-500" : "text-red-500"}>
             {node.covered ? "Covered" : "Uncovered"}
           </span>
         </div>
       )}
       {node.layer && (
         <div>
-          <span className="font-semibold text-muted">Layer:</span>{" "}
-          {node.layer}
+          <span className="font-semibold text-muted">Layer:</span> {node.layer}
+        </div>
+      )}
+      {node.description && (
+        <div className="rounded border border-border bg-background p-3 mt-2">
+          <span className="font-semibold text-muted block mb-1 text-[10px] uppercase">Description</span>
+          <p className="text-foreground/80 text-xs leading-relaxed">{node.description}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Article Detail ---------- */
+
+function ArticleDetail({ row }: { row: RegulationRow }) {
+  return (
+    <div className="flex flex-col gap-2 text-xs">
+      <div className="flex items-center gap-2">
+        <StatusBadge label={row.covered ? "Covered" : "Uncovered"} variant={row.covered ? "success" : "error"} />
+        <span className="font-semibold">{row.regulation} {row.article}</span>
+      </div>
+      <div>
+        <span className="font-semibold text-muted">Title:</span> {row.title}
+      </div>
+      <div>
+        <span className="font-semibold text-muted">Jurisdiction:</span> {row.jurisdiction}
+      </div>
+      {row.description && (
+        <div className="rounded border border-border bg-background p-3 mt-2">
+          <span className="font-semibold text-muted block mb-1 text-[10px] uppercase">Description</span>
+          <p className="text-foreground/80 text-xs leading-relaxed">{row.description}</p>
         </div>
       )}
     </div>
@@ -331,7 +486,6 @@ function SuggestionsPanel({
       className="rounded border border-border bg-surface shrink-0"
       data-tour="regulatory-suggestions"
     >
-      {/* Header — always visible */}
       <button
         type="button"
         className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold hover:bg-surface-elevated/50 transition-colors"
@@ -362,10 +516,8 @@ function SuggestionsPanel({
         <span className="text-muted text-xs">{expanded ? "Collapse" : "Expand"}</span>
       </button>
 
-      {/* Body — collapsible */}
       {expanded && (
         <div className="px-4 pb-4 flex flex-col gap-3 border-t border-border pt-3">
-          {/* Gaps */}
           {suggestions.gaps.map((g) => (
             <div
               key={`${g.regulation}-${g.article}`}
@@ -376,15 +528,12 @@ function SuggestionsPanel({
                 {g.title ? ` — ${g.title}` : ""}
               </p>
               {g.description && (
-                <p className="text-[11px] text-foreground/60 mt-0.5">
-                  {g.description}
-                </p>
+                <p className="text-[11px] text-foreground/60 mt-0.5">{g.description}</p>
               )}
               <p className="text-xs text-foreground/80 mt-1.5">{g.suggestion}</p>
             </div>
           ))}
 
-          {/* Improvements */}
           {suggestions.improvements.map((imp) => (
             <div
               key={imp.model_id}
@@ -397,13 +546,10 @@ function SuggestionsPanel({
                 </span>
               </p>
               <p className="text-xs text-foreground/80 mt-1.5">{imp.suggestion}</p>
-              <p className="text-[11px] text-foreground/50 mt-1 italic">
-                {imp.impact}
-              </p>
+              <p className="text-[11px] text-foreground/50 mt-1 italic">{imp.impact}</p>
             </div>
           ))}
 
-          {/* Empty state */}
           {total_suggestions === 0 && (
             <p className="text-xs text-muted">
               No coverage gaps or improvement suggestions detected.

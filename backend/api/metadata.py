@@ -440,6 +440,7 @@ def get_traceability_graph(request: Request):
                 "type": "article",
                 "label": f"{reg['name']} {article['article']}",
                 "title": article.get("title", ""),
+                "description": article.get("description", ""),
                 "covered": is_covered,
             })
             add_edge(reg_node_id, article_node_id, "contains")
@@ -456,6 +457,7 @@ def get_traceability_graph(request: Request):
             "id": model_node_id,
             "type": "detection_model",
             "label": model.name,
+            "description": model.description if hasattr(model, 'description') else "",
         })
         # Link model → calculations
         for mc in model.calculations:
@@ -468,6 +470,7 @@ def get_traceability_graph(request: Request):
             "id": calc_node_id,
             "type": "calculation",
             "label": calc.name,
+            "description": calc.description if hasattr(calc, 'description') else "",
             "layer": calc.layer,
         })
 

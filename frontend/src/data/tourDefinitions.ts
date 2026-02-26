@@ -339,14 +339,20 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='regulatory-graph']",
         title: "Traceability Graph",
-        content: "Interactive graph showing the full chain: Regulations → Articles → Detection Models → Calculations. Red nodes indicate coverage gaps.",
+        content: "Interactive graph showing the full chain: Regulations → Articles → Detection Models → Calculations. Smoothstep edges with labels show relationship types. Use the MiniMap (bottom-right) and zoom Controls to navigate. Red nodes indicate coverage gaps.",
         placement: "bottom",
       },
       {
         target: "[data-tour='regulatory-detail']",
         title: "Node Details",
-        content: "Click any node in the graph to see its details — regulation info, model parameters, or calculation metadata.",
-        placement: "left",
+        content: "Click any node in the graph to see its details — regulation info, model parameters, calculation metadata, and descriptions. The detail pane is below the graph — drag the divider to resize.",
+        placement: "top",
+      },
+      {
+        target: "[data-tour='regulatory-details-grid']",
+        title: "Regulation Details Table",
+        content: "Switch to the Regulation Details tab for a structured table view of all regulations and articles. Shows regulation name, jurisdiction, article, title, and coverage status. Click any row to see the full article description below.",
+        placement: "bottom",
       },
       {
         target: "[data-tour='regulatory-suggestions']",

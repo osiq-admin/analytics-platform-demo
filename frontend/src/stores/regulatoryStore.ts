@@ -35,6 +35,7 @@ export interface TraceabilityNode {
   full_name?: string;
   jurisdiction?: string;
   title?: string;
+  description?: string;
   covered?: boolean;
   layer?: string;
 }

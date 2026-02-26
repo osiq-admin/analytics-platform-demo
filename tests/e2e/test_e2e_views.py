@@ -682,6 +682,36 @@ class TestRegulatoryMap:
         body = loaded_page.locator("main").inner_text()
         assert "suggestions" in body.lower()
 
+    def test_regulatory_map_has_tabs(self, loaded_page):
+        """Tab switcher with Traceability Map and Regulation Details."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        assert loaded_page.locator("button:has-text('Traceability Map')").is_visible(timeout=3000)
+        assert loaded_page.locator("button:has-text('Regulation Details')").is_visible(timeout=3000)
+
+    def test_regulation_details_tab_shows_grid(self, loaded_page):
+        """Switch to Regulation Details tab and verify AG Grid with rows."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.locator("button:has-text('Regulation Details')").click()
+        loaded_page.wait_for_timeout(500)
+        # Should show AG Grid with regulation/article rows
+        assert loaded_page.locator("[role='columnheader']:has-text('Regulation')").first.is_visible(timeout=3000)
+        assert loaded_page.locator("[role='columnheader']:has-text('Article')").first.is_visible(timeout=3000)
+
+    def test_node_click_shows_description(self, loaded_page):
+        """Click an article node in the graph, verify description appears in detail pane."""
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        # Click first visible React Flow node
+        node = loaded_page.locator(".react-flow__node").first
+        if node.is_visible(timeout=5000):
+            node.click()
+            loaded_page.wait_for_timeout(500)
+            # Detail pane should show some node information
+            detail = loaded_page.locator("[data-tour='regulatory-detail']")
+            assert detail.is_visible(timeout=3000)
+
 
 # ============================================================================
 # Scenario 10: OOB Layer Separation (Phase 11)

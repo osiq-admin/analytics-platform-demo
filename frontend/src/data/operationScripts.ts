@@ -608,9 +608,15 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       },
       {
         id: "explore_graph",
-        name: "Explore Regulatory Graph",
+        name: "Explore Traceability Graph",
         description:
-          "Navigate the interactive graph linking regulations to detection models, calculations, and alert types.",
+          "Navigate the interactive graph with smoothstep edges, edge labels, MiniMap, and zoom controls. Click nodes to see details with descriptions in the bottom pane. Drag the divider to resize.",
+      },
+      {
+        id: "browse_regulation_details",
+        name: "Browse Regulation Details",
+        description:
+          "Switch to the Regulation Details tab for a structured AG Grid table of all regulations and articles. Shows coverage status with color badges. Click a row to see the full article description.",
       },
       {
         id: "identify_gaps",
@@ -626,8 +632,10 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       },
     ],
     tips: [
-      "Green connections indicate full coverage; red indicates gaps requiring attention",
-      "Click any regulation node to see all linked models and their coverage status",
+      "Green nodes indicate covered articles; red indicates gaps requiring attention",
+      "Click any node to see details with descriptions in the full-width bottom pane",
+      "Use the tab switcher to toggle between the Traceability Map and Regulation Details table",
+      "Drag the horizontal divider between panes to resize. Sizes persist across sessions.",
       "The gap analysis prioritizes requirements by regulatory importance and risk",
     ],
   },
