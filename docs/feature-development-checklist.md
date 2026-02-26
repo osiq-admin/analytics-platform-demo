@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-26 (M128 — 490 total tests: 390 backend + 100 E2E, 26 scenarios, 16 views, 74 traced architecture sections)
+**Last Updated**: 2026-02-26 (M128 — 572 total tests: 390 backend + 182 E2E, 26 scenarios, 16 views, 74 traced architecture sections)
 
 ---
 
@@ -71,7 +71,7 @@
 - [ ] **UI interaction tests**: Click, type, navigate — verify expected state changes
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
-- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 100)
+- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 182)
 - [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
 ---
@@ -269,7 +269,7 @@
 # Backend tests (390+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (100+)
+# E2E Playwright tests (182+)
 uv run pytest tests/e2e/ -v
 
 # Single E2E test class
@@ -294,4 +294,4 @@ uv run python -m scripts.generate_snapshots
 |---|---|---|
 | 2026-02-25 | Initial creation — covers all systems through Phase 7B (M120) | Claude Opus 4.6 |
 | 2026-02-26 | Updated for M124 (F-021 Entity Designer layout redesign) | Claude Opus 4.6 |
-| 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 490 (390+100), 26 scenarios | Claude Opus 4.6 |
+| 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 572 (390+182), 26 scenarios | Claude Opus 4.6 |

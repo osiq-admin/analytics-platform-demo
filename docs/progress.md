@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (M128 Architecture Traceability Mode; 490 total tests: 390 backend + 100 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-26 (M128 Architecture Traceability Mode; 572 total tests: 390 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -38,7 +38,7 @@
 | Feature Development Checklist | COMPLETE | 10-section mandatory checklist for all new features with broad system integration triggers |
 | Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
-| Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 490 total tests, 964 modules |
+| Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 572 total tests, 964 modules |
 
 ---
 
@@ -686,7 +686,7 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **Feature spec**: `docs/architecture-traceability.md`
 - [x] Updated: progress.md, demo-guide.md, CLAUDE.md, feature-development-checklist.md, roadmap
 - [x] Frontend build clean: 964 modules
-- **Total**: 390 backend + 100 E2E = 490 tests passing, 964 frontend modules, 16 views, 26 scenarios, 74 traced sections
+- **Total**: 390 backend + 182 E2E = 572 tests passing, 964 frontend modules, 16 views, 26 scenarios, 74 traced sections
 
 ---
 

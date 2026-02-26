@@ -16,7 +16,7 @@
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 16 frontend views, 490 tests (390 backend + 100 E2E), Playwright verified
+- 16 frontend views, 572 tests (390 backend + 182 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 
 **What's already metadata-driven (~70%):**
@@ -801,7 +801,7 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 After each phase:
 1. `cd frontend && npm run build` — no TypeScript errors (964 modules)
 2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (390)
-3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (100) — stop port 8000 first
+3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (182) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
 6. Regression: existing demo checkpoints still work

@@ -1,13 +1,13 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 16 views, 490 tests (390 backend + 100 E2E), 8 entities, 5 detection models, 26 guided scenarios.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 16 views, 572 tests (390 backend + 182 E2E), 8 entities, 5 detection models, 26 guided scenarios.
 
 ## Quick Start
 ```bash
 ./start.sh                          # Start app on port 8000
 uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (390)
-uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (100)
+uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (182)
 cd frontend && npm run build                  # Build frontend (964 modules)
 uv run python -m scripts.generate_data        # Regenerate CSVs
 uv run python -m scripts.generate_snapshots   # Regenerate snapshots
@@ -17,7 +17,7 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 - **Backend**: `backend/` — FastAPI + DuckDB, 9 API routers, calculation/detection engines
 - **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 16 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
-- **Tests**: `tests/` — 390 backend tests + 100 E2E Playwright tests
+- **Tests**: `tests/` — 390 backend tests + 182 E2E Playwright tests
 - **Scripts**: `scripts/` — data generation, snapshot generation
 - **Docs**: `docs/` — progress tracker, demo guide, plans, schemas, checklists
 
