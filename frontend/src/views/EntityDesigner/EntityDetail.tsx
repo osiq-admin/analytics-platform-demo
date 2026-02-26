@@ -1,6 +1,6 @@
+import { useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import DataGrid from "../../components/DataGrid.tsx";
-import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 
 interface Field {
@@ -46,29 +46,34 @@ const fieldColumns: ColDef<Field>[] = [
 ];
 
 export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailProps) {
+  const [activeTab, setActiveTab] = useState<"fields" | "relationships">("fields");
+  const relCount = entity.relationships?.length ?? 0;
+
   return (
-    <div className="flex flex-col gap-3 h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-base font-semibold">{entity.name}</h3>
+    <div className="flex flex-col h-full rounded border border-border bg-surface overflow-hidden">
+      {/* Compact header */}
+      <div className="shrink-0 flex items-center justify-between px-3 py-2 border-b border-border bg-surface-elevated">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold truncate">{entity.name}</h3>
+            {entity.subtypes && entity.subtypes.length > 0 && (
+              <div className="flex gap-1 shrink-0">
+                {entity.subtypes.map((s) => (
+                  <StatusBadge key={s} label={s} variant="info" />
+                ))}
+              </div>
+            )}
+          </div>
           {entity.description && (
-            <p className="text-xs text-muted mt-1">{entity.description}</p>
-          )}
-          {entity.subtypes && entity.subtypes.length > 0 && (
-            <div className="flex gap-1 mt-2">
-              {entity.subtypes.map((s) => (
-                <StatusBadge key={s} label={s} variant="info" />
-              ))}
-            </div>
+            <p className="text-[11px] text-muted mt-0.5 line-clamp-2">{entity.description}</p>
           )}
         </div>
         {(onEdit || onDelete) && (
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 ml-3">
             {onEdit && (
               <button
                 onClick={onEdit}
-                className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
+                className="px-3 py-1 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
               >
                 Edit
               </button>
@@ -76,7 +81,7 @@ export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailP
             {onDelete && (
               <button
                 onClick={onDelete}
-                className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                className="px-3 py-1 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
               >
                 Delete
               </button>
@@ -85,36 +90,62 @@ export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailP
         )}
       </div>
 
-      {/* Fields Grid */}
-      <Panel title="Fields" className="flex-1 min-h-[200px]" noPadding dataTour="entity-fields" tooltip="Field definitions for this entity">
-        <DataGrid
-          rowData={entity.fields}
-          columnDefs={fieldColumns}
-          getRowId={(p) => p.data.name}
-        />
-      </Panel>
+      {/* Tab bar */}
+      <div className="h-8 shrink-0 flex items-center border-b border-border">
+        {(["fields", "relationships"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`flex-1 h-full text-[10px] font-semibold uppercase tracking-wide transition-colors ${
+              activeTab === tab
+                ? "text-accent border-b-2 border-accent"
+                : "text-muted hover:text-foreground"
+            }`}
+          >
+            {tab === "fields"
+              ? `Fields (${entity.fields.length})`
+              : `Relationships (${relCount})`}
+          </button>
+        ))}
+      </div>
 
-      {/* Relationships */}
-      {entity.relationships && entity.relationships.length > 0 && (
-        <Panel title="Relationships" className="min-h-[100px]">
-          <div className="space-y-2">
-            {entity.relationships.map((rel, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 text-xs"
-              >
-                <StatusBadge label={rel.relationship_type} variant="muted" />
-                <span className="text-accent">{rel.target_entity}</span>
-                <span className="text-muted">
-                  ({Object.entries(rel.join_fields)
-                    .map(([k, v]) => `${k} → ${v}`)
-                    .join(", ")})
-                </span>
-              </div>
-            ))}
+      {/* Tab content */}
+      <div className="flex-1 min-h-0">
+        {activeTab === "fields" ? (
+          <div className="h-full" data-tour="entity-fields">
+            <DataGrid
+              rowData={entity.fields}
+              columnDefs={fieldColumns}
+              getRowId={(p) => p.data.name}
+            />
           </div>
-        </Panel>
-      )}
+        ) : (
+          <div className="h-full overflow-auto p-3" data-tour="entity-detail-relationships">
+            {relCount > 0 ? (
+              <div className="space-y-2">
+                {entity.relationships!.map((rel, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 text-xs"
+                  >
+                    <StatusBadge label={rel.relationship_type} variant="muted" />
+                    <span className="text-accent">{rel.target_entity}</span>
+                    <span className="text-muted">
+                      ({Object.entries(rel.join_fields)
+                        .map(([k, v]) => `${k} → ${v}`)
+                        .join(", ")})
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted text-sm">
+                No relationships defined
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
