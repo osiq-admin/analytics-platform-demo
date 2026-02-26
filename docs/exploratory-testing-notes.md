@@ -150,6 +150,17 @@
 - **Related**: F-001 (alert distribution imbalance) — both are data generation calibration issues
 - **Status**: OPEN — future fix (data regeneration required)
 
+### F-012: Entity Designer Layout — Wasted Space, Cramped Graph, No Row Selection
+- **Screen**: Entity Designer
+- **Observation**:
+  1. Selected entity not highlighted in the entities list (AG Grid has no `rowSelection`)
+  2. Center pane stacks header + Fields panel + Relationships panel vertically — the relationships panel wastes space for entities with few relationships, and the fields grid gets squeezed
+  3. Right relationship graph panel (320px) is too small — nodes positioned in manual 3-column grid, no minimap, no zoom controls, no selection highlighting
+  4. No ability to collapse/expand panels to reclaim space
+- **Root Cause**: Fixed 3-pane layout with hardcoded widths, no AG Grid row selection, manual graph positioning instead of dagre auto-layout
+- **Fix Plan**: Tabs in center pane (Fields/Relationships), collapsible Panel component, dagre + MiniMap + Controls for graph, AG Grid rowSelection, bidirectional entity selection between list and graph
+- **Status**: FIXING
+
 ### F-011: Process Gap — Feature Changes Must Update All Dependent Systems
 - **Screen**: N/A (process issue)
 - **Observation**: When F-008 renamed "Fired %" to "Score Triggered", the tour definitions, operation scripts, and demo guide were NOT updated in the same commit. This created stale references that a user following the tour would see. The feature development checklist (`docs/feature-development-checklist.md`) already lists these systems, but the checklist was not followed during the fix.
