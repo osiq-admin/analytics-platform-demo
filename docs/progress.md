@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (Exploratory Testing Fixes — Entity Designer layout overhaul, 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
+**Last Updated**: 2026-02-26 (Exploratory Testing Fixes Round 2 — F-013/F-014/F-015 label formatting, timestamp formatting, layout fix, 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
 
 ---
 
@@ -37,6 +37,7 @@
 | E2E Playwright Testing (Phase 7B-12) | COMPLETE | 87 E2E tests across 12 test classes — all views, APIs, scenarios, viewport tests — 473 total tests |
 | Feature Development Checklist | COMPLETE | 10-section mandatory checklist for all new features with broad system integration triggers |
 | Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
+| Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
 
 ---
 
@@ -172,6 +173,7 @@
 | — | Feature Development Checklist | COMPLETE | 1 | 1 | 10-section checklist with broad system integration triggers at `docs/feature-development-checklist.md` |
 | | **Exploratory Testing Fixes** | **COMPLETE** | | | **F-012: Entity Designer layout overhaul** |
 | M121 | Entity Designer Layout Overhaul (F-012) | COMPLETE | 8 | 8 | Collapsible Panel component, tab-based EntityDetail, dagre RelationshipGraph with MiniMap/Controls, row selection, bidirectional navigation, useLocalStorage hook, tour/scenario/ops updates |
+| M122 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | 7 | 7 | formatTimestamp utility, formatLabel applied to Risk Case Manager grid/Alert Detail/Calc Trace DAG/Explainability panel, Model Composer description overlap fix |
 
 ---
 
