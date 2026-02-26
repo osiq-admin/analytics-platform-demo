@@ -271,3 +271,27 @@
   - Removed collapsible graph panel, expand/shrink button, `graphCollapsed`/`graphExpanded` state
   - Added `useDefaultLayout` for pane size persistence, `useLocalStorage` for tab persistence
 - **Status**: FIXED
+
+---
+
+## Round 5 — User-Driven Exploratory Testing (2026-02-26)
+
+**Scope**: Continued live feedback from product owner — Entity Designer fields, relationship graphs, Regulatory Map.
+
+### F-022: Entity Designer — Domain Values Not Visible or Manageable
+- **Screen**: Entity Designer (`/entities`) → Fields tab
+- **Observation**: Entity fields have `domain_values` in metadata JSON (e.g., risk_rating: ["LOW","MEDIUM","HIGH"]) but there is no way to view or manage them in the UI. Domain values should be metadata-managed like everything else. Clicking a field should show its domain values with CRUD actions.
+- **Root Cause**: Fields AG Grid has no "Domain" column. No click handler on field rows. No side pane for domain value management. `useDomainValues` hook and API exist but are only used for autocomplete suggestions in other views.
+- **Status**: OPEN
+
+### F-023: Entity Designer — Relationship Graph Readability Issues
+- **Screen**: Entity Designer (`/entities`) → Relationship Graph tab
+- **Observation**: (a) Relationship labels have no background — text floats over edges and is hard to read. (b) Bezier edge routing creates messy line crossings. Organization is hard to follow. Lines overlap and crowd the graph.
+- **Root Cause**: Edge labels use plain `labelStyle.fill` with no `labelBgStyle`, `labelBgPadding`, or `labelBgBorderRadius`. Default bezier edge type creates curved crossings. Dagre spacing too tight (`nodesep: 40`, `ranksep: 60`). No arrowheads to indicate direction.
+- **Status**: OPEN
+
+### F-024: Regulatory Map — Thin, Uninformative, Poor Readability
+- **Screen**: Regulatory Map (`/regulatory`)
+- **Observation**: View is cutoff, centered on screen with narrow 288px detail panel. No references to actual regulation text (descriptions exist in registry.json but aren't displayed). No tooltips on nodes or edges. No edge labels showing relationship types. No minimap or zoom controls. Different layout pattern from other redesigned views. Overall thin and uninformative.
+- **Root Cause**: Layout uses fixed `w-72` detail panel beside `flex-[3]` graph — wastes space. Backend traceability graph endpoint doesn't return `description` fields for article/model/calc nodes (data exists in registry.json and model JSON). No `MiniMap`, `Controls`, edge labels, or tooltips in React Flow config. Node details panel only shows sparse metadata (type, label, title, jurisdiction).
+- **Status**: OPEN
