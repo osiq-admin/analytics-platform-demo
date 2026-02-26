@@ -2,6 +2,7 @@ import { usePipelineStore } from "../../stores/pipelineStore.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import PipelineDAG from "./PipelineDAG.tsx";
+import { formatLabel } from "../../utils/format.ts";
 
 export default function PipelineMonitor() {
   const { steps, running, error, runPipeline } = usePipelineStore();
@@ -33,13 +34,13 @@ export default function PipelineMonitor() {
       )}
 
       {/* DAG visualization */}
-      <Panel title="Execution Graph" className="flex-1 min-h-[300px]" noPadding dataTour="pipeline-dag" tooltip="DAG visualization of calculation execution order">
+      <Panel title="Execution Graph" className="h-[350px] shrink-0" noPadding dataTour="pipeline-dag" tooltip="DAG visualization of calculation execution order">
         <PipelineDAG steps={steps} />
       </Panel>
 
       {/* Step table */}
       {steps.length > 0 && (
-        <Panel title="Steps" className="max-h-48">
+        <Panel title="Steps" className="flex-1 overflow-y-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-left text-muted border-b border-border">
@@ -54,7 +55,7 @@ export default function PipelineMonitor() {
               {steps.map((s) => (
                 <tr key={s.calc_id} className="border-b border-border/50">
                   <td className="py-1">{s.name}</td>
-                  <td className="py-1 text-muted">{s.layer}</td>
+                  <td className="py-1 text-muted">{formatLabel(s.layer)}</td>
                   <td className="py-1">
                     <span
                       className={

@@ -194,6 +194,55 @@
 
 ---
 
+## Round 3 — Untested Views (2026-02-26)
+
+**Scope**: 6 previously untested views — Pipeline Monitor, Metadata Editor, AI Assistant, Use Case Studio, Regulatory Map, Submissions.
+
+### F-016: Pipeline Monitor — Steps Table Clipped at Bottom
+- **Screen**: Pipeline Monitor (`/pipeline`)
+- **Observation**: After running the pipeline, the Steps table shows only 5 of 10 rows. The remaining rows (Trend Window, Trading Activity Aggregation, VWAP Calculation, Large Trading Activity, Wash Detection) are clipped below the viewport with no scrollbar. The Execution Graph panel consumes excessive vertical space (large empty area above/below nodes), pushing the table off-screen.
+- **Root Cause**: The graph panel has a fixed/flex height that doesn't account for the table below. The main content area doesn't scroll, and the table has no independent scroll container.
+- **Fix Applied**: Changed DAG panel from `flex-1 min-h-[300px]` to `h-[350px] shrink-0` (fixed height), changed steps table panel from `max-h-48` to `flex-1 overflow-y-auto` (scrollable, takes remaining space).
+- **Status**: FIXED
+
+### F-017: Pipeline Monitor — Layer Column Shows snake_case
+- **Screen**: Pipeline Monitor (`/pipeline`, Steps table)
+- **Observation**: The "Layer" column displays raw snake_case values: "time_window" instead of "Time Window". Other values ("transaction", "aggregation", "derived") are single words and look fine, but "time_window" is clearly unformatted.
+- **Root Cause**: Layer value from calculation metadata passed through without `formatLabel()`.
+- **Fix Applied**: Added `formatLabel()` import and applied to the layer cell in PipelineMonitor.
+- **Status**: FIXED
+
+### F-018: AI Assistant — Markdown Not Fully Rendered in Chat Responses
+- **Screen**: AI Assistant (`/assistant`)
+- **Observation**: In mock mode chat responses, bold markdown syntax (`**Source Data:**`, `**Calculation Results**`, `**Alerts:**`) shows raw `**` markers instead of rendering as bold text. SQL code blocks render correctly in their own styled container, but inline markdown formatting (bold, backtick code) within the response body is displayed as raw text.
+- **Root Cause**: Chat message body is rendered as plain text rather than being parsed through a markdown renderer.
+- **Fix Applied**: Added `renderMarkdownText()` function to ChatPanel that parses `**bold**` → `<strong>`, `` `code` `` → `<code>`, and `- list items` → `<ul><li>`. Applied to both `before` and `after` text blocks in message bubbles.
+- **Status**: FIXED
+
+### F-019: Use Case Studio — Component IDs Show Raw snake_case
+- **Screen**: Use Case Studio (`/use-cases`, detail view)
+- **Observation**: In the Components section of a use case detail, component IDs are displayed as raw snake_case: "wash_full_day" and "wash_detection" instead of "Wash Full Day" and "Wash Detection". The component picker (edit wizard step 2) correctly shows formatted names, but the detail view does not.
+- **Root Cause**: Detail view renders the raw `model_id`/`calc_id` from the use case JSON without applying `formatLabel()`.
+- **Fix Applied**: Added `formatLabel()` import and applied to component ID display in UseCaseStudio detail view.
+- **Status**: FIXED
+
+### F-020: Use Case Studio — Run Results Display Raw JSON
+- **Screen**: Use Case Studio (`/use-cases`, after clicking Run)
+- **Observation**: When a use case is run, the Run Results section displays the raw API response as unformatted JSON. Shows technical fields like `"model_id": "wash_full_day"`, `"use_case_id": "test_uc_1"`, `"alerts_evaluated": 4`, `"alerts_fired": 4`. For a demo, this should be a formatted summary table (Model Name, Alerts Evaluated, Alerts Fired, Status).
+- **Root Cause**: Run result JSON is rendered as-is in a `<pre>` block without formatting or structured presentation.
+- **Fix Applied**: Replaced raw JSON `<pre>` with structured `<table>` showing Model (formatted), Evaluated, Fired, and Status columns with StatusBadge. Falls back to JSON for non-array results.
+- **Status**: FIXED
+
+---
+
+### Views with No Issues Found
+
+- **Metadata Editor** (`/editor`): Excellent design. All 4 tabs (Entities, Calculations, Settings, Models) work correctly. Side-by-side JSON + Visual editors. Monaco JSON editor, OOB versioning with badges, match pattern picker with catalog. Both dark and light themes clean.
+- **Regulatory Map** (`/regulatory`): Clean layout. Summary cards (9/9 covered, 100%), traceability graph with color-coded nodes (Regulation → Article → Model → Calculation), detail panel populates on node click, legend, "Suggestions — All clear" section. Both themes work well.
+- **Submissions** (`/submissions`): Clean empty state. "No submissions yet. Submit a use case from the Use Case Studio." Both themes work. Limited testing since no submission data available (use case Run doesn't create a submission — separate governance workflow).
+
+---
+
 ## Notes & Observations
 - Dashboard gives a good high-level overview but the data imbalance immediately stands out
 - The original "Fired %" card was misleading (always 0%) — replaced with "Score Triggered" (12.6%) in F-008
@@ -201,3 +250,7 @@
 - F-013 confirms cross-project consistency gap: formatLabel() was applied to Dashboard/charts but not to Risk Cases, Alert Detail, or Model Composer
 - Light theme works well across all tested views — no visibility issues found
 - Entity Designer F-012 fixes (tabs, collapsible graph, dagre, selection) verified working in both themes
+- Round 3: Metadata Editor and Regulatory Map are the strongest views — polished, well-designed, no issues
+- Round 3: Pipeline Monitor has the most impactful issue (F-016) — users can't see half the pipeline steps
+- Round 3: The `formatLabel()` pattern continues to be missed in new views (F-017, F-019) — same pattern as F-005/F-006/F-013
+- Round 3: AI Assistant markdown rendering (F-018) affects demo readability — the mock responses contain carefully written markdown that doesn't display correctly

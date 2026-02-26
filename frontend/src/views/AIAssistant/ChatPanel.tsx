@@ -41,6 +41,73 @@ function extractCodeBlocks(text: string): { before: string; code: string; lang: 
   return blocks;
 }
 
+function renderMarkdownText(text: string): React.ReactNode[] {
+  // Split into lines and render basic markdown: **bold**, `code`, - list items
+  const lines = text.split("\n");
+  const result: React.ReactNode[] = [];
+
+  function renderInline(line: string, key: number): React.ReactNode {
+    // Process **bold** and `code` inline
+    const parts: React.ReactNode[] = [];
+    const regex = /(\*\*(.+?)\*\*|`([^`]+)`)/g;
+    let lastIdx = 0;
+    let match;
+    let partKey = 0;
+
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > lastIdx) {
+        parts.push(line.slice(lastIdx, match.index));
+      }
+      if (match[2]) {
+        parts.push(<strong key={partKey++}>{match[2]}</strong>);
+      } else if (match[3]) {
+        parts.push(
+          <code key={partKey++} className="bg-background/50 border border-border rounded px-1 text-xs">
+            {match[3]}
+          </code>
+        );
+      }
+      lastIdx = match.index + match[0].length;
+    }
+    if (lastIdx < line.length) {
+      parts.push(line.slice(lastIdx));
+    }
+    return <span key={key}>{parts.length > 0 ? parts : line}</span>;
+  }
+
+  let inList = false;
+  let listItems: React.ReactNode[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const listMatch = line.match(/^- (.+)/);
+
+    if (listMatch) {
+      if (!inList) {
+        inList = true;
+        listItems = [];
+      }
+      listItems.push(<li key={i}>{renderInline(listMatch[1], i)}</li>);
+    } else {
+      if (inList) {
+        result.push(<ul key={`ul-${i}`} className="list-disc list-inside my-1 space-y-0.5">{listItems}</ul>);
+        inList = false;
+        listItems = [];
+      }
+      if (line.trim()) {
+        result.push(<div key={i}>{renderInline(line, i)}</div>);
+      } else if (i > 0 && i < lines.length - 1) {
+        result.push(<div key={i} className="h-2" />);
+      }
+    }
+  }
+  if (inList) {
+    result.push(<ul key="ul-end" className="list-disc list-inside my-1 space-y-0.5">{listItems}</ul>);
+  }
+
+  return result;
+}
+
 function MessageBubble({ msg, onRunQuery }: { msg: Message; onRunQuery?: (sql: string) => void }) {
   const isUser = msg.role === "user";
   const blocks = extractCodeBlocks(msg.content);
@@ -57,7 +124,7 @@ function MessageBubble({ msg, onRunQuery }: { msg: Message; onRunQuery?: (sql: s
         {blocks.map((block, i) => (
           <div key={i}>
             {block.before && (
-              <div className="whitespace-pre-wrap">{block.before.trim()}</div>
+              <div className="space-y-0.5">{renderMarkdownText(block.before.trim())}</div>
             )}
             {block.code && (
               <div className="my-2">
@@ -78,7 +145,7 @@ function MessageBubble({ msg, onRunQuery }: { msg: Message; onRunQuery?: (sql: s
               </div>
             )}
             {block.after && (
-              <div className="whitespace-pre-wrap">{block.after.trim()}</div>
+              <div className="space-y-0.5">{renderMarkdownText(block.after.trim())}</div>
             )}
           </div>
         ))}

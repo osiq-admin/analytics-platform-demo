@@ -8,6 +8,7 @@ import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import ConfirmDialog from "../../components/ConfirmDialog.tsx";
 import UseCaseBuilder from "./UseCaseBuilder.tsx";
+import { formatLabel } from "../../utils/format.ts";
 
 type StatusVariant = "muted" | "info" | "warning" | "success" | "error";
 
@@ -218,7 +219,7 @@ export default function UseCaseStudio() {
                               : "warning"
                           }
                         />
-                        <span className="font-medium">{c.id}</span>
+                        <span className="font-medium">{formatLabel(c.id)}</span>
                       </div>
                       <span className="text-muted">{c.action}</span>
                     </div>
@@ -292,9 +293,51 @@ export default function UseCaseStudio() {
             {/* Run result details */}
             {runResult && !runResult.error && (
               <Panel title="Run Results">
-                <pre className="text-xs text-foreground/80 whitespace-pre-wrap font-mono">
-                  {JSON.stringify(runResult, null, 2)}
-                </pre>
+                {Array.isArray(runResult.results) ? (
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted border-b border-border">
+                        <th className="pb-1">Model</th>
+                        <th className="pb-1">Evaluated</th>
+                        <th className="pb-1">Fired</th>
+                        <th className="pb-1">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(runResult.results as Array<Record<string, unknown>>).map(
+                        (r, i) => (
+                          <tr key={i} className="border-b border-border/50">
+                            <td className="py-1 font-medium">
+                              {formatLabel(String(r.model_id ?? ""))}
+                            </td>
+                            <td className="py-1 font-mono">
+                              {String(r.alerts_evaluated ?? "-")}
+                            </td>
+                            <td className="py-1 font-mono">
+                              {String(r.alerts_fired ?? "-")}
+                            </td>
+                            <td className="py-1">
+                              <StatusBadge
+                                label={String(r.status ?? "unknown")}
+                                variant={
+                                  r.status === "ok"
+                                    ? "success"
+                                    : r.status === "error"
+                                    ? "error"
+                                    : "muted"
+                                }
+                              />
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                ) : (
+                  <pre className="text-xs text-foreground/80 whitespace-pre-wrap font-mono">
+                    {JSON.stringify(runResult, null, 2)}
+                  </pre>
+                )}
               </Panel>
             )}
             {Boolean(runResult?.error) && (
