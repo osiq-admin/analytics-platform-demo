@@ -77,7 +77,7 @@ export const TOURS: Record<string, TourDefinition> = {
         target: "[data-tour='entity-fields']",
         title: "Field Definitions",
         content:
-          "Each entity has typed fields with nullability, keys, and domain values — shown in the Fields tab. Switch to the Relationships tab to see foreign key connections. Drag the divider to resize panes.",
+          "Each entity has typed fields with nullability, keys, and domain values — shown in the Fields tab. The Domain column shows how many values are defined. Click any field row to open the Domain Values pane, where you can view, add, and remove metadata-defined values, and see data-only values from the database. Switch to the Relationships tab to see foreign key connections.",
         placement: "top",
       },
       {

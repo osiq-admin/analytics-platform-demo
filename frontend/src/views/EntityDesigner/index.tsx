@@ -9,6 +9,7 @@ import EntityList from "./EntityList.tsx";
 import EntityDetail from "./EntityDetail.tsx";
 import EntityForm from "./EntityForm.tsx";
 import RelationshipGraph from "./RelationshipGraph.tsx";
+import DomainValuesPane from "./DomainValuesPane.tsx";
 
 type ViewTab = "details" | "relationships";
 
@@ -18,6 +19,7 @@ export default function EntityDesigner() {
   const [mode, setMode] = useState<"browse" | "create" | "edit">("browse");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [activeView, setActiveView] = useLocalStorage<ViewTab>("entity-designer-view", "details");
+  const [selectedField, setSelectedField] = useState<FieldDef | null>(null);
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     id: "entity-designer-layout",
@@ -54,8 +56,18 @@ export default function EntityDesigner() {
     const entity = entities.find((e) => e.entity_id === entityId);
     if (entity) {
       setSelected(entity);
+      setSelectedField(null);
       setMode("browse");
     }
+  };
+
+  const handleUpdateDomainValues = async (fieldName: string, values: string[]) => {
+    if (!selected) return;
+    const updatedFields = selected.fields.map((f: FieldDef) =>
+      f.name === fieldName ? { ...f, domain_values: values.length > 0 ? values : undefined } : f
+    );
+    const updatedEntity = { ...selected, fields: updatedFields };
+    await saveEntity(updatedEntity);
   };
 
   if (loading) {
@@ -139,6 +151,7 @@ export default function EntityDesigner() {
                 selectedId={selected?.entity_id}
                 onSelect={(entity) => {
                   setSelected(entity);
+                  setSelectedField(null);
                   setMode("browse");
                 }}
               />
@@ -151,30 +164,43 @@ export default function EntityDesigner() {
         {/* Bottom: view content switches based on active tab */}
         <ResizablePanel id="entity-content" defaultSize="65%" minSize="30%">
           {activeView === "details" ? (
-            <div className="h-full">
-              {mode === "create" ? (
-                <EntityForm
-                  entity={emptyEntity}
-                  isNew
-                  onSave={handleSave}
-                  onCancel={handleCancelForm}
-                />
-              ) : mode === "edit" && selected ? (
-                <EntityForm
-                  entity={selected}
-                  isNew={false}
-                  onSave={handleSave}
-                  onCancel={handleCancelForm}
-                />
-              ) : selected ? (
-                <EntityDetail
-                  entity={selected}
-                  onEdit={handleEdit}
-                  onDelete={() => setConfirmDelete(true)}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-muted text-sm">
-                  Select an entity to view details
+            <div className="h-full flex">
+              <div className={`h-full transition-all duration-200 ${selectedField ? "flex-[3]" : "flex-1"}`}>
+                {mode === "create" ? (
+                  <EntityForm
+                    entity={emptyEntity}
+                    isNew
+                    onSave={handleSave}
+                    onCancel={handleCancelForm}
+                  />
+                ) : mode === "edit" && selected ? (
+                  <EntityForm
+                    entity={selected}
+                    isNew={false}
+                    onSave={handleSave}
+                    onCancel={handleCancelForm}
+                  />
+                ) : selected ? (
+                  <EntityDetail
+                    entity={selected}
+                    onEdit={handleEdit}
+                    onDelete={() => setConfirmDelete(true)}
+                    onFieldSelect={(f) => setSelectedField(f as FieldDef)}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-muted text-sm">
+                    Select an entity to view details
+                  </div>
+                )}
+              </div>
+              {selectedField && selected && mode === "browse" && (
+                <div className="w-72 shrink-0 border-l border-border h-full overflow-hidden bg-surface">
+                  <DomainValuesPane
+                    entityId={selected.entity_id}
+                    field={selectedField}
+                    onUpdateDomainValues={handleUpdateDomainValues}
+                    onClose={() => setSelectedField(null)}
+                  />
                 </div>
               )}
             </div>

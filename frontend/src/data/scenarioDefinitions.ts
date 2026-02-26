@@ -2200,7 +2200,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-fields']",
       title: "Product Fields — ISO Identifiers",
       content:
-        "The Fields tab shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN (International Securities Identification Number), CFI (Classification of Financial Instruments), and MIC (Market Identifier Code). Switch to the Relationships tab to see this entity's foreign key connections.",
+        "The Fields tab shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN, CFI, and MIC. The Domain column shows which fields have constrained value sets. Click any field row to open the Domain Values pane — view metadata-defined values and data-only values from the database.",
       placement: "bottom",
       action: "wait",
       hint: "Review the field definitions grid. Look for ISIN, CFI, and MIC columns — these are ISO-standard identifiers.",

@@ -75,6 +75,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Switch to the Relationship Graph tab to see the full entity graph with dagre auto-layout, minimap, and zoom controls. Click nodes to navigate between entities. Drag the divider to resize the graph pane.",
       },
       {
+        id: "manage_domain_values",
+        name: "Manage Domain Values",
+        description:
+          "Click any field row to open the Domain Values pane. View metadata-defined values (editable) and data-only values (found in the database but not in metadata). Add or remove domain values — changes save to the entity JSON immediately.",
+      },
+      {
         id: "search_fields",
         name: "Search Across Fields",
         description:

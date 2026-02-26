@@ -27,6 +27,7 @@ interface EntityDetailProps {
   };
   onEdit?: () => void;
   onDelete?: () => void;
+  onFieldSelect?: (field: Field) => void;
 }
 
 const fieldColumns: ColDef<Field>[] = [
@@ -42,10 +43,23 @@ const fieldColumns: ColDef<Field>[] = [
     width: 55,
     valueGetter: (p) => (p.data?.nullable !== false ? "Y" : "N"),
   },
+  {
+    headerName: "Domain",
+    width: 85,
+    valueGetter: (p) => p.data?.domain_values?.length ?? 0,
+    cellRenderer: (p: { value: number }) =>
+      p.value > 0 ? (
+        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent/15 text-accent border border-accent/30">
+          {p.value} val{p.value !== 1 ? "s" : ""}
+        </span>
+      ) : (
+        <span className="text-muted text-[10px]">—</span>
+      ),
+  },
   { field: "description", headerName: "Description", minWidth: 150, flex: 2 },
 ];
 
-export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailProps) {
+export default function EntityDetail({ entity, onEdit, onDelete, onFieldSelect }: EntityDetailProps) {
   const [activeTab, setActiveTab] = useState<"fields" | "relationships">("fields");
   const relCount = entity.relationships?.length ?? 0;
 
@@ -117,6 +131,10 @@ export default function EntityDetail({ entity, onEdit, onDelete }: EntityDetailP
               rowData={entity.fields}
               columnDefs={fieldColumns}
               getRowId={(p) => p.data.name}
+              rowSelection="single"
+              onRowClicked={(e) => {
+                if (e.data && onFieldSelect) onFieldSelect(e.data);
+              }}
             />
           </div>
         ) : (

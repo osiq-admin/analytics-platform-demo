@@ -124,6 +124,32 @@ class TestEntityDesigner:
         assert loaded_page.locator("[class*='react-flow']").count() > 0 or \
                loaded_page.locator("text=one_to_many").first.is_visible(timeout=3000)
 
+    def test_fields_grid_has_domain_column(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        # Click on product entity
+        loaded_page.locator("[role='gridcell']:has-text('product')").first.click()
+        loaded_page.wait_for_timeout(500)
+
+        # Domain column header should be visible in the fields grid
+        assert loaded_page.locator("[role='columnheader']:has-text('Domain')").first.is_visible(timeout=3000)
+
+    def test_field_click_opens_domain_pane(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/entities")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+
+        # Click on account entity
+        loaded_page.locator("[role='gridcell']:has-text('account')").first.click()
+        loaded_page.wait_for_timeout(500)
+
+        # Click on risk_rating field row in the fields grid
+        loaded_page.locator("[role='gridcell']:has-text('risk_rating')").first.click()
+        loaded_page.wait_for_timeout(500)
+
+        # Domain values pane should appear
+        assert loaded_page.locator("[data-tour='domain-values-pane']").is_visible(timeout=3000)
+
 
 # ============================================================================
 # Scenario 4: Metadata Explorer — Calculations & DAG

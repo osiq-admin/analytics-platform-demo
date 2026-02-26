@@ -18,7 +18,7 @@ const btnCls =
   "px-3 py-1.5 rounded text-xs font-medium border border-border bg-surface text-foreground hover:bg-background transition-colors";
 
 function emptyField(): FieldDef {
-  return { name: "", type: "string", is_key: false, nullable: true, description: "" };
+  return { name: "", type: "string", is_key: false, nullable: true, description: "", domain_values: [] };
 }
 
 function emptyRelationship(): RelationshipDef {
@@ -133,52 +133,89 @@ export default function EntityForm({ entity, isNew, onSave, onCancel }: EntityFo
               {fields.map((f, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-2 p-2 rounded border border-border bg-background text-xs"
+                  className="p-2 rounded border border-border bg-background text-xs space-y-1"
                 >
-                  <input
-                    className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs flex-1"
-                    value={f.name}
-                    onChange={(e) => updateField(idx, { name: e.target.value })}
-                    placeholder="field_name"
-                  />
-                  <select
-                    className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs"
-                    value={f.type}
-                    onChange={(e) => updateField(idx, { type: e.target.value })}
-                  >
-                    {FIELD_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  <label className="flex items-center gap-1 text-muted">
+                  <div className="flex items-center gap-2">
                     <input
-                      type="checkbox"
-                      checked={!!f.is_key}
-                      onChange={(e) => updateField(idx, { is_key: e.target.checked })}
+                      className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs flex-1"
+                      value={f.name}
+                      onChange={(e) => updateField(idx, { name: e.target.value })}
+                      placeholder="field_name"
                     />
-                    PK
-                  </label>
-                  <label className="flex items-center gap-1 text-muted">
+                    <select
+                      className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs"
+                      value={f.type}
+                      onChange={(e) => updateField(idx, { type: e.target.value })}
+                    >
+                      {FIELD_TYPES.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                    <label className="flex items-center gap-1 text-muted">
+                      <input
+                        type="checkbox"
+                        checked={!!f.is_key}
+                        onChange={(e) => updateField(idx, { is_key: e.target.checked })}
+                      />
+                      PK
+                    </label>
+                    <label className="flex items-center gap-1 text-muted">
+                      <input
+                        type="checkbox"
+                        checked={f.nullable !== false}
+                        onChange={(e) => updateField(idx, { nullable: e.target.checked })}
+                      />
+                      Null
+                    </label>
                     <input
-                      type="checkbox"
-                      checked={f.nullable !== false}
-                      onChange={(e) => updateField(idx, { nullable: e.target.checked })}
+                      className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs flex-1"
+                      value={f.description ?? ""}
+                      onChange={(e) => updateField(idx, { description: e.target.value })}
+                      placeholder="description"
                     />
-                    Null
-                  </label>
-                  <input
-                    className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs flex-1"
-                    value={f.description ?? ""}
-                    onChange={(e) => updateField(idx, { description: e.target.value })}
-                    placeholder="description"
-                  />
-                  <button
-                    onClick={() => removeField(idx)}
-                    className="text-red-400 hover:text-red-300 px-1"
-                    title="Remove field"
-                  >
-                    &times;
-                  </button>
+                    <button
+                      onClick={() => removeField(idx)}
+                      className="text-red-400 hover:text-red-300 px-1"
+                      title="Remove field"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  {/* Domain Values — compact tag editor */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] text-muted uppercase font-semibold shrink-0">Domain:</span>
+                    <div className="flex flex-wrap items-center gap-1">
+                      {(f.domain_values ?? []).map((v, vi) => (
+                        <span key={vi} className="inline-flex items-center gap-0.5 px-1.5 py-0 rounded text-[9px] bg-accent/15 text-accent border border-accent/30">
+                          {v}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = (f.domain_values ?? []).filter((_, i) => i !== vi);
+                              updateField(idx, { domain_values: updated });
+                            }}
+                            className="text-accent/60 hover:text-accent"
+                          >&times;</button>
+                        </span>
+                      ))}
+                      <input
+                        type="text"
+                        placeholder="+ add"
+                        className="w-16 px-1 py-0 text-[9px] border-b border-border bg-transparent text-foreground"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && e.currentTarget.value.trim()) {
+                            e.preventDefault();
+                            const val = e.currentTarget.value.trim();
+                            const current = f.domain_values ?? [];
+                            if (!current.includes(val)) {
+                              updateField(idx, { domain_values: [...current, val] });
+                            }
+                            e.currentTarget.value = "";
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

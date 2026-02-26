@@ -282,7 +282,8 @@
 - **Screen**: Entity Designer (`/entities`) → Fields tab
 - **Observation**: Entity fields have `domain_values` in metadata JSON (e.g., risk_rating: ["LOW","MEDIUM","HIGH"]) but there is no way to view or manage them in the UI. Domain values should be metadata-managed like everything else. Clicking a field should show its domain values with CRUD actions.
 - **Root Cause**: Fields AG Grid has no "Domain" column. No click handler on field rows. No side pane for domain value management. `useDomainValues` hook and API exist but are only used for autocomplete suggestions in other views.
-- **Status**: OPEN
+- **Fix Applied**: Added "Domain" column to Fields AG Grid showing value count badge. Added field row click handler opening DomainValuesPane side panel (w-72). Pane shows metadata values (editable with add/remove), data-only values (read-only, from DuckDB), and add input. Domain values editing also added to EntityForm for create/edit mode. Changes save immediately via PUT entity endpoint.
+- **Status**: FIXED
 
 ### F-023: Entity Designer — Relationship Graph Readability Issues
 - **Screen**: Entity Designer (`/entities`) → Relationship Graph tab

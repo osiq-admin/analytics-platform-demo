@@ -171,3 +171,27 @@ def test_metadata_values_priority(client):
     data = resp.json()
     if data["metadata_values"] and data["combined"]:
         assert data["combined"][0] in data["metadata_values"]
+
+
+def test_get_domain_values_returns_metadata_and_data(client):
+    """Verify endpoint returns both metadata_values and data_values for field with known domain values."""
+    resp = client.get("/api/metadata/domain-values/account/risk_rating")
+    assert resp.status_code == 200
+    data = resp.json()
+    # account.risk_rating has domain_values: ["LOW", "MEDIUM", "HIGH"]
+    assert len(data["metadata_values"]) > 0
+    assert "LOW" in data["metadata_values"]
+    assert "MEDIUM" in data["metadata_values"]
+    assert "HIGH" in data["metadata_values"]
+    # data_values should come from DuckDB
+    assert isinstance(data["data_values"], list)
+
+
+def test_domain_values_empty_field(client):
+    """For a field without domain_values, metadata_values should be empty, data_values from DuckDB."""
+    resp = client.get("/api/metadata/domain-values/account/account_id")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["metadata_values"] == []
+    # data_values should have actual account IDs from the database
+    assert len(data["data_values"]) > 0
