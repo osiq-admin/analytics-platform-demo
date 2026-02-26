@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { clsx } from "clsx";
 import { useMetadataStore, type EntityDef, type FieldDef } from "../../stores/metadataStore.ts";
+import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import ConfirmDialog from "../../components/ConfirmDialog.tsx";
@@ -13,6 +15,8 @@ export default function EntityDesigner() {
   const [selected, setSelected] = useState<EntityDef | null>(null);
   const [mode, setMode] = useState<"browse" | "create" | "edit">("browse");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [graphCollapsed, setGraphCollapsed] = useLocalStorage("entity-graph-collapsed", false);
+  const [graphExpanded, setGraphExpanded] = useLocalStorage("entity-graph-expanded", false);
 
   useEffect(() => {
     fetchEntities();
@@ -38,6 +42,14 @@ export default function EntityDesigner() {
 
   const handleCancelForm = () => {
     setMode("browse");
+  };
+
+  const handleGraphSelect = (entityId: string) => {
+    const entity = entities.find((e) => e.entity_id === entityId);
+    if (entity) {
+      setSelected(entity);
+      setMode("browse");
+    }
   };
 
   if (loading) {
@@ -126,8 +138,51 @@ export default function EntityDesigner() {
         </div>
 
         {/* Right: Relationship graph */}
-        <Panel title="Relationships" className="w-80 shrink-0" noPadding dataTour="entity-relationships" tooltip="Visual graph of entity relationships">
-          <RelationshipGraph entities={entities} />
+        <Panel
+          title="Relationships"
+          className={clsx(
+            "shrink-0 transition-all duration-200",
+            graphCollapsed ? "" : graphExpanded ? "w-[50%]" : "w-80"
+          )}
+          noPadding
+          dataTour="entity-relationships"
+          tooltip="Visual graph of entity relationships"
+          collapsible
+          collapsed={graphCollapsed}
+          onToggleCollapse={() => {
+            setGraphCollapsed(!graphCollapsed);
+            if (graphCollapsed) setGraphExpanded(false);
+          }}
+          collapseDirection="right"
+          actions={
+            !graphCollapsed ? (
+              <button
+                onClick={() => setGraphExpanded(!graphExpanded)}
+                className="text-muted hover:text-foreground transition-colors p-0.5"
+                title={graphExpanded ? "Shrink graph" : "Expand graph"}
+              >
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  {graphExpanded ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5 5m0 0v-4m0 4h-4" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                  )}
+                </svg>
+              </button>
+            ) : undefined
+          }
+        >
+          <RelationshipGraph
+            entities={entities}
+            selectedEntityId={selected?.entity_id}
+            onSelect={handleGraphSelect}
+          />
         </Panel>
       </div>
 
