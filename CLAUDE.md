@@ -8,7 +8,7 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 ./start.sh                          # Start app on port 8000
 uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (386)
 uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (87)
-cd frontend && npm run build                  # Build frontend (952 modules)
+cd frontend && npm run build                  # Build frontend (955 modules)
 uv run python -m scripts.generate_data        # Regenerate CSVs
 uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 ```
@@ -57,7 +57,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 
 ## Plans & Progress
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M122 complete)
+- Progress tracker: `docs/progress.md` (M0-M123 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

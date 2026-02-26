@@ -443,7 +443,11 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 **Goal:** Fix UX issues discovered during exploratory testing sessions.
 
-**Status:** COMPLETE (2026-02-26). F-012 Entity Designer layout overhaul: collapsible Panel component, tab-based EntityDetail (Fields/Relationships), dagre RelationshipGraph with MiniMap/Controls/selection, AG Grid row selection, bidirectional entity navigation, useLocalStorage hook for persistent UI state. Tours, scenarios, operation scripts, and demo guide updated.
+**Status:** COMPLETE (2026-02-26). 3 rounds of exploratory testing, 20 findings (F-001 through F-020), 17 FIXED, 2 OPEN (data generation — deferred), 1 NOTED (feature request).
+
+**Round 1-2 (F-001 through F-015):** Chart re-render flicker, tooltip visibility, snake_case labels, table formatting, cross-view consistency, Entity Designer layout overhaul, Risk Case label/timestamp formatting, Model Composer layout fix.
+
+**Round 3 (F-016 through F-020):** Tested 6 previously untested views (Pipeline Monitor, Metadata Editor, AI Assistant, Use Case Studio, Regulatory Map, Submissions). Fixed: Pipeline Monitor steps table clipping + layer labels, AI Assistant markdown rendering, Use Case Studio component IDs + run results table. No issues found in Metadata Editor, Regulatory Map, Submissions.
 
 ---
 

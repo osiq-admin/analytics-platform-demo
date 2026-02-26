@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (Exploratory Testing Fixes Round 2 — F-013/F-014/F-015 label formatting, timestamp formatting, layout fix, 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
+**Last Updated**: 2026-02-26 (Exploratory Testing Round 3 — F-016/F-017/F-018/F-019/F-020 fixes across Pipeline Monitor, AI Assistant, Use Case Studio; 473 total tests: 386 backend + 87 E2E, 955 modules, 16 views, all 16 views tested)
 
 ---
 
@@ -171,9 +171,10 @@
 | — | E2E Test Suite (Phase 7B-12) | COMPLETE | 3 | 3 | 87 Playwright E2E tests pass (12 test classes), ExamplesDrawer CSS fix, all views + APIs verified |
 | — | Browser Walkthrough Verification | COMPLETE | 2 | 2 | Full visual walkthrough with Playwright MCP at 1440px + 1024px, 23 screenshots |
 | — | Feature Development Checklist | COMPLETE | 1 | 1 | 10-section checklist with broad system integration triggers at `docs/feature-development-checklist.md` |
-| | **Exploratory Testing Fixes** | **COMPLETE** | | | **F-012: Entity Designer layout overhaul** |
+| | **Exploratory Testing Fixes** | **COMPLETE** | | | **F-001 through F-020: 3 rounds, 17 FIXED, 2 OPEN (data), 1 NOTED** |
 | M121 | Entity Designer Layout Overhaul (F-012) | COMPLETE | 8 | 8 | Collapsible Panel component, tab-based EntityDetail, dagre RelationshipGraph with MiniMap/Controls, row selection, bidirectional navigation, useLocalStorage hook, tour/scenario/ops updates |
 | M122 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | 7 | 7 | formatTimestamp utility, formatLabel applied to Risk Case Manager grid/Alert Detail/Calc Trace DAG/Explainability panel, Model Composer description overlap fix |
+| M123 | Exploratory Testing Round 3 (F-016/F-017/F-018/F-019/F-020) | COMPLETE | 5 | 5 | Tested 6 untested views. Pipeline Monitor steps table + layer labels, AI Assistant markdown rendering, Use Case Studio component IDs + run results table. 955 modules. |
 
 ---
 
@@ -600,6 +601,21 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 - [x] **Updated CLAUDE.md**: Test counts (473), view count (16), workflow preferences, broad systems section
 - [x] **Updated MEMORY.md**: Current state, E2E port note, checklist reference
 - **Total**: 473 tests passing (386 backend + 87 E2E), 952 frontend modules, 16 views
+
+### 2026-02-26 (Exploratory Testing Round 3 — M123)
+- [x] **Round 3 Exploratory Testing**: Tested 6 previously untested views via Playwright MCP
+  - Pipeline Monitor, Metadata Editor, AI Assistant, Use Case Studio, Regulatory Map, Submissions
+  - Both dark and light themes checked for each view
+  - 5 findings documented, all 5 fixed:
+- [x] **F-016**: Pipeline Monitor steps table clipped — changed DAG panel to `h-[350px] shrink-0`, steps to `flex-1 overflow-y-auto`
+- [x] **F-017**: Pipeline Monitor Layer column snake_case — added `formatLabel()` to layer cell
+- [x] **F-018**: AI Assistant markdown not rendered — added `renderMarkdownText()` parser for **bold**, `code`, and - list items
+- [x] **F-019**: Use Case Studio component IDs snake_case — added `formatLabel()` to component ID display
+- [x] **F-020**: Use Case Studio raw JSON run results — replaced with structured table (Model, Evaluated, Fired, Status)
+- [x] **Views with no issues**: Metadata Editor, Regulatory Map, Submissions
+- [x] **All 16 views now have exploratory testing coverage**
+- [x] Updated: exploratory-testing-notes.md, roadmap, progress.md, CLAUDE.md, MEMORY.md
+- **Total**: 473 tests passing, 955 frontend modules, 16 views, 20 findings (F-001 through F-020)
 
 ---
 
