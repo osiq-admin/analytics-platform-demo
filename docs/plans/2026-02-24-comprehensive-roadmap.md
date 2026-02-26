@@ -439,6 +439,14 @@ Resolved:          Merge OOB + User, User wins on conflicts
 
 ---
 
+## Exploratory Testing Fixes — COMPLETE
+
+**Goal:** Fix UX issues discovered during exploratory testing sessions.
+
+**Status:** COMPLETE (2026-02-26). F-012 Entity Designer layout overhaul: collapsible Panel component, tab-based EntityDetail (Fields/Relationships), dagre RelationshipGraph with MiniMap/Controls/selection, AG Grid row selection, bidirectional entity navigation, useLocalStorage hook for persistent UI state. Tours, scenarios, operation scripts, and demo guide updated.
+
+---
+
 ## Phase 13: AI-Assisted Configuration
 
 **Goal:** LLM understands the system's metadata schema, can suggest calculations, help configure models, and utilize the dynamic nature of the system.

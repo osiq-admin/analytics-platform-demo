@@ -74,7 +74,9 @@ The dashboard is the default landing page. Navigate to it from the sidebar under
 - The **Product** entity contains instrument characteristics: asset_class, instrument_type, ISIN, CFI code, MIC, underlying, strike, expiry, tick_size, lot_size
 - **Order** entity includes: order_type (market/limit/stop), limit_price, filled_quantity, time_in_force (DAY/GTC/IOC/FOK), trader_id, venue_mic
 - Execution references Product via product_id, Order via order_id (normalized, FIX Protocol-aligned data model)
-- Click an entity to see its fields, types, and relationships
+- Click an entity to see its Fields tab (types, keys, constraints) and Relationships tab (foreign key connections with counts)
+- **Relationship graph**: collapsible right panel with dagre auto-layout, minimap navigation, zoom controls — click nodes to navigate between entities, expand to 50% width for detailed exploration
+- **Bidirectional selection**: clicking an entity in the list highlights it in the graph; clicking a graph node selects it in the list and detail
 - Highlight: "Everything is metadata — entities are JSON definitions, not hardcoded schemas"
 
 ### 1.2 Load Data (Step → data_loaded)
@@ -588,7 +590,7 @@ Hover over any grid cell for **300ms** to see a tooltip with the full cell conte
 ### Responsive Layouts
 
 Panel widths have been optimized across all split-panel views:
-- **Entity Designer** — left/right panels balanced at 320px each, center panel has usable width even at 1024px
+- **Entity Designer** — left panel 320px, right graph panel collapsible (40px strip) or expandable (50% width), center panel fills remaining space with tabbed Fields/Relationships layout
 - **Metadata Explorer** — calculation list panel expanded to 440px for better column readability
 - **Settings Manager** — settings list panel expanded to 480px
 

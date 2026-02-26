@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-25 (Phase 12 + 7B complete — 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
+**Last Updated**: 2026-02-26 (Exploratory Testing Fixes — Entity Designer layout overhaul, 473 total tests: 386 backend + 87 E2E, 952 modules, 16 views)
 
 ---
 
@@ -36,6 +36,7 @@
 | Metadata UX & Guided Demo (Phase 7B) | COMPLETE | M93-M120: domain values, patterns, templates, wizard, validation, use cases, submissions, AI calc, versioning, dual-mode tour engine, 25 scenarios, per-screen operation scripts — 386 backend tests, 952 modules |
 | E2E Playwright Testing (Phase 7B-12) | COMPLETE | 87 E2E tests across 12 test classes — all views, APIs, scenarios, viewport tests — 473 total tests |
 | Feature Development Checklist | COMPLETE | 10-section mandatory checklist for all new features with broad system integration triggers |
+| Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
 
 ---
 
@@ -169,6 +170,8 @@
 | — | E2E Test Suite (Phase 7B-12) | COMPLETE | 3 | 3 | 87 Playwright E2E tests pass (12 test classes), ExamplesDrawer CSS fix, all views + APIs verified |
 | — | Browser Walkthrough Verification | COMPLETE | 2 | 2 | Full visual walkthrough with Playwright MCP at 1440px + 1024px, 23 screenshots |
 | — | Feature Development Checklist | COMPLETE | 1 | 1 | 10-section checklist with broad system integration triggers at `docs/feature-development-checklist.md` |
+| | **Exploratory Testing Fixes** | **COMPLETE** | | | **F-012: Entity Designer layout overhaul** |
+| M121 | Entity Designer Layout Overhaul (F-012) | COMPLETE | 8 | 8 | Collapsible Panel component, tab-based EntityDetail, dagre RelationshipGraph with MiniMap/Controls, row selection, bidirectional navigation, useLocalStorage hook, tour/scenario/ops updates |
 
 ---
 

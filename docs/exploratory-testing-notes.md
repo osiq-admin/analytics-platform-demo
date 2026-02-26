@@ -159,7 +159,7 @@
   4. No ability to collapse/expand panels to reclaim space
 - **Root Cause**: Fixed 3-pane layout with hardcoded widths, no AG Grid row selection, manual graph positioning instead of dagre auto-layout
 - **Fix Plan**: Tabs in center pane (Fields/Relationships), collapsible Panel component, dagre + MiniMap + Controls for graph, AG Grid rowSelection, bidirectional entity selection between list and graph
-- **Status**: FIXING
+- **Status**: FIXED
 
 ### F-011: Process Gap — Feature Changes Must Update All Dependent Systems
 - **Screen**: N/A (process issue)
