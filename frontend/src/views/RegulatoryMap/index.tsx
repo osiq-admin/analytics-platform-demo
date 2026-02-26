@@ -216,7 +216,7 @@ export default function RegulatoryMap() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
+    <div className="h-full flex flex-col gap-3 overflow-hidden">
       {/* Header + tabs */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Regulatory Traceability</h2>
