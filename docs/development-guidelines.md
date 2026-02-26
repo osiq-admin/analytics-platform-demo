@@ -290,3 +290,47 @@ The FastAPI static file server and browser both cache aggressively. Without all 
 | `TOOLTIP_LABEL_STYLE` | `frontend/src/constants/chartStyles.ts` | Recharts tooltip label text |
 | `TOOLTIP_ITEM_STYLE` | `frontend/src/constants/chartStyles.ts` | Recharts tooltip item text |
 | `TICK_STYLE` | `frontend/src/constants/chartStyles.ts` | Recharts axis tick style |
+
+---
+
+## 17. View Layout Patterns
+
+### List-Detail Views: Vertical Resizable Panes
+
+For views with a list + detail pattern (entity list → entity detail), use vertical resizable panes instead of horizontal fixed-width columns:
+
+**Pattern** (using `react-resizable-panels`):
+```tsx
+import { Group, Panel as ResizablePanel, Separator, useDefaultLayout } from "react-resizable-panels";
+
+const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+  id: "view-name-layout",
+  storage: localStorage,
+});
+
+<Group orientation="vertical" defaultLayout={defaultLayout} onLayoutChanged={onLayoutChanged}>
+  <ResizablePanel id="list" defaultSize="35%" minSize="15%">
+    {/* Full-width list (AG Grid, etc.) */}
+  </ResizablePanel>
+  <Separator className="h-1.5 bg-border hover:bg-accent transition-colors cursor-row-resize" />
+  <ResizablePanel id="detail" defaultSize="65%" minSize="30%">
+    {/* Detail content */}
+  </ResizablePanel>
+</Group>
+```
+
+**When to use:**
+- Views with narrow left/right panels (`w-80`, `w-72`, `w-64`) that force AG Grid horizontal scrolling
+- Views with 3+ panes where one pane could be a separate tab instead
+- Views where the list has few items but the grid columns need full width
+
+**Tab switching for multiple bottom views:**
+When the bottom pane has two distinct modes (e.g., detail vs. graph), use top-level tab buttons instead of cramming both into the layout. Persist tab selection with `useLocalStorage`.
+
+**Reference implementation:** `frontend/src/views/EntityDesigner/index.tsx`
+
+**Name collision:** The project has its own `Panel` component. Import the library's as `ResizablePanel`:
+```tsx
+import { Panel as ResizablePanel } from "react-resizable-panels";
+import Panel from "../../components/Panel.tsx";
+```

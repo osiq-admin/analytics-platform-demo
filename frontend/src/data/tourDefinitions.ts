@@ -68,20 +68,23 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='entity-list']",
         title: "Entity List",
-        content: "All data entities in the system. Each entity represents a table (execution, order, product, market data).",
-        placement: "right",
+        content:
+          "All data entities in the system. Each entity represents a table (execution, order, product, market data). Use the tab switcher above to toggle between Entity Details and the Relationship Graph.",
+        placement: "bottom",
         route: "/entities",
       },
       {
         target: "[data-tour='entity-fields']",
         title: "Field Definitions",
-        content: "Each entity has typed fields with nullability, keys, and domain values — shown in the Fields tab. Switch to the Relationships tab to see foreign key connections.",
-        placement: "left",
+        content:
+          "Each entity has typed fields with nullability, keys, and domain values — shown in the Fields tab. Switch to the Relationships tab to see foreign key connections. Drag the divider to resize panes.",
+        placement: "top",
       },
       {
         target: "[data-tour='entity-relationships']",
         title: "Relationships",
-        content: "The relationship graph uses auto-layout with minimap navigation and zoom controls. Collapse or expand the panel to adjust space. Click a node to select that entity.",
+        content:
+          "Switch to the Relationship Graph tab to see the full entity graph with dagre auto-layout, minimap, and zoom controls. Click a node to select that entity across both tabs.",
         placement: "top",
       },
     ],
@@ -533,8 +536,8 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='entity-relationships']",
         title: "Relationship Graph",
-        content: "The relationship graph features auto-layout, minimap navigation, and zoom controls. Collapse the panel to reclaim space, or expand it to 50% width for detailed exploration.",
-        placement: "left",
+        content: "Switch to the Relationship Graph tab to see the full entity graph with dagre auto-layout, minimap, and zoom controls. Click nodes to navigate between entities. Drag the divider to resize.",
+        placement: "top",
       },
       {
         target: "[data-tour='calc-layer-badge']",

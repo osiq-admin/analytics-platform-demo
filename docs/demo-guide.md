@@ -74,9 +74,11 @@ The dashboard is the default landing page. Navigate to it from the sidebar under
 - The **Product** entity contains instrument characteristics: asset_class, instrument_type, ISIN, CFI code, MIC, underlying, strike, expiry, tick_size, lot_size
 - **Order** entity includes: order_type (market/limit/stop), limit_price, filled_quantity, time_in_force (DAY/GTC/IOC/FOK), trader_id, venue_mic
 - Execution references Product via product_id, Order via order_id (normalized, FIX Protocol-aligned data model)
-- Click an entity to see its Fields tab (types, keys, constraints) and Relationships tab (foreign key connections with counts)
-- **Relationship graph**: collapsible right panel with dagre auto-layout, minimap navigation, zoom controls — click nodes to navigate between entities, expand to 50% width for detailed exploration
-- **Bidirectional selection**: clicking an entity in the list highlights it in the graph; clicking a graph node selects it in the list and detail
+- **Two-tab layout**: Toggle between "Entity Details" and "Relationship Graph" using the tab switcher in the top-right corner
+- **Entity Details tab**: Full-width entity list (top pane) + entity detail (bottom pane) with Fields and Relationships sub-tabs. Drag the divider to resize.
+- **Relationship Graph tab**: Full-width entity list (top pane) + React Flow graph (bottom pane) with dagre auto-layout, minimap, zoom controls. Click nodes to navigate; selected entity highlighted with connected edges.
+- **Bidirectional selection**: Selecting an entity in the list highlights it in the graph (and vice versa). Selection persists across tabs.
+- **Resizable panes**: Drag the horizontal divider between the entity list and detail/graph panes. Sizes persist across sessions.
 - Highlight: "Everything is metadata — entities are JSON definitions, not hardcoded schemas"
 
 ### 1.2 Load Data (Step → data_loaded)

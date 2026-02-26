@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-25 (Phase 7B complete — 473 total tests, 25 scenarios, 16 views)
+**Last Updated**: 2026-02-26 (M124 — 473 total tests, 25 scenarios, 16 views, 21 exploratory findings)
 
 ---
 
@@ -277,3 +277,4 @@ uv run python -m scripts.generate_snapshots
 | Date | Change | By |
 |---|---|---|
 | 2026-02-25 | Initial creation — covers all systems through Phase 7B (M120) | Claude Opus 4.6 |
+| 2026-02-26 | Updated for M124 (F-021 Entity Designer layout redesign) | Claude Opus 4.6 |
