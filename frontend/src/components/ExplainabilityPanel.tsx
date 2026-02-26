@@ -3,6 +3,7 @@ import Panel from "./Panel.tsx";
 import StatusBadge from "./StatusBadge.tsx";
 import SQLViewer from "./SQLViewer.tsx";
 import SettingsTraceViewer, { type SettingsResolution } from "./SettingsTraceViewer.tsx";
+import { formatLabel } from "../utils/format.ts";
 
 /** Shape returned by GET /api/trace/alert/{id}. */
 export interface AlertTraceResponse {
@@ -83,7 +84,7 @@ export default function ExplainabilityPanel({ trace }: ExplainabilityPanelProps)
       <div className="space-y-3">
         {/* Summary header */}
         <div className="flex items-center gap-2 text-xs">
-          <StatusBadge label={trace.model_id} variant="info" />
+          <StatusBadge label={formatLabel(trace.model_id)} variant="info" />
           <StatusBadge
             label={trace.alert_fired ? "FIRED" : "NOT FIRED"}
             variant={trace.alert_fired ? "error" : "success"}
@@ -116,7 +117,7 @@ export default function ExplainabilityPanel({ trace }: ExplainabilityPanelProps)
                   className="p-2 rounded border border-border bg-background text-xs"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium">{ct.calc_id}</span>
+                    <span className="font-medium">{formatLabel(ct.calc_id)}</span>
                     {ct.passed !== undefined && (
                       <StatusBadge
                         label={ct.passed ? "passed" : "failed"}
@@ -178,7 +179,7 @@ export default function ExplainabilityPanel({ trace }: ExplainabilityPanelProps)
               <tbody>
                 {trace.scoring_breakdown.map((sb) => (
                   <tr key={sb.calc_id} className="border-b border-border/50">
-                    <td className="py-1">{sb.calc_id}</td>
+                    <td className="py-1">{formatLabel(sb.calc_id)}</td>
                     <td className="py-1 font-mono text-accent">{sb.score}</td>
                     <td className="py-1 font-mono text-foreground/70">{sb.weight ?? 1}</td>
                     <td className="py-1 font-mono text-warning">{sb.weighted_score ?? sb.score}</td>

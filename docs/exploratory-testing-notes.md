@@ -173,6 +173,27 @@
 
 ---
 
+### F-013: Raw snake_case Labels in Risk Cases, Alert Detail, Explainability, and Calc Trace
+- **Screen**: Risk Case Manager (Alert Summary grid, Alert Detail header/body, Calculation Trace DAG, Explainability panel)
+- **Observation**: Even though `formatLabel()` was applied to the Dashboard in F-005/F-006, several other views still display raw snake_case identifiers: model_id in alert grid, header badges, business description, DAG nodes, and explainability panel; calc_id in DAG nodes, explainability traces, and scoring breakdown table.
+- **Fix Applied**: Added `formatLabel()` calls to all snake_case displays in AlertSummary grid (model_id column), AlertDetail header badges (model_id, trigger_path), BusinessDescription (model_id), CalculationTrace DAG nodes (model_id, calc_id), and ExplainabilityPanel (model_id badge, calc_id in traces and scoring table).
+- **Status**: FIXED
+
+### F-014: Model Composer Description Overlaps Action Buttons
+- **Screen**: Model Composer (detail view)
+- **Observation**: When a detection model has a long description, the description text overlaps the Edit/Delete/Deploy buttons in the model detail header.
+- **Root Cause**: Flex container used `items-center` without constraining the description width or preventing button group from shrinking.
+- **Fix Applied**: Changed to `items-start justify-between gap-4`, added `flex-1 min-w-0` to description container, `line-clamp-2` to description text, and `shrink-0` to button group.
+- **Status**: FIXED
+
+### F-015: Microsecond Timestamps Displayed Raw in Risk Cases
+- **Screen**: Risk Case Manager (Alert Summary grid, Business Description)
+- **Observation**: Timestamps like "2026-02-25T10:35:49.123456" displayed with full microsecond precision and ISO T separator — not user-friendly for a demo.
+- **Fix Applied**: Added `formatTimestamp()` utility to format.ts (replaces T with space, strips microseconds). Applied to AlertSummary grid timestamp column and BusinessDescription time field.
+- **Status**: FIXED
+
+---
+
 ## Notes & Observations
 - Dashboard gives a good high-level overview but the data imbalance immediately stands out
 - The original "Fired %" card was misleading (always 0%) — replaced with "Score Triggered" (12.6%) in F-008

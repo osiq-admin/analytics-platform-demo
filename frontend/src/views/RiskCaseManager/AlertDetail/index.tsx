@@ -15,6 +15,7 @@ import RelatedOrders from "./RelatedOrders.tsx";
 import TradeVolumeChart from "./TradeVolumeChart.tsx";
 import FooterActions from "./FooterActions.tsx";
 import { getModelLayout, type PanelId } from "./modelLayouts.ts";
+import { formatLabel } from "../../../utils/format.ts";
 
 const PANEL_LABELS: Record<PanelId, string> = {
   business: "Business Desc",
@@ -103,7 +104,7 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
           Back
         </button>
         <h3 className="text-base font-semibold">Alert Detail</h3>
-        <StatusBadge label={alert.model_id} variant="info" />
+        <StatusBadge label={formatLabel(alert.model_id)} variant="info" />
         <StatusBadge
           label={`Score: ${alert.accumulated_score}`}
           variant={
@@ -112,7 +113,7 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
               : "warning"
           }
         />
-        <StatusBadge label={alert.trigger_path} variant="success" />
+        <StatusBadge label={formatLabel(alert.trigger_path)} variant="success" />
         <span className="text-xs text-muted font-mono ml-auto">
           {alert.alert_id}
         </span>

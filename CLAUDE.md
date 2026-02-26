@@ -57,7 +57,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 
 ## Plans & Progress
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M120 complete)
+- Progress tracker: `docs/progress.md` (M0-M122 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

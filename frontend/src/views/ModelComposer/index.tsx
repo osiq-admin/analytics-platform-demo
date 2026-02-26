@@ -221,12 +221,12 @@ export default function ModelComposer() {
           />
         ) : selectedModel ? (
           <div className="flex-1 flex flex-col gap-3 min-w-0" data-tour="model-detail">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-base font-semibold">{selectedModel.name}</h3>
-                <p className="text-xs text-muted mt-1">{selectedModel.description}</p>
+                <p className="text-xs text-muted mt-1 line-clamp-2">{selectedModel.description}</p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 {deployResult && (
                   <StatusBadge
                     label={

@@ -3,6 +3,7 @@ import { ReactFlow, Background, type Node, type Edge } from "@xyflow/react";
 import dagre from "@dagrejs/dagre";
 import "@xyflow/react/dist/style.css";
 import type { AlertTrace } from "../../../stores/alertStore.ts";
+import { formatLabel } from "../../../utils/format.ts";
 
 interface CalculationTraceProps {
   alert: AlertTrace;
@@ -29,7 +30,7 @@ function layoutTrace(alert: AlertTrace) {
     id: "model",
     position: { x: modelPos.x - 90, y: modelPos.y - 25 },
     data: {
-      label: `${alert.model_id}\nScore: ${alert.accumulated_score} / ${alert.score_threshold}`,
+      label: `${formatLabel(alert.model_id)}\nScore: ${alert.accumulated_score} / ${alert.score_threshold}`,
     },
     style: {
       background: "var(--color-surface-elevated)",
@@ -54,7 +55,7 @@ function layoutTrace(alert: AlertTrace) {
       id: cs.calc_id,
       position: { x: pos.x - 90, y: pos.y - 30 },
       data: {
-        label: `${cs.calc_id}\nValue: ${(cs.computed_value ?? cs.raw_value ?? 0).toFixed(2)}\nScore: ${cs.score}`,
+        label: `${formatLabel(cs.calc_id)}\nValue: ${(cs.computed_value ?? cs.raw_value ?? 0).toFixed(2)}\nScore: ${cs.score}`,
       },
       style: {
         background: "var(--color-surface-elevated)",
