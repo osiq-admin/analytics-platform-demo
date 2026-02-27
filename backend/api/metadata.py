@@ -1,5 +1,5 @@
 """Metadata CRUD endpoints for entities, calculations, settings, detection models."""
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -572,3 +572,15 @@ def get_compliance_requirements(request: Request):
     """Return compliance requirements registry."""
     svc = _meta(request)
     return svc.load_compliance_registry()
+
+
+# -- Grid Configurations --
+
+@router.get("/grids/{view_id}")
+def get_grid_config(view_id: str, request: Request):
+    """Return grid column configuration for a view."""
+    svc = _meta(request)
+    config = svc.load_grid_config(view_id)
+    if config is None:
+        raise HTTPException(status_code=404, detail=f"Grid config not found for view: {view_id}")
+    return config

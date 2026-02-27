@@ -1,0 +1,11 @@
+{
+  "grid_id": "data_manager_tables",
+  "view_id": "data_manager",
+  "description": "Data Manager table list and entity-aware preview columns",
+  "columns": [
+    {"field": "name", "header_name": "Table", "flex": 1, "filter_type": "agTextColumnFilter"},
+    {"field": "type", "header_name": "Type", "width": 90, "filter_type": "agTextColumnFilter"}
+  ],
+  "default_sort_field": "name",
+  "default_sort_direction": "asc"
+}

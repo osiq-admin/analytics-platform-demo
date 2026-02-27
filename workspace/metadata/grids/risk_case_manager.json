@@ -1,0 +1,17 @@
+{
+  "grid_id": "alert_summary",
+  "view_id": "risk_case_manager",
+  "description": "Alert summary grid columns and filter configuration for Risk Case Manager",
+  "columns": [
+    {"field": "alert_id", "header_name": "Alert ID", "min_width": 150, "flex": 1, "filter_type": "agTextColumnFilter"},
+    {"field": "model_id", "header_name": "Model", "min_width": 120, "flex": 1, "filter_type": "agTextColumnFilter", "value_format": "label"},
+    {"field": "product_id", "header_name": "Product", "width": 90, "filter_type": "agTextColumnFilter"},
+    {"field": "account_id", "header_name": "Account", "width": 100, "filter_type": "agTextColumnFilter"},
+    {"field": "accumulated_score", "header_name": "Score", "width": 80, "column_type": "numericColumn", "filter_type": "agNumberColumnFilter"},
+    {"field": "score_threshold", "header_name": "Threshold", "width": 80, "column_type": "numericColumn", "filter_type": "agNumberColumnFilter"},
+    {"field": "trigger_path", "header_name": "Trigger", "min_width": 100, "filter_type": "agTextColumnFilter", "value_format": "label"},
+    {"field": "timestamp", "header_name": "Time", "min_width": 180, "filter_type": "agDateColumnFilter", "value_format": "timestamp"}
+  ],
+  "default_sort_field": "timestamp",
+  "default_sort_direction": "desc"
+}

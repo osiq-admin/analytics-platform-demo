@@ -964,3 +964,14 @@ class MetadataService:
         from backend.models.standards import ComplianceRegistry
         config = ComplianceRegistry.model_validate_json(path.read_text())
         return config.model_dump()
+
+    # -- Grid Configurations --
+
+    def load_grid_config(self, view_id: str) -> dict | None:
+        """Load grid column config for a view."""
+        path = self._base / "grids" / f"{view_id}.json"
+        if not path.exists():
+            return None
+        from backend.models.grids import GridConfig
+        config = GridConfig.model_validate_json(path.read_text())
+        return config.model_dump()
