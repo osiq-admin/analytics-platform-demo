@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 77 sections across 17 views + 3 cross-cutting components.
+// 80 sections across 18 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -3291,6 +3291,109 @@ export const VIEW_TRACES: ViewTrace[] = [
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
           "Tier properties, data contracts, and pipeline stages are all loaded from medallion metadata. No hardcoded data.",
+        metadataOpportunities: [],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // VIEW 18: Data Onboarding
+  // =========================================================================
+  {
+    viewId: "onboarding",
+    viewName: "Data Onboarding",
+    route: "/onboarding",
+    sections: [
+      {
+        id: "onboarding.wizard-steps",
+        displayName: "Onboarding Wizard Steps",
+        viewId: "onboarding",
+        description:
+          "5-step wizard guiding the user through file upload, schema detection, quality profiling, entity mapping, and ingestion confirmation. Step transitions are managed by React state machine in the view component.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders wizard steps and manages step state transitions" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "POST",
+            path: "/api/onboarding/upload",
+            role: "Accepts file upload and returns detected schema",
+            routerFile: "backend/api/onboarding.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [
+          { name: "React", role: "Component state machine for wizard step progression" },
+        ],
+        metadataMaturity: "code-driven",
+        maturityExplanation:
+          "Wizard step sequence and transitions are hardcoded in the React component. Step definitions could be externalized to metadata in the future.",
+        metadataOpportunities: [
+          "Externalize wizard step definitions to metadata JSON",
+          "Make connector types configurable via metadata",
+        ],
+      },
+      {
+        id: "onboarding.schema-detection",
+        displayName: "Schema Detection",
+        viewId: "onboarding",
+        description:
+          "Auto-detects column names, data types, nullability, and domain patterns (ISIN, MIC, ISO8601, LEI) from uploaded file samples using PyArrow type inference and connector metadata.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders detected schema table with column types and patterns" },
+          { path: "backend/api/onboarding.py", role: "Runs PyArrow schema inference on uploaded files" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "POST",
+            path: "/api/onboarding/upload",
+            role: "Returns auto-detected schema with column types and patterns",
+            routerFile: "backend/api/onboarding.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/standards/iso",
+            category: "metadata",
+            role: "ISO standard patterns used for column value recognition (ISIN, MIC, LEI, etc.)",
+          },
+        ],
+        technologies: [
+          { name: "PyArrow", role: "Schema inference engine for CSV, Parquet, and JSON files" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Schema detection uses PyArrow auto-inference combined with ISO standard pattern metadata for domain recognition. Column types and patterns are derived entirely from data and metadata — no hardcoded schema definitions.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "onboarding.data-profile",
+        displayName: "Data Quality Profile",
+        viewId: "onboarding",
+        description:
+          "Profiles each column for completeness, null rates, distinct counts, min/max values, and computes an overall quality score. Uses PyArrow compute functions for statistics.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders quality profile table with per-column statistics and overall score" },
+          { path: "backend/api/onboarding.py", role: "Computes column-level quality statistics using PyArrow compute" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "POST",
+            path: "/api/onboarding/profile",
+            role: "Returns per-column quality statistics and overall quality score",
+            routerFile: "backend/api/onboarding.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [
+          { name: "PyArrow", role: "Compute functions for column-level statistics (null counts, distinct, min/max)" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Quality profiling output is computed entirely from the uploaded data using PyArrow compute functions. Statistics and quality scores are derived from data — no hardcoded quality rules.",
         metadataOpportunities: [],
       },
     ],

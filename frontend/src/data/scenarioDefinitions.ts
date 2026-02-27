@@ -3137,6 +3137,50 @@ const S27_MEDALLION_ARCHITECTURE: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// S28: Upload & Profile Data (Data Onboarding)
+// ==========================================================================
+
+const S28_DATA_ONBOARDING: ScenarioDefinition = {
+  id: "s28_data_onboarding",
+  name: "S28: Upload & Profile Data",
+  description:
+    "Upload a CSV file through the Data Onboarding wizard, auto-detect its schema, profile data quality metrics, and map it to a canonical entity.",
+  category: "admin",
+  difficulty: "beginner",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      action: "navigate",
+      target: "/onboarding",
+      title: "Open Data Onboarding",
+      content: "Navigate to the Data Onboarding view under the Operate section in the sidebar.",
+      hint: "Click 'Onboarding' in the sidebar under Operate.",
+    },
+    {
+      action: "click",
+      target: "[data-tour='onboarding-wizard']",
+      title: "Upload a CSV File",
+      content: "Select a CSV file using the file picker and click 'Upload & Detect' to auto-detect the schema.",
+      hint: "Choose a CSV file and click the upload button.",
+    },
+    {
+      action: "wait",
+      target: "[data-tour='onboarding-schema']",
+      title: "Review Detected Schema",
+      content: "The schema table shows detected column names, types, nullability, and patterns like ISIN or MIC codes.",
+      hint: "Review the columns table showing auto-detected types.",
+    },
+    {
+      action: "click",
+      target: "[data-tour='onboarding-profile']",
+      title: "Profile Data Quality",
+      content: "Click 'Next: Profile Data' to run quality analysis. Review completeness, null rates, distinct counts, and the overall quality score.",
+      hint: "Click the profile button and review the quality metrics.",
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3167,4 +3211,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s25_full_platform_demo: S25_FULL_PLATFORM_DEMO,
   s26_architecture_trace: S26_ARCHITECTURE_TRACE,
   s27_medallion_architecture: S27_MEDALLION_ARCHITECTURE,
+  s28_data_onboarding: S28_DATA_ONBOARDING,
 };
