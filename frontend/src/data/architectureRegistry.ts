@@ -2823,19 +2823,38 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Navigation Sidebar",
         viewId: "app",
         description:
-          "Main navigation sidebar with 8 groups containing 16 view links. Groups: Overview, Metadata, Studio, Monitoring, Analysis, Intelligence, Governance, Admin. Navigation structure is hardcoded.",
+          "Main navigation sidebar with 8 groups containing 16 view links. Groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, AI. Navigation structure loaded from metadata API with fallback.",
         files: [
-          { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component" },
+          { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component (loads from metadata)" },
+          { path: "frontend/src/stores/navigationStore.ts", role: "Fetches navigation config from API" },
         ],
-        stores: [],
-        apis: [],
-        dataSources: [],
+        stores: [
+          {
+            name: "navigationStore",
+            path: "frontend/src/stores/navigationStore.ts",
+            role: "Provides navigation groups from metadata API",
+          },
+        ],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/navigation",
+            role: "Returns navigation manifest with groups and view items",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/navigation/main.json",
+            category: "metadata",
+            role: "Navigation manifest defining sidebar groups and view links",
+          },
+        ],
         technologies: [],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Navigation structure (groups, links, icons, routes) is entirely hardcoded in the Sidebar component.",
+          "Navigation structure (groups, labels, paths, ordering) loaded from workspace/metadata/navigation/main.json via API. Sidebar has hardcoded fallback for resilience. Adding/reordering views requires only JSON changes.",
         metadataOpportunities: [
-          "Define navigation structure as metadata so views can register themselves",
           "Allow role-based visibility via metadata configuration",
         ],
       },

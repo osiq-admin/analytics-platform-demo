@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M139 Stage 3 Checkpoint; 593 total tests: 411 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M143 Stage 4 Checkpoint; 597 total tests: 415 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -42,6 +42,7 @@
 | Metadata Architecture Overhaul — Stage 1 (M129-M131) | COMPLETE | SQL presets to metadata, settings resolver Strategy pattern — 398 backend tests |
 | Metadata Architecture Overhaul — Stage 2 (M132-M135) | COMPLETE | Dashboard widget manifest, metadata-driven rendering, E2E tests — 404 backend tests |
 | Metadata Architecture Overhaul — Stage 3 (M136-M139) | COMPLETE | Format registry, model-specific alert layouts, useFormatRules hook — 411 backend tests |
+| Metadata Architecture Overhaul — Stage 4 (M140-M143) | COMPLETE | Navigation manifest, Sidebar from metadata, E2E tests — 415 backend tests |
 
 ---
 
@@ -195,6 +196,10 @@
 | M137 | Alert Detail Layouts | COMPLETE | 3 | 3 | alert_detail_layout field on DetectionModelDefinition, all 5 models updated with panels/emphasis/hints, 3 new tests — 411 backend tests |
 | M138 | Frontend Format Rules + Alert Layouts | COMPLETE | 3 | 3 | useFormatRules hook with caching, fromApiLayout converter, AlertDetail loads layout from API with fallback — 964 modules |
 | M139 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry updated, docs updated, pushed |
+| M140 | Navigation Manifest Metadata | COMPLETE | 4 | 4 | NavItem/NavGroup/NavigationConfig Pydantic models, main.json with 8 groups and 16 views, GET /api/metadata/navigation, 4 new tests — 415 backend tests |
+| M141 | Sidebar from Metadata | COMPLETE | 3 | 3 | navigationStore Zustand store, Sidebar.tsx loads from API with FALLBACK_NAVIGATION — 965 modules |
+| M142 | Navigation E2E Tests | COMPLETE | 2 | 2 | TestNavigationMetadata: API returns 16 views, sidebar renders 16 links — 2 new E2E tests |
+| M143 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry sidebar → fully-metadata-driven, docs updated, pushed |
 
 ---
 

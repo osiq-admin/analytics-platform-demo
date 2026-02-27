@@ -45,7 +45,7 @@
 
 ## 3. Sidebar & Navigation
 
-- [ ] **Sidebar link**: Add to `frontend/src/layouts/Sidebar.tsx` under the correct section
+- [ ] **Navigation entry**: Add to `workspace/metadata/navigation/main.json` under the correct group (sidebar loads from metadata API)
 - [ ] **Route**: Add to `frontend/src/App.tsx` router configuration
 - [ ] **Section grouping**: Place under correct category (Overview/Define/Configure/Operate/Compose/Investigate/Governance/AI)
 - [ ] **Active state**: Verify the sidebar link highlights when on that view

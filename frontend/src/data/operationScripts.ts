@@ -41,6 +41,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "See which detection rules fire most frequently and identify patterns across the alert population.",
       },
       {
+        id: "view_navigation_config",
+        name: "View Navigation Config",
+        description:
+          "Sidebar navigation is loaded from metadata at workspace/metadata/navigation/main.json. Edit the JSON to add, remove, or reorder views and groups — no code changes needed. The API endpoint GET /api/metadata/navigation serves the configuration.",
+      },
+      {
         id: "configure_widgets",
         name: "Configure Dashboard Widgets",
         description:
