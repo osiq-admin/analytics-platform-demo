@@ -73,7 +73,7 @@ export default function DataOnboarding() {
   useEffect(() => {
     if (step === 4) {
       api
-        .get<{ entity_id: string; name: string }[]>("/entities")
+        .get<{ entity_id: string; name: string }[]>("/metadata/entities")
         .then(setEntities)
         .catch(() => {});
     }
