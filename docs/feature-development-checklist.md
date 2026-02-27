@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-27 (M150 — 603 total tests: 421 backend + 182 E2E, 26 scenarios, 16 views, 71 architecture sections, 69% metadata-driven)
+**Last Updated**: 2026-02-27 (M172 — 716 total tests: 506 backend + 210 E2E, 26 scenarios, 16 views, 74 architecture sections, 83.8% metadata-driven)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 421)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 506)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 421)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 506)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -71,7 +71,7 @@
 - [ ] **UI interaction tests**: Click, type, navigate — verify expected state changes
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
-- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 182)
+- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 210)
 - [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
 ---
@@ -236,6 +236,23 @@
 - [ ] **Rule definition**: Add rule to `workspace/metadata/format_rules/default.json`
 - [ ] **Field mapping**: Map field names to the new rule in `field_mappings`
 
+### When Adding a New Grid View:
+- [ ] **Grid column metadata**: Add JSON to `workspace/metadata/grids/{view_id}.json`
+- [ ] **Pydantic model**: Use `GridColumnDef` and `GridConfig` from `backend/models/grids.py`
+- [ ] **Frontend hook**: Use `useGridColumns(viewId, fallbackColumns)` from `frontend/src/hooks/useGridColumns.ts`
+- [ ] **Renderer overrides**: Define `rendererOverrides` for columns needing React components (badges, formatters)
+- [ ] **Fallback columns**: Provide hardcoded `ColDef[]` as fallback for graceful degradation
+
+### When Adding a New View Tab Set:
+- [ ] **View config metadata**: Add JSON to `workspace/metadata/view_config/{view_id}.json`
+- [ ] **Frontend hook**: Use `useViewTabs<T>(viewId, fallbackTabs)` from `frontend/src/hooks/useViewTabs.ts`
+- [ ] **Fallback tabs**: Provide hardcoded tab array as fallback
+
+### When Adding a New Workflow:
+- [ ] **Workflow metadata**: Add JSON to `workspace/metadata/workflows/{workflow_id}.json`
+- [ ] **Frontend hook**: Use `useWorkflowStates(workflowId)` from `frontend/src/hooks/useWorkflowStates.ts`
+- [ ] **Badge variants**: Define badge_variants in the workflow JSON for status styling
+
 ### When Adding a New API Endpoint:
 - [ ] Route handler in `backend/api/`
 - [ ] Pydantic model for request/response
@@ -275,10 +292,10 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (390+)
+# Backend tests (506+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (182+)
+# E2E Playwright tests (210+)
 uv run pytest tests/e2e/ -v
 
 # Single E2E test class
@@ -305,3 +322,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-26 | Updated for M124 (F-021 Entity Designer layout redesign) | Claude Opus 4.6 |
 | 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 572 (390+182), 26 scenarios | Claude Opus 4.6 |
 | 2026-02-27 | Updated for M150 (Metadata Architecture Overhaul) — added widget/format rule triggers, updated test counts to 603 (421+182), 71 sections 69% metadata-driven | Claude Opus 4.6 |
+| 2026-02-27 | Updated for M172 (Compliance & Metadata Phase 2) — added grid/view-tab/workflow triggers, updated test counts to 716 (506+210), 74 sections 83.8% metadata-driven | Claude Opus 4.6 |

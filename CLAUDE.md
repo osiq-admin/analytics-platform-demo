@@ -1,14 +1,14 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 16 views, 603 tests (421 backend + 182 E2E), 8 entities, 5 detection models, 26 guided scenarios.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 16 views, 716 tests (506 backend + 210 E2E), 8 entities, 5 detection models, 26 guided scenarios.
 
 ## Quick Start
 ```bash
 ./start.sh                          # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (421)
-uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (182)
-cd frontend && npm run build                  # Build frontend (965 modules)
+uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (506)
+uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (210)
+cd frontend && npm run build                  # Build frontend (969 modules)
 uv run python -m scripts.generate_data        # Regenerate CSVs
 uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 ```
@@ -17,9 +17,9 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 - **Backend**: `backend/` — FastAPI + DuckDB, 9 API routers, calculation/detection engines
 - **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 16 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
-- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail
+- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)
-- **Tests**: `tests/` — 421 backend tests + 182 E2E Playwright tests
+- **Tests**: `tests/` — 506 backend tests + 210 E2E Playwright tests
 - **Scripts**: `scripts/` — data generation, snapshot generation
 - **Docs**: `docs/` — progress tracker, demo guide, plans, schemas, checklists
 
@@ -60,7 +60,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 
 ## Plans & Progress
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M150 complete)
+- Progress tracker: `docs/progress.md` (M0-M172 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`
