@@ -2,556 +2,1136 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Transform the analytics platform from a functional demo into a metadata-driven, explainable, AI-assisted trade surveillance system with production-grade infrastructure, security, and regulatory traceability.
+**Goal:** Transform the analytics platform into a fully metadata-driven, medallion-architected trade surveillance system with production-grade data governance, regulatory traceability, PII handling, business glossary, and platform-portable metadata — ready to migrate from local DuckDB to any cloud data platform.
 
-**Architecture:** The system will be fully metadata-driven — entities, calculations, detection models, settings, UI layouts, regulatory mappings, and scoring are all defined as metadata and can be modified at runtime without code changes. OOB (out-of-box) and user-defined configurations are cleanly separated so upgrades don't regress customizations. Every calculation and alert is fully explainable with drill-down to underlying data, logic, settings, and regulatory context.
+**Architecture:** 11-tier medallion architecture (Landing → Bronze → Quarantine → Silver → Gold → Platinum → Reference/MDM → Sandbox → Logging/Audit → Metrics/Observability → Archive). All data transformations, quality gates, governance rules, and business definitions are metadata-driven JSON — no hardcoded logic. Connector abstraction layer supports local files today, streaming queues and APIs tomorrow. Metadata portability enables migration to Snowflake, Databricks, BigQuery, or any platform via SQLMesh transpilation and Arrow interchange.
 
-**Tech Stack:** Python FastAPI + DuckDB (backend), React 19 + TypeScript + Vite (frontend). Existing metadata JSON + Pydantic models. No new database technology (DuckDB sufficient for demo).
+**Tech Stack:** Python FastAPI + DuckDB (backend), React 19 + TypeScript + Vite (frontend). Existing metadata JSON + Pydantic models. SQLMesh for platform-agnostic pipeline definitions. Apache Arrow/Parquet for universal data interchange. No new database technology for demo (DuckDB sufficient), but architecture designed for cloud migration.
 
 ---
 
 ## Current State Assessment
 
-**What's built (Phases 1-6, M0-M65):**
+**What's built (Phases 1-12 + 7B + Overhauls, M0-M173):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
 - 16 frontend views, 716 tests (506 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
+- 83.8% metadata-driven (74 sections across 16 views)
+- 26 guided scenarios, 89 operation scripts, 8 demo checkpoints
 
-**What's already metadata-driven (~70%):**
+**What's already metadata-driven (~83.8%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
 - Detection models: JSON with query, scoring, alert templates
 - Settings: JSON with hierarchical overrides, priority system, context-aware resolution
 - Entity definitions: JSON with field schemas, relationships, domain values
+- Navigation, widgets, format rules, grid columns, view tabs, theme palettes, workflows, tours
+- ISO/FIX/compliance standards metadata
+- OOB vs user-defined metadata layers
 
-**Critical gaps for fully dynamic system:**
-- `CALC_VALUE_COLUMNS` dict hardcoded in `detection_engine.py:18-27` (blocks dynamic calc addition)
-- Entity context fields hardcoded in `detection_engine.py:90-92`
-- Frontend fetches metadata but doesn't use it to render UIs
-- No metadata write/edit APIs (read-only currently)
-- No SQL parameterization (injection risk + can't inject settings into calc SQL)
-- No explainability traces, no regulatory tagging, no OOB/user separation
+**Critical gaps for medallion architecture:**
+- No tiered data processing (all data goes CSV → Parquet → DuckDB in one step)
+- MappingStudio is UI-only prototype — mappings not persisted or used in pipeline
+- No raw-to-canonical entity mapping (source format → standard entity)
+- No canonical-to-calculation attribute mapping (entity fields → calc inputs)
+- No data quality gates or quarantine tier
+- No data classification, PII detection, or sensitivity marking
+- No masking or encryption of sensitive fields
+- No business glossary or semantic layer
+- No data lineage tracking (OpenLineage)
+- No connector abstraction (hardcoded CSV file reader)
+- No platform migration support (DuckDB-specific SQL throughout)
+
+---
+
+## Architectural Vision: 11-Tier Medallion Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    MEDALLION ARCHITECTURE TIERS                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
+│  │ LANDING  │→ │  BRONZE  │→ │  SILVER  │→ │   GOLD   │→ │ PLATINUM │ │
+│  │ Raw      │  │ Typed +  │  │ Canonical│  │ Business │  │ Pre-built│ │
+│  │ ingested │  │ validated│  │ entities │  │ aggreg.  │  │ KPIs &   │ │
+│  │ as-is    │  │ quality  │  │ mapped   │  │ calcs    │  │ summaries│ │
+│  └──────────┘  └────┬─────┘  └──────────┘  └──────────┘  └──────────┘ │
+│                     │                                                   │
+│                     ↓ (failed)                                          │
+│               ┌──────────┐                                              │
+│               │QUARANTINE│                                              │
+│               │ Flagged  │                                              │
+│               │ records  │                                              │
+│               └──────────┘                                              │
+│                                                                         │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │ CROSS-CUTTING TIERS                                               │  │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐         │  │
+│  │  │REFERENCE │  │ SANDBOX  │  │ LOGGING  │  │ METRICS  │         │  │
+│  │  │ MDM,     │  │ Lab for  │  │ Audit &  │  │ Pipeline │         │  │
+│  │  │ golden   │  │ what-if  │  │ lineage  │  │ health   │         │  │
+│  │  │ records  │  │ testing  │  │ traces   │  │ KPIs     │         │  │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘         │  │
+│  │  ┌──────────┐                                                     │  │
+│  │  │ ARCHIVE  │                                                     │  │
+│  │  │ Cold     │                                                     │  │
+│  │  │ storage  │                                                     │  │
+│  │  │ retention│                                                     │  │
+│  │  └──────────┘                                                     │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Tier Definitions
+
+| # | Tier | Purpose | Data State | Quality Gate |
+|---|------|---------|-----------|--------------|
+| T1 | **Landing/Staging** | Raw ingestion zone — files, streams, APIs arrive as-is | Raw bytes/text, original format | Schema detection, basic integrity |
+| T2 | **Bronze** | Type-cast, deduplicated, timestamped — "single version of truth" for raw data | Typed columns, append-only | Type validation, null checks, dedup |
+| T3 | **Quarantine/Error** | Failed validation records — flagged for investigation or reprocessing | Invalid/suspicious records | Quarantine reason, retry policy |
+| T4 | **Silver** | Canonical entities — mapped to standard entity model (ISO/FIX-aligned) | Canonical schema, relationships | Referential integrity, business rules |
+| T5 | **Gold** | Business-ready aggregations — calculations, scores, detection results | Aggregated, scored, enriched | Calculation validation, score bounds |
+| T6 | **Platinum/Diamond** | Pre-built KPIs, executive dashboards, regulatory report datasets | KPIs, summaries, report-ready | Completeness, freshness SLA |
+| T7 | **Reference/MDM** | Master data — golden records for products, venues, accounts, traders | Deduplicated master records | Cross-source reconciliation |
+| T8 | **Sandbox/Lab** | Isolated testing — what-if analysis, threshold tuning, model backtesting | Copy-on-write from any tier | No production impact guarantee |
+| T9 | **Logging/Audit** | Pipeline execution logs, user actions, metadata changes, compliance audit trail | Append-only event records | Tamper-evident, retention compliance |
+| T10 | **Metrics/Observability** | Pipeline health, data quality scores, SLA compliance, drift detection | Time-series metrics | Alerting thresholds, anomaly detection |
+| T11 | **Archive/Cold** | Regulatory retention — compressed, encrypted, immutable cold storage | Compressed Parquet + metadata | Retention policy, crypto-shredding ready |
+
+### Data Contracts (Between Tiers)
+
+Each tier boundary is governed by a **data contract** — a metadata-defined agreement specifying:
+
+```json
+{
+  "contract_id": "bronze_to_silver_execution",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "entity": "execution",
+  "schema": { "fields": [...], "required": [...], "types": {...} },
+  "quality_rules": [
+    { "rule": "not_null", "fields": ["execution_id", "order_id", "timestamp"] },
+    { "rule": "referential_integrity", "field": "order_id", "reference": "order.order_id" },
+    { "rule": "range_check", "field": "quantity", "min": 0 },
+    { "rule": "enum_check", "field": "exec_type", "values": ["NEW", "PARTIAL", "FILL", "CANCEL"] }
+  ],
+  "sla": { "freshness_minutes": 15, "completeness_pct": 99.5 },
+  "owner": "data-engineering",
+  "classification": { "sensitivity": "confidential", "pii_fields": ["trader_id", "account_id"] }
+}
+```
+
+### Data Classification Taxonomy
+
+| Level | Label | Description | Handling |
+|-------|-------|-------------|----------|
+| L0 | **Public** | Market data (EOD prices, venue info) | No restrictions |
+| L1 | **Internal** | Aggregated analytics, pipeline metrics | Internal use only |
+| L2 | **Confidential** | Order/execution data, account details | Encrypted at rest, access-logged |
+| L3 | **Restricted** | Detection model thresholds, scoring logic | Need-to-know basis |
+| L4 | **PII** | Trader names, account holder info, beneficial ownership | Masked by default, GDPR/CCPA compliant |
+| L5 | **Market-Sensitive** | Pre-trade intelligence, material non-public info | Strict compartmentalization |
+
+### Column-Level Sensitivity Metadata
+
+Every entity field carries governance metadata:
+
+```json
+{
+  "field_name": "trader_id",
+  "data_type": "string",
+  "classification": "L4_PII",
+  "pii_category": "direct_identifier",
+  "masking_policy": "tokenize",
+  "masking_function": "hash_sha256_salt",
+  "encryption": "column_level_aes256",
+  "retention_days": 2555,
+  "gdpr_lawful_basis": "legitimate_interest",
+  "gdpr_data_subject_category": "employee",
+  "right_to_erasure": true,
+  "crypto_shredding_key_group": "trader_pii"
+}
+```
 
 ---
 
 ## Roadmap Phases
 
-### Phase 7: Dynamic Metadata Foundation
-*Remove hardcodings, add metadata CRUD APIs, enable runtime configuration*
+### Completed Phases (M0-M173)
 
-### Phase 8: Explainability & Drill-Down
-*Full calculation traces, settings resolution traces, alert explainability UI*
-
-### Phase 9: Metadata Editor & Visual Configuration
-*Side-by-side JSON + visual editor, toggle views/widgets, chart type switching*
-
-### Phase 10: Regulatory Traceability & Model Tagging
-*Map calculations → models → regulations, suggestion engine*
-
-### Phase 11: OOB vs User-Defined Separation
-*Layer architecture (base → tenant → user), upgrade-safe customizations*
-
-### Phase 12: UI/UX Usability (P1)
-*AG Grid column fixes, responsive layouts, Visual Editor grid fix, tooltips & resize*
-
-### Phase 13: AI-Assisted Configuration
-*LLM understands system metadata, suggests calculations, orchestrates integrations*
-
-### Phase 14: Alert Tuning & Distribution Analysis
-*Scoring calibration, threshold optimization, back-testing, sandbox mode*
-
-### Phase 15: Additional Detection Models
-*Expand from 5 to 15 models covering full regulatory spectrum*
-
-### Phase 16: Security Hardening
-*Authentication, SQL injection fixes, CORS, rate limiting, input validation*
-
-### Phase 17: Testing Framework Expansion
-*Frontend tests, API security tests, performance tests, E2E automation*
-
-### Phase 18: Cloud & Deployment Infrastructure
-*Docker, CI/CD, health checks, structured logging*
-
-### Phase 18: Advanced Analytics & Dashboarding
-*Result analysis, advanced dashboard widgets, comparative views*
-
-### Phase 19: Case Management Workflow
-*Triage → investigation → case → resolution → regulatory filing*
-
-### Phase 20: Productization
-*Multi-tenant readiness, configuration management, plugin architecture*
+| Phase | Milestone Range | Status | Summary |
+|-------|----------------|--------|---------|
+| Phases 1-6 | M0-M65 | COMPLETE | 8 entities, 10 calculations, 5 detection models, 16 views |
+| Phase 7 | M66-M69 | COMPLETE | Dynamic metadata foundation, CRUD APIs |
+| Phase 8 | M70-M73 | COMPLETE | Explainability & drill-down |
+| Phase 9 | M74-M78 | COMPLETE | Metadata editor (JSON + visual) |
+| Phase 10 | M79-M83 | COMPLETE | Regulatory traceability |
+| Phase 11 | M84-M88 | COMPLETE | OOB vs user-defined separation |
+| Phase 12 | M89-M92 | COMPLETE | UI/UX usability |
+| Phase 7B | M93-M120 | COMPLETE | Metadata UX, guided demo, use case studio |
+| Architecture Traceability | M128 | COMPLETE | 74 traced sections |
+| Metadata Architecture Overhaul | M129-M150 | COMPLETE | Navigation, widgets, format rules, audit trail |
+| Compliance & Metadata Phase 2 | M151-M173 | COMPLETE | ISO/FIX/compliance, grid columns, themes, workflows |
 
 ---
 
-## Phase 7: Dynamic Metadata Foundation
+### Tier 0 — Quick Wins
 
-**Goal:** Remove all hardcodings from engines, add full CRUD APIs for metadata, enable adding calculations/models/entities at runtime without code changes.
+### Phase 13: Data Calibration & Alert Distribution Fix
 
-**Critical files:**
-- `backend/engine/detection_engine.py` — remove `CALC_VALUE_COLUMNS`, hardcoded context fields
-- `backend/engine/calculation_engine.py` — add SQL parameter substitution
-- `backend/models/calculations.py` — add `value_field`, `regulatory_tags`
-- `backend/models/detection.py` — add `context_fields`, `regulatory_coverage`
-- `backend/api/metadata.py` — add PUT/DELETE endpoints, dependency checker
-- `workspace/metadata/calculations/**/*.json` — add `value_field` to all 10 calcs
-- `workspace/metadata/detection_models/*.json` — add `context_fields` to all 5 models
+*Fix alert distribution skew so detection models fire realistic, balanced alerts across entities.*
 
-### Task 7.1: Add `value_field` to CalculationDefinition and remove hardcoded dict
+**Goal:** Resolve F-001 (alert distribution skew — 85%+ alerts on one product) and F-010 (market data gaps) from exploratory testing. Calibrate data generation to produce balanced, realistic alert distributions across products, accounts, and time periods.
 
-**Files:**
-- Modify: `backend/models/calculations.py` — add `value_field: str` field
-- Modify: `backend/engine/detection_engine.py:18-27` — remove `CALC_VALUE_COLUMNS` dict, read from metadata
-- Modify: `workspace/metadata/calculations/**/*.json` — add `value_field` to all 10 calculation JSONs
-- Test: `tests/test_detection_engine.py`
+**Tasks:**
 
-**Step 1:** Add `value_field: str` to `CalculationDefinition` in `backend/models/calculations.py`
+#### Task 13.1: Analyze current alert distribution
+- Profile `workspace/alerts/alert_summary.parquet` to understand skew
+- Document which products, accounts, dates produce alerts and which don't
+- Identify root causes in `scripts/generate_data.py`
 
-**Step 2:** Update all 10 calculation JSON files to include `value_field`:
-- `large_trading_activity.json` → `"value_field": "total_value"`
-- `wash_qty_match.json` → `"value_field": "qty_match_ratio"`
-- `wash_vwap_proximity.json` → `"value_field": "vwap_proximity"`
-- `trend_detection.json` → `"value_field": "price_change_pct"`
-- `same_side_ratio.json` → `"value_field": "same_side_pct"`
-- `market_event_detection.json` → `"value_field": "price_change_pct"`
-- `cancel_pattern.json` → `"value_field": "cancel_count"`
-- `opposite_side_execution.json` → `"value_field": "total_value"`
-- `vwap_calc.json` → `"value_field": "vwap"`
-- `wash_detection.json` → `"value_field": "wash_score"`
+#### Task 13.2: Fix data generation parameters
+- **Files:** Modify `scripts/generate_data.py`
+- Ensure wash trading patterns distributed across 3+ products (not just one)
+- Ensure market price ramping has sufficient price trend data
+- Ensure spoofing has cancel patterns across multiple accounts
+- Ensure insider dealing has market event correlation
+- Verify market data coverage (md_eod, md_intraday) for all products
 
-**Step 3:** Update `detection_engine.py` to read `value_field` from loaded calc metadata instead of `CALC_VALUE_COLUMNS` dict. Replace line 149: `value_column = CALC_VALUE_COLUMNS.get(mc.calc_id, mc.calc_id)` with lookup from metadata service.
+#### Task 13.3: Regenerate data and verify distribution
+- Run `uv run python -m scripts.generate_data`
+- Run pipeline, verify alert distribution is balanced
+- Run `uv run python -m scripts.generate_snapshots` to update demo checkpoints
+- Verify all 5 detection models fire alerts
+- Update demo data counts if they changed
 
-**Step 4:** Run tests: `uv run pytest tests/test_detection_engine.py -v`
-
-**Step 5:** Commit
-
-### Task 7.2: Add `context_fields` to DetectionModelDefinition
-
-**Files:**
-- Modify: `backend/models/detection.py` — add `context_fields: list[str]`
-- Modify: `backend/engine/detection_engine.py:90-92` — read from model metadata
-- Modify: `workspace/metadata/detection_models/*.json` — add `context_fields` to all 5 models
-- Test: `tests/test_detection_engine.py`
-
-**Step 1:** Add `context_fields: list[str]` to `DetectionModelDefinition`
-
-**Step 2:** Update all 5 detection model JSONs with appropriate context fields:
-```json
-"context_fields": ["product_id", "account_id", "trader_id", "business_date", "asset_class", "instrument_type"]
-```
-
-**Step 3:** Update `detection_engine.py:90-92` to use `model.context_fields` instead of hardcoded list
-
-**Step 4:** Run tests, commit
-
-### Task 7.3: Add metadata CRUD APIs
-
-**Files:**
-- Modify: `backend/api/metadata.py` — add PUT/DELETE endpoints
-- Modify: `backend/services/metadata_service.py` — add save/delete/validate methods
-- Test: `tests/test_integration_e2e.py` — add API tests
-
-**New endpoints:**
-- `PUT /api/metadata/calculations/{calc_id}` — save/update calculation definition
-- `DELETE /api/metadata/calculations/{calc_id}` — delete with dependency check
-- `GET /api/metadata/calculations/{calc_id}/dependents` — what depends on this calc?
-- `PUT /api/metadata/entities/{entity_id}` — update entity definition
-- `PUT /api/metadata/settings/{setting_id}` — update setting definition
-- `POST /api/metadata/validate` — pre-save validation (SQL syntax, dependency check)
-
-**Step 1:** Add `save_calculation()`, `delete_calculation()`, `get_dependents()` to metadata service
-
-**Step 2:** Add dependency checker that scans all detection models and calcs for references
-
-**Step 3:** Add API endpoints with Pydantic validation
-
-**Step 4:** Add tests for CRUD operations
-
-**Step 5:** Run full test suite, commit
-
-### Task 7.4: Add SQL parameter substitution for calculations
-
-**Files:**
-- Modify: `backend/engine/calculation_engine.py` — add parameter resolution before SQL execution
-- Modify: `backend/models/calculations.py` — enhance `parameters` field schema
-- Test: `tests/test_calculation_engine.py`
-
-**Design:** Calculations can reference settings in their `parameters` dict. Before executing SQL, resolve settings and substitute into SQL using named parameters (`:param_name` syntax with DuckDB's prepared statement support).
-
-```python
-# In calculation JSON:
-"parameters": {
-  "threshold": {"source": "setting", "setting_id": "wash_vwap_threshold"}
-}
-# In SQL: WHERE vwap_proximity < :threshold
-```
-
-**Step 1:** Update `parameters` field schema to support `{"source": "setting"|"context", "setting_id": "...", "field": "..."}`
-
-**Step 2:** Add parameter resolution in `calculation_engine.py` before `cursor.execute(sql)` — resolve settings, build param dict, use DuckDB prepared statements
-
-**Step 3:** Run tests, commit
+#### Task 13.4: Update tests and documentation
+- Run full test suite
+- Update any test fixtures that depend on specific data counts
+- Update progress.md
 
 ---
 
-## Phase 8: Explainability & Drill-Down
+### Tier 1 — Medallion Architecture Foundation
 
-**Goal:** Every alert, calculation result, and score is fully explainable. Users can drill from an alert down to the raw data, SQL executed, settings resolved, and scoring logic applied.
+### Phase 14: Medallion Architecture Core
 
-**Key principle:** "Show your work" — every number on screen should be clickable to see how it was computed.
+*Define the 11-tier data architecture, tier metadata schema, data contract framework, and pipeline orchestration model.*
 
-### Task 8.1: Enhance AlertTrace with full execution details
+**Goal:** Establish the foundational metadata schema for the medallion architecture. Define tier definitions, data contracts between tiers, pipeline stage metadata, and the transformation registry. This is the "skeleton" that all subsequent phases flesh out.
 
-**Files:**
-- Modify: `backend/engine/detection_engine.py` — capture SQL, settings, intermediate results
-- Modify: `backend/models/detection.py` — enhance `AlertTrace` model
-- Modify: `backend/api/alerts.py` — expose trace details in API
-- Test: `tests/test_detection_engine.py`
+**Tasks:**
 
-**AlertTrace additions:**
-```python
-class AlertTrace:
-    # Existing fields...
-    executed_sql: str          # Actual SQL that was run (not template)
-    sql_row_count: int         # How many rows the query returned
-    resolved_settings: dict    # Setting ID → resolved value + override reason
-    calculation_traces: list[CalculationTrace]  # Per-calc execution details
-    scoring_breakdown: list[ScoreStep]  # Which score step matched and why
-    entity_context_source: dict  # Where each context field came from
-```
+#### Task 14.1: Tier definition metadata
+- **Create:** `workspace/metadata/medallion/tiers.json` — 11 tier definitions with properties:
+  ```json
+  {
+    "tiers": [
+      {
+        "tier_id": "landing",
+        "tier_number": 1,
+        "name": "Landing/Staging",
+        "purpose": "Raw ingestion zone",
+        "data_state": "raw",
+        "storage_format": "original",
+        "retention_policy": "7_days",
+        "quality_gate": "schema_detection",
+        "access_level": "data_engineering",
+        "mutable": false,
+        "append_only": true
+      }
+    ]
+  }
+  ```
 
-```python
-class CalculationTrace:
-    calc_id: str
-    layer: str
-    sql_executed: str
-    input_row_count: int
-    output_row_count: int
-    execution_time_ms: int
-    value_field: str
-    computed_value: float
-    threshold_setting_id: str | None
-    threshold_value: float | None
-    passed: bool
-    score_awarded: int
-```
+#### Task 14.2: Data contract metadata schema
+- **Create:** `workspace/metadata/medallion/contracts/` — per-entity, per-tier-boundary contracts
+- Contracts define: source tier, target tier, entity, field mappings, quality rules, SLAs, owner, classification
+- **Create:** `backend/models/medallion.py` — Pydantic models for Tier, DataContract, QualityRule, TransformationStep
 
-### Task 8.2: Add calculation trace API endpoint
+#### Task 14.3: Transformation registry
+- **Create:** `workspace/metadata/medallion/transformations/` — metadata defining each tier-to-tier transformation
+- Each transformation specifies: source query, target schema, field mappings, quality checks, error handling
+- Transformations are metadata-driven SQL templates with `$param` substitution (same pattern as calculations)
 
-**Files:**
-- Create: `backend/api/trace.py` — new trace endpoints
-- Modify: `backend/main.py` — register trace router
-- Test: `tests/test_trace_api.py`
+#### Task 14.4: Pipeline stage metadata
+- **Create:** `workspace/metadata/medallion/pipeline_stages.json` — ordered execution plan
+- Define execution order, dependencies, parallelism hints, retry policies
+- Integrate with existing `PipelineMonitor` view for visualization
 
-**New endpoints:**
-- `GET /api/trace/alert/{alert_id}` — full explainability trace for an alert
-- `GET /api/trace/calculation/{calc_id}?product_id=X&date=Y` — calculation result trace
-- `GET /api/trace/settings/{setting_id}?context=...` — settings resolution trace (which override matched and why)
+#### Task 14.5: Medallion API endpoints
+- **Create:** `backend/api/medallion.py` — CRUD endpoints for tiers, contracts, transformations
+- `GET /api/medallion/tiers` — list all tiers with status
+- `GET /api/medallion/contracts` — list data contracts
+- `GET /api/medallion/lineage/{entity}` — tier-to-tier lineage graph
+- `POST /api/medallion/validate-contract` — validate a contract definition
 
-### Task 8.3: Frontend explainability drill-down UI
-
-**Files:**
-- Modify: `frontend/src/views/RiskCaseManager/AlertDetail/` — add drill-down panels
-- Create: `frontend/src/components/ExplainabilityPanel.tsx` — reusable trace viewer
-- Create: `frontend/src/components/SQLViewer.tsx` — syntax-highlighted SQL display
-- Create: `frontend/src/components/SettingsTraceViewer.tsx` — settings resolution tree
-
-**UI design:**
-- Each score in the alert detail becomes clickable
-- Clicking opens an explainability panel showing: SQL executed, rows matched, settings used, score steps
-- Settings show full resolution hierarchy: default → override → why this override matched
-- Raw data rows that triggered the alert are shown in a mini data grid
+#### Task 14.6: Medallion overview view (frontend)
+- **Create:** `frontend/src/views/MedallionOverview/index.tsx` — React Flow diagram of 11 tiers
+- Clickable tiers showing: entity count, record count, last refresh, quality score
+- Data contract edges showing: field mapping count, quality rule count, SLA status
+- Integrated with PipelineMonitor for execution status
 
 ---
 
-## Phase 9: Metadata Editor & Visual Configuration
+### Phase 15: Data Onboarding & Connector Abstraction
 
-**Goal:** Side-by-side raw JSON + visual editor for all metadata. Toggle views/widgets on and off. Switch chart types on the fly. No rebuild needed.
+*Enable ingestion of data from any source format — local files, streaming queues, APIs — through a metadata-driven connector framework.*
 
-### Task 9.1: Metadata Editor view (JSON + visual side-by-side)
+**Goal:** Replace the hardcoded CSV reader with a connector abstraction layer. Users can onboard data in any format (CSV, JSON, XML, FIX, Excel, Parquet), and the system detects schemas, profiles data quality, and stages it in the Landing tier. Architecture is local-first but designed to swap connectors for Kafka, REST APIs, FIX protocol, etc.
 
-**Files:**
-- Create: `frontend/src/views/MetadataEditor/index.tsx` — main editor view
-- Create: `frontend/src/views/MetadataEditor/JsonPanel.tsx` — Monaco JSON editor (left)
-- Create: `frontend/src/views/MetadataEditor/VisualPanel.tsx` — visual rendering (right)
-- Create: `frontend/src/views/MetadataEditor/EntityEditor.tsx` — entity field editor
-- Create: `frontend/src/views/MetadataEditor/CalculationEditor.tsx` — calc SQL + DAG editor
-- Create: `frontend/src/views/MetadataEditor/SettingsEditor.tsx` — override hierarchy editor
-- Create: `frontend/src/views/MetadataEditor/DetectionModelEditor.tsx` — model composer
+**Tasks:**
 
-**Design:**
-- Left panel: Monaco editor showing raw JSON (syntax highlighting, validation)
-- Right panel: Visual rendering of the same data (form fields, DAG diagram, override tree)
-- Changes in either panel sync to the other in real-time
-- Save button calls PUT API to persist changes
-- Validation errors shown inline in both panels
-- Diff view showing changes from saved version
+#### Task 15.1: Connector abstraction layer
+- **Create:** `backend/connectors/base.py` — abstract base connector interface:
+  ```python
+  class BaseConnector(ABC):
+      @abstractmethod
+      def connect(self, config: ConnectorConfig) -> Connection
+      @abstractmethod
+      def read(self, connection: Connection, params: ReadParams) -> pa.Table
+      @abstractmethod
+      def schema(self, connection: Connection) -> pa.Schema
+      @abstractmethod
+      def profile(self, connection: Connection) -> DataProfile
+  ```
+- **Create:** `backend/connectors/local_file.py` — CSV, JSON, Parquet, Excel, XML support
+- **Create:** `backend/connectors/fix_protocol.py` — FIX message parsing (FIX 4.2/4.4/5.0)
+- **Create:** `backend/connectors/streaming_stub.py` — Kafka/queue stub (interface ready, local mock)
+- **Create:** `backend/connectors/api_stub.py` — REST/GraphQL API stub (interface ready, local mock)
 
-### Task 9.2: Toggleable dashboard widgets
+#### Task 15.2: Connector metadata
+- **Create:** `workspace/metadata/connectors/` — connector definitions as JSON:
+  ```json
+  {
+    "connector_id": "local_csv",
+    "connector_type": "local_file",
+    "format": "csv",
+    "config": {
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "header_row": true,
+      "date_format": "ISO8601"
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "execution"
+  }
+  ```
 
-**Files:**
-- Modify: `frontend/src/views/Dashboard/index.tsx` — add widget toggle system
-- Create: `frontend/src/components/WidgetContainer.tsx` — generic widget wrapper with toggle
-- Create: `frontend/src/stores/widgetStore.ts` — persist widget visibility preferences
+#### Task 15.3: Schema detection & data profiling
+- **Create:** `backend/services/schema_detector.py` — auto-detect column types, formats, patterns
+- **Create:** `backend/services/data_profiler.py` — profile completeness, cardinality, distribution, outliers
+- Profile output stored as metadata in `workspace/metadata/medallion/profiles/`
+- DuckDB `SUMMARIZE` + PyArrow schema inference for local implementation
 
-**Design:**
-- Each dashboard widget wrapped in `WidgetContainer` with visibility toggle
-- Settings panel (gear icon) lists all available widgets with on/off switches
-- Widget visibility persisted to localStorage
-- Widgets can be reordered via drag-and-drop
+#### Task 15.4: Data onboarding API
+- **Create:** `backend/api/onboarding.py` — endpoints for data ingestion workflow:
+  - `POST /api/onboarding/upload` — upload file, detect schema, profile
+  - `GET /api/onboarding/preview/{job_id}` — preview detected schema + sample data
+  - `POST /api/onboarding/confirm/{job_id}` — confirm and stage to Landing tier
+  - `GET /api/onboarding/connectors` — list available connectors
+  - `POST /api/onboarding/connectors` — register new connector
 
-### Task 9.3: Dynamic chart type switching
-
-**Files:**
-- Modify: `frontend/src/views/Dashboard/index.tsx` — add chart type selector to each chart
-- Create: `frontend/src/components/ChartTypeSwitcher.tsx` — dropdown for chart format
-- Modify: all chart components — support multiple render modes
-
-**Design:**
-- Each chart gets a small dropdown (top-right corner): Bar, Line, Pie, Table, Horizontal Bar
-- Chart data is format-agnostic; only the renderer changes
-- Selection persisted to localStorage
-- Some chart types have constraints (e.g., pie only for categorical data)
-
----
-
-## Phase 10: Regulatory Traceability & Model Tagging
-
-**Goal:** Every calculation is tagged with which models use it, which regulations those models cover, and suggestions can be made for adjustments.
-
-### Task 10.1: Add regulatory tags to metadata
-
-**Files:**
-- Modify: `backend/models/calculations.py` — add `regulatory_tags: list[str]`
-- Modify: `backend/models/detection.py` — add `regulatory_coverage: list[dict]`
-- Modify: all calculation and model JSONs — add tags
-
-**Schema:**
-```json
-// In calculation JSON:
-"regulatory_tags": ["MiFID II Art. 16", "MAR Art. 12"]
-
-// In detection model JSON:
-"regulatory_coverage": [
-  {"regulation": "MAR", "article": "Art. 12(1)(a)", "description": "Wash trading prohibition"},
-  {"regulation": "MiFID II", "article": "Art. 16(2)", "description": "Surveillance obligation"}
-]
-```
-
-### Task 10.2: Calculation-to-model dependency view
-
-**Files:**
-- Create: `frontend/src/views/RegulatoryMap/index.tsx` — regulatory traceability view
-- Modify: `backend/api/metadata.py` — add dependency graph endpoint
-
-**New endpoint:**
-- `GET /api/metadata/dependency-graph` — returns full graph of calc → model → regulation
-
-**UI:** Interactive graph showing: Regulations → Detection Models → Calculations → Entities, with clickable nodes that open the metadata editor
-
-### Task 10.3: Suggestion engine for model adjustments
-
-**Files:**
-- Create: `backend/services/suggestion_service.py` — analyze model coverage gaps
-- Create: `backend/api/suggestions.py` — suggestion endpoints
-
-**Design:**
-- Analyze which regulations have no detection model coverage
-- Suggest calculations that could improve model precision (based on unused entity fields)
-- Suggest threshold adjustments based on alert distribution analysis
+#### Task 15.5: Data onboarding view (frontend)
+- **Create:** `frontend/src/views/DataOnboarding/index.tsx` — guided onboarding wizard:
+  1. **Select Source** — file upload, connector selection, URL input
+  2. **Detect Schema** — auto-detected schema with type correction UI
+  3. **Profile Data** — quality report (nulls, duplicates, outliers, patterns)
+  4. **Map to Entity** — suggest target entity based on field name similarity
+  5. **Confirm & Ingest** — stage to Landing tier, create data contract draft
 
 ---
 
-## Phase 11: OOB vs User-Defined Separation
+### Phase 16: Source-to-Canonical Mapping (Bronze → Silver)
 
-**Goal:** Clean separation between vendor-provided (OOB) and user-customized metadata. Upgrades to OOB don't affect user changes.
+*Overhaul MappingStudio to enable mapping from raw source fields to canonical entity attributes.*
 
-### Task 11.1: Three-layer metadata architecture
+**Goal:** Transform MappingStudio from a UI-only prototype into a functional mapping engine. Users map source fields (from any ingested format) to canonical entity fields (ISO/FIX-aligned). Mappings are persisted as metadata and executed in the Bronze → Silver transformation.
 
-**Files:**
-- Modify: `backend/services/metadata_service.py` — implement layer resolution
-- Create: `workspace/metadata/oob/` — out-of-box defaults (read-only for users)
-- Create: `workspace/metadata/user/` — user customizations (override layer)
+**Tasks:**
 
-**Design:**
-```
-Layer 1 (OOB):     workspace/metadata/oob/calculations/value_calc.json
-Layer 2 (User):    workspace/metadata/user/calculations/value_calc.json  (overrides)
-Resolved:          Merge OOB + User, User wins on conflicts
-```
+#### Task 16.1: Mapping definition metadata
+- **Create:** `workspace/metadata/mappings/source_to_canonical/` — per-entity mapping definitions:
+  ```json
+  {
+    "mapping_id": "csv_trades_to_execution",
+    "source_connector": "local_csv",
+    "source_schema": "raw_trades",
+    "target_entity": "execution",
+    "tier_transition": "bronze_to_silver",
+    "field_mappings": [
+      {
+        "source_field": "TradeID",
+        "target_field": "execution_id",
+        "transformation": "direct",
+        "required": true
+      },
+      {
+        "source_field": "TradeDate",
+        "target_field": "timestamp",
+        "transformation": "date_parse",
+        "params": { "format": "%Y-%m-%d %H:%M:%S.%f" }
+      },
+      {
+        "source_field": "Venue",
+        "target_field": "venue_mic",
+        "transformation": "lookup",
+        "params": { "reference": "venue", "match_field": "name", "return_field": "mic" }
+      }
+    ],
+    "validation_rules": [
+      { "rule": "not_null", "fields": ["execution_id", "order_id"] },
+      { "rule": "referential_integrity", "field": "order_id", "reference": "order" }
+    ],
+    "standards_alignment": {
+      "iso_20022": "semt.002",
+      "fix_protocol": "ExecutionReport(8)"
+    }
+  }
+  ```
 
-- Each metadata file has `"layer": "oob"` or `"layer": "user"` tag
-- OOB files are immutable during upgrades — user files never touched
-- Metadata service resolves by merging: OOB defaults + User overrides
-- UI shows which fields are OOB vs customized (different background color)
-- "Reset to OOB" button available per field
+#### Task 16.2: Transformation function library
+- **Create:** `backend/services/transformation_library.py` — reusable transformation functions:
+  - `direct` — 1:1 copy
+  - `rename` — field rename
+  - `date_parse` — parse date with format string
+  - `lookup` — reference data lookup (join to Reference tier)
+  - `enum_map` — value mapping (e.g., "BUY"/"SELL" → "1"/"2")
+  - `concat` — concatenate fields
+  - `split` — split field into multiple
+  - `expression` — SQL expression evaluation
+  - `default` — fill missing with default value
+  - `coalesce` — first non-null from list of source fields
+  - `iso_normalize` — normalize to ISO standard format (ISIN, MIC, LEI, CCY, etc.)
 
-### Task 11.2: Version compatibility tracking
+#### Task 16.3: Mapping engine
+- **Create:** `backend/engine/mapping_engine.py` — execute mappings:
+  - Load mapping metadata → generate transformation SQL → execute via DuckDB
+  - Quality gate: validate output against target entity schema
+  - Failed records → Quarantine tier with error details
+  - Emit lineage events (source field → transformation → target field)
 
-**Files:**
-- Create: `workspace/metadata/oob/VERSION` — OOB version metadata
-- Modify: `backend/services/metadata_service.py` — version compatibility checks
+#### Task 16.4: MappingStudio overhaul (frontend)
+- **Modify:** `frontend/src/views/MappingStudio/` — complete redesign:
+  - **Left panel:** Source schema (from Landing/Bronze) with field types, sample values, profiling stats
+  - **Center:** Visual mapping canvas (drag source → target) with transformation node in between
+  - **Right panel:** Target entity schema (canonical) with required/optional indicators
+  - **Bottom:** Preview of transformation output (sample rows), quality report
+  - **Toolbar:** Save mapping, test mapping (dry run), execute mapping, auto-suggest mappings
+  - Auto-suggest: Match source fields to target fields by name similarity, type compatibility, ISO standard patterns
 
-**Design:**
-- OOB metadata has a version number (SemVer)
-- On upgrade, compare old vs new OOB versions, report what changed
-- User overrides remain intact across upgrades
-- Breaking changes (removed fields, renamed calcs) flagged with migration guidance
-
----
-
-## Phase 12: UI/UX Usability (P1) — COMPLETE
-
-**Goal:** Fix all AG Grid column truncation, responsive layout breakage, and Visual Editor field grid issues across all views so the platform is usable from 1024px to 1920px+.
-
-**Status:** COMPLETE (M89-M92). Global AG Grid defaults (resizable, sortable, tooltips, autoSize), per-view column optimization (6 views), Visual Editor CSS grid fix, 12 new E2E tests, UX features tour.
-
----
-
-## Phase 7B: Metadata UX, Guided Demo & Use Case Studio — COMPLETE
-
-**Goal:** Complete Phase 7 gaps, add intelligent domain value suggestions across all forms, reusable match pattern and score template libraries, a full visual score step builder, an enhanced model composer wizard with live preview/validation/explainability, a Use Case Studio with AI-assisted calculation building and submission review pipeline, and a comprehensive 25-scenario guided tour system covering all E2E business workflows.
-
-**Status:** COMPLETE (2026-02-25). Design doc: `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md`. All milestones M93-M120 done. 386 backend tests, 87 E2E tests, 952 frontend modules, 25 guided scenarios, 71 operations, 16 views.
-
-**Design doc:** `docs/plans/2026-02-25-phase7-completion-metadata-ux-design.md` (10 sections, ~750 lines)
-
-**Workstreams:**
-
-1. **Gap Fixes (M93-M94):** Migrate calc SQL to `$param` placeholders, fix TimeRangeSelector date defaults, add `fixed_income`/`index` settings overrides
-2. **Domain Value Suggestion System (M95, M97):** Backend API with cardinality-tiered loading (small=dropdown, medium=searchable, large=server-side search), `SuggestionInput` component, `useDomainValues` hook
-3. **Reusable Pattern Libraries (M96, M98-M99):** Match Pattern Bank (value-free criteria reuse), Score Step Template Bank (value-included tier reuse with semantic categories), Visual Score Step Builder (range bar, drag-to-reorder, gap/overlap detection)
-4. **Form Upgrades (M100-M104):** Settings Manager with SuggestionInput/ScoreStepBuilder/MatchPatternPicker; Model Composer 7-step wizard with Monaco SQL editor, live preview, validation engine, best practices, dependency DAG, test run, examples library
-5. **Validation & Safety (M105):** 5-layer sandbox validation (static analysis, schema compat, sandbox execution, impact analysis, regression safety); runtime isolation (user-layer failures never block OOB)
-6. **Use Case Studio (M106, M108):** Build/save/refine custom detection scenarios with sample data, AI-assisted data generation, expected outcomes, pipeline validation
-7. **Submission Pipeline (M107, M109):** Submit for review → validation report → system recommendations (change classification, similarity analysis) → reviewer actions (approve/reject/revise) → one-click implementation
-8. **AI-Assisted Calculation Builder (M110-M111):** Natural language → AI proposal → iterative refinement → 5-layer validation → save to user layer
-9. **Version Management (M112):** Version tracking, side-by-side diff, A/B alert comparison, rollback
-10. **Guided Tour System (M113-M119):** Tour engine with dual-mode (watch demo / try it yourself), 25 scenarios in 7 categories, per-screen operation scripts, contextual help
-11. **Testing & Documentation (M120):** ~98 unit tests, ~61 E2E tests, BDD scenarios, demo guide Acts 4-7
-
-**Key design decisions:**
-- Match patterns: criteria + label + description (reusable, value-free)
-- Domain values: metadata `domain_values` + live DuckDB distinct values, with tiered loading (≤50 full dropdown, 51-500 searchable, 500+ server-side search with debounce)
-- Score templates: value-included with `value_category` semantic tags (volume, ratio, count, percentage)
-- Tours: dual-mode per scenario with mode selector, replay/reset, completion tracking
-- Safety: OOB layer immutable, user layer validated, use case layer isolated, submissions don't affect system until implemented
-
----
-
-## Exploratory Testing Fixes — COMPLETE
-
-**Goal:** Fix UX issues discovered during exploratory testing sessions.
-
-**Status:** COMPLETE (2026-02-26). 5 rounds of exploratory testing, 24 findings (F-001 through F-024), 21 FIXED, 2 OPEN (data generation — deferred), 1 NOTED (feature request).
-
-**Round 1-2 (F-001 through F-015):** Chart re-render flicker, tooltip visibility, snake_case labels, table formatting, cross-view consistency, Entity Designer layout overhaul, Risk Case label/timestamp formatting, Model Composer layout fix.
-
-**Round 3 (F-016 through F-020):** Tested 6 previously untested views (Pipeline Monitor, Metadata Editor, AI Assistant, Use Case Studio, Regulatory Map, Submissions). Fixed: Pipeline Monitor steps table clipping + layer labels, AI Assistant markdown rendering, Use Case Studio component IDs + run results table. No issues found in Metadata Editor, Regulatory Map, Submissions.
-
-**Round 4 (F-021):** Live product owner feedback session. Entity Designer replaced horizontal 3-pane layout with vertical 2-tab resizable layout (`react-resizable-panels`). Layout improvement suggestions documented for all 16 views.
-
-**Round 5 (F-022 through F-024):** Continued product owner feedback. F-022: Entity Designer domain values management (Domain column, DomainValuesPane, EntityForm editor). F-023: Relationship graph visual improvements (smoothstep edges, label backgrounds, arrowheads, spacing). F-024: Regulatory Map complete redesign (resizable panels, tabs, descriptions from backend, AG Grid details table, MiniMap, edge labels).
-
----
-
-## Architecture Traceability Mode (M128) — COMPLETE
-
-**Goal:** Enable developers and reviewers to inspect the technical architecture behind every UI section directly in the platform, without reading source code. Show which files, stores, APIs, metadata, and technologies power each section, and rate how metadata-driven each section is.
-
-**Status:** COMPLETE (2026-02-26). 74 traced sections across 16 views + cross-cutting concerns. Toolbar toggle, info icon overlay, 400px slide-in architecture panel, metadata maturity rating system (5 levels), S26 scenario, overview tour updated, architecture_trace operation on all 16 views, 7 new E2E tests.
-
-**Key files:**
-- `frontend/src/data/architectureRegistry.ts` — 74-section registry (2,978 lines)
-- `frontend/src/data/architectureRegistryTypes.ts` — TypeScript interfaces
-- `frontend/src/stores/traceabilityStore.ts` — Zustand store
-- `frontend/src/components/TraceabilityMode/` — TraceToggleButton, TraceIcon, TraceOverlay, TracePopup, MetadataMaturityBadge
-- `docs/architecture-traceability.md` — Feature specification
+#### Task 16.5: ISO/FIX-aligned canonical schemas
+- Ensure all 8 entity canonical schemas reference:
+  - **ISO 20022** message types (semt.002 for settlements, setr.010 for orders, etc.)
+  - **FIX Protocol** message/field mappings (Tag 35=8 for ExecutionReport, Tag 150 for ExecType, etc.)
+  - **ISO 10383** for venue MIC codes
+  - **ISO 6166** for ISIN
+  - **ISO 10962** for CFI classification
+  - **ISO 17442** for LEI
+  - **ISO 4217** for currency codes
+  - **ISO 8601** for timestamps
+- Document standard-to-canonical mapping in entity metadata `standards_alignment` field
 
 ---
 
-## Phase 13: AI-Assisted Configuration
+### Phase 17: Canonical-to-Analytics Mapping (Silver → Gold)
 
-**Goal:** LLM understands the system's metadata schema, can suggest calculations, help configure models, and utilize the dynamic nature of the system.
+*Map canonical entity attributes to calculation input attributes — completing the Bronze→Silver→Gold pipeline.*
 
-### Task 13.1: System metadata context for AI
+**Goal:** Enable mapping from canonical entity fields (Silver) to the specific attributes required by calculations and detection models (Gold). This closes the gap where calculations currently assume specific column names from the raw data.
 
-**Files:**
-- Modify: `backend/services/ai_service.py` — enhance with metadata context
-- Create: `backend/services/ai_context_builder.py` — builds system context for LLM
+**Tasks:**
 
-**Design:**
-- When user asks AI a question, system context includes:
-  - Available entities and their fields
-  - Existing calculations and their SQL logic
-  - Detection models and their scoring
-  - Available settings and current values
-  - Regulatory coverage map
-- AI can answer: "What settings affect wash trading detection?" or "How would I add a new calculation for bid-ask spread?"
+#### Task 17.1: Calculation input mapping metadata
+- **Create:** `workspace/metadata/mappings/canonical_to_calc/` — per-calculation input mappings:
+  ```json
+  {
+    "mapping_id": "execution_to_value_calc",
+    "source_entity": "execution",
+    "source_tier": "silver",
+    "target_calculation": "value_calculation",
+    "target_tier": "gold",
+    "input_mappings": [
+      {
+        "calc_input": "quantity",
+        "source_field": "execution.quantity",
+        "transformation": "direct"
+      },
+      {
+        "calc_input": "price",
+        "source_field": "execution.price",
+        "transformation": "direct"
+      },
+      {
+        "calc_input": "product_ref",
+        "source_field": "product.product_id",
+        "transformation": "join",
+        "params": { "join_entity": "product", "join_key": "execution.product_id = product.product_id" }
+      }
+    ]
+  }
+  ```
 
-### Task 13.2: AI calculation suggestion
+#### Task 17.2: Calculation input registry
+- **Modify:** `workspace/metadata/calculations/**/*.json` — add `inputs` section to each calculation:
+  ```json
+  {
+    "calc_id": "value_calculation",
+    "inputs": [
+      { "name": "quantity", "type": "numeric", "required": true, "description": "Trade quantity" },
+      { "name": "price", "type": "numeric", "required": true, "description": "Execution price" },
+      { "name": "product_ref", "type": "string", "required": true, "description": "Product identifier for join" }
+    ]
+  }
+  ```
 
-**Files:**
-- Modify: `backend/api/ai.py` — add calculation suggestion endpoint
-- Modify: `frontend/src/views/AIAssistant/` — add suggestion UI
+#### Task 17.3: Update calculation engine for mapped inputs
+- **Modify:** `backend/engine/calculation_engine.py` — resolve input mappings before SQL execution
+- Calculation SQL uses abstract input names → engine resolves to actual Silver-tier column names via mapping metadata
+- This decouples calculations from raw data column names entirely
 
-**Design:**
-- User describes a calculation in natural language: "I want to detect when a trader's volume exceeds 3x their 30-day average"
-- AI generates: calculation JSON (SQL, inputs, outputs, dependencies), suggested settings (thresholds), model integration points
-- User reviews in metadata editor, adjusts, saves
-- AI explains which entities provide the data, which models could use the calc, and which regulations it addresses
+#### Task 17.4: MappingStudio Silver→Gold tab
+- **Modify:** `frontend/src/views/MappingStudio/` — add second tab for canonical-to-calc mapping
+- **Left panel:** Silver-tier canonical entity fields
+- **Center:** Mapping canvas with join/transform nodes
+- **Right panel:** Calculation input requirements (from input registry)
+- Preview: Show sample calculation output with mapped inputs
 
-### Task 13.3: AI tuning recommendations
+---
 
-**Design:**
-- AI analyzes alert distribution, false positive rates, score distributions
-- Recommends threshold adjustments: "Reducing wash_vwap_threshold from 0.02 to 0.015 would increase alerts by ~15% but improve detection of subtle wash trades"
+### Tier 2 — Data Quality & Extended Tiers
+
+### Phase 18: Data Quality, Quarantine & Profiling
+
+*Implement quality gates at every tier boundary, quarantine tier for failed records, and ISO 8000/25012-aligned quality scoring.*
+
+**Goal:** Every tier transition validates data quality. Records that fail validation go to the Quarantine tier with error details. Quality scores follow ISO 8000 (Data Quality) and ISO/IEC 25012 (Data Quality Model) dimensions.
+
+**Tasks:**
+
+#### Task 18.1: Quality dimension metadata (ISO 8000 / ISO 25012)
+- **Create:** `workspace/metadata/quality/dimensions.json` — quality dimensions:
+  ```json
+  {
+    "dimensions": [
+      { "id": "completeness", "iso_25012": "4.2.1", "description": "Ratio of non-null values", "weight": 0.2 },
+      { "id": "accuracy", "iso_25012": "4.2.2", "description": "Values match real-world truth", "weight": 0.2 },
+      { "id": "consistency", "iso_25012": "4.2.3", "description": "No contradictions within/across datasets", "weight": 0.15 },
+      { "id": "timeliness", "iso_25012": "4.2.4", "description": "Data available within SLA", "weight": 0.15 },
+      { "id": "uniqueness", "iso_25012": "4.2.5", "description": "No duplicate records", "weight": 0.1 },
+      { "id": "validity", "iso_25012": "4.2.6", "description": "Values conform to domain rules", "weight": 0.1 },
+      { "id": "currentness", "iso_8000": "8000-61", "description": "Data reflects current state", "weight": 0.1 }
+    ]
+  }
+  ```
+
+#### Task 18.2: Quality rule engine
+- **Create:** `backend/engine/quality_engine.py` — evaluate quality rules from data contracts
+- Rule types: `not_null`, `unique`, `range_check`, `enum_check`, `regex_match`, `referential_integrity`, `freshness`, `custom_sql`
+- Each rule produces: pass/fail, affected row count, quality score contribution
+- Aggregate quality score per entity per tier (0-100 scale)
+
+#### Task 18.3: Quarantine tier implementation
+- **Create:** `workspace/quarantine/` — quarantined record storage
+- Each quarantined record includes: original data, source tier, target tier, failed rules, timestamp, retry count
+- API: `GET /api/quarantine` — list quarantined records with filters
+- API: `POST /api/quarantine/{id}/retry` — attempt reprocessing
+- API: `POST /api/quarantine/{id}/override` — force-accept with justification (audit logged)
+
+#### Task 18.4: Quality dashboard (frontend)
+- **Create:** `frontend/src/views/DataQuality/index.tsx` — quality monitoring dashboard
+- Quality scores by entity, by tier, by dimension (spider/radar chart)
+- Quarantine queue with investigation workflow
+- Quality trend over time (line chart)
+- Data profiling results (distribution histograms, null patterns)
+
+---
+
+### Phase 19: Reference Data & Master Data Management
+
+*Implement the Reference/MDM tier — golden records for products, venues, accounts, traders.*
+
+**Goal:** Establish a Reference Data tier that holds deduplicated, reconciled master records. All other tiers reference this as the source of truth for lookup/join data. Supports cross-source reconciliation and golden record creation.
+
+**Tasks:**
+
+#### Task 19.1: Reference data tier structure
+- **Create:** `workspace/reference/` — golden record storage (Parquet + metadata)
+- Entity types: products (ISIN master), venues (ISO 10383 master), accounts, traders
+- Each record has: `golden_id`, `source_records[]`, `confidence_score`, `last_reconciled`
+
+#### Task 19.2: Reference data metadata
+- **Create:** `workspace/metadata/reference/` — master data definitions:
+  ```json
+  {
+    "entity": "product",
+    "golden_key": "isin",
+    "match_rules": [
+      { "strategy": "exact", "fields": ["isin"] },
+      { "strategy": "fuzzy", "fields": ["product_name"], "threshold": 0.85 }
+    ],
+    "merge_rules": [
+      { "field": "product_name", "strategy": "longest" },
+      { "field": "asset_class", "strategy": "most_frequent" }
+    ],
+    "external_sources": [
+      { "source": "iso_10962", "field": "cfi_code" },
+      { "source": "iso_6166", "field": "isin" }
+    ]
+  }
+  ```
+
+#### Task 19.3: Reference data API
+- `GET /api/reference/{entity}` — list golden records
+- `GET /api/reference/{entity}/{id}/sources` — show source records that contributed
+- `POST /api/reference/{entity}/reconcile` — trigger reconciliation
+- `POST /api/reference/{entity}/{id}/override` — manual golden record edit (audit logged)
+
+#### Task 19.4: Reference data view (frontend)
+- **Create:** `frontend/src/views/ReferenceData/index.tsx` — master data browser
+- Golden record list with source provenance
+- Reconciliation dashboard (match/conflict summary)
+- Cross-reference to downstream tiers using this golden record
+
+---
+
+### Phase 20: Extended Analytical Tiers (Platinum, Sandbox, Archive)
+
+*Implement the Platinum (pre-built KPIs), Sandbox (what-if testing), and Archive (regulatory retention) tiers.*
+
+**Tasks:**
+
+#### Task 20.1: Platinum tier — pre-built KPIs & summaries
+- **Create:** `workspace/metadata/medallion/platinum/` — KPI definitions:
+  - Daily alert summary (by model, by product, by account)
+  - Model effectiveness metrics (precision, recall if labeled)
+  - Score distribution statistics
+  - Regulatory report datasets (pre-aggregated for MAR, MiFID II, Dodd-Frank)
+- KPIs are metadata-defined SQL aggregations that run on Gold tier data
+- Dashboard widgets pull from Platinum tier for fast rendering
+
+#### Task 20.2: Sandbox tier — isolated testing environment
+- **Implement:** Copy-on-write sandbox creation from any tier
+- Users can modify settings, thresholds, mappings in sandbox without production impact
+- Side-by-side comparison: sandbox results vs. production results
+- Sandbox lifecycle: create → configure → run → compare → promote or discard
+- This replaces the planned Phase 14 "sandbox mode" with a proper tier
+
+#### Task 20.3: Archive tier — regulatory retention
+- **Create:** `workspace/archive/` — compressed cold storage
+- Retention policies per regulation:
+  | Regulation | Retention Period | Data Types |
+  |-----------|-----------------|------------|
+  | MiFID II | 5-7 years | Orders, executions, communications |
+  | Dodd-Frank / SEC 17a-4 | 5 years | Trade records, communications |
+  | MAR | 5 years | Surveillance data, alert records |
+  | FINRA 4511 | 6 years | All business records |
+  | GDPR | Minimal necessary | PII data (crypto-shredding ready) |
+- Archive format: compressed Parquet with metadata sidecar (retention policy, classification, encryption key reference)
+- GDPR vs. regulatory retention paradox resolved via **crypto-shredding**: PII encrypted with per-subject key; erasure = destroy key (regulatory records remain, PII becomes unrecoverable)
+
+---
+
+### Tier 3 — Governance & Compliance
+
+### Phase 21: Data Governance & Classification
+
+*Implement data classification taxonomy, column-level sensitivity marking, and governance metadata across all entities.*
+
+**Goal:** Every field in every entity carries classification metadata. Data governance rules are metadata-driven. Sensitivity is marked at the column level, not just the table level.
+
+**Tasks:**
+
+#### Task 21.1: Classification metadata schema
+- **Create:** `workspace/metadata/governance/classification.json` — taxonomy definition (L0-L5)
+- **Modify:** All entity JSONs in `workspace/metadata/entities/` — add per-field classification:
+  ```json
+  {
+    "field_name": "trader_id",
+    "classification": "L4_PII",
+    "pii_category": "direct_identifier",
+    "pii_type": "employee_id",
+    "gdpr_relevant": true,
+    "retention_policy": "regulatory_7yr"
+  }
+  ```
+
+#### Task 21.2: PII detection service
+- **Create:** `backend/services/pii_detector.py` — auto-detect PII in data:
+  - Pattern matching: email, phone, SSN/NIN, names, addresses
+  - Statistical detection: high-cardinality string columns that look like identifiers
+  - Configurable patterns via metadata (`workspace/metadata/governance/pii_patterns.json`)
+  - Runs during data onboarding (Phase 15) and on-demand
+
+#### Task 21.3: Governance policy engine
+- **Create:** `backend/services/governance_engine.py` — enforce governance rules:
+  - Access control: who can see which classification levels
+  - Retention: auto-archive/delete based on retention policy
+  - Lineage: track which fields flow through which transformations
+  - Compliance check: validate that PII handling meets GDPR/CCPA requirements
+
+#### Task 21.4: Data classification view (frontend)
+- **Create:** `frontend/src/views/DataGovernance/index.tsx` — governance dashboard:
+  - Entity × field classification matrix (color-coded by sensitivity level)
+  - PII inventory: all PII fields across all entities
+  - Retention policy overview (Gantt-style timeline per regulation)
+  - Compliance scorecard (GDPR, CCPA, MiFID II data handling)
+
+---
+
+### Phase 22: Masking, Encryption & Access Control
+
+*Implement dynamic data masking, column-level encryption, and role-based access control for sensitive data.*
+
+**Goal:** Sensitive data is masked or encrypted based on classification level and user role. Masking is dynamic (applied at query time, not stored). Encryption uses column-level AES-256. RBAC governs who sees what.
+
+**Tasks:**
+
+#### Task 22.1: Masking policy metadata
+- **Create:** `workspace/metadata/governance/masking_policies.json`:
+  ```json
+  {
+    "policies": [
+      {
+        "policy_id": "mask_trader_id",
+        "target_field": "trader_id",
+        "classification": "L4_PII",
+        "masking_type": "tokenize",
+        "algorithm": "sha256_hmac",
+        "params": { "salt_key_ref": "env:MASKING_SALT" },
+        "unmask_roles": ["compliance_officer", "admin"],
+        "audit_unmask": true
+      },
+      {
+        "policy_id": "mask_account_holder",
+        "target_field": "account_holder_name",
+        "classification": "L4_PII",
+        "masking_type": "partial",
+        "algorithm": "first_last_char",
+        "params": { "mask_char": "*", "visible_start": 1, "visible_end": 1 }
+      },
+      {
+        "policy_id": "mask_account_id_fpe",
+        "target_field": "account_id",
+        "classification": "L4_PII",
+        "masking_type": "format_preserving",
+        "algorithm": "ff1_aes256",
+        "params": { "key_ref": "env:FPE_KEY", "alphabet": "alphanumeric" }
+      }
+    ]
+  }
+  ```
+
+#### Task 22.2: Dynamic masking engine
+- **Create:** `backend/services/masking_service.py` — apply masking at query time:
+  - Masking types: `redact`, `partial`, `tokenize`, `hash`, `format_preserving` (FF1/NIST SP 800-38G), `noise_injection`
+  - Dynamic: masking applied in DuckDB SQL layer (views or query rewriting)
+  - Role-aware: current user's role determines which fields are masked
+  - Audit: every unmask event logged to Logging tier
+
+#### Task 22.3: Column-level encryption
+- Metadata-defined encryption per column (AES-256-GCM)
+- Encryption at rest in Parquet files (Parquet Modular Encryption when supported, or application-level)
+- Key management: per-column or per-classification-level keys
+- Crypto-shredding support: per-data-subject key groups for GDPR erasure
+
+#### Task 22.4: Role-based access control (RBAC)
+- **Create:** `workspace/metadata/governance/roles.json`:
+  ```json
+  {
+    "roles": [
+      {
+        "role_id": "analyst",
+        "description": "Front-office surveillance analyst",
+        "tier_access": ["gold", "platinum"],
+        "classification_access": ["L0_public", "L1_internal", "L2_confidential"],
+        "masked_fields": ["trader_id", "account_holder_name"]
+      },
+      {
+        "role_id": "compliance_officer",
+        "description": "Compliance officer with full PII access",
+        "tier_access": ["silver", "gold", "platinum", "quarantine"],
+        "classification_access": ["L0_public", "L1_internal", "L2_confidential", "L3_restricted", "L4_PII"],
+        "masked_fields": []
+      },
+      {
+        "role_id": "data_engineer",
+        "description": "Data engineering team",
+        "tier_access": ["landing", "bronze", "silver", "gold", "quarantine", "logging", "metrics"],
+        "classification_access": ["L0_public", "L1_internal"],
+        "masked_fields": ["trader_id", "account_holder_name", "account_id"]
+      }
+    ]
+  }
+  ```
+- For demo: role switching via UI dropdown (no auth system needed)
+- Fields dynamically masked based on selected role
+
+#### Task 22.5: Masking & access control view (frontend)
+- Extend `DataGovernance` view with tabs for masking policies and RBAC
+- Visual preview: show same data row under different roles (side-by-side masked vs. unmasked)
+- Audit log: who accessed what PII data and when
+
+---
+
+### Phase 23: Business Glossary & Semantic Layer
+
+*Implement a business glossary mapping business terms to technical fields, with ownership and governed definitions. Build a semantic layer for business-friendly data access.*
+
+**Goal:** Business users can understand data in their terms, not technical column names. Every technical field has a business definition, owner, and governed description. The semantic layer provides business-friendly names, computed metrics, and governed definitions following ISO 11179 (Metadata Registries) and DAMA-DMBOK principles.
+
+**Tasks:**
+
+#### Task 23.1: Business glossary metadata (ISO 11179)
+- **Create:** `workspace/metadata/glossary/` — business term definitions:
+  ```json
+  {
+    "term_id": "wash_trade",
+    "business_name": "Wash Trade",
+    "definition": "A transaction where the same beneficial owner is on both sides, creating artificial volume without genuine change of ownership",
+    "category": "market_abuse",
+    "owner": "compliance",
+    "steward": "surveillance_team",
+    "regulatory_references": ["MAR Art. 12(1)(a)", "SEC Rule 10b-5"],
+    "related_terms": ["self_dealing", "artificial_volume", "market_manipulation"],
+    "technical_mappings": [
+      { "entity": "execution", "field": "wash_score", "relationship": "computed_indicator" },
+      { "entity": "alert", "field": "model_id", "relationship": "detected_by", "value": "wash_trading_full_day" }
+    ],
+    "iso_11179": {
+      "object_class": "Trade",
+      "property": "Wash Indicator",
+      "representation": "Score",
+      "data_element_concept": "Trade.WashIndicator"
+    }
+  }
+  ```
+
+#### Task 23.2: Semantic layer definitions
+- **Create:** `workspace/metadata/semantic/` — business-friendly metric definitions:
+  ```json
+  {
+    "metric_id": "daily_alert_rate",
+    "business_name": "Daily Alert Rate",
+    "definition": "Number of alerts generated per trading day",
+    "formula": "COUNT(alerts) / COUNT(DISTINCT business_date)",
+    "source_tier": "gold",
+    "source_entities": ["alert_summary"],
+    "unit": "alerts/day",
+    "dimensions": ["model", "product", "account"],
+    "owner": "surveillance_team"
+  }
+  ```
+- Metrics are SQL expressions that can be composed and reused
+- Dimensions define available drill-down axes
+
+#### Task 23.3: Business glossary API
+- `GET /api/glossary` — list all business terms with search
+- `GET /api/glossary/{term_id}` — term details with technical mappings
+- `GET /api/glossary/field/{entity}/{field}` — reverse lookup: field → business term
+- `PUT /api/glossary/{term_id}` — update term (audit logged)
+
+#### Task 23.4: Business glossary view (frontend)
+- **Create:** `frontend/src/views/BusinessGlossary/index.tsx` — searchable glossary:
+  - Alphabetical/categorical browse with search
+  - Term detail: definition, owner, regulatory references, technical mappings
+  - Reverse lookup: click any field in any view → see its business definition
+  - Glossary icon on entity fields across all views (tooltip with business name + definition)
+  - Ownership matrix: who owns which data domains
+
+#### Task 23.5: DAMA-DMBOK knowledge area mapping
+- Document alignment with DAMA-DMBOK 11 knowledge areas:
+  | Area | Coverage | Phase |
+  |------|----------|-------|
+  | Data Governance | Policies, classification, ownership | Phase 21-22 |
+  | Data Architecture | Medallion tiers, data contracts | Phase 14 |
+  | Data Modeling | Entity schemas, relationships | Phases 1-6 |
+  | Data Storage | DuckDB, Parquet, Archive tier | Phase 14, 20 |
+  | Data Security | Masking, encryption, RBAC | Phase 22 |
+  | Data Integration | Connectors, mappings, ETL | Phases 15-17 |
+  | Data Quality | Quality engine, profiling, ISO 8000 | Phase 18 |
+  | Reference & Master Data | Reference tier, golden records | Phase 19 |
+  | Document & Content | Metadata JSON, business glossary | Phase 23 |
+  | Metadata Management | Full metadata-driven architecture | All phases |
+  | Data Warehousing & BI | Platinum tier KPIs, dashboards | Phase 20 |
+
+---
+
+### Phase 24: Observability, Lineage & Audit
+
+*Implement the Logging/Audit tier and Metrics/Observability tier — full pipeline observability with OpenLineage-compatible data lineage.*
+
+**Goal:** Every data transformation, every quality check, every user action is logged. Data lineage is tracked field-to-field from Landing through Gold. Pipeline health is monitored with SLA alerting.
+
+**Tasks:**
+
+#### Task 24.1: Logging/Audit tier
+- **Create:** `workspace/logging/` — append-only event log storage
+- Event types:
+  - `pipeline_execution` — tier-to-tier transformation runs (start, end, row counts, duration)
+  - `quality_check` — quality rule evaluations (pass/fail, affected rows)
+  - `data_access` — who queried what data (masked/unmasked)
+  - `metadata_change` — who modified which metadata (diff included)
+  - `alert_action` — alert investigation, disposition, escalation
+  - `masking_unmask` — PII unmask events
+- Tamper-evident: hash chain on log entries (each entry hashes previous entry's hash)
+
+#### Task 24.2: OpenLineage-compatible lineage tracking
+- **Create:** `backend/services/lineage_service.py` — emit lineage events:
+  ```json
+  {
+    "eventType": "COMPLETE",
+    "eventTime": "2026-02-28T10:00:00Z",
+    "run": { "runId": "..." },
+    "job": {
+      "namespace": "analytics-platform",
+      "name": "bronze_to_silver_execution"
+    },
+    "inputs": [{ "namespace": "bronze", "name": "raw_trades" }],
+    "outputs": [{ "namespace": "silver", "name": "execution" }],
+    "facets": {
+      "dataQuality": { "completeness": 0.997, "uniqueness": 1.0 },
+      "columnLineage": {
+        "fields": {
+          "execution_id": { "inputFields": [{ "field": "TradeID" }], "transformation": "direct" },
+          "venue_mic": { "inputFields": [{ "field": "Venue" }], "transformation": "lookup" }
+        }
+      }
+    }
+  }
+  ```
+- Column-level lineage: track exactly which source fields contribute to which target fields
+- Store lineage locally (JSON), format compatible with OpenLineage spec for future integration with Marquez, DataHub, etc.
+
+#### Task 24.3: Metrics/Observability tier
+- **Create:** `workspace/metrics/` — time-series pipeline metrics
+- Metrics:
+  - Pipeline execution time per stage
+  - Record throughput per tier
+  - Quality scores over time (per entity, per dimension)
+  - Quarantine rate trends
+  - SLA compliance (freshness, completeness targets)
+  - Data drift detection (schema changes, distribution shifts)
+- Alert on metric anomalies (quality score drop, SLA breach, unexpected schema change)
+
+#### Task 24.4: Lineage & observability view (frontend)
+- **Create:** `frontend/src/views/DataLineage/index.tsx` — interactive lineage graph:
+  - Entity-level lineage: Landing → Bronze → Silver → Gold → Platinum (React Flow)
+  - Field-level lineage: click a Gold field → trace back to Landing source field through all transformations
+  - Timeline: lineage at a specific point in time
+- Extend `PipelineMonitor` view with:
+  - Execution history timeline
+  - Quality score trends (Recharts line chart)
+  - SLA status indicators (green/amber/red)
+
+---
+
+### Tier 4 — Standards & Portability
+
+### Phase 25: Standards Integration
+
+*Comprehensive standards alignment across all data management activities.*
+
+**Goal:** The platform demonstrably aligns with international standards for data quality, metadata management, information security, and risk data aggregation.
+
+**Standards coverage:**
+
+| Standard | Domain | Integration Point |
+|----------|--------|-------------------|
+| **ISO 8000** (Data Quality) | Data quality management and measurement | Quality engine (Phase 18), quality dimensions, profiling |
+| **ISO/IEC 25012** (Data Quality Model) | System and software quality — data quality characteristics | Quality scoring dimensions, spider charts |
+| **ISO 11179** (Metadata Registries) | Metadata registry design and naming | Business glossary (Phase 23), entity naming, term governance |
+| **ISO 27001/27002** (Information Security) | Security controls for information systems | Masking (Phase 22), encryption, RBAC, audit logging |
+| **ISO 20022** (Financial Messaging) | Universal financial industry message scheme | Canonical entity schemas (Silver tier), field naming |
+| **ISO 8601** (Date/Time) | Date and time format standard | All timestamps throughout system |
+| **ISO 10383** (MIC codes) | Market Identifier Codes | Venue entity, venue_mic fields |
+| **ISO 6166** (ISIN) | International Securities Identification Number | Product entity, product ISIN |
+| **ISO 10962** (CFI) | Classification of Financial Instruments | Product entity, CFI classification |
+| **ISO 17442** (LEI) | Legal Entity Identifier | Account/counterparty identification |
+| **ISO 4217** (Currency) | Currency codes | All monetary fields |
+| **ISO 3166** (Country) | Country codes | Account country, venue jurisdiction |
+| **BCBS 239** (Risk Data Aggregation) | Principles for effective risk data aggregation | Data architecture, timeliness, accuracy, completeness |
+| **DAMA-DMBOK** | Data Management Body of Knowledge | 11 knowledge areas mapped to platform capabilities |
+| **FIX Protocol** (4.2/4.4/5.0) | Financial Information eXchange | Order/execution messaging, field tags |
+| **ISDA CDM** | Common Domain Model for derivatives | Trade lifecycle events (future extensibility) |
+
+**Tasks:**
+
+#### Task 25.1: Standards compliance metadata
+- **Create:** `workspace/metadata/standards/compliance_matrix.json` — mapping of standard → platform capability → compliance level:
+  ```json
+  {
+    "standards": [
+      {
+        "standard_id": "iso_8000",
+        "name": "ISO 8000 Data Quality",
+        "controls": [
+          {
+            "control_id": "8000-61",
+            "description": "Data quality measurement",
+            "platform_capability": "quality_engine",
+            "compliance_level": "full",
+            "evidence": "Quality scoring per ISO 25012 dimensions, profiling reports"
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+#### Task 25.2: BCBS 239 compliance mapping
+- Map BCBS 239 principles to platform capabilities:
+  | Principle | Requirement | Platform Capability |
+  |-----------|-------------|-------------------|
+  | 1 — Governance | Governance framework for risk data | Data classification, ownership, glossary |
+  | 2 — Data Architecture | Integrated data architecture | Medallion tiers, data contracts |
+  | 3 — Accuracy | Risk data must be accurate | Quality engine, validation gates |
+  | 4 — Completeness | Complete risk data capture | Completeness dimension scoring |
+  | 5 — Timeliness | Timely risk data availability | SLA monitoring, freshness checks |
+  | 6 — Adaptability | Architecture flexible to change | Metadata-driven, no hardcoding |
+  | 7 — Accuracy (reporting) | Reports must be accurate | Platinum tier pre-aggregation |
+  | 8 — Comprehensiveness | Reports cover all material risks | Detection model coverage matrix |
+  | 9 — Clarity | Reports understandable | Business glossary, semantic layer |
+  | 10 — Frequency | Reports produced frequently | Pipeline scheduling, SLA targets |
+  | 11 — Distribution | Reports distributed appropriately | RBAC, role-based dashboards |
+
+#### Task 25.3: Standards compliance view (frontend)
+- Extend `RegulatoryMap` view with standards compliance tab
+- Compliance matrix: standard × control with RAG status
+- Evidence links: click control → see platform capability + configuration + test evidence
+- Gap analysis: which controls are not yet covered
+
+---
+
+### Phase 26: Migration Readiness & Platform Portability
+
+*Ensure the metadata-driven architecture can migrate from local DuckDB to any cloud data platform.*
+
+**Goal:** The platform's metadata definitions (entities, mappings, calculations, quality rules, governance policies) can be exported and used with Snowflake, Databricks, BigQuery, or any SQL-based platform. Pipeline definitions are platform-agnostic. Data interchange uses Apache Arrow/Parquet universally.
+
+**Key patterns:**
+
+#### Connector abstraction (from Phase 15)
+- All data access goes through connector interface
+- Swap `DuckDBConnector` for `SnowflakeConnector`, `DatabricksConnector`, etc.
+- Connection config is metadata-driven (no hardcoded connection strings)
+
+#### SQLMesh integration
+- **Create:** `backend/services/sqlmesh_service.py` — SQLMesh integration layer:
+  - SQLMesh defines transformations as SQL models with metadata (audits, grains, intervals)
+  - SQLGlot transpiles SQL between dialects (DuckDB → Snowflake, BigQuery, Spark, etc.)
+  - Same transformation metadata → different target platform → automatically transpiled SQL
+  - Platform-agnostic pipeline definitions exportable as SQLMesh projects
+
+#### Arrow ecosystem
+- PyArrow as the universal in-memory interchange format
+- DuckDB zero-copy integration with Arrow tables
+- Arrow Flight protocol stub for distributed data access (future)
+- Parquet as the universal storage format across all tiers
+
+#### Metadata export/import
+- **Create:** `backend/api/portability.py`:
+  - `GET /api/portability/export` — export all metadata as a single JSON bundle
+  - `POST /api/portability/import` — import metadata bundle into new platform
+  - `GET /api/portability/export/sqlmesh` — export pipeline as SQLMesh project
+  - `GET /api/portability/export/dbt` — export as dbt project (alternative to SQLMesh)
+  - `GET /api/portability/compatibility/{platform}` — check compatibility with target platform
+
+**Tasks:**
+
+#### Task 26.1: SQL dialect abstraction
+- **Create:** `backend/services/sql_dialect.py` — SQL generation from metadata:
+  - Generate DuckDB SQL from calculation/transformation metadata (current behavior)
+  - Generate Snowflake SQL from same metadata
+  - Generate BigQuery SQL from same metadata
+  - Use SQLGlot for transpilation where possible
+  - Flag platform-specific features that don't transpile cleanly
+
+#### Task 26.2: Metadata portability bundle
+- Export format: JSON archive with version, schema, and all metadata types
+- Import validates compatibility and flags conflicts
+- Migration assistant: highlight what needs manual adjustment for target platform
+
+#### Task 26.3: Platform compatibility view (frontend)
+- **Create:** `frontend/src/views/Portability/index.tsx` — migration readiness dashboard:
+  - Target platform selector (DuckDB, Snowflake, Databricks, BigQuery, PostgreSQL)
+  - Compatibility matrix: which features work on which platform
+  - Export button: download metadata bundle or SQLMesh project
+  - Migration checklist: automated compatibility check with recommendations
+
+---
+
+### Tier 5 — Enhanced Intelligence
+
+### Phase 27: AI-Assisted Configuration
+
+*LLM understands system metadata, suggests calculations, orchestrates integrations.*
+
+**Goal:** The AI Assistant is aware of all medallion tiers, data contracts, quality rules, governance policies, and business glossary. It can help users configure mappings, create calculations, tune thresholds, and understand data lineage.
+
+**Tasks:**
+
+#### Task 27.1: System metadata context for AI
+- **Modify:** `backend/services/ai_service.py` — enhance with full medallion context
+- **Create:** `backend/services/ai_context_builder.py` — builds system context including:
+  - Medallion tier status and health
+  - Data contracts and mapping definitions
+  - Quality scores and quarantine stats
+  - Governance classifications and masking policies
+  - Business glossary terms and definitions
+  - Lineage graphs for referenced entities
+  - Current pipeline execution status
+
+#### Task 27.2: AI-assisted mapping suggestion
+- AI analyzes source schema (from onboarding) and suggests:
+  - Target entity mapping (which canonical entity does this data represent?)
+  - Field mappings (source → canonical, with confidence scores)
+  - Transformation functions (date parsing, enum mapping, lookups)
+  - Quality rules for the data contract
+
+#### Task 27.3: AI calculation builder (enhanced)
+- User describes a calculation in natural language
+- AI generates: calculation JSON, Silver→Gold input mapping, quality rules, score steps
+- AI explains which business glossary terms relate to the calculation
+- AI suggests regulatory tags based on the calculation's purpose
+
+#### Task 27.4: AI tuning recommendations
+- AI analyzes alert distribution, quality scores, pipeline metrics
+- Recommends: threshold adjustments, new quality rules, mapping corrections
 - Shows impact simulation before applying changes
+- Explains recommendations in business terms (using glossary)
 
 ---
 
-## Phase 14: Alert Tuning & Distribution Analysis
+### Phase 28: Alert Tuning & Additional Detection Models
 
-**Goal:** Analyze alert distribution, calibrate scoring, optimize thresholds, sandbox testing.
+*Scoring calibration, threshold optimization, back-testing, and expanding from 5 to 15 detection models.*
 
-### Task 14.1: Alert distribution analysis dashboard
+**Tasks:**
 
-**Files:**
-- Modify: `frontend/src/views/Dashboard/index.tsx` — add distribution charts
-- Modify: `backend/api/dashboard.py` — add distribution endpoints
-
-**New charts:**
+#### Task 28.1: Alert distribution analysis dashboard
 - Score distribution histogram (by model)
-- Alert volume by day/week/month (trend)
-- True positive vs false positive rates (if dispositions exist)
-- Heat map: alerts by product x model
+- Alert volume trends (by day/week/month)
+- Heat map: alerts by product × model
 - Score calibration curve
 
-### Task 13.2: Threshold simulation (sandbox mode)
+#### Task 28.2: Threshold simulation (sandbox tier)
+- Use Sandbox tier (Phase 20) for threshold testing
+- Re-run detection models with different thresholds
+- Side-by-side comparison (current vs. proposed)
+- No production impact
 
-**Files:**
-- Create: `backend/services/simulation_service.py` — re-run detection with different thresholds
-- Create: `backend/api/simulation.py` — simulation endpoints
-- Create: `frontend/src/views/Simulation/index.tsx` — sandbox UI
+#### Task 28.3: Back-testing framework
+- Run detection models against historical archive data
+- Compare alert sets across parameter configurations
+- Generate calibration reports (precision, recall, F1 if labeled data available)
 
-**Design:**
-- User adjusts thresholds in a sandbox environment
-- System re-runs detection models against historical data with new thresholds
-- Shows side-by-side comparison: "With current thresholds: 430 alerts. With proposed: 285 alerts. Difference: -145 (34% reduction)"
-- No production impact until user applies changes
-
-### Task 13.3: Back-testing framework
-
-**Design:**
-- Run detection models against historical snapshots
-- Compare alert sets across different parameter configurations
-- Generate calibration reports: precision, recall, F1 score (if labeled data available)
-
----
-
-## Phase 14: Additional Detection Models
-
-**Goal:** Expand from 5 to 15 models covering the full regulatory spectrum.
+#### Task 28.4: Additional detection models
+Expand from 5 to 15 models covering full regulatory spectrum:
 
 | # | Model | Regulation | Priority |
 |---|-------|-----------|----------|
@@ -566,137 +1146,109 @@ Resolved:          Merge OOB + User, User wins on conflicts
 | D9 | Concentrated Position | Risk management | Low |
 | D10 | Best Execution Monitoring | MiFID II Art. 27 | Low |
 
-Each model is purely metadata-defined (JSON) using the dynamic architecture from Phase 7. No code changes needed — just add JSON definitions and supporting calculations.
+Each model is purely metadata-defined (JSON) using the medallion architecture. No code changes — just add JSON definitions, Silver→Gold mappings, and supporting calculations.
 
 ---
 
-## Phase 15: Security Hardening
+### Tier 6 — Production Readiness
 
-### Task 15.1: Fix SQL injection vulnerabilities (CRITICAL)
+### Phase 29: Security Hardening
 
-**Files:**
-- Modify: `backend/services/query_service.py:39-46` — use parameterized queries
-- Modify: `backend/api/query.py` — add SQL validation (SELECT-only for raw queries)
-- Test: `tests/test_sql_injection.py` — negative test cases
+*SQL injection fixes, authentication, CORS, rate limiting, input validation.*
 
-### Task 15.2: Add API authentication
+#### Task 29.1: Fix SQL injection vulnerabilities (CRITICAL)
+- **Modify:** `backend/services/query_service.py:39-46` — parameterized queries
+- Add SQL validation (SELECT-only for raw queries)
+- Negative test cases for injection attempts
 
-**Files:**
-- Create: `backend/middleware/auth.py` — JWT middleware
-- Modify: `backend/main.py` — register auth middleware
-- Modify: all `backend/api/` routes — require authentication
+#### Task 29.2: API authentication
+- JWT middleware for API endpoints
+- Role-based endpoint access (aligned with RBAC from Phase 22)
 
-### Task 15.3: Add CORS, rate limiting, input validation
-
-**Files:**
-- Modify: `backend/main.py` — add CORSMiddleware with restricted origins
-- Create: `backend/middleware/rate_limit.py` — slowapi integration
-- Modify: `backend/api/query.py` — add Pydantic Field constraints (limit max 10000, table name whitelist)
+#### Task 29.3: CORS, rate limiting, input validation
+- CORS with restricted origins
+- slowapi rate limiting
+- Pydantic Field constraints on all API inputs
 
 ---
 
-## Phase 16: Testing Framework Expansion
+### Phase 30: Testing Framework Expansion
 
-### Task 16.1: Frontend component tests
+*Frontend component tests, API security tests, performance tests.*
 
-**Files:**
-- Add to `frontend/package.json`: vitest, @testing-library/react
-- Create: `frontend/src/**/__tests__/` — component test files
+#### Task 30.1: Frontend component tests (vitest + @testing-library/react)
 - Target: 50+ component tests
 
-### Task 16.2: API security tests
-
-**Files:**
-- Create: `tests/test_security.py` — SQL injection, XSS, CORS, auth tests
+#### Task 30.2: API security tests
+- SQL injection, XSS, CORS, auth bypass
 - Target: 20+ negative test cases
 
-### Task 16.3: E2E Playwright automation — PARTIALLY COMPLETE
-
-**Files:**
-- `tests/e2e/` — 87 automated Playwright tests across 12 test classes
-- Covers all 16 views, API endpoints, guided scenarios, viewport responsiveness
-- Target was 15+, achieved 87. Remaining: security-focused E2E tests
-
-### Task 16.4: Performance tests
-
-**Files:**
-- Create: `tests/performance/` — k6 load test scripts
+#### Task 30.3: Performance tests
+- k6 load test scripts
 - Target: 100 concurrent users, <500ms p95 latency
 
 ---
 
-## Phase 17: Cloud & Deployment Infrastructure
+### Phase 31: Cloud & Deployment Infrastructure
 
-### Task 17.1: Docker containerization
+*Docker, CI/CD, health checks, structured logging.*
 
-**Files:**
-- Create: `Dockerfile` — multi-stage build (frontend + backend)
-- Create: `docker-compose.yml` — local containerized development
-- Create: `.dockerignore`
+#### Task 31.1: Docker containerization
+- Multi-stage Dockerfile (frontend build + backend)
+- docker-compose for local containerized development
 
-### Task 17.2: CI/CD pipeline
+#### Task 31.2: CI/CD pipeline
+- `.github/workflows/test.yml` — run tests on PR
+- `.github/workflows/build.yml` — build Docker image on merge
 
-**Files:**
-- Create: `.github/workflows/test.yml` — run tests on PR
-- Create: `.github/workflows/build.yml` — build Docker image on merge to main
-
-### Task 17.3: Health checks & structured logging
-
-**Files:**
-- Modify: `backend/main.py` — add readiness/liveness probes, structured JSON logging
-- Create: `backend/middleware/logging.py` — request ID correlation
+#### Task 31.3: Health checks & structured logging
+- Readiness/liveness probes
+- Request ID correlation
+- Structured JSON logging
 
 ---
 
-## Phase 18: Advanced Analytics & Dashboarding
+### Tier 7 — Productization
 
-### Task 18.1: Customizable dashboard layout
+### Phase 32: Advanced Analytics & Case Management
 
+*Customizable dashboards, comparative analysis, case lifecycle.*
+
+**Tasks:**
+
+#### Task 32.1: Customizable dashboard layout
 - User-configurable widget positions (drag-and-drop grid)
-- Saved dashboard views (per user/role)
+- Saved dashboard views (per role)
 - Widget library with add/remove
 
-### Task 18.2: Comparative analysis views
+#### Task 32.2: Comparative analysis views
+- Multi-product/account/time period overlays
+- Peer group analysis
+- Before/after detection effectiveness
 
-- Overlay multiple products/accounts/time periods
-- Peer group analysis (trader vs desk average)
-- Before/after views for detection effectiveness
-
-### Task 18.3: Result analysis tools
-
-- Alert aging analysis (how long from detection to resolution)
-- Model effectiveness comparison
-- Score distribution deep-dive with statistical analysis
-
----
-
-## Phase 19: Case Management Workflow
-
-| Step | Feature | Description |
-|------|---------|-------------|
-| 1 | Case Lifecycle | Triage → Investigation → Case → Resolution → Filing |
-| 2 | Case Assignment | Workload balancing, escalation rules |
-| 3 | Investigation Workspace | Timeline builder, evidence collection, narrative editor |
-| 4 | SAR/STR Generation | Auto-generate suspicious activity reports |
-| 5 | Audit Trail | Complete action log |
-| 6 | Case Linking | Link related alerts across models/time |
-| 7 | Disposition Codes | True Positive, False Positive, Escalated |
-| 8 | SLA Tracking | Time-to-triage, regulatory deadlines |
+#### Task 32.3: Case management workflow
+- Case lifecycle: Triage → Investigation → Case → Resolution → Filing
+- Case assignment, escalation, SLA tracking
+- Investigation workspace: timeline builder, evidence collection, narrative editor
+- SAR/STR auto-generation
+- Disposition codes (True Positive, False Positive, Escalated)
 
 ---
 
-## Phase 20: Productization
+### Phase 33: Productization
 
-### Task 20.1: Multi-tenant architecture
+*Multi-tenant, configuration management, plugin architecture.*
+
+#### Task 33.1: Multi-tenant architecture
 - Tenant middleware, per-tenant workspace isolation
-- Tenant-specific metadata (using Phase 11 layer architecture)
+- Tenant-specific metadata (using OOB layer architecture)
 
-### Task 20.2: Configuration management
-- Environment-based config (pydantic-settings with .env)
-- Feature flags for gradual feature rollout
+#### Task 33.2: Configuration management
+- Environment-based config (pydantic-settings)
+- Feature flags for gradual rollout
 - Secrets management integration
 
-### Task 20.3: Plugin architecture
+#### Task 33.3: Plugin architecture
 - Runtime-loadable calculation plugins
 - Custom entity type registration
 - Extension point system for detection models
@@ -707,14 +1259,14 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Entity | Description | Dependency |
 |---|--------|-------------|-----------|
-| E1 | News Feed | Market news for correlation | Phase 14 |
-| E2 | Quotes | Level 2 order book | Phase 14 |
-| E3 | Order Versioning | Track amendments | Phase 7 |
-| E4 | Communications | Email/chat metadata | Phase 19 |
-| E5 | Beneficial Ownership | Account→UBO chain | Phase 19 |
-| E6 | Watchlist | Restricted/grey/insider lists | Phase 19 |
-| E7 | Regulatory Calendar | Earnings, fixing windows | Phase 14 |
-| E8 | Position | End-of-day positions | Phase 18 |
+| E1 | News Feed | Market news for correlation | Phase 19 (Reference) |
+| E2 | Quotes | Level 2 order book | Phase 15 (Onboarding) |
+| E3 | Order Versioning | Track amendments | Phase 14 (Medallion) |
+| E4 | Communications | Email/chat metadata | Phase 32 (Case Management) |
+| E5 | Beneficial Ownership | Account→UBO chain | Phase 21 (Governance) |
+| E6 | Watchlist | Restricted/grey/insider lists | Phase 19 (Reference) |
+| E7 | Regulatory Calendar | Earnings, fixing windows | Phase 19 (Reference) |
+| E8 | Position | End-of-day positions | Phase 17 (Silver→Gold) |
 
 ---
 
@@ -722,13 +1274,16 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Feature | Description | Phase |
 |---|---------|-------------|-------|
-| V1 | Order Book Depth | Bid/ask depth around suspicious orders | Phase 14 |
-| V2 | Trade Timeline | Millisecond execution timeline | Phase 8 |
-| V3 | Network Graph | Account/trader relationships | Phase 18 |
-| V4 | Heatmaps | Volume/alert concentration | Phase 18 |
-| V5 | Comparative Charts | Multi-product overlays | Phase 18 |
-| V6 | Annotation Layer | Analyst marks on charts | Phase 19 |
-| V7 | Geographic Map | Jurisdiction analysis | Phase 20 |
+| V1 | Order Book Depth | Bid/ask depth around suspicious orders | Phase 28 |
+| V2 | Trade Timeline | Millisecond execution timeline | Phase 17 |
+| V3 | Network Graph | Account/trader relationships | Phase 32 |
+| V4 | Heatmaps | Volume/alert concentration | Phase 28 |
+| V5 | Comparative Charts | Multi-product overlays | Phase 32 |
+| V6 | Annotation Layer | Analyst marks on charts | Phase 32 |
+| V7 | Geographic Map | Jurisdiction analysis | Phase 33 |
+| V8 | Lineage Graph | Field-level lineage visualization | Phase 24 |
+| V9 | Quality Spider Charts | ISO 25012 dimension radar plots | Phase 18 |
+| V10 | Tier Flow Sankey | Data volume flow through medallion tiers | Phase 14 |
 
 ---
 
@@ -736,12 +1291,13 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Feature | Regulation | Phase |
 |---|---------|-----------|-------|
-| R1 | Transaction Reporting | MiFIR Art. 26 | Phase 19 |
-| R2 | Order Record Keeping | RTS 25 | Phase 10 |
-| R3 | STOR Generation | MAR Art. 16 | Phase 19 |
-| R4 | CAT Reporting | FINRA CAT | Phase 19 |
-| R5 | Regulatory Dashboard | Multi-regulation KPIs | Phase 18 |
-| R6 | Data Retention Policies | GDPR, MiFID II | Phase 20 |
+| R1 | Transaction Reporting | MiFIR Art. 26 | Phase 32 |
+| R2 | Order Record Keeping | RTS 25 | Phase 25 |
+| R3 | STOR Generation | MAR Art. 16 | Phase 32 |
+| R4 | CAT Reporting | FINRA CAT | Phase 32 |
+| R5 | Regulatory Dashboard | Multi-regulation KPIs | Phase 20 (Platinum) |
+| R6 | Data Retention Policies | GDPR, MiFID II | Phase 20 (Archive) |
+| R7 | Compliance Audit Report | ISO 27001 | Phase 25 |
 
 ---
 
@@ -749,11 +1305,14 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Feature | Description |
 |---|---------|-------------|
-| ~~P1~~ | ~~Guided Demo Mode~~ | ~~Pre-scripted walkthrough with narration~~ — DONE (Phase 7B: dual-mode tour engine with Watch Demo + Try It Yourself) |
-| ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B + M128: 26 scenarios in 7 categories) |
-| P3 | Live Data Simulation | Streaming real-time alert generation |
-| P4 | Comparison Mode | Before/after detection effectiveness |
-| P5 | Performance Metrics | Detection rates, false positive rates |
+| ~~P1~~ | ~~Guided Demo Mode~~ | ~~Pre-scripted walkthrough with narration~~ — DONE (Phase 7B) |
+| ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B + M128: 26 scenarios) |
+| P3 | Live Data Simulation | Streaming real-time alert generation via connector framework |
+| P4 | Comparison Mode | Before/after detection effectiveness via Sandbox tier |
+| P5 | Performance Metrics | Detection rates, false positive rates via Platinum tier |
+| P6 | Medallion Architecture Demo | Interactive walkthrough of data flowing through all 11 tiers |
+| P7 | Data Governance Demo | PII detection → classification → masking → audit trail |
+| P8 | Migration Demo | Export metadata → show compatibility with Snowflake/Databricks |
 
 ---
 
@@ -761,66 +1320,125 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 
 | # | Issue | Location | Phase |
 |---|-------|----------|-------|
-| T1 | SQL string formatting (injection risk) | `query_service.py:39-46` | Phase 15 |
-| T2 | No input validation on API endpoints | `backend/api/*.py` | Phase 15 |
-| T3 | DuckDB single-writer lock | `backend/db.py` | Phase 20 |
-| T4 | ~~Market data time range defaults to current date~~ | `TimeRangeSelector.tsx` | ~~Phase 7B (M94)~~ — RESOLVED (data-driven date range API) |
-| T5 | No error boundaries in React | `frontend/src/views/**` | Phase 16 |
-| T6 | ~~Stale `asset_class` in settings overrides~~ | `workspace/metadata/settings/` | ~~Phase 7B (M94)~~ — RESOLVED (added fixed_income/index overrides) |
-| T8 | ~~Calc SQL has hardcoded thresholds~~ | `workspace/metadata/calculations/**/*.json` | ~~Phase 7B (M93)~~ — RESOLVED (migrated all 10 calcs to $param placeholders) |
-| T9 | ~~ModelCreateForm missing critical fields~~ | `frontend/src/views/ModelComposer/ModelCreateForm.tsx` | ~~Phase 7B (M101-M102)~~ — RESOLVED (7-step wizard with all fields) |
-| T10 | ~~No domain value suggestions on any form input~~ | All form views | ~~Phase 7B (M95-M100)~~ — RESOLVED (SuggestionInput + useDomainValues across all forms) |
-| T11 | ~~No visual score step builder~~ | `SettingForm.tsx`, `SettingsEditor.tsx` | ~~Phase 7B (M99)~~ — RESOLVED (ScoreStepBuilder with visual range bar, gap/overlap detection) |
-| T7 | Demo state file not validated | `backend/api/demo.py` | Phase 15 |
+| T1 | SQL string formatting (injection risk) | `query_service.py:39-46` | Phase 29 |
+| T2 | No input validation on API endpoints | `backend/api/*.py` | Phase 29 |
+| T3 | DuckDB single-writer lock | `backend/db.py` | Phase 33 |
+| ~~T4~~ | ~~Market data time range defaults to current date~~ | | ~~RESOLVED (M94)~~ |
+| T5 | No error boundaries in React | `frontend/src/views/**` | Phase 30 |
+| ~~T6~~ | ~~Stale asset_class in settings~~ | | ~~RESOLVED (M94)~~ |
+| T7 | Demo state file not validated | `backend/api/demo.py` | Phase 29 |
+| ~~T8~~ | ~~Calc SQL has hardcoded thresholds~~ | | ~~RESOLVED (M93)~~ |
+| ~~T9~~ | ~~ModelCreateForm missing critical fields~~ | | ~~RESOLVED (M101-M102)~~ |
+| ~~T10~~ | ~~No domain value suggestions~~ | | ~~RESOLVED (M95-M100)~~ |
+| ~~T11~~ | ~~No visual score step builder~~ | | ~~RESOLVED (M99)~~ |
+| T12 | MappingStudio is UI-only prototype | `frontend/src/views/MappingStudio/` | Phase 16 |
+| T13 | No data quality validation gates | `backend/engine/data_loader.py` | Phase 18 |
+| T14 | No PII detection or classification | All entity data | Phase 21 |
+| T15 | No data lineage tracking | Pipeline execution | Phase 24 |
+| T16 | Hardcoded CSV reader (no connector abstraction) | `backend/engine/data_loader.py` | Phase 15 |
+| T17 | Platform-specific DuckDB SQL throughout | `backend/engine/*.py` | Phase 26 |
 
 ---
 
 ## Priority Matrix
 
-| Priority | Phases | Status | Rationale |
-|----------|--------|--------|-----------|
-| **P0 — DONE** | Phase 7 (Dynamic Foundation) | COMPLETE (M66-M69) | Foundation for dynamic metadata |
-| **P0 — DONE** | Phase 8 (Explainability) | COMPLETE (M70-M73) | Alert traces and drill-down |
-| **P0 — DONE** | Phase 9 (Metadata Editor) | COMPLETE (M74-M78) | Side-by-side JSON + visual editor |
-| **P0 — DONE** | Phase 10 (Regulatory) | COMPLETE (M79-M83) | Regulatory traceability graph |
-| **P0 — DONE** | Phase 11 (OOB Separation) | COMPLETE (M84-M88) | Layer architecture |
-| **P0 — DONE** | Phase 12 (UI/UX Usability) | COMPLETE (M89-M92) | AG Grid + viewport fixes |
-| **P0 — DONE** | Phase 7B (Metadata UX & Guided Demo) | COMPLETE (M93-M120) | Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios, 87 E2E tests |
-| **P0 — DONE** | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections, slide-in architecture panel, metadata maturity ratings, 7 new E2E tests |
-| **P0 — DONE** | Metadata Architecture Overhaul (M129-M150) | COMPLETE | Navigation, widgets, format rules, audit trail, AI context from metadata — 603 tests, 69% metadata-driven |
-| **P0 — DONE** | Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry — 716 tests, 83.8% metadata-driven |
-| **P2 — Important** | Phase 13 (AI-Assisted Configuration) | Planned | LLM metadata awareness (partially addressed in Phase 7B AI calc builder) |
-| **P3 — Enhance** | Phase 14 (Alert Tuning + Models) | Planned | Distribution analysis, 10 new detection models |
-| **P3 — Enhance** | Phase 15 (Security Hardening) | Planned | SQL injection fix, JWT, CORS |
-| **P3 — Enhance** | Phase 16 (Testing Expansion) | Planned | Frontend tests, security tests |
-| **P3 — Enhance** | Phase 17 (Cloud & Deployment) | Planned | Docker, CI/CD |
-| **P4 — Future** | Phase 18-20 (Analytics, Cases, Productization) | Planned | Long-term vision |
+| Priority | Phase | Status | Rationale |
+|----------|-------|--------|-----------|
+| **P0 — DONE** | Phases 1-12, 7B, Overhauls (M0-M173) | COMPLETE | Foundation: 16 views, 716 tests, 83.8% metadata-driven |
+| **P1 — Next** | Phase 13 (Data Calibration) | PLANNED | Quick win: fix alert distribution skew for better demos |
+| **P1 — Next** | Phase 14 (Medallion Core) | PLANNED | Foundation for entire medallion architecture vision |
+| **P1 — Next** | Phase 15 (Data Onboarding) | PLANNED | Connector abstraction + multi-format ingestion |
+| **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | PLANNED | MappingStudio overhaul Part 1 — raw to canonical |
+| **P1 — Next** | Phase 17 (Silver→Gold Mapping) | PLANNED | MappingStudio overhaul Part 2 — canonical to analytics |
+| **P2 — Important** | Phase 18 (Data Quality) | PLANNED | Quality gates, quarantine, ISO 8000/25012 |
+| **P2 — Important** | Phase 19 (Reference Data/MDM) | PLANNED | Golden records, cross-source reconciliation |
+| **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | PLANNED | KPIs, testing isolation, regulatory retention |
+| **P2 — Important** | Phase 21 (Data Governance) | PLANNED | Classification, PII detection, compliance |
+| **P2 — Important** | Phase 22 (Masking/Encryption/RBAC) | PLANNED | Dynamic masking, column encryption, role-based access |
+| **P3 — Enhance** | Phase 23 (Business Glossary) | PLANNED | ISO 11179, semantic layer, DAMA-DMBOK |
+| **P3 — Enhance** | Phase 24 (Observability/Lineage) | PLANNED | OpenLineage, pipeline metrics, audit trail |
+| **P3 — Enhance** | Phase 25 (Standards Integration) | PLANNED | ISO 27001, BCBS 239, compliance matrix |
+| **P3 — Enhance** | Phase 26 (Migration Readiness) | PLANNED | SQLMesh, Arrow, metadata export, multi-platform SQL |
+| **P3 — Enhance** | Phase 27 (AI Configuration) | PLANNED | LLM metadata awareness, assisted mapping/tuning |
+| **P3 — Enhance** | Phase 28 (Alert Tuning + Models) | PLANNED | Distribution analysis, 10 new detection models |
+| **P4 — Future** | Phases 29-31 (Security, Testing, Cloud) | PLANNED | Production infrastructure |
+| **P5 — Long-term** | Phases 32-33 (Analytics, Cases, Productization) | PLANNED | Multi-tenant, case management, plugins |
 
 ---
 
 ## Verification Plan
 
 After each phase:
-1. `cd frontend && npm run build` — no TypeScript errors (969 modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (506)
-3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (210) — stop port 8000 first
+1. `cd frontend && npm run build` — no TypeScript errors (969+ modules)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (506+)
+3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (210+) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
-6. Regression: existing demo checkpoints still work
+6. Follow `docs/development-workflow-protocol.md` for milestone completion
+7. Regression: existing demo checkpoints still work
+8. New medallion-specific checks:
+   - Data contracts validate (all tier boundaries have contracts)
+   - Quality scores generate for all entities
+   - Lineage graph complete from Landing to Gold
+   - Classification metadata present on all PII fields
+   - Masking policies active for role-based demo
 
 ---
 
 ## Research Sources
 
+### Industry & Vendor Research
 - NICE Actimize SURVEIL-X (generative AI integration, 2025)
 - Behavox AI Risk Policies (60%+ alert reduction)
 - SteelEye module-based architecture
 - Trapets drill-down dashboards and white-box models
 - OneTick source code transparency for all models
 - Salesforce metadata-driven multitenant architecture
-- FINRA CAT reporting requirements and field mapping
-- MiFID II RTS 25 time synchronization and order record keeping
-- MAR Art. 12/16 surveillance and STOR obligations
-- Industry calibration: 30-50% false positive reduction via systematic tuning
 
-*Total items: ~100+ across 14 phases + backlogs. Ready for user prioritization.*
+### Medallion Architecture
+- Databricks Medallion Architecture (Bronze/Silver/Gold canonical pattern)
+- Delta Lake best practices for tiered data processing
+- Microsoft Fabric lakehouse medallion patterns
+- Extended tiers: Quarantine (data quality), Platinum (pre-aggregated KPIs), Reference/MDM (golden records)
+- Netflix data mesh + medallion hybrid architecture
+
+### Data Governance & Standards
+- ISO 8000 (Data Quality Management)
+- ISO/IEC 25012 (System & Software Quality — Data Quality Model)
+- ISO 11179 (Metadata Registries — naming, classification, registration)
+- ISO 27001/27002 (Information Security Management — controls catalog)
+- BCBS 239 (Principles for Effective Risk Data Aggregation and Risk Reporting)
+- DAMA-DMBOK (Data Management Body of Knowledge — 11 knowledge areas)
+- GDPR Articles 17 (Right to Erasure) and 6 (Lawful Basis for Processing)
+- NIST SP 800-38G (Format-Preserving Encryption — FF1/FF3-1)
+
+### Financial Standards
+- ISO 20022 (Universal Financial Industry Message Scheme)
+- FIX Protocol 4.2/4.4/5.0 (Financial Information eXchange)
+- ISO 10383 (Market Identifier Codes — MIC)
+- ISO 6166 (International Securities Identification Number — ISIN)
+- ISO 10962 (Classification of Financial Instruments — CFI)
+- ISO 17442 (Legal Entity Identifier — LEI)
+- ISO 4217 (Currency Codes)
+- ISO 3166 (Country Codes)
+- ISO 8601 (Date/Time Representation)
+- ISDA Common Domain Model (CDM) for derivatives lifecycle
+- FINRA CAT reporting requirements
+
+### Regulatory
+- MiFID II RTS 25 (time synchronization, order record keeping)
+- MAR Art. 12/16 (market manipulation surveillance, STOR obligations)
+- Dodd-Frank / SEC 17a-4 (record retention)
+- FINRA 4511 (general record retention — 6 years)
+- EMIR (European Market Infrastructure Regulation)
+
+### Technology Patterns
+- SQLMesh (platform-agnostic pipeline definitions, SQLGlot transpilation)
+- Apache Arrow (zero-copy in-memory interchange, Arrow Flight for distributed access)
+- Apache Parquet (universal columnar storage, Modular Encryption)
+- OpenLineage (standard for lineage metadata collection)
+- Data Contracts (schema + SLA + quality expectations between tiers)
+- MIND pattern (Metadata-Informed Normalization Design)
+- Crypto-shredding (GDPR erasure via key destruction)
+
+*Total items: ~200+ across 21 phases + backlogs. Structured in 7 tiers from quick wins through productization.*
