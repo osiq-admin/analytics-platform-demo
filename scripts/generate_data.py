@@ -770,7 +770,10 @@ class SyntheticDataGenerator:
                     continue
                 self._generate_intraday_day(pid, day, close)
 
-        for pid in fx_ids + key_futures_ids:
+        fi_ids = [pid for pid, info in self.products.items()
+                  if info["asset_class"] == "fixed_income"]
+
+        for pid in fx_ids + key_futures_ids + fi_ids:
             for day in self.trading_days:
                 close = self.eod_prices.get(pid, {}).get(day)
                 if close is None:
@@ -816,6 +819,10 @@ class SyntheticDataGenerator:
                 dp = 4
                 spread = price * self.rng.uniform(0.00005, 0.0003)
                 min_spread = 0.0001  # 1 pip minimum
+            elif info["asset_class"] == "fixed_income":
+                dp = 4
+                spread = self.rng.uniform(0.015625, 0.0625)  # 1/64 to 1/16 of a point
+                min_spread = 0.015625
             elif info["instrument_type"] == "future":
                 dp = 2
                 spread = self.rng.uniform(0.25, 1.00)
@@ -882,6 +889,10 @@ class SyntheticDataGenerator:
                 dp = 4
                 spread = price * self.rng.uniform(0.00005, 0.0003)
                 min_spread = 0.0001  # 1 pip minimum
+            elif info["asset_class"] == "fixed_income":
+                dp = 4
+                spread = self.rng.uniform(0.015625, 0.0625)  # 1/64 to 1/16 of a point
+                min_spread = 0.015625
             elif info["instrument_type"] == "future":
                 dp = 2
                 spread = self.rng.uniform(0.25, 1.00)
