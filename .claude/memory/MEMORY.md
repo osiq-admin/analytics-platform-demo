@@ -4,20 +4,19 @@
 Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. Pitching to product team — E2E concept demo, not production.
 
 ## Current State (2026-02-27)
-- **Branch**: `main` — Phase 14 complete (M0-M175), fully merged and pushed
+- **Branch**: `feat/phase15-data-onboarding` — Phase 15 complete (M0-M183), pending PR merge to main
 - **GitHub**: `analytics-platform-demo` repo
-- **Tests**: 732 total (522 backend + 210 E2E Playwright) — ALL PASSING
-- **Frontend**: builds clean — 970 modules (`cd frontend && npm run build`)
-- **Views**: 17 (Dashboard, EntityDesigner, MetadataExplorer, SettingsManager, MappingStudio, PipelineMonitor, SchemaExplorer, SQLConsole, ModelComposer, DataManager, UseCaseStudio, RiskCaseManager, AIAssistant, MetadataEditor, RegulatoryMap, Submissions, MedallionOverview)
+- **Tests**: 759 total (549 backend + 210 E2E Playwright) — ALL PASSING
+- **Frontend**: builds clean — 971 modules (`cd frontend && npm run build`)
+- **Views**: 18 (Dashboard, EntityDesigner, MetadataExplorer, SettingsManager, MappingStudio, PipelineMonitor, SchemaExplorer, SQLConsole, ModelComposer, DataManager, UseCaseStudio, RiskCaseManager, AIAssistant, MetadataEditor, RegulatoryMap, Submissions, MedallionOverview, DataOnboarding)
 - **Entities**: 8 (product, execution, order, md_intraday, md_eod, venue, account, trader)
 - **Detection Models**: 5 (wash trading x2, market price ramping, insider dealing, spoofing/layering)
 - **Alerts**: 82 across 5 models and 5 asset classes (MPR 68%, wash 17%, insider 9%, spoofing 6%)
-- **Architecture**: 77 sections (was 74, added 3 medallion sections)
-- **Tour scenarios**: 27 guided scenarios (S1-S27) in 8 categories
-- **Operation scripts**: 98 operations across 17 views (81 original + 17 architecture_trace)
+- **Architecture**: 80 sections (was 77, added 3 onboarding sections), 82.5% metadata-driven
+- **Tour scenarios**: 28 guided scenarios (S1-S28) in 9 categories
+- **Operation scripts**: 104 operations across 18 views
 - **Roadmap**: Restructured to 33 phases across 7 tiers — medallion architecture (11 tiers), data governance, business glossary, migration readiness
-- **Latest**: Phase 14 Medallion Architecture Core complete (M175). 11-tier metadata, 6 data contracts, 5 transformations, 5 pipeline stages, MedallionOverview view, 7 API endpoints, S27 scenario
-- **Next priority**: Phases 15-17 (Data Onboarding + Mapping)
+- **Latest**: Phase 15 Data Onboarding & Connector Abstraction complete (M176-M183). Pydantic onboarding models, 6 connector metadata files, BaseConnector + LocalFileConnector + stubs, schema detector + data profiler, onboarding service + API endpoints, 5-step DataOnboarding wizard, tours/scenarios/operations/architecture
 
 ## Key Files
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
@@ -39,9 +38,9 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 ## Commands
 ```bash
 ./start.sh                                    # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (522)
+uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (549)
 uv run pytest tests/e2e/ -v                   # E2E Playwright tests (210)
-cd frontend && npm run build                  # Build frontend (970 modules)
+cd frontend && npm run build                  # Build frontend (971 modules)
 ```
 
 ## Workflow Preferences

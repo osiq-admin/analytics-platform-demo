@@ -1,25 +1,25 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 17 views, 732 tests (522 backend + 210 E2E), 8 entities, 5 detection models, 27 guided scenarios.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 18 views, 759 tests (549 backend + 210 E2E), 8 entities, 5 detection models, 28 guided scenarios.
 
 ## Quick Start
 ```bash
 ./start.sh                          # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (522)
+uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (549)
 uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (210)
-cd frontend && npm run build                  # Build frontend (970 modules)
+cd frontend && npm run build                  # Build frontend (971 modules)
 uv run python -m scripts.generate_data        # Regenerate CSVs
 uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 ```
 
 ## Architecture
 - **Backend**: `backend/` — FastAPI + DuckDB, 9 API routers, calculation/detection engines
-- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 17 views, Zustand stores
+- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 18 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
-- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion
+- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)
-- **Tests**: `tests/` — 522 backend tests + 210 E2E Playwright tests
+- **Tests**: `tests/` — 549 backend tests + 210 E2E Playwright tests
 - **Scripts**: `scripts/` — data generation, snapshot generation
 - **Docs**: `docs/` — progress tracker, demo guide, plans, schemas, checklists
 
@@ -63,7 +63,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases across 7 tiers (medallion architecture, data governance, standards, migration readiness)
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M175 complete)
+- Progress tracker: `docs/progress.md` (M0-M183 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

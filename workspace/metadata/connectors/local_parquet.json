@@ -1,0 +1,13 @@
+{
+    "connector_id": "local_parquet",
+    "connector_type": "local_file",
+    "format": "parquet",
+    "config": {
+        "compression": "snappy"
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "Local Parquet file reader — columnar format with embedded schema"
+}

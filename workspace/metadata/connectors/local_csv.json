@@ -1,0 +1,16 @@
+{
+    "connector_id": "local_csv",
+    "connector_type": "local_file",
+    "format": "csv",
+    "config": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "header_row": true,
+        "date_format": "ISO8601"
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "Local CSV file reader — comma-separated values with auto-detected schema"
+}

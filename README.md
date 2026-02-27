@@ -28,7 +28,7 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (970 Vite modules)             │
+│  React 19 SPA (971 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (11 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
@@ -89,7 +89,7 @@ uv run python -m scripts.generate_snapshots
 - Alert fires when: all gates pass AND (all checks pass OR score >= threshold)
 - Settings resolve per entity context: product-specific → hierarchy/multi-dim → default fallback
 
-## 16 Views
+## 18 Views
 
 | Area | View | What It Does |
 |------|------|-------------|
@@ -109,6 +109,8 @@ uv run python -m scripts.generate_snapshots
 | | AI Assistant | Claude-powered chat (live or mock) with Run Query integration |
 | **Governance** | Regulatory Map | Traceability graph + regulation details (MAR, MiFID II, Dodd-Frank, FINRA) |
 | | Submissions | Review queue with auto-recommendations, approve/reject workflow |
+| **Architecture** | Medallion Overview | 11-tier medallion data architecture with React Flow, data contracts, pipeline stages |
+| | Data Onboarding | 5-step wizard: Source → Schema → Profile → Mapping → Review, 6 connector types |
 
 ## Key Features
 
@@ -143,8 +145,8 @@ Clean separation between out-of-box (vendor-shipped) and user customizations:
 
 ### Architecture Traceability Mode
 
-Toolbar toggle overlays info icons on every section across all 16 views:
-- 74 traced sections showing source files, Zustand stores, API endpoints, metadata sources
+Toolbar toggle overlays info icons on every section across all 18 views:
+- 80 traced sections showing source files, Zustand stores, API endpoints, metadata sources
 - 5-level metadata maturity rating per section (Fully Metadata-Driven → Infrastructure)
 - Improvement opportunities for each section
 
@@ -157,10 +159,10 @@ Toolbar toggle overlays info icons on every section across all 16 views:
 
 ### Guided Experience
 
-- **26 scenarios** in 7 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
+- **28 scenarios** in 9 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
 - **Per-view tours** with spotlight overlay and step-by-step popovers
 - **3 demo workflow guides** (Act 1: data discovery, Act 2: model composition, Act 3: investigation)
-- **89 operation scripts** across 16 views via per-view help panels
+- **104 operation scripts** across 18 views via per-view help panels
 - **Onboarding modal** for first-time visitors
 - **8 demo checkpoints**: Pristine → Data Loaded → Pipeline Run → Alerts → Acts 1-3 → Final
 
@@ -174,7 +176,7 @@ Toolbar toggle overlays info icons on every section across all 16 views:
 │   └── services/        # Business logic services
 ├── frontend/            # React 19 TypeScript SPA
 │   └── src/
-│       ├── views/       # 16 view components
+│       ├── views/       # 18 view components
 │       ├── components/  # Shared UI components
 │       ├── stores/      # 11 Zustand state stores
 │       ├── data/        # Tours, scenarios, operations, traceability
@@ -187,14 +189,14 @@ Toolbar toggle overlays info icons on every section across all 16 views:
 │   ├── use_cases/       # Use case definitions
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
-├── tests/               # 732 tests (522 backend + 210 E2E Playwright)
+├── tests/               # 759 tests (549 backend + 210 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing
 
 ```bash
-# Backend tests (522)
+# Backend tests (549)
 uv run pytest tests/ --ignore=tests/e2e -v
 
 # E2E Playwright tests (210)
@@ -204,7 +206,7 @@ uv run pytest tests/e2e/ -v
 cd frontend && npm run build
 ```
 
-732 tests total: 522 backend unit/integration + 210 E2E Playwright. All 17 views have dedicated E2E coverage.
+759 tests total: 549 backend unit/integration + 210 E2E Playwright. All 18 views have dedicated E2E coverage.
 
 ## Development
 

@@ -1,0 +1,14 @@
+{
+    "connector_id": "local_excel",
+    "connector_type": "local_file",
+    "format": "excel",
+    "config": {
+        "sheet": 0,
+        "header_row": true
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "Local Excel file reader — .xlsx/.xls spreadsheet with auto-detected schema"
+}

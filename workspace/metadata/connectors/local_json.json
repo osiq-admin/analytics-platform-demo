@@ -1,0 +1,14 @@
+{
+    "connector_id": "local_json",
+    "connector_type": "local_file",
+    "format": "json",
+    "config": {
+        "array_format": true,
+        "encoding": "utf-8"
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "Local JSON file reader — JSON array of objects with auto-detected schema"
+}

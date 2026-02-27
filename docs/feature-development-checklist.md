@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-27 (M175 — 732 total tests: 522 backend + 210 E2E, 27 scenarios, 17 views, 77 architecture sections, 83.1% metadata-driven)
+**Last Updated**: 2026-02-27 (M183 — 759 total tests: 549 backend + 210 E2E, 28 scenarios, 18 views, 80 architecture sections, 82.5% metadata-driven)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 522)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 549)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 522)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 549)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -297,7 +297,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (522+)
+# Backend tests (549+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
 # E2E Playwright tests (210+)

@@ -1,0 +1,14 @@
+{
+    "connector_id": "streaming_stub",
+    "connector_type": "streaming",
+    "format": "",
+    "config": {
+        "broker": "localhost:9092",
+        "topic": "trades"
+    },
+    "schema_detection": "auto",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "Streaming connector stub — demonstrates extensibility for Kafka/queue-based ingestion"
+}
