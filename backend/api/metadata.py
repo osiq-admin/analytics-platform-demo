@@ -1,5 +1,5 @@
 """Metadata CRUD endpoints for entities, calculations, settings, detection models."""
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -582,5 +582,5 @@ def get_grid_config(view_id: str, request: Request):
     svc = _meta(request)
     config = svc.load_grid_config(view_id)
     if config is None:
-        raise HTTPException(status_code=404, detail=f"Grid config not found for view: {view_id}")
+        return JSONResponse({"error": "not found"}, status_code=404)
     return config

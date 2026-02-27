@@ -1,7 +1,5 @@
 """Tests for grid column metadata."""
 import json
-import pathlib
-
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app

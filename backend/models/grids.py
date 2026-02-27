@@ -1,4 +1,6 @@
 """Pydantic models for grid column metadata."""
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -23,4 +25,4 @@ class GridConfig(BaseModel):
     description: str = ""
     columns: list[GridColumn] = []
     default_sort_field: str | None = None
-    default_sort_direction: str = "asc"
+    default_sort_direction: Literal["asc", "desc"] = "asc"
