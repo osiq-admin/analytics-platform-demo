@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M162 Stage 3 Checkpoint; 645 total tests: 463 backend + 182 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid metadata configs)
+**Last Updated**: 2026-02-27 (M166 Stage 4 Checkpoint; 681 total tests: 478 backend + 203 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette)
 
 ---
 
@@ -238,6 +238,10 @@
 | M160 | Alert Filter Schema | COMPLETE | 3 | 3 | Alert summary grid columns and filters as metadata for RiskCaseManager |
 | M161 | Related Orders Metadata | COMPLETE | 5 | 5 | Execution (12 cols) + order (11 cols) grid metadata + market_data_config on all 5 detection models |
 | M162 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Grid metadata — 463 backend tests passing, 5 sections upgraded to mostly-metadata-driven |
+| M163 | View Tabs Metadata | COMPLETE | 4 | 4 | View tab definitions as metadata — Entity Designer + Model Composer tabs from API |
+| M164 | Color Palettes Metadata | COMPLETE | 4 | 4 | Theme palettes as metadata — chart colors, asset class colors, graph node colors |
+| M165 | E2E Metadata Tests | COMPLETE | 3 | 3 | 21 E2E tests for standards, grids, view config, palettes APIs |
+| M166 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | View config — 478 backend + 203 E2E tests, entities.view-tabs upgraded |
 
 ---
 

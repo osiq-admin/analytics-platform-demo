@@ -307,6 +307,15 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - **Fallback resilience**: All grids fall back to hardcoded columns if metadata API fails
 - **Hook pattern**: `useGridColumns(viewId, fallback)` — generic hook used across all metadata-driven grids
 
+### View Configuration Metadata (M163-M164)
+- **View tabs**: Tab definitions (id, label, icon, default) loaded from metadata API
+  - Entity Designer: 2 tabs from `workspace/metadata/view_config/entity_designer.json`
+  - Model Composer: 3 tabs from `workspace/metadata/view_config/model_composer.json`
+- **Theme palettes**: Chart colors, asset class colors, badge variants, graph node colors from `workspace/metadata/theme/palettes.json`
+  - Dashboard uses metadata palette for all charts
+  - Regulatory Map uses metadata palette for graph node colors
+- **Hook pattern**: `useViewTabs(viewId, fallback)` and `useThemePalettes()` with module-level cache
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

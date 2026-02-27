@@ -107,7 +107,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         technologies: [{ name: "Recharts", role: "Renders BarChart and PieChart visualizations" }],
         metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Data from metadata-driven detection models.",
+          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Color palette loaded from /api/metadata/theme/palettes/default. Data from metadata-driven detection models.",
         metadataOpportunities: [
           "Support custom chart renderers loaded dynamically from metadata",
         ],
@@ -451,19 +451,29 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "View Tabs",
         viewId: "entities",
         description:
-          "Tab selector toggling between Details view and Relationships graph view. Tab selection persisted via useLocalStorage hook.",
+          "Tab selector toggling between Details view and Relationships graph view. Tab definitions loaded from view config metadata API with fallback to hardcoded.",
         files: [
-          { path: "frontend/src/views/EntityDesigner/index.tsx", role: "Tab rendering and state management" },
+          { path: "frontend/src/views/EntityDesigner/index.tsx", role: "Tab rendering with metadata-driven labels" },
+          { path: "frontend/src/hooks/useViewTabs.ts", role: "Hook for metadata-driven tab definitions" },
           { path: "frontend/src/hooks/useLocalStorage.ts", role: "Persists tab selection to localStorage" },
         ],
         stores: [],
-        apis: [],
-        dataSources: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/view_config/entity_designer",
+            role: "Returns tab definitions for entity designer",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/view_config/entity_designer.json", category: "metadata", role: "Tab definitions (id, label, icon, default)" },
+        ],
         technologies: [],
-        metadataMaturity: "code-driven",
-        maturityExplanation: "Tab definitions (Details, Relationships) are hardcoded in JSX.",
+        metadataMaturity: "mostly-metadata-driven",
+        maturityExplanation: "Tab definitions (id, label, icon, default) loaded from metadata JSON via API. Tab selection state handled by frontend useLocalStorage hook.",
         metadataOpportunities: [
-          "Define available tabs as metadata to allow view customization",
+          "Add tab visibility/ordering configuration to metadata",
         ],
       },
     ],
