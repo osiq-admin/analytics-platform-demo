@@ -1095,3 +1095,19 @@ class MetadataService:
         if not path.exists():
             return PipelineConfig()
         return PipelineConfig.model_validate_json(path.read_text())
+
+    # --- Connectors ---
+
+    def list_connectors(self) -> "list[ConnectorConfig]":
+        from backend.models.onboarding import ConnectorConfig
+        d = self._base / "connectors"
+        if not d.exists():
+            return []
+        return [ConnectorConfig.model_validate_json(f.read_text()) for f in sorted(d.glob("*.json"))]
+
+    def load_connector(self, connector_id: str) -> "ConnectorConfig | None":
+        from backend.models.onboarding import ConnectorConfig
+        p = self._base / "connectors" / f"{connector_id}.json"
+        if not p.exists():
+            return None
+        return ConnectorConfig.model_validate_json(p.read_text())

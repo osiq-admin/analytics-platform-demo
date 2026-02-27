@@ -104,3 +104,142 @@ class TestConnectors:
             conn.read("any")
         with pytest.raises(NotImplementedError):
             conn.detect_schema("any")
+
+
+from backend.services.schema_detector import detect_schema
+from backend.services.schema_detector import _detect_pattern
+from backend.services.data_profiler import profile_data
+from backend.services import onboarding_service
+from backend import config
+from backend.main import app
+from starlette.testclient import TestClient
+
+
+class TestSchemaDetector:
+    def test_detect_csv_schema(self, tmp_path):
+        f = tmp_path / "test.csv"
+        f.write_text("id,name,amount\n1,Alice,100.5\n2,Bob,200.0\n")
+        schema = detect_schema(f)
+        assert len(schema.columns) == 3
+        assert schema.row_count == 2
+        assert schema.file_format == "csv"
+
+    def test_detect_pattern_isin(self):
+        assert _detect_pattern(["US0378331005", "GB0002634946"]) == "ISIN"
+
+    def test_detect_pattern_mic(self):
+        assert _detect_pattern(["XNYS", "XLON"]) == "MIC"
+
+    def test_detect_pattern_empty(self):
+        assert _detect_pattern([]) == ""
+
+    def test_detect_pattern_no_match(self):
+        assert _detect_pattern(["hello", "world"]) == ""
+
+
+class TestDataProfiler:
+    def test_profile_csv(self, tmp_path):
+        f = tmp_path / "test.csv"
+        f.write_text("id,name,amount\n1,Alice,100.5\n2,Bob,\n3,Carol,150.0\n")
+        profile = profile_data(f)
+        assert profile.total_rows == 3
+        assert profile.total_columns == 3
+        assert profile.completeness_pct < 100
+
+    def test_profile_column_stats(self, tmp_path):
+        f = tmp_path / "test.csv"
+        f.write_text("val\n10\n20\n30\n")
+        profile = profile_data(f)
+        assert len(profile.columns) == 1
+        assert profile.columns[0].distinct_count == 3
+
+    def test_profile_all_complete(self, tmp_path):
+        f = tmp_path / "test.csv"
+        f.write_text("a,b\n1,2\n3,4\n")
+        profile = profile_data(f)
+        assert profile.completeness_pct == 100.0
+
+
+class TestOnboardingAPI:
+    @pytest.fixture(autouse=True)
+    def clear_jobs(self):
+        onboarding_service.clear_jobs()
+        yield
+        onboarding_service.clear_jobs()
+
+    @pytest.fixture
+    def workspace(self, tmp_path):
+        ws = tmp_path / "workspace"
+        for d in [
+            "metadata/connectors", "metadata/entities",
+            "metadata/calculations/transaction",
+            "metadata/detection_models", "metadata/settings/thresholds",
+            "metadata/medallion", "data/csv", "data/parquet", "data/uploads",
+        ]:
+            (ws / d).mkdir(parents=True, exist_ok=True)
+        (ws / "metadata" / "connectors" / "local_csv.json").write_text(json.dumps({
+            "connector_id": "local_csv", "connector_type": "local_file",
+            "format": "csv", "config": {}, "description": "CSV connector",
+        }))
+        return ws
+
+    @pytest.fixture
+    def client(self, workspace, monkeypatch):
+        monkeypatch.setattr(config.settings, "workspace_dir", workspace)
+        import backend.api.onboarding as onb_mod
+        monkeypatch.setattr(onb_mod, "UPLOAD_DIR", workspace / "data" / "uploads")
+        with TestClient(app, raise_server_exceptions=False) as tc:
+            yield tc
+
+    def test_list_connectors(self, client):
+        resp = client.get("/api/onboarding/connectors")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) >= 1
+        assert data[0]["connector_id"] == "local_csv"
+
+    def test_upload_and_detect(self, client):
+        csv = b"id,name,value\n1,Alice,100\n2,Bob,200\n"
+        resp = client.post("/api/onboarding/upload", files={"file": ("test.csv", csv, "text/csv")})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "schema_detected"
+        assert data["row_count"] == 2
+        assert len(data["detected_schema"]["columns"]) == 3
+
+    def test_get_job(self, client):
+        csv = b"id,name\n1,A\n"
+        upload = client.post("/api/onboarding/upload", files={"file": ("t.csv", csv, "text/csv")})
+        job_id = upload.json()["job_id"]
+        resp = client.get(f"/api/onboarding/jobs/{job_id}")
+        assert resp.status_code == 200
+        assert resp.json()["job_id"] == job_id
+
+    def test_get_job_not_found(self, client):
+        resp = client.get("/api/onboarding/jobs/nonexistent")
+        assert resp.status_code == 404
+
+    def test_profile_job(self, client):
+        csv = b"id,name,value\n1,Alice,100\n2,Bob,200\n"
+        upload = client.post("/api/onboarding/upload", files={"file": ("t.csv", csv, "text/csv")})
+        job_id = upload.json()["job_id"]
+        resp = client.post(f"/api/onboarding/jobs/{job_id}/profile")
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "profiled"
+        assert resp.json()["profile"]["total_rows"] == 2
+
+    def test_confirm_job(self, client):
+        csv = b"id,name\n1,A\n"
+        upload = client.post("/api/onboarding/upload", files={"file": ("t.csv", csv, "text/csv")})
+        job_id = upload.json()["job_id"]
+        resp = client.post(f"/api/onboarding/jobs/{job_id}/confirm", json={"target_entity": "execution"})
+        assert resp.status_code == 200
+        assert resp.json()["target_entity"] == "execution"
+        assert resp.json()["status"] == "confirmed"
+
+    def test_list_jobs(self, client):
+        csv = b"id,name\n1,A\n"
+        client.post("/api/onboarding/upload", files={"file": ("t.csv", csv, "text/csv")})
+        resp = client.get("/api/onboarding/jobs")
+        assert resp.status_code == 200
+        assert len(resp.json()) >= 1
