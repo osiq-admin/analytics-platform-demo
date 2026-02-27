@@ -1,0 +1,11 @@
+{
+  "transformation_id": "bronze_to_silver_execution",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "entity": "execution",
+  "description": "Map bronze executions to canonical entity model with referential integrity checks",
+  "sql_template": "SELECT e.execution_id, e.order_id, e.product_id, e.venue_mic, e.quantity, e.trade_timestamp AT TIME ZONE 'UTC' AS trade_timestamp, o.trader_id, p.asset_class FROM bronze_execution e JOIN bronze_order o ON e.order_id = o.order_id JOIN bronze_product p ON e.product_id = p.product_id",
+  "parameters": {},
+  "quality_checks": ["referential_integrity", "no_null_keys", "timestamp_valid"],
+  "error_handling": "quarantine"
+}

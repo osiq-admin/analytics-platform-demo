@@ -1,0 +1,11 @@
+{
+  "transformation_id": "landing_to_bronze_execution",
+  "source_tier": "landing",
+  "target_tier": "bronze",
+  "entity": "execution",
+  "description": "Type-cast and deduplicate raw executions",
+  "sql_template": "SELECT DISTINCT CAST(exec_id AS VARCHAR) AS execution_id, CAST(quantity AS DECIMAL(18,4)) AS quantity, CAST(trade_ts AS TIMESTAMP) AS trade_timestamp, order_id, product_id, venue_mic FROM landing_execution",
+  "parameters": {},
+  "quality_checks": ["row_count_nonzero", "no_null_keys", "no_duplicates"],
+  "error_handling": "quarantine"
+}
