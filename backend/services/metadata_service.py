@@ -826,6 +826,26 @@ class MetadataService:
         config = FormatRulesConfig.model_validate(data)
         return config.model_dump()
 
+    # -- Navigation --
+
+    def load_navigation(self) -> dict:
+        """Load navigation configuration from metadata."""
+        nav_dir = self._base / "navigation"
+        if not nav_dir.exists():
+            return {"navigation_id": "main", "groups": []}
+        files = sorted(nav_dir.glob("*.json"))
+        if not files:
+            return {"navigation_id": "main", "groups": []}
+        data = json.loads(files[0].read_text())
+        from backend.models.navigation import NavigationConfig
+        config = NavigationConfig.model_validate(data)
+        # Sort groups by order, items by order within each group
+        result = config.model_dump()
+        result["groups"].sort(key=lambda g: g["order"])
+        for group in result["groups"]:
+            group["items"].sort(key=lambda i: i["order"])
+        return result
+
     # -- Query Presets --
 
     def _query_presets_dir(self) -> Path:

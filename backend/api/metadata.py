@@ -515,6 +515,14 @@ def get_format_rules(request: Request):
     return _meta(request).load_format_rules()
 
 
+# -- Navigation --
+
+@router.get("/navigation")
+def get_navigation(request: Request):
+    """Return navigation configuration from metadata."""
+    return _meta(request).load_navigation()
+
+
 # -- Widget Configurations --
 
 @router.get("/widgets/{view_id}")
