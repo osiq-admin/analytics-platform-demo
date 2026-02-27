@@ -12,7 +12,7 @@ from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
 from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
-from backend.models.workflow import DemoConfig, WorkflowConfig
+from backend.models.workflow import DemoConfig, TourRegistry, WorkflowConfig
 
 
 class MetadataService:
@@ -1036,3 +1036,14 @@ class MetadataService:
                 config = DemoConfig.model_validate(data)
                 return config.model_dump()
         return None
+
+    # -- Tour Registry --
+
+    def load_tour_registry(self) -> dict | None:
+        """Load the tour/scenario registry from workspace/metadata/tours/registry.json."""
+        path = self._base / "tours" / "registry.json"
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text())
+        registry = TourRegistry.model_validate(data)
+        return registry.model_dump()

@@ -1,4 +1,4 @@
-"""Pydantic models for workflow and demo checkpoint metadata."""
+"""Pydantic models for workflow, demo checkpoint, and tour registry metadata."""
 from pydantic import BaseModel
 
 
@@ -26,3 +26,29 @@ class DemoConfig(BaseModel):
     demo_id: str
     description: str = ""
     checkpoints: list[DemoCheckpoint] = []
+
+
+# -- Tour Registry (M169) --
+
+class TourSummary(BaseModel):
+    tour_id: str
+    view_path: str
+    title: str
+    step_count: int
+
+
+class ScenarioCategory(BaseModel):
+    category: str
+    count: int
+
+
+class ScenarioSummary(BaseModel):
+    total_count: int
+    categories: list[ScenarioCategory] = []
+
+
+class TourRegistry(BaseModel):
+    registry_id: str
+    description: str = ""
+    tours: list[TourSummary] = []
+    scenarios: ScenarioSummary | None = None

@@ -1,4 +1,4 @@
-"""Tests for workflow metadata (M167) and demo checkpoint metadata (M168)."""
+"""Tests for workflow metadata (M167), demo checkpoint metadata (M168), and tour registry metadata (M169)."""
 import json
 import pytest
 from fastapi.testclient import TestClient
@@ -36,6 +36,45 @@ def workspace(tmp_path):
             {"id": "act2_complete", "label": "Act 2 Complete", "description": "Models deployed, alerts generated, risk cases available", "order": 6},
             {"id": "final", "label": "Final", "description": "Full demo state with all data, models, alerts, and risk cases", "order": 7}
         ]
+    }))
+    # Tour registry metadata (M169)
+    (ws / "metadata" / "tours").mkdir(parents=True)
+    (ws / "metadata" / "tours" / "registry.json").write_text(json.dumps({
+        "registry_id": "tours",
+        "description": "Tour and scenario registry for guided help system",
+        "tours": [
+            {"tour_id": "overview", "view_path": "/", "title": "App Overview", "step_count": 4},
+            {"tour_id": "dashboard", "view_path": "/dashboard", "title": "Dashboard Tour", "step_count": 4},
+            {"tour_id": "entities", "view_path": "/entities", "title": "Entity Designer Tour", "step_count": 3},
+            {"tour_id": "settings", "view_path": "/settings", "title": "Settings Manager Tour", "step_count": 3},
+            {"tour_id": "models", "view_path": "/models", "title": "Model Composer Tour", "step_count": 2},
+            {"tour_id": "alerts", "view_path": "/alerts", "title": "Risk Case Manager Tour", "step_count": 2},
+            {"tour_id": "sql", "view_path": "/sql", "title": "SQL Console Tour", "step_count": 3},
+            {"tour_id": "pipeline", "view_path": "/pipeline", "title": "Pipeline Monitor Tour", "step_count": 2},
+            {"tour_id": "schema", "view_path": "/schema", "title": "Schema Explorer Tour", "step_count": 2},
+            {"tour_id": "mappings", "view_path": "/mappings", "title": "Mapping Studio Tour", "step_count": 2},
+            {"tour_id": "data", "view_path": "/data", "title": "Data Manager Tour", "step_count": 2},
+            {"tour_id": "assistant", "view_path": "/assistant", "title": "AI Assistant Tour", "step_count": 2},
+            {"tour_id": "editor", "view_path": "/editor", "title": "Metadata Editor Tour", "step_count": 4},
+            {"tour_id": "regulatory", "view_path": "/regulatory", "title": "Regulatory Traceability Tour", "step_count": 5},
+            {"tour_id": "act1_guide", "view_path": "/data", "title": "Act 1: Data-to-Alerts Workflow", "step_count": 9},
+            {"tour_id": "act2_guide", "view_path": "/models", "title": "Act 2: Model Composition", "step_count": 5},
+            {"tour_id": "oob", "view_path": "/editor", "title": "OOB vs Custom Metadata Tour", "step_count": 7},
+            {"tour_id": "ux_features", "view_path": "/entities", "title": "Grid & Layout Features", "step_count": 5},
+            {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3}
+        ],
+        "scenarios": {
+            "total_count": 26,
+            "categories": [
+                {"category": "Settings", "count": 6},
+                {"category": "Calculations", "count": 4},
+                {"category": "Detection Models", "count": 4},
+                {"category": "Use Cases", "count": 4},
+                {"category": "Entities", "count": 2},
+                {"category": "Investigation", "count": 3},
+                {"category": "Administration", "count": 3}
+            ]
+        }
     }))
     for d in ["entities", "calculations", "settings", "detection_models", "query_presets"]:
         (ws / "metadata" / d).mkdir(parents=True)
@@ -158,3 +197,70 @@ class TestDemoCheckpointMetadata:
     def test_nonexistent_demo_returns_404(self, client):
         resp = client.get("/api/metadata/demo/nonexistent")
         assert resp.status_code == 404
+
+
+class TestTourRegistryMetadata:
+    """Tests for tour/scenario registry metadata (M169)."""
+
+    def test_tour_registry_loads(self, client):
+        resp = client.get("/api/metadata/tours")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "tours" in data
+        assert "scenarios" in data
+
+    def test_tour_registry_has_id(self, client):
+        resp = client.get("/api/metadata/tours")
+        data = resp.json()
+        assert data["registry_id"] == "tours"
+
+    def test_tour_registry_has_description(self, client):
+        resp = client.get("/api/metadata/tours")
+        data = resp.json()
+        assert "description" in data
+        assert len(data["description"]) > 0
+
+    def test_tours_have_required_fields(self, client):
+        resp = client.get("/api/metadata/tours")
+        for tour in resp.json()["tours"]:
+            assert "tour_id" in tour
+            assert "view_path" in tour
+            assert "title" in tour
+            assert "step_count" in tour
+
+    def test_tour_count_matches_views(self, client):
+        resp = client.get("/api/metadata/tours")
+        assert len(resp.json()["tours"]) >= 10  # at least 10 tours for 16 views
+
+    def test_scenarios_have_categories(self, client):
+        resp = client.get("/api/metadata/tours")
+        scenarios = resp.json()["scenarios"]
+        assert scenarios["total_count"] >= 20
+        assert len(scenarios["categories"]) >= 5
+
+    def test_scenario_categories_have_required_fields(self, client):
+        resp = client.get("/api/metadata/tours")
+        for cat in resp.json()["scenarios"]["categories"]:
+            assert "category" in cat
+            assert "count" in cat
+            assert cat["count"] > 0
+
+    def test_scenario_counts_sum_to_total(self, client):
+        resp = client.get("/api/metadata/tours")
+        scenarios = resp.json()["scenarios"]
+        total = sum(c["count"] for c in scenarios["categories"])
+        assert total == scenarios["total_count"]
+
+    def test_known_tours_present(self, client):
+        """Verify key tours exist in the registry."""
+        resp = client.get("/api/metadata/tours")
+        tour_ids = {t["tour_id"] for t in resp.json()["tours"]}
+        assert "dashboard" in tour_ids
+        assert "entities" in tour_ids
+        assert "settings" in tour_ids
+        assert "overview" in tour_ids
+
+    def test_step_counts_positive(self, client):
+        resp = client.get("/api/metadata/tours")
+        for tour in resp.json()["tours"]:
+            assert tour["step_count"] > 0

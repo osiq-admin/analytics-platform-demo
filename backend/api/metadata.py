@@ -622,6 +622,18 @@ def get_demo_config(demo_id: str, request: Request):
     return config
 
 
+# -- Tour Registry --
+
+@router.get("/tours")
+def get_tour_registry(request: Request):
+    """Return the tour/scenario registry with all tour summaries and scenario categories."""
+    svc = _meta(request)
+    registry = svc.load_tour_registry()
+    if registry is None:
+        return JSONResponse({"error": "Tour registry not found"}, status_code=404)
+    return registry
+
+
 # -- Grid Configurations --
 
 @router.get("/grids/{view_id}")
