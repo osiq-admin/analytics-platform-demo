@@ -10,6 +10,15 @@ def _meta(request: Request):
     return request.app.state.metadata
 
 
+# -- Audit Trail --
+
+@router.get("/audit")
+def get_audit_history(request: Request, metadata_type: str | None = None, item_id: str | None = None):
+    if not hasattr(request.app.state, "audit"):
+        return []
+    return request.app.state.audit.get_history(metadata_type, item_id)
+
+
 # -- Entities --
 
 @router.get("/entities")
