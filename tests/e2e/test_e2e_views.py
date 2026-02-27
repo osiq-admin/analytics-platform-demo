@@ -127,6 +127,37 @@ class TestDashboardWidgetConfig:
 
 
 # ============================================================================
+# Scenario 2c: Navigation metadata
+# ============================================================================
+
+class TestNavigationMetadata:
+    """Navigation metadata E2E tests — verify sidebar loads from API."""
+
+    def test_navigation_api_returns_all_views(self, loaded_page):
+        """Verify the navigation API returns all 16 views."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/navigation');
+                const data = await resp.json();
+                const paths = data.groups.flatMap(g => g.items.map(i => i.path));
+                return { status: resp.status, count: paths.length, paths };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 16
+
+    def test_sidebar_renders_all_groups(self, loaded_page):
+        """Verify sidebar renders all navigation groups from metadata."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        sidebar = loaded_page.locator("[data-tour='sidebar'], [data-trace='app.sidebar']")
+        expect(sidebar).to_be_visible(timeout=10000)
+        # Check that nav links exist (should be at least 16)
+        links = sidebar.locator("a")
+        assert links.count() >= 16
+
+
+# ============================================================================
 # Scenario 3: Entity Designer
 # ============================================================================
 
