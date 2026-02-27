@@ -7,6 +7,7 @@ import {
   type PieLabelRenderProps,
 } from "recharts";
 import { useDashboardStore } from "../../stores/dashboardStore.ts";
+import type { WidgetDefinition } from "../../stores/dashboardStore.ts";
 import { useWidgetStore } from "../../stores/widgetStore.ts";
 import SummaryCard from "../../components/SummaryCard.tsx";
 import WidgetContainer from "../../components/WidgetContainer.tsx";
@@ -25,14 +26,6 @@ const ASSET_CLASS_COLORS: Record<string, string> = {
   index: "#10b981",
   fixed_income: "#8b5cf6",
 };
-
-/** Widget definitions for config panel */
-const WIDGETS = [
-  { id: "alerts-by-model", label: "Alerts by Model" },
-  { id: "score-distribution", label: "Score Distribution" },
-  { id: "alerts-by-trigger", label: "Alerts by Trigger" },
-  { id: "alerts-by-asset", label: "Alerts by Asset Class" },
-] as const;
 
 /** Format a percentage to one decimal place */
 function pct(value: number, total: number): string {
@@ -310,101 +303,139 @@ function AlertsByAssetChart({ data, chartType }: { data: { asset_class: string; 
   );
 }
 
-/* ---------- Self-contained widget wrappers (each subscribes to own store slice) ---------- */
+/* ---------- Chart renderer lookup ---------- */
 
-function ModelWidget({ data }: { data: { model_id: string; cnt: number }[] }) {
-  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-model"] ?? "horizontal_bar");
-  const visible = useWidgetStore((s) => s.visibility["alerts-by-model"] ?? true);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CHART_RENDERERS: Record<string, React.ComponentType<any>> = {
+  "alerts-by-model": AlertsByModelChart,
+  "score-distribution": ScoreDistributionChart,
+  "alerts-by-trigger": AlertsByTriggerChart,
+  "alerts-by-asset": AlertsByAssetChart,
+};
+
+/** data-tour attributes per widget id */
+const WIDGET_TOUR_ATTRS: Record<string, string> = {
+  "alerts-by-model": "dashboard-by-model",
+  "score-distribution": "dashboard-scores",
+  "alerts-by-trigger": "dashboard-triggers",
+};
+
+/* ---------- Self-contained chart widget driven by metadata ---------- */
+
+function ChartWidget({ widget, data }: { widget: WidgetDefinition; data: unknown[] }) {
+  const widgetId = widget.widget_id;
+  const defaultType = widget.chart_config?.default_chart_type ?? "bar";
+  const availableTypes = widget.chart_config?.available_chart_types ?? ["bar"];
+
+  const chartType = useWidgetStore((s) => s.chartTypes[widgetId] ?? defaultType);
+  const visible = useWidgetStore((s) => s.visibility[widgetId] ?? true);
   const toggle = useWidgetStore((s) => s.toggleWidget);
   const setType = useWidgetStore((s) => s.setChartType);
+
+  const Renderer = CHART_RENDERERS[widgetId];
+  if (!Renderer) return null;
+
   return (
     <WidgetContainer
-      id="alerts-by-model" title="Alerts by Model" visible={visible}
-      onToggle={() => toggle("alerts-by-model")} dataTour="dashboard-by-model"
-      dataTrace="dashboard.alerts-by-model"
+      id={widgetId} title={widget.title} visible={visible}
+      onToggle={() => toggle(widgetId)}
+      dataTour={WIDGET_TOUR_ATTRS[widgetId]}
+      dataTrace={`dashboard.${widgetId}`}
       chartTypeSwitcher={
-        <ChartTypeSwitcher chartId="alerts-by-model" currentType={chartType}
-          options={["horizontal_bar", "bar", "line", "pie", "table"]}
-          onChange={(t) => setType("alerts-by-model", t)} />
+        <ChartTypeSwitcher chartId={widgetId} currentType={chartType}
+          options={availableTypes}
+          onChange={(t) => setType(widgetId, t)} />
       }
     >
-      <AlertsByModelChart data={data} chartType={chartType} />
+      <Renderer data={data} chartType={chartType} />
     </WidgetContainer>
   );
 }
 
-function ScoreWidget({ data }: { data: { bucket: number; cnt: number }[] }) {
-  const chartType = useWidgetStore((s) => s.chartTypes["score-distribution"] ?? "bar");
-  const visible = useWidgetStore((s) => s.visibility["score-distribution"] ?? true);
-  const toggle = useWidgetStore((s) => s.toggleWidget);
-  const setType = useWidgetStore((s) => s.setChartType);
-  return (
-    <WidgetContainer
-      id="score-distribution" title="Score Distribution" visible={visible}
-      onToggle={() => toggle("score-distribution")} dataTour="dashboard-scores"
-      dataTrace="dashboard.score-distribution"
-      chartTypeSwitcher={
-        <ChartTypeSwitcher chartId="score-distribution" currentType={chartType}
-          options={["bar", "horizontal_bar", "line", "table"]}
-          onChange={(t) => setType("score-distribution", t)} />
-      }
-    >
-      <ScoreDistributionChart data={data} chartType={chartType} />
-    </WidgetContainer>
-  );
+/* ---------- KPI value resolver ---------- */
+
+/**
+ * Resolve a KPI data_field to a display value and optional subtitle.
+ * These are the computed KPI values that the Dashboard has always displayed.
+ */
+function resolveKpiValue(
+  dataField: string,
+  stats: {
+    total_alerts: number;
+    by_model: { model_id: string; cnt: number }[];
+    by_trigger: { trigger_path: string; cnt: number }[];
+    avg_scores: { avg_score: number; avg_threshold: number };
+  },
+): { value: string | number; subtitle?: string } {
+  switch (dataField) {
+    case "total_alerts":
+      return { value: stats.total_alerts };
+    case "score_triggered_pct": {
+      const scoreBased = stats.by_trigger.find((t) => t.trigger_path === "score_based");
+      const scoreTriggeredPct = stats.total_alerts > 0 && scoreBased
+        ? ((scoreBased.cnt / stats.total_alerts) * 100).toFixed(1)
+        : "0";
+      return {
+        value: `${scoreTriggeredPct}%`,
+        subtitle: `${scoreBased?.cnt ?? 0} of ${stats.total_alerts} exceeded threshold`,
+      };
+    }
+    case "avg_score":
+      return {
+        value: stats.avg_scores?.avg_score ?? "\u2014",
+        subtitle: `Threshold: ${stats.avg_scores?.avg_threshold ?? "\u2014"}`,
+      };
+    case "active_models":
+      return { value: stats.by_model.length };
+    default:
+      return { value: "\u2014" };
+  }
 }
 
-function TriggerWidget({ data }: { data: { trigger_path: string; cnt: number }[] }) {
-  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-trigger"] ?? "horizontal_bar");
-  const visible = useWidgetStore((s) => s.visibility["alerts-by-trigger"] ?? true);
-  const toggle = useWidgetStore((s) => s.toggleWidget);
-  const setType = useWidgetStore((s) => s.setChartType);
-  return (
-    <WidgetContainer
-      id="alerts-by-trigger" title="Alerts by Trigger Path" visible={visible}
-      onToggle={() => toggle("alerts-by-trigger")} dataTour="dashboard-triggers"
-      dataTrace="dashboard.alerts-by-trigger"
-      chartTypeSwitcher={
-        <ChartTypeSwitcher chartId="alerts-by-trigger" currentType={chartType}
-          options={["horizontal_bar", "bar", "line", "pie", "table"]}
-          onChange={(t) => setType("alerts-by-trigger", t)} />
-      }
-    >
-      <AlertsByTriggerChart data={data} chartType={chartType} />
-    </WidgetContainer>
-  );
+/* ---------- Chart data resolver ---------- */
+
+/**
+ * Resolve a chart widget's data_field to the actual data array from stats.
+ */
+function resolveChartData(
+  dataField: string,
+  stats: {
+    by_model: { model_id: string; cnt: number }[];
+    score_distribution: { bucket: number; cnt: number }[];
+    by_trigger: { trigger_path: string; cnt: number }[];
+    by_asset: { asset_class: string; cnt: number }[];
+  },
+): unknown[] {
+  const DATA_MAP: Record<string, unknown[]> = {
+    by_model: stats.by_model,
+    score_distribution: stats.score_distribution,
+    by_trigger: stats.by_trigger,
+    by_asset: stats.by_asset,
+  };
+  return DATA_MAP[dataField] ?? [];
 }
 
-function AssetWidget({ data }: { data: { asset_class: string; cnt: number }[] }) {
-  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-asset"] ?? "pie");
-  const visible = useWidgetStore((s) => s.visibility["alerts-by-asset"] ?? true);
-  const toggle = useWidgetStore((s) => s.toggleWidget);
-  const setType = useWidgetStore((s) => s.setChartType);
-  return (
-    <WidgetContainer
-      id="alerts-by-asset" title="Alerts by Asset Class" visible={visible}
-      onToggle={() => toggle("alerts-by-asset")}
-      dataTrace="dashboard.alerts-by-asset"
-      chartTypeSwitcher={
-        <ChartTypeSwitcher chartId="alerts-by-asset" currentType={chartType}
-          options={["pie", "bar", "horizontal_bar", "line", "table"]}
-          onChange={(t) => setType("alerts-by-asset", t)} />
-      }
-    >
-      <AlertsByAssetChart data={data} chartType={chartType} />
-    </WidgetContainer>
-  );
-}
+/* ---------- Fallback hardcoded widget list for config panel ---------- */
+
+const FALLBACK_WIDGETS = [
+  { id: "alerts-by-model", label: "Alerts by Model" },
+  { id: "score-distribution", label: "Score Distribution" },
+  { id: "alerts-by-trigger", label: "Alerts by Trigger Path" },
+  { id: "alerts-by-asset", label: "Alerts by Asset Class" },
+] as const;
 
 /* ---------- Dashboard ---------- */
 
 export default function Dashboard() {
   const { stats, loading, error, fetchStats } = useDashboardStore();
+  const widgetConfig = useDashboardStore((s) => s.widgetConfig);
+  const fetchWidgetConfig = useDashboardStore((s) => s.fetchWidgetConfig);
   const [showConfig, setShowConfig] = useState(false);
 
   useEffect(() => {
     fetchStats();
-  }, [fetchStats]);
+    fetchWidgetConfig();
+  }, [fetchStats, fetchWidgetConfig]);
 
   if (loading && !stats) {
     return (
@@ -420,10 +451,23 @@ export default function Dashboard() {
 
   if (!stats) return null;
 
-  const scoreBased = stats.by_trigger.find((t) => t.trigger_path === "score_based");
-  const scoreTriggeredPct = stats.total_alerts > 0 && scoreBased
-    ? ((scoreBased.cnt / stats.total_alerts) * 100).toFixed(1)
-    : "0";
+  /* Derive widget lists from config (or fall back to hardcoded layout) */
+  const kpiWidgets = widgetConfig
+    ? widgetConfig.widgets
+        .filter((w) => w.widget_type === "kpi_card")
+        .sort((a, b) => a.grid.order - b.grid.order)
+    : null;
+
+  const chartWidgets = widgetConfig
+    ? widgetConfig.widgets
+        .filter((w) => w.widget_type === "chart")
+        .sort((a, b) => a.grid.order - b.grid.order)
+    : null;
+
+  /* Config panel widget list: prefer metadata, fall back to hardcoded */
+  const configPanelWidgets = chartWidgets
+    ? chartWidgets.map((w) => ({ id: w.widget_id, label: w.title }))
+    : FALLBACK_WIDGETS;
 
   return (
     <div className="flex flex-col gap-4" data-tour="dashboard">
@@ -446,34 +490,156 @@ export default function Dashboard() {
       </div>
 
       {/* Config panel */}
-      {showConfig && <WidgetConfigPanel />}
+      {showConfig && <WidgetConfigPanel widgets={configPanelWidgets} />}
 
       {/* Row 1: Summary Cards (always visible) */}
       <div className="grid grid-cols-4 gap-4" data-tour="dashboard-cards" data-trace="dashboard.summary-cards">
-        <SummaryCard label="Total Alerts" value={stats.total_alerts} />
-        <SummaryCard label="Score Triggered" value={`${scoreTriggeredPct}%`}
-          subtitle={`${scoreBased?.cnt ?? 0} of ${stats.total_alerts} exceeded threshold`} />
-        <SummaryCard label="Avg Score" value={stats.avg_scores?.avg_score ?? "\u2014"}
-          subtitle={`Threshold: ${stats.avg_scores?.avg_threshold ?? "\u2014"}`} />
-        <SummaryCard label="Active Models" value={stats.by_model.length} />
+        {kpiWidgets ? (
+          kpiWidgets.map((w) => {
+            const { value, subtitle } = resolveKpiValue(w.data_field, stats);
+            return <SummaryCard key={w.widget_id} label={w.title} value={value} subtitle={subtitle} />;
+          })
+        ) : (
+          /* Fallback: hardcoded KPI cards (identical to original) */
+          <>
+            <SummaryCard label="Total Alerts" value={stats.total_alerts} />
+            <SummaryCard label="Score Triggered" value={`${stats.total_alerts > 0 && stats.by_trigger.find((t) => t.trigger_path === "score_based")
+              ? ((stats.by_trigger.find((t) => t.trigger_path === "score_based")!.cnt / stats.total_alerts) * 100).toFixed(1)
+              : "0"}%`}
+              subtitle={`${stats.by_trigger.find((t) => t.trigger_path === "score_based")?.cnt ?? 0} of ${stats.total_alerts} exceeded threshold`} />
+            <SummaryCard label="Avg Score" value={stats.avg_scores?.avg_score ?? "\u2014"}
+              subtitle={`Threshold: ${stats.avg_scores?.avg_threshold ?? "\u2014"}`} />
+            <SummaryCard label="Active Models" value={stats.by_model.length} />
+          </>
+        )}
       </div>
 
-      {/* Row 2: By Model | Score Distribution */}
-      <div className="grid grid-cols-2 gap-4">
-        <ModelWidget data={stats.by_model} />
-        <ScoreWidget data={stats.score_distribution} />
-      </div>
-
-      {/* Row 3: By Trigger Path | By Asset Class */}
-      <div className="grid grid-cols-2 gap-4">
-        <TriggerWidget data={stats.by_trigger} />
-        <AssetWidget data={stats.by_asset} />
-      </div>
+      {/* Chart widgets: metadata-driven or fallback */}
+      {chartWidgets ? (
+        /* Render chart widgets from metadata in pairs (2 per row) */
+        (() => {
+          const rows: WidgetDefinition[][] = [];
+          for (let i = 0; i < chartWidgets.length; i += 2) {
+            rows.push(chartWidgets.slice(i, i + 2));
+          }
+          return rows.map((row, rowIdx) => (
+            <div key={rowIdx} className="grid grid-cols-2 gap-4">
+              {row.map((w) => (
+                <ChartWidget
+                  key={w.widget_id}
+                  widget={w}
+                  data={resolveChartData(w.data_field, stats)}
+                />
+              ))}
+            </div>
+          ));
+        })()
+      ) : (
+        /* Fallback: hardcoded chart layout (identical to original) */
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            <FallbackModelWidget data={stats.by_model} />
+            <FallbackScoreWidget data={stats.score_distribution} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FallbackTriggerWidget data={stats.by_trigger} />
+            <FallbackAssetWidget data={stats.by_asset} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
-function WidgetConfigPanel() {
+/* ---------- Fallback widget wrappers (exact copies of originals) ---------- */
+
+function FallbackModelWidget({ data }: { data: { model_id: string; cnt: number }[] }) {
+  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-model"] ?? "horizontal_bar");
+  const visible = useWidgetStore((s) => s.visibility["alerts-by-model"] ?? true);
+  const toggle = useWidgetStore((s) => s.toggleWidget);
+  const setType = useWidgetStore((s) => s.setChartType);
+  return (
+    <WidgetContainer
+      id="alerts-by-model" title="Alerts by Model" visible={visible}
+      onToggle={() => toggle("alerts-by-model")} dataTour="dashboard-by-model"
+      dataTrace="dashboard.alerts-by-model"
+      chartTypeSwitcher={
+        <ChartTypeSwitcher chartId="alerts-by-model" currentType={chartType}
+          options={["horizontal_bar", "bar", "line", "pie", "table"]}
+          onChange={(t) => setType("alerts-by-model", t)} />
+      }
+    >
+      <AlertsByModelChart data={data} chartType={chartType} />
+    </WidgetContainer>
+  );
+}
+
+function FallbackScoreWidget({ data }: { data: { bucket: number; cnt: number }[] }) {
+  const chartType = useWidgetStore((s) => s.chartTypes["score-distribution"] ?? "bar");
+  const visible = useWidgetStore((s) => s.visibility["score-distribution"] ?? true);
+  const toggle = useWidgetStore((s) => s.toggleWidget);
+  const setType = useWidgetStore((s) => s.setChartType);
+  return (
+    <WidgetContainer
+      id="score-distribution" title="Score Distribution" visible={visible}
+      onToggle={() => toggle("score-distribution")} dataTour="dashboard-scores"
+      dataTrace="dashboard.score-distribution"
+      chartTypeSwitcher={
+        <ChartTypeSwitcher chartId="score-distribution" currentType={chartType}
+          options={["bar", "horizontal_bar", "line", "table"]}
+          onChange={(t) => setType("score-distribution", t)} />
+      }
+    >
+      <ScoreDistributionChart data={data} chartType={chartType} />
+    </WidgetContainer>
+  );
+}
+
+function FallbackTriggerWidget({ data }: { data: { trigger_path: string; cnt: number }[] }) {
+  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-trigger"] ?? "horizontal_bar");
+  const visible = useWidgetStore((s) => s.visibility["alerts-by-trigger"] ?? true);
+  const toggle = useWidgetStore((s) => s.toggleWidget);
+  const setType = useWidgetStore((s) => s.setChartType);
+  return (
+    <WidgetContainer
+      id="alerts-by-trigger" title="Alerts by Trigger Path" visible={visible}
+      onToggle={() => toggle("alerts-by-trigger")} dataTour="dashboard-triggers"
+      dataTrace="dashboard.alerts-by-trigger"
+      chartTypeSwitcher={
+        <ChartTypeSwitcher chartId="alerts-by-trigger" currentType={chartType}
+          options={["horizontal_bar", "bar", "line", "pie", "table"]}
+          onChange={(t) => setType("alerts-by-trigger", t)} />
+      }
+    >
+      <AlertsByTriggerChart data={data} chartType={chartType} />
+    </WidgetContainer>
+  );
+}
+
+function FallbackAssetWidget({ data }: { data: { asset_class: string; cnt: number }[] }) {
+  const chartType = useWidgetStore((s) => s.chartTypes["alerts-by-asset"] ?? "pie");
+  const visible = useWidgetStore((s) => s.visibility["alerts-by-asset"] ?? true);
+  const toggle = useWidgetStore((s) => s.toggleWidget);
+  const setType = useWidgetStore((s) => s.setChartType);
+  return (
+    <WidgetContainer
+      id="alerts-by-asset" title="Alerts by Asset Class" visible={visible}
+      onToggle={() => toggle("alerts-by-asset")}
+      dataTrace="dashboard.alerts-by-asset"
+      chartTypeSwitcher={
+        <ChartTypeSwitcher chartId="alerts-by-asset" currentType={chartType}
+          options={["pie", "bar", "horizontal_bar", "line", "table"]}
+          onChange={(t) => setType("alerts-by-asset", t)} />
+      }
+    >
+      <AlertsByAssetChart data={data} chartType={chartType} />
+    </WidgetContainer>
+  );
+}
+
+/* ---------- Widget config panel ---------- */
+
+function WidgetConfigPanel({ widgets }: { widgets: readonly { id: string; label: string }[] }) {
   const { isVisible, toggleWidget } = useWidgetStore();
   return (
     <div className="rounded border border-border bg-surface p-3">
@@ -481,7 +647,7 @@ function WidgetConfigPanel() {
         Widget Visibility
       </div>
       <div className="grid grid-cols-2 gap-2">
-        {WIDGETS.map((w) => (
+        {widgets.map((w) => (
           <label key={w.id} className="flex items-center gap-2 text-xs text-foreground/80 cursor-pointer">
             <button
               role="switch"
