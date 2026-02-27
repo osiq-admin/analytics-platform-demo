@@ -1047,3 +1047,51 @@ class MetadataService:
         data = json.loads(path.read_text())
         registry = TourRegistry.model_validate(data)
         return registry.model_dump()
+
+    # --- Medallion Architecture ---
+
+    def load_medallion_tiers(self) -> "MedallionConfig":
+        from backend.models.medallion import MedallionConfig
+        path = self._base / "medallion" / "tiers.json"
+        if not path.exists():
+            return MedallionConfig()
+        return MedallionConfig.model_validate_json(path.read_text())
+
+    def load_data_contract(self, contract_id: str) -> "DataContract | None":
+        from backend.models.medallion import DataContract
+        path = self._base / "medallion" / "contracts" / f"{contract_id}.json"
+        if not path.exists():
+            return None
+        return DataContract.model_validate_json(path.read_text())
+
+    def list_data_contracts(self) -> "list[DataContract]":
+        from backend.models.medallion import DataContract
+        folder = self._base / "medallion" / "contracts"
+        items: list[DataContract] = []
+        if folder.exists():
+            for f in sorted(folder.glob("*.json")):
+                items.append(DataContract.model_validate_json(f.read_text()))
+        return items
+
+    def load_transformation(self, transformation_id: str) -> "TransformationStep | None":
+        from backend.models.medallion import TransformationStep
+        path = self._base / "medallion" / "transformations" / f"{transformation_id}.json"
+        if not path.exists():
+            return None
+        return TransformationStep.model_validate_json(path.read_text())
+
+    def list_transformations(self) -> "list[TransformationStep]":
+        from backend.models.medallion import TransformationStep
+        folder = self._base / "medallion" / "transformations"
+        items: list[TransformationStep] = []
+        if folder.exists():
+            for f in sorted(folder.glob("*.json")):
+                items.append(TransformationStep.model_validate_json(f.read_text()))
+        return items
+
+    def load_pipeline_stages(self) -> "PipelineConfig":
+        from backend.models.medallion import PipelineConfig
+        path = self._base / "medallion" / "pipeline_stages.json"
+        if not path.exists():
+            return PipelineConfig()
+        return PipelineConfig.model_validate_json(path.read_text())
