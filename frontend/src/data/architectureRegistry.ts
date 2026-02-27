@@ -1876,7 +1876,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         technologies: [],
         metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Header content comes from metadata-driven detection output; layout is code-driven.",
+          "Header content comes from metadata-driven detection output. Panel layout, emphasis, and investigation hints now load from model alert_detail_layout metadata via API, with hardcoded fallback.",
       },
       {
         id: "alerts.business-description",

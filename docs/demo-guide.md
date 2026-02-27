@@ -179,6 +179,7 @@ Click any alert row to open the full 6-panel investigation workspace.
 - Examples: "Wash Trading: Focus on VWAP proximity, quantity matching, and related buy/sell orders."
 - "Insider Dealing: Focus on related products, profit/loss, and proximity to market events."
 - Emphasized panels get a subtle accent ring border to draw investigator attention
+- **Metadata-Driven (M137-M138):** Panel ordering, emphasis, and investigation hints are now loaded from each detection model's `alert_detail_layout` field in metadata. Edit `workspace/metadata/detection_models/*.json` to customize per-model investigation layouts without code changes.
 
 **Row 1: Business Description | Entity Context**
 - Model name, trigger path (all_passed vs score_based), accumulated score vs threshold

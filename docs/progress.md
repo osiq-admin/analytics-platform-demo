@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M135 Stage 2 Checkpoint; 586 total tests: 404 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M139 Stage 3 Checkpoint; 593 total tests: 411 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -41,6 +41,7 @@
 | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 572 total tests, 964 modules |
 | Metadata Architecture Overhaul — Stage 1 (M129-M131) | COMPLETE | SQL presets to metadata, settings resolver Strategy pattern — 398 backend tests |
 | Metadata Architecture Overhaul — Stage 2 (M132-M135) | COMPLETE | Dashboard widget manifest, metadata-driven rendering, E2E tests — 404 backend tests |
+| Metadata Architecture Overhaul — Stage 3 (M136-M139) | COMPLETE | Format registry, model-specific alert layouts, useFormatRules hook — 411 backend tests |
 
 ---
 
@@ -190,6 +191,10 @@
 | M133 | Dashboard Frontend Refactor | COMPLETE | 4 | 4 | Removed hardcoded WIDGETS array, CHART_RENDERERS lookup, ChartWidget component, resolveKpiValue/resolveChartData helpers, fallback widgets — 964 modules build clean |
 | M134 | Dashboard Widget Config E2E Tests | COMPLETE | 3 | 3 | TestDashboardWidgetConfig class, widget loading test, chart rendering test, API test — 3 new E2E tests |
 | M135 | Stage 2 Checkpoint | COMPLETE | 6 | 6 | Full regression pass, architecture registry maturity updated, docs updated, pushed |
+| M136 | Format Registry Metadata | COMPLETE | 4 | 4 | FormatRule/FormatRulesConfig Pydantic models, default.json with 8 rules and 12 field mappings, GET /api/metadata/format-rules, 4 new tests — 408 backend tests |
+| M137 | Alert Detail Layouts | COMPLETE | 3 | 3 | alert_detail_layout field on DetectionModelDefinition, all 5 models updated with panels/emphasis/hints, 3 new tests — 411 backend tests |
+| M138 | Frontend Format Rules + Alert Layouts | COMPLETE | 3 | 3 | useFormatRules hook with caching, fromApiLayout converter, AlertDetail loads layout from API with fallback — 964 modules |
+| M139 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry updated, docs updated, pushed |
 
 ---
 
