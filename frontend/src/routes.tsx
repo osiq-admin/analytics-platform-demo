@@ -22,6 +22,7 @@ import Submissions from "./views/Submissions/index.tsx";
 // Lazy-loaded views
 const RegulatoryMap = lazy(() => import("./views/RegulatoryMap/index.tsx"));
 const MedallionOverview = lazy(() => import("./views/MedallionOverview/index.tsx"));
+const DataOnboarding = lazy(() => import("./views/DataOnboarding/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -46,6 +47,7 @@ export const routes: RouteObject[] = [
       { path: "schema", element: <SchemaExplorer /> },
       { path: "sql", element: <SQLConsole /> },
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
+      { path: "onboarding", element: <Suspense fallback={null}><DataOnboarding /></Suspense> },
 
       // Compose
       { path: "models", element: <ModelComposer /> },
