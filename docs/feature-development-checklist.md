@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 506)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 522)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -46,7 +46,7 @@
 ## 3. Sidebar & Navigation
 
 - [ ] **Navigation entry**: Add to `workspace/metadata/navigation/main.json` under the correct group (sidebar loads from metadata API)
-- [ ] **Route**: Add to `frontend/src/App.tsx` router configuration
+- [ ] **Route**: Add to `frontend/src/routes.tsx` router configuration
 - [ ] **Section grouping**: Place under correct category (Overview/Define/Configure/Operate/Compose/Investigate/Governance/AI)
 - [ ] **Active state**: Verify the sidebar link highlights when on that view
 
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 506)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 522)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -72,6 +72,7 @@
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
 - [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 210)
+- [ ] **Architecture audit**: If sections changed, recalculate maturity % and update `docs/architecture-traceability.md`
 - [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
 ---
@@ -193,6 +194,9 @@
 - [ ] 1-3 guided scenarios (Section 6c)
 - [ ] E2E test class for the view (Section 5)
 - [ ] Demo guide Act update (Section 7b)
+- [ ] Architecture registry entries + recalculate maturity % (Section 10: "When Modifying Any View Section")
+- [ ] Tour registry update (`workspace/metadata/tours/registry.json`)
+- [ ] Update all count registries in `docs/development-workflow-protocol.md` (view, scenario, operation, tour, architecture section counts)
 
 ### When Adding a New Entity:
 - [ ] Entity JSON in `workspace/metadata/entities/`
@@ -293,7 +297,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (506+)
+# Backend tests (522+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
 # E2E Playwright tests (210+)
@@ -324,3 +328,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 572 (390+182), 26 scenarios | Claude Opus 4.6 |
 | 2026-02-27 | Updated for M150 (Metadata Architecture Overhaul) — added widget/format rule triggers, updated test counts to 603 (421+182), 71 sections 69% metadata-driven | Claude Opus 4.6 |
 | 2026-02-27 | Updated for M172 (Compliance & Metadata Phase 2) — added grid/view-tab/workflow triggers, updated test counts to 716 (506+210), 74 sections 83.8% metadata-driven | Claude Opus 4.6 |
+| 2026-02-27 | Updated for M175 (Phase 14 Medallion Core) — updated test counts to 732 (522+210), 77 sections 83.1%, added architecture audit/tour registry/count registry update triggers to "When Adding a New View" | Claude Opus 4.6 |

@@ -104,8 +104,11 @@ Three tiers of checks, applied at different granularities.
 | Check | File(s) | Action |
 |-------|---------|--------|
 | Progress entry | `docs/progress.md` | Add milestone row to the milestone table |
-| Tours/scenarios/operations | `frontend/src/data/tourDefinitions.ts`, `scenarioDefinitions.ts`, `operationScripts.ts` | Update if UI changed |
-| Architecture registry | `frontend/src/data/architectureRegistry.ts` | Update if sections changed |
+| Tours/scenarios/operations | `frontend/src/data/tourDefinitions.ts`, `scenarioDefinitions.ts`, `operationScripts.ts`, `AppLayout.tsx:getTourIdForPath` | Update if UI changed — add tour, scenario, operations for new views |
+| Architecture registry | `frontend/src/data/architectureRegistry.ts` | Update if sections changed — add `data-trace` entries for new panels, **recalculate maturity %** |
+| Architecture audit | `docs/architecture-traceability.md` | Update maturity distribution + % if sections added/removed |
+| Demo guide | `docs/demo-guide.md` | Update scenario/tour/operation counts if changed |
+| Tour registry | `workspace/metadata/tours/registry.json` | Add tour entry, update scenario count + categories if changed |
 | Commit | — | `git commit` with conventional message |
 
 ### Tier 2 — Per-Stage (after each stage checkpoint)
@@ -145,7 +148,7 @@ All of Tier 1 + Tier 2, plus:
 
 Every file and line containing hardcoded test counts. When test counts change, update **ALL** of these.
 
-### Backend Test Count (currently 506)
+### Backend Test Count (currently 522)
 
 | File | Location | Format |
 |------|----------|--------|
@@ -169,11 +172,11 @@ Every file and line containing hardcoded test counts. When test counts change, u
 
 Same files as above — search for the E2E count alongside backend count.
 
-### Total Test Count (currently 716)
+### Total Test Count (currently 732)
 
 Sum of backend + E2E. Same files as above.
 
-### Frontend Module Count (currently 969)
+### Frontend Module Count (currently 970)
 
 | File | Location | Format |
 |------|----------|--------|
@@ -185,7 +188,7 @@ Sum of backend + E2E. Same files as above.
 
 ## Other Count Registries
 
-### View Count (currently 16)
+### View Count (currently 17)
 
 | File | Location |
 |------|----------|
@@ -194,7 +197,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Scenario Count (currently 26)
+### Scenario Count (currently 27)
 
 | File | Location |
 |------|----------|
@@ -211,7 +214,22 @@ Sum of backend + E2E. Same files as above.
 | `docs/architecture-traceability.md` | Header |
 | Context-level `MEMORY.md` | Current State section |
 
-### Milestone Range (currently M0-M173)
+### Operation Script Count (currently 94 across 17 views)
+
+| File | Location |
+|------|----------|
+| `docs/demo-guide.md` | Operations section |
+| Context-level `MEMORY.md` | Current State section |
+| In-repo `.claude/memory/MEMORY.md` | Current State section |
+
+### Tour Count (currently 20 tours in registry)
+
+| File | Location |
+|------|----------|
+| `workspace/metadata/tours/registry.json` | `tours` array length |
+| `docs/demo-guide.md` | Tour registry section |
+
+### Milestone Range (currently M0-M175)
 
 | File | Location |
 |------|----------|
@@ -228,7 +246,7 @@ Run these and confirm pass/fail before merging.
 ```bash
 # Backend tests — expect ALL PASS, count matches registry
 uv run pytest tests/ --ignore=tests/e2e -v 2>&1 | tail -1
-# Expected: "506 passed" (or current count)
+# Expected: "522 passed" (or current count)
 
 # E2E tests — run in batches if >100 tests cause browser crashes
 uv run pytest tests/e2e/ -v 2>&1 | tail -1
@@ -236,15 +254,19 @@ uv run pytest tests/e2e/ -v 2>&1 | tail -1
 
 # Frontend build — expect 0 errors, module count matches registry
 cd frontend && npm run build 2>&1 | grep "modules transformed"
-# Expected: "969 modules transformed" (or current count)
+# Expected: "970 modules transformed" (or current count)
 
 # Test count sync — verify all files agree
-grep -rn "506\|210\|716" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
+grep -rn "522\|210\|732" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
 # Expected: all show same counts
 
 # Module count sync
-grep -rn "969\|96[0-9]" CLAUDE.md README.md | grep -i "module"
-# Expected: all show 969
+grep -rn "970\|97[0-9]" CLAUDE.md README.md | grep -i "module"
+# Expected: all show 970
+
+# Architecture audit — verify maturity % matches registry
+grep -c "metadataMaturity:" frontend/src/data/architectureRegistry.ts
+# Expected: 77 (or current section count)
 ```
 
 ---
