@@ -40,4 +40,5 @@ class DetectionModelDefinition(BaseModel):
     alert_template: dict[str, Any] = Field(default_factory=dict)
     regulatory_coverage: list[RegulatoryCoverage] = Field(default_factory=list)
     alert_detail_layout: dict[str, Any] | None = Field(default=None, description="Model-specific alert detail panel configuration")
+    market_data_config: dict[str, Any] | None = Field(default=None, description="Chart configuration for market data visualization (chart_type, time_field, price_fields, volume_field, overlay_trades)")
     metadata_layer: str = Field(default="oob", exclude=True)

@@ -1,0 +1,21 @@
+{
+  "grid_id": "related_executions",
+  "view_id": "related_executions",
+  "description": "Execution columns for alert detail Related Orders panel",
+  "columns": [
+    {"field": "execution_id", "header_name": "Exec ID", "width": 120, "cell_style": {"fontFamily": "monospace", "fontSize": "10px"}},
+    {"field": "order_id", "header_name": "Order ID", "width": 120, "cell_style": {"fontFamily": "monospace", "fontSize": "10px"}},
+    {"field": "execution_date", "header_name": "Date", "width": 100, "filter_type": "agDateColumnFilter"},
+    {"field": "execution_time", "header_name": "Time", "width": 80},
+    {"field": "side", "header_name": "Side", "width": 70, "filter_type": "agTextColumnFilter", "value_format": "side_badge"},
+    {"field": "quantity", "header_name": "Qty", "width": 70, "column_type": "numericColumn", "filter_type": "agNumberColumnFilter"},
+    {"field": "price", "header_name": "Price", "width": 90, "column_type": "numericColumn", "filter_type": "agNumberColumnFilter", "value_format": "decimal_2"},
+    {"field": "venue_mic", "header_name": "Venue", "width": 80, "filter_type": "agTextColumnFilter"},
+    {"field": "exec_type", "header_name": "Exec Type", "width": 90, "filter_type": "agTextColumnFilter"},
+    {"field": "capacity", "header_name": "Capacity", "width": 90, "filter_type": "agTextColumnFilter"},
+    {"field": "product_id", "header_name": "Product", "width": 80},
+    {"field": "account_id", "header_name": "Account", "width": 90}
+  ],
+  "default_sort_field": "execution_date",
+  "default_sort_direction": "desc"
+}

@@ -55,5 +55,12 @@
     "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
     "emphasis": ["marketData", "scores"],
     "investigation_hint": "Analyze price impact relative to trading volume — ramping involves pushing prices in a desired direction through aggressive trading near market close or open."
+  },
+  "market_data_config": {
+    "chart_type": "candlestick",
+    "time_field": "timestamp",
+    "price_fields": {"open": "open", "high": "high", "low": "low", "close": "close"},
+    "volume_field": "volume",
+    "overlay_trades": true
   }
 }

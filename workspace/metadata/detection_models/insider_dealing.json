@@ -53,5 +53,12 @@
     "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders"],
     "emphasis": ["entity", "scores"],
     "investigation_hint": "Focus on entity relationships and timing — check if trading activity preceded material non-public information events. Review account and trader connections."
+  },
+  "market_data_config": {
+    "chart_type": "line",
+    "time_field": "timestamp",
+    "price_fields": {"close": "close"},
+    "volume_field": "volume",
+    "overlay_trades": false
   }
 }
