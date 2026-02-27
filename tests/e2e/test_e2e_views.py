@@ -91,6 +91,42 @@ class TestDashboard:
 
 
 # ============================================================================
+# Scenario 2b: Dashboard widget config — metadata-driven widget rendering
+# ============================================================================
+
+class TestDashboardWidgetConfig:
+    """Dashboard widget config E2E tests — verify metadata-driven widget rendering."""
+
+    def test_dashboard_loads_widgets_from_api(self, loaded_page):
+        """Verify dashboard fetches widget config from /api/metadata/widgets/dashboard."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        # Verify KPI summary cards render (from widget config)
+        cards = loaded_page.locator("[data-trace='dashboard.summary-cards']")
+        expect(cards).to_be_visible(timeout=10000)
+
+    def test_dashboard_chart_widgets_render(self, loaded_page):
+        """Verify all chart widgets render from config."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        # Check chart widget containers exist
+        expect(loaded_page.locator("text=Alerts by Model")).to_be_visible(timeout=10000)
+        expect(loaded_page.locator("text=Score Distribution")).to_be_visible(timeout=10000)
+
+    def test_widget_config_api_returns_data(self, loaded_page):
+        """Verify the widget config API is accessible and returns dashboard config."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/widgets/dashboard');
+                return { status: resp.status, data: await resp.json() };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["data"]["view_id"] == "dashboard"
+        assert len(result["data"]["widgets"]) >= 2
+
+
+# ============================================================================
 # Scenario 3: Entity Designer
 # ============================================================================
 
