@@ -14,7 +14,7 @@ import SettingsTrace from "./SettingsTrace.tsx";
 import RelatedOrders from "./RelatedOrders.tsx";
 import TradeVolumeChart from "./TradeVolumeChart.tsx";
 import FooterActions from "./FooterActions.tsx";
-import { getModelLayout, type PanelId } from "./modelLayouts.ts";
+import { getModelLayout, fromApiLayout, type ModelLayout, type PanelId } from "./modelLayouts.ts";
 import { formatLabel } from "../../../utils/format.ts";
 
 const PANEL_LABELS: Record<PanelId, string> = {
@@ -56,7 +56,30 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
 
   const [panelConfig, setPanelConfig] = useState(loadPanelConfig);
   const modelLayout = getModelLayout(alert.model_id);
-  const isEmphasized = (id: PanelId) => modelLayout?.emphasis.includes(id) ?? false;
+
+  // Try to load layout from API metadata, fall back to hardcoded
+  const [apiLayout, setApiLayout] = useState<ModelLayout | null>(null);
+
+  useEffect(() => {
+    api
+      .get<{ alert_detail_layout?: Record<string, unknown>; name?: string }>(
+        `/metadata/detection-models/${alert.model_id}`
+      )
+      .then((model) => {
+        if (model.alert_detail_layout) {
+          setApiLayout(
+            fromApiLayout(model.alert_detail_layout, model.name ?? alert.model_id)
+          );
+        }
+      })
+      .catch(() => {
+        // Fallback to hardcoded layouts
+      });
+  }, [alert.model_id]);
+
+  // Use API layout if available, otherwise fall back to hardcoded
+  const effectiveLayout = apiLayout ?? modelLayout;
+  const isEmphasized = (id: PanelId) => effectiveLayout?.emphasis.includes(id) ?? false;
 
   // Fetch explainability trace from /api/trace/alert/{id}
   const [traceData, setTraceData] = useState<AlertTraceResponse | null>(null);
@@ -137,10 +160,10 @@ export default function AlertDetail({ alert, onBack }: AlertDetailProps) {
       </div>
 
       {/* Investigation hint */}
-      {modelLayout && (
+      {effectiveLayout && (
         <div className="text-xs bg-accent/10 border border-accent/20 rounded px-3 py-1.5 text-accent">
-          <span className="font-semibold">{modelLayout.label}:</span>{" "}
-          {modelLayout.investigationHint}
+          <span className="font-semibold">{effectiveLayout.label}:</span>{" "}
+          {effectiveLayout.investigationHint}
         </div>
       )}
 
