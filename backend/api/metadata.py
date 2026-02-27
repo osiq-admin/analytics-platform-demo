@@ -574,6 +574,18 @@ def get_compliance_requirements(request: Request):
     return svc.load_compliance_registry()
 
 
+# -- View Configurations --
+
+@router.get("/view_config/{view_id}")
+def get_view_config(view_id: str, request: Request):
+    """Return view configuration (tabs, etc.) for a view."""
+    svc = _meta(request)
+    config = svc.load_view_config(view_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
 # -- Grid Configurations --
 
 @router.get("/grids/{view_id}")

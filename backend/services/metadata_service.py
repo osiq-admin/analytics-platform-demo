@@ -10,6 +10,7 @@ from backend.models.match_patterns import MatchPattern
 from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
+from backend.models.view_config import ViewConfig
 from backend.models.widgets import ViewWidgetConfig
 
 
@@ -975,3 +976,20 @@ class MetadataService:
         from backend.models.grids import GridConfig
         config = GridConfig.model_validate_json(path.read_text())
         return config.model_dump()
+
+    # -- View Configurations --
+
+    def _view_config_dir(self) -> Path:
+        return self._base / "view_config"
+
+    def load_view_config(self, view_id: str) -> dict | None:
+        """Load view configuration (tabs, etc.) for a view. Returns model_dump() or None."""
+        folder = self._view_config_dir()
+        if not folder.exists():
+            return None
+        for f in folder.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("view_id") == view_id:
+                config = ViewConfig.model_validate(data)
+                return config.model_dump()
+        return None

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Group, Panel as ResizablePanel, Separator, useDefaultLayout } from "react-resizable-panels";
 import { useMetadataStore, type EntityDef, type FieldDef } from "../../stores/metadataStore.ts";
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
+import { useViewTabs } from "../../hooks/useViewTabs.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import ConfirmDialog from "../../components/ConfirmDialog.tsx";
@@ -86,10 +87,11 @@ export default function EntityDesigner() {
     relationships: [],
   };
 
-  const viewTabs: { key: ViewTab; label: string }[] = [
+  const fallbackTabs: { key: ViewTab; label: string }[] = [
     { key: "details", label: "Entity Details" },
     { key: "relationships", label: "Relationship Graph" },
   ];
+  const viewTabs = useViewTabs<ViewTab>("entity_designer", fallbackTabs);
 
   return (
     <div className="flex flex-col h-full">
