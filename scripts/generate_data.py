@@ -185,6 +185,7 @@ LAST_NAMES = [
 
 # Wash Trading patterns (4): offsetting buy/sell same product/account/day
 WASH_PATTERNS = [
+    # Equity wash patterns (4)
     {"account": "ACC-101", "product": "AAPL", "date": date(2024, 1, 15), "trader": "TRD-026",
      "buys": [(500, 185.00, "09:35:12"), (300, 185.05, "10:15:44")],
      "sells": [(480, 185.02, "11:30:22"), (310, 184.98, "14:00:55")]},
@@ -197,10 +198,22 @@ WASH_PATTERNS = [
     {"account": "ACC-104", "product": "NVDA", "date": date(2024, 2, 5), "trader": "TRD-027",
      "buys": [(100, 620.00, "10:00:22"), (80, 620.30, "11:15:44")],
      "sells": [(95, 620.10, "13:00:11"), (82, 619.90, "15:30:55")]},
+    # FX wash patterns (2)
+    {"account": "ACC-105", "product": "EURUSD", "date": date(2024, 1, 17), "trader": "TRD-028",
+     "buys": [(100000, 1.0950, "09:32:15"), (75000, 1.0952, "10:45:30")],
+     "sells": [(98000, 1.0951, "12:15:44"), (76000, 1.0949, "14:30:22")]},
+    {"account": "ACC-106", "product": "USDJPY", "date": date(2024, 2, 6), "trader": "TRD-029",
+     "buys": [(150000, 148.50, "09:35:08"), (120000, 148.52, "11:00:33")],
+     "sells": [(145000, 148.51, "13:20:17"), (122000, 148.49, "15:10:45")]},
+    # Commodity wash pattern (1)
+    {"account": "ACC-107", "product": "CL_FUT", "date": date(2024, 1, 24), "trader": "TRD-030",
+     "buys": [(50, 75.20, "09:40:05"), (30, 75.25, "10:50:18")],
+     "sells": [(48, 75.22, "12:05:33"), (31, 75.18, "14:40:55")]},
 ]
 
 # MPR patterns (3): aggressive same-direction trading during price trend
 MPR_PATTERNS = [
+    # Equity MPR patterns (3)
     {"account": "ACC-111", "product": "GOOGL", "date": date(2024, 1, 18), "trader": "TRD-028",
      "trend": "up", "trend_start": 140.0, "trend_end": 148.0,
      "trades": [("BUY", 80, 141.50), ("BUY", 75, 142.20), ("BUY", 85, 143.00),
@@ -216,10 +229,17 @@ MPR_PATTERNS = [
      "trades": [("BUY", 30, 617.00), ("BUY", 25, 620.00), ("BUY", 35, 623.00),
                 ("BUY", 28, 626.50), ("BUY", 32, 630.00), ("BUY", 20, 633.00),
                 ("BUY", 25, 636.00), ("SELL", 10, 625.00)]},
+    # Commodity MPR pattern (1)
+    {"account": "ACC-114", "product": "GC_FUT", "date": date(2024, 2, 9), "trader": "TRD-030",
+     "trend": "up", "trend_start": 2040.0, "trend_end": 2075.0,
+     "trades": [("BUY", 5, 2042.00), ("BUY", 8, 2047.00), ("BUY", 6, 2052.00),
+                ("BUY", 4, 2057.00), ("BUY", 7, 2062.00), ("BUY", 3, 2067.00),
+                ("SELL", 2, 2055.00)]},
 ]
 
 # Insider dealing patterns (3): trading before a significant market event
 INSIDER_PATTERNS = [
+    # Original 3 insider patterns
     {"account": "ACC-121", "product": "AMZN", "trader": "TRD-031",
      "event_date": date(2024, 1, 25), "event_type": "surge",
      "pre_price": 175.0, "post_price": 188.0,  # +7.4%
@@ -232,10 +252,24 @@ INSIDER_PATTERNS = [
      "event_date": date(2024, 2, 15), "event_type": "drop",
      "pre_price": 102.0, "post_price": 93.0,  # -8.8%
      "trade_date": date(2024, 2, 13), "side": "SELL", "qty": 1000, "price": 101.50},
+    # Additional insider patterns for more coverage
+    {"account": "ACC-124", "product": "GOOGL", "trader": "TRD-032",
+     "event_date": date(2024, 1, 31), "event_type": "surge",
+     "pre_price": 142.0, "post_price": 154.0,  # +8.5%
+     "trade_date": date(2024, 1, 29), "side": "BUY", "qty": 800, "price": 141.50},
+    {"account": "ACC-125", "product": "TSLA", "trader": "TRD-031",
+     "event_date": date(2024, 2, 19), "event_type": "drop",
+     "pre_price": 245.0, "post_price": 222.0,  # -9.4%
+     "trade_date": date(2024, 2, 15), "side": "SELL", "qty": 500, "price": 244.00},
+    {"account": "ACC-126", "product": "JPM", "trader": "TRD-033",
+     "event_date": date(2024, 2, 22), "event_type": "surge",
+     "pre_price": 175.0, "post_price": 189.0,  # +8.0%
+     "trade_date": date(2024, 2, 20), "side": "BUY", "qty": 600, "price": 174.50},
 ]
 
 # Spoofing patterns (3): order cancellations + opposite-side executions
 SPOOFING_PATTERNS = [
+    # Equity spoofing patterns (3)
     {"account": "ACC-131", "product": "JPM", "date": date(2024, 1, 10), "trader": "TRD-033",
      "spoof_side": "BUY", "exec_side": "SELL",
      "cancelled_orders": [
@@ -261,6 +295,23 @@ SPOOFING_PATTERNS = [
      ],
      "filled_order": (50, 378.80, "14:00:06"),
      "execution": (300, 380.00, "14:01:00")},
+    # Index futures spoofing patterns (2)
+    {"account": "ACC-134", "product": "ES_FUT", "date": date(2024, 1, 16), "trader": "TRD-034",
+     "spoof_side": "SELL", "exec_side": "BUY",
+     "cancelled_orders": [
+         (10, 4800.00, "09:31:02"), (12, 4799.50, "09:31:08"),
+         (8, 4799.00, "09:31:14"), (11, 4798.50, "09:31:20"),
+     ],
+     "filled_order": (5, 4800.50, "09:31:05"),
+     "execution": (20, 4795.00, "09:32:00")},
+    {"account": "ACC-135", "product": "NQ_FUT", "date": date(2024, 2, 14), "trader": "TRD-035",
+     "spoof_side": "BUY", "exec_side": "SELL",
+     "cancelled_orders": [
+         (5, 17200.00, "10:00:03"), (6, 17205.00, "10:00:09"),
+         (4, 17210.00, "10:00:15"), (7, 17215.00, "10:00:21"),
+     ],
+     "filled_order": (3, 17195.00, "10:00:06"),
+     "execution": (15, 17230.00, "10:01:00")},
 ]
 
 
@@ -876,13 +927,17 @@ class SyntheticDataGenerator:
 
     def _generate_normal_trading(self) -> None:
         """Generate normal trading activity across accounts and products."""
-        # Select tradeable products (common stocks, fx spots, commodity spots — plus options/futures)
+        # Select tradeable products by asset class
         stock_ids = [pid for pid, info in self.products.items()
-                     if info["instrument_type"] in ("common_stock", "spot")]
+                     if info["instrument_type"] == "common_stock"]
         option_ids = [pid for pid, info in self.products.items()
                       if info["instrument_type"] in ("call_option", "put_option")]
         future_ids = [pid for pid, info in self.products.items()
                       if info["instrument_type"] == "future"]
+        fx_ids = [pid for pid, info in self.products.items()
+                  if info["asset_class"] == "fx"]
+        fi_ids = [pid for pid, info in self.products.items()
+                  if info["asset_class"] == "fixed_income"]
 
         # Active accounts for normal trading (first 100 accounts)
         active_accounts = list(self.accounts.keys())[:100]
@@ -903,11 +958,25 @@ class SyntheticDataGenerator:
                 trader = self.rng.choice(trader_ids[:25])
                 self._add_normal_execution(pid, acc, trader, day)
 
-            # ~1 future trade per day
-            if self.rng.random() < 0.7:
+            # ~2-3 futures trades per day (increased from ~1)
+            for _ in range(self.rng.randint(1, 3)):
                 pid = self.rng.choice(future_ids)
                 acc = self.rng.choice(active_accounts[:30])
                 trader = self.rng.choice(trader_ids[:15])
+                self._add_normal_execution(pid, acc, trader, day)
+
+            # ~3 FX executions per day
+            for _ in range(self.rng.randint(2, 4)):
+                pid = self.rng.choice(fx_ids)
+                acc = self.rng.choice(active_accounts[:60])
+                trader = self.rng.choice(trader_ids[:20])
+                self._add_normal_execution(pid, acc, trader, day)
+
+            # ~1 fixed income execution per day
+            if fi_ids and self.rng.random() < 0.6:
+                pid = self.rng.choice(fi_ids)
+                acc = self.rng.choice(active_accounts[:40])
+                trader = self.rng.choice(trader_ids[:10])
                 self._add_normal_execution(pid, acc, trader, day)
 
     def _add_normal_execution(self, pid: str, acc: str, trader: str, day: date) -> None:

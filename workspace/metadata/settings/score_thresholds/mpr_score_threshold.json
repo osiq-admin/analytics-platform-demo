@@ -3,13 +3,20 @@
   "name": "MPR Score Threshold",
   "description": "Minimum accumulated score required to generate a Market Price Ramping alert.",
   "value_type": "decimal",
-  "default": 12,
+  "default": 18,
   "match_type": "hierarchy",
   "overrides": [
     {
       "match": { "asset_class": "equity" },
-      "value": 10,
-      "priority": 1
+      "value": 16,
+      "priority": 1,
+      "description": "Higher threshold for equity — high normal volume creates noise"
+    },
+    {
+      "match": { "asset_class": "commodity" },
+      "value": 14,
+      "priority": 1,
+      "description": "Moderate threshold for commodity instruments"
     },
     {
       "match": { "asset_class": "fixed_income" },

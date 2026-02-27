@@ -8,8 +8,9 @@
   "overrides": [
     {
       "match": { "asset_class": "equity" },
-      "value": 1.5,
-      "priority": 1
+      "value": 2.5,
+      "priority": 1,
+      "description": "Higher multiplier for equity — reduces false positives from normal volume"
     },
     {
       "match": { "asset_class": "fx" },
