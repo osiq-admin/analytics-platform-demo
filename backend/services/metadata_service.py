@@ -811,6 +811,21 @@ class MetadataService:
                         count += 1
         return count
 
+    # -- Format Rules --
+
+    def load_format_rules(self) -> dict:
+        """Load format rules from metadata."""
+        fmt_dir = self._base / "format_rules"
+        if not fmt_dir.exists():
+            return {"format_group_id": "default", "rules": {}, "field_mappings": {}}
+        files = sorted(fmt_dir.glob("*.json"))
+        if not files:
+            return {"format_group_id": "default", "rules": {}, "field_mappings": {}}
+        from backend.models.format_rules import FormatRulesConfig
+        data = json.loads(files[0].read_text())
+        config = FormatRulesConfig.model_validate(data)
+        return config.model_dump()
+
     # -- Query Presets --
 
     def _query_presets_dir(self) -> Path:

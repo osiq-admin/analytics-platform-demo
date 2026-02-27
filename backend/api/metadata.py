@@ -507,6 +507,14 @@ def simulate_upgrade(request: Request, body: dict):
     return report.model_dump()
 
 
+# -- Format Rules --
+
+@router.get("/format-rules")
+def get_format_rules(request: Request):
+    """Return centralized format rules for field formatting."""
+    return _meta(request).load_format_rules()
+
+
 # -- Widget Configurations --
 
 @router.get("/widgets/{view_id}")
