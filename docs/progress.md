@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M158 Stage 2 Checkpoint; 627 total tests: 445 backend + 182 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements)
+**Last Updated**: 2026-02-27 (M162 Stage 3 Checkpoint; 645 total tests: 463 backend + 182 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid metadata configs)
 
 ---
 
@@ -234,6 +234,10 @@
 | M156 | Product Regulatory Jurisdiction | COMPLETE | 3 | 3 | Regulatory scope field on products |
 | M157 | Detection Model Coverage | COMPLETE | 3 | 3 | SEC coverage for multi-jurisdiction on all models |
 | M158 | Stage 2 Checkpoint | COMPLETE | 5 | 5 | Entity compliance — 445 backend tests passing, frontend builds clean, docs updated |
+| M159 | Grid Column Metadata | COMPLETE | 3 | 3 | Grid column definitions as metadata for DataManager — useGridColumns hook + API endpoint |
+| M160 | Alert Filter Schema | COMPLETE | 3 | 3 | Alert summary grid columns and filters as metadata for RiskCaseManager |
+| M161 | Related Orders Metadata | COMPLETE | 5 | 5 | Execution (12 cols) + order (11 cols) grid metadata + market_data_config on all 5 detection models |
+| M162 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Grid metadata — 463 backend tests passing, 5 sections upgraded to mostly-metadata-driven |
 
 ---
 

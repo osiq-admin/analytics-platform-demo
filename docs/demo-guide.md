@@ -297,6 +297,16 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - **Product**: Regulatory jurisdiction scope (EU/US/UK/APAC/MULTI)
 - **Detection Models**: All 5 models now cover multiple jurisdictions (EU + US minimum)
 
+### Grid Column Metadata (M159-M161)
+- **Metadata-driven grids**: Column definitions (field, header, width, filter type) loaded from JSON metadata via API
+- **DataManager**: Table list columns from `workspace/metadata/grids/data_manager.json`
+- **Alert Summary**: 8 columns with filter types from `workspace/metadata/grids/risk_case_manager.json`
+- **Related Executions**: 12 execution columns from `workspace/metadata/grids/related_executions.json`
+- **Related Orders**: 11 order columns from `workspace/metadata/grids/related_orders.json`
+- **Market Data Config**: Per-model chart configuration (chart type, price fields, overlay) in detection model `market_data_config`
+- **Fallback resilience**: All grids fall back to hardcoded columns if metadata API fails
+- **Hook pattern**: `useGridColumns(viewId, fallback)` — generic hook used across all metadata-driven grids
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)
