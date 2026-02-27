@@ -1,5 +1,5 @@
 import pytest
-from backend.engine.settings_resolver import SettingsResolver
+from backend.engine.settings_resolver import RESOLUTION_STRATEGIES, SettingsResolver
 from backend.models.settings import SettingDefinition, SettingOverride, ScoreStep
 
 
@@ -190,3 +190,28 @@ class TestScoreSteps:
     def test_evaluate_score_empty_steps(self):
         resolver = SettingsResolver()
         assert resolver.evaluate_score([], 100) == 0
+
+
+class TestStrategyRegistry:
+    def test_hierarchy_strategy_registered(self):
+        assert "hierarchy" in RESOLUTION_STRATEGIES
+
+    def test_multi_dimensional_strategy_registered(self):
+        assert "multi_dimensional" in RESOLUTION_STRATEGIES
+
+    def test_unknown_strategy_raises(self):
+        setting = _make_setting(match_type="unknown_strategy", overrides=[])
+        resolver = SettingsResolver()
+        with pytest.raises(ValueError, match="Unknown resolution strategy"):
+            resolver.resolve(setting, {})
+
+    def test_custom_strategy_can_be_registered(self):
+        class DummyStrategy:
+            def resolve(self, overrides, context):
+                return None
+
+        RESOLUTION_STRATEGIES["dummy"] = DummyStrategy()
+        try:
+            assert "dummy" in RESOLUTION_STRATEGIES
+        finally:
+            del RESOLUTION_STRATEGIES["dummy"]
