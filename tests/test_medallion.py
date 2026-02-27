@@ -177,92 +177,76 @@ class TestMedallionModels:
 
 
 # ---------------------------------------------------------------------------
-# API tests — these will fail until Tasks 3-4 are complete (router + service)
+# API tests
 # ---------------------------------------------------------------------------
 
+@pytest.fixture
+def client(workspace, monkeypatch):
+    """Create a test client with the medallion workspace."""
+    monkeypatch.setattr(config.settings, "workspace_dir", workspace)
+    with TestClient(app, raise_server_exceptions=False) as tc:
+        yield tc
+
+
 class TestMedallionAPI:
-    def test_list_tiers(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_list_tiers(self, client):
         resp = client.get("/api/medallion/tiers")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) == 2  # landing + bronze from fixture
         assert data[0]["tier_id"] == "landing"
 
-    def test_get_tier(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_get_tier(self, client):
         resp = client.get("/api/medallion/tiers/landing")
         assert resp.status_code == 200
         assert resp.json()["tier_id"] == "landing"
 
-    def test_get_tier_not_found(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_get_tier_not_found(self, client):
         resp = client.get("/api/medallion/tiers/nonexistent")
         assert resp.status_code == 404
 
-    def test_list_contracts(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_list_contracts(self, client):
         resp = client.get("/api/medallion/contracts")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) == 1
 
-    def test_get_contract(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_get_contract(self, client):
         resp = client.get("/api/medallion/contracts/bronze_to_silver_execution")
         assert resp.status_code == 200
         assert resp.json()["entity"] == "execution"
 
-    def test_contract_not_found(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_contract_not_found(self, client):
         resp = client.get("/api/medallion/contracts/nonexistent")
         assert resp.status_code == 404
 
-    def test_list_transformations(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_list_transformations(self, client):
         resp = client.get("/api/medallion/transformations")
         assert resp.status_code == 200
         assert len(resp.json()) == 1
 
-    def test_get_transformation(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_get_transformation(self, client):
         resp = client.get("/api/medallion/transformations/landing_to_bronze_execution")
         assert resp.status_code == 200
 
-    def test_transformation_not_found(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_transformation_not_found(self, client):
         resp = client.get("/api/medallion/transformations/nonexistent")
         assert resp.status_code == 404
 
-    def test_list_pipeline_stages(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_list_pipeline_stages(self, client):
         resp = client.get("/api/medallion/pipeline-stages")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) == 2
 
-    def test_lineage(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_lineage(self, client):
         resp = client.get("/api/medallion/lineage/execution")
         assert resp.status_code == 200
         data = resp.json()
         assert "nodes" in data
         assert "edges" in data
 
-    def test_lineage_unknown_entity(self, workspace):
-        config.settings.workspace_dir = workspace
-        client = TestClient(app)
+    def test_lineage_unknown_entity(self, client):
         resp = client.get("/api/medallion/lineage/unknown_entity")
         assert resp.status_code == 200
         data = resp.json()
