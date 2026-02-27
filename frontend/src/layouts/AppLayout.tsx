@@ -35,6 +35,7 @@ function getTourIdForPath(pathname: string): string | null {
     regulatory: "regulatory",
     submissions: "overview",
     assistant: "assistant",
+    medallion: "medallion",
   };
   return map[seg] ?? "overview";
 }
