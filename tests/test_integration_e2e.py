@@ -22,7 +22,7 @@ def e2e_workspace(tmp_path):
     real_ws = Path("workspace")
 
     # Copy metadata
-    for subdir in ["calculations", "settings", "detection_models", "entities"]:
+    for subdir in ["calculations", "settings", "detection_models", "entities", "query_presets"]:
         src = real_ws / "metadata" / subdir
         if src.exists():
             shutil.copytree(src, ws / "metadata" / subdir)

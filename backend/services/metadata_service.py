@@ -7,6 +7,7 @@ from backend.models.calculations import CalculationDefinition
 from backend.models.detection import DetectionModelDefinition
 from backend.models.entities import EntityDefinition
 from backend.models.match_patterns import MatchPattern
+from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
 
@@ -808,3 +809,21 @@ class MetadataService:
                     if match:
                         count += 1
         return count
+
+    # -- Query Presets --
+
+    def _query_presets_dir(self) -> Path:
+        return self._base / "query_presets"
+
+    def list_query_presets(self) -> list[dict]:
+        """Load all query preset groups from JSON, flatten and sort by order."""
+        folder = self._query_presets_dir()
+        if not folder.exists():
+            return []
+        presets = []
+        for f in sorted(folder.glob("*.json")):
+            group = QueryPresetGroup.model_validate_json(f.read_text())
+            for p in group.presets:
+                presets.append(p.model_dump())
+        presets.sort(key=lambda p: p["order"])
+        return presets

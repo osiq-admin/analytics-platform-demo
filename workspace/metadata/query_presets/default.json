@@ -1,0 +1,29 @@
+{
+  "preset_group_id": "default",
+  "presets": [
+    {
+      "preset_id": "all_tables",
+      "name": "All Tables",
+      "sql": "SHOW TABLES",
+      "category": "exploration",
+      "description": "List all available tables in the database",
+      "order": 1
+    },
+    {
+      "preset_id": "alert_summary",
+      "name": "Alert Summary",
+      "sql": "SELECT * FROM alerts_summary LIMIT 100",
+      "category": "investigation",
+      "description": "View recent alert summaries",
+      "order": 2
+    },
+    {
+      "preset_id": "calc_tables",
+      "name": "Calculation Results",
+      "sql": "SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'calc_%'",
+      "category": "exploration",
+      "description": "List all calculation result tables",
+      "order": 3
+    }
+  ]
+}

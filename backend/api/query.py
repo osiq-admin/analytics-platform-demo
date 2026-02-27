@@ -32,9 +32,5 @@ def get_table_schema(table_name: str, request: Request):
 
 
 @router.get("/presets")
-def list_preset_queries():
-    return [
-        {"name": "All Tables", "sql": "SHOW TABLES"},
-        {"name": "Alert Summary", "sql": "SELECT * FROM alerts_summary LIMIT 100"},
-        {"name": "Calculation Results", "sql": "SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'calc_%'"},
-    ]
+def list_preset_queries(request: Request):
+    return request.app.state.metadata.list_query_presets()
