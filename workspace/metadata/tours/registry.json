@@ -1,0 +1,37 @@
+{
+  "registry_id": "tours",
+  "description": "Tour and scenario registry for guided help system",
+  "tours": [
+    {"tour_id": "overview", "view_path": "/", "title": "App Overview", "step_count": 4},
+    {"tour_id": "dashboard", "view_path": "/dashboard", "title": "Dashboard Tour", "step_count": 4},
+    {"tour_id": "entities", "view_path": "/entities", "title": "Entity Designer Tour", "step_count": 3},
+    {"tour_id": "settings", "view_path": "/settings", "title": "Settings Manager Tour", "step_count": 3},
+    {"tour_id": "models", "view_path": "/models", "title": "Model Composer Tour", "step_count": 2},
+    {"tour_id": "alerts", "view_path": "/alerts", "title": "Risk Case Manager Tour", "step_count": 2},
+    {"tour_id": "sql", "view_path": "/sql", "title": "SQL Console Tour", "step_count": 3},
+    {"tour_id": "pipeline", "view_path": "/pipeline", "title": "Pipeline Monitor Tour", "step_count": 2},
+    {"tour_id": "schema", "view_path": "/schema", "title": "Schema Explorer Tour", "step_count": 2},
+    {"tour_id": "mappings", "view_path": "/mappings", "title": "Mapping Studio Tour", "step_count": 2},
+    {"tour_id": "data", "view_path": "/data", "title": "Data Manager Tour", "step_count": 2},
+    {"tour_id": "assistant", "view_path": "/assistant", "title": "AI Assistant Tour", "step_count": 2},
+    {"tour_id": "editor", "view_path": "/editor", "title": "Metadata Editor Tour", "step_count": 4},
+    {"tour_id": "regulatory", "view_path": "/regulatory", "title": "Regulatory Traceability Tour", "step_count": 5},
+    {"tour_id": "act1_guide", "view_path": "/data", "title": "Act 1: Data-to-Alerts Workflow", "step_count": 9},
+    {"tour_id": "act2_guide", "view_path": "/models", "title": "Act 2: Model Composition", "step_count": 5},
+    {"tour_id": "oob", "view_path": "/editor", "title": "OOB vs Custom Metadata Tour", "step_count": 7},
+    {"tour_id": "ux_features", "view_path": "/entities", "title": "Grid & Layout Features", "step_count": 5},
+    {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3}
+  ],
+  "scenarios": {
+    "total_count": 26,
+    "categories": [
+      {"category": "Settings", "count": 6},
+      {"category": "Calculations", "count": 4},
+      {"category": "Detection Models", "count": 4},
+      {"category": "Use Cases", "count": 4},
+      {"category": "Entities", "count": 2},
+      {"category": "Investigation", "count": 3},
+      {"category": "Administration", "count": 3}
+    ]
+  }
+}

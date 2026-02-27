@@ -549,3 +549,98 @@ def save_widget_config(view_id: str, body: dict, request: Request):
     body["view_id"] = view_id
     _meta(request).save_widget_config(body)
     return {"saved": True, "view_id": view_id}
+
+
+# -- Standards Registries --
+
+@router.get("/standards/iso")
+def get_iso_standards(request: Request):
+    """Return the ISO standards registry with field mappings and validation rules."""
+    svc = _meta(request)
+    return svc.load_iso_registry()
+
+
+@router.get("/standards/fix")
+def get_fix_standards(request: Request):
+    """Return the FIX protocol field registry."""
+    svc = _meta(request)
+    return svc.load_fix_registry()
+
+
+@router.get("/standards/compliance")
+def get_compliance_requirements(request: Request):
+    """Return compliance requirements registry."""
+    svc = _meta(request)
+    return svc.load_compliance_registry()
+
+
+# -- View Configurations --
+
+@router.get("/view_config/{view_id}")
+def get_view_config(view_id: str, request: Request):
+    """Return view configuration (tabs, etc.) for a view."""
+    svc = _meta(request)
+    config = svc.load_view_config(view_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
+# -- Theme Palettes --
+
+@router.get("/theme/palettes/{palette_id}")
+def get_theme_palette(palette_id: str, request: Request):
+    """Return a theme palette by palette_id."""
+    svc = _meta(request)
+    palette = svc.load_theme_palette(palette_id)
+    if palette is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return palette
+
+
+# -- Workflow Configurations --
+
+@router.get("/workflows/{workflow_id}")
+def get_workflow_config(workflow_id: str, request: Request):
+    """Return workflow configuration by workflow_id."""
+    svc = _meta(request)
+    config = svc.load_workflow_config(workflow_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
+# -- Demo Configurations --
+
+@router.get("/demo/{demo_id}")
+def get_demo_config(demo_id: str, request: Request):
+    """Return demo checkpoint configuration by demo_id."""
+    svc = _meta(request)
+    config = svc.load_demo_config(demo_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
+# -- Tour Registry --
+
+@router.get("/tours")
+def get_tour_registry(request: Request):
+    """Return the tour/scenario registry with all tour summaries and scenario categories."""
+    svc = _meta(request)
+    registry = svc.load_tour_registry()
+    if registry is None:
+        return JSONResponse({"error": "Tour registry not found"}, status_code=404)
+    return registry
+
+
+# -- Grid Configurations --
+
+@router.get("/grids/{view_id}")
+def get_grid_config(view_id: str, request: Request):
+    """Return grid column configuration for a view."""
+    svc = _meta(request)
+    config = svc.load_grid_config(view_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config

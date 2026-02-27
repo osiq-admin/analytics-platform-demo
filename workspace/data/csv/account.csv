@@ -1,221 +1,221 @@
-account_id,account_name,account_type,registration_country,primary_trader_id,status,risk_rating,onboarding_date
-ACC-001,Citadel Capital Management,institutional,US,TRD-001,ACTIVE,LOW,2020-03-29
-ACC-002,Obsidian Investment Partners,institutional,US,TRD-001,ACTIVE,LOW,2022-07-29
-ACC-003,Patriot Asset Management,institutional,US,TRD-001,ACTIVE,LOW,2023-01-03
-ACC-004,Evergreen Advisors,institutional,US,TRD-001,ACTIVE,LOW,2020-09-12
-ACC-005,Sentinel Wealth Management,institutional,US,TRD-002,ACTIVE,LOW,2022-02-14
-ACC-006,Pacific Financial Group,institutional,US,TRD-002,ACTIVE,LOW,2020-06-10
-ACC-007,Alpine Investment Group,institutional,US,TRD-002,ACTIVE,LOW,2023-02-04
-ACC-008,Eagle Capital Advisors,institutional,US,TRD-002,ACTIVE,LOW,2021-08-23
-ACC-009,Ironwood Capital Management,institutional,US,TRD-003,ACTIVE,LOW,2023-07-11
-ACC-010,Meridian Investment Partners,institutional,US,TRD-003,ACTIVE,LOW,2023-06-20
-ACC-011,Ivory Asset Management,institutional,US,TRD-003,ACTIVE,LOW,2022-01-10
-ACC-012,Horizon Advisors,institutional,US,TRD-003,ACTIVE,LOW,2023-03-28
-ACC-013,Maple Wealth Management,institutional,US,TRD-004,ACTIVE,LOW,2021-01-28
-ACC-014,Trident Financial Group,institutional,US,TRD-004,ACTIVE,LOW,2023-12-13
-ACC-015,Crestview Investment Group,institutional,US,TRD-004,ACTIVE,LOW,2020-05-22
-ACC-016,Dragonfly Capital Advisors,institutional,US,TRD-004,ACTIVE,LOW,2020-04-03
-ACC-017,Golden Capital Management,institutional,US,TRD-005,ACTIVE,LOW,2023-09-16
-ACC-018,Kestrel Investment Partners,institutional,US,TRD-005,ACTIVE,LOW,2021-04-11
-ACC-019,Quantum Asset Management,institutional,US,TRD-005,ACTIVE,LOW,2021-08-15
-ACC-020,Beacon Advisors,institutional,US,TRD-005,ACTIVE,LOW,2020-06-12
-ACC-021,Cardinal Wealth Management,institutional,US,TRD-006,ACTIVE,LOW,2021-04-21
-ACC-022,Monarch Financial Group,institutional,US,TRD-006,ACTIVE,LOW,2020-07-25
-ACC-023,Harbor Investment Group,institutional,US,TRD-006,ACTIVE,LOW,2022-02-17
-ACC-024,Falcon Capital Advisors,institutional,US,TRD-006,ACTIVE,LOW,2021-07-23
-ACC-025,Keystone Capital Management,institutional,US,TRD-007,ACTIVE,LOW,2022-07-17
-ACC-026,Juniper Investment Partners,institutional,US,TRD-007,ACTIVE,LOW,2023-07-25
-ACC-027,Noble Asset Management,institutional,US,TRD-007,ACTIVE,LOW,2022-01-17
-ACC-028,Apex Advisors,institutional,US,TRD-007,ACTIVE,LOW,2020-11-29
-ACC-029,Bridgewater Wealth Management,institutional,US,TRD-008,ACTIVE,LOW,2022-01-28
-ACC-030,Osprey Financial Group,institutional,US,TRD-008,ACTIVE,LOW,2021-12-28
-ACC-031,Polaris Investment Group,institutional,US,TRD-008,ACTIVE,LOW,2021-03-05
-ACC-032,Silverstone Capital Advisors,institutional,US,TRD-008,ACTIVE,LOW,2023-10-04
-ACC-033,Highland Capital Management,institutional,US,TRD-009,ACTIVE,LOW,2021-06-30
-ACC-034,Oakwood Investment Partners,institutional,US,TRD-009,ACTIVE,LOW,2023-12-08
-ACC-035,Pinnacle Asset Management,institutional,US,TRD-009,ACTIVE,LOW,2023-10-31
-ACC-036,Cascade Advisors,institutional,US,TRD-009,ACTIVE,LOW,2023-08-20
-ACC-037,Atlas Wealth Management,institutional,US,TRD-010,ACTIVE,LOW,2020-05-26
-ACC-038,Frontier Financial Group,institutional,US,TRD-010,ACTIVE,LOW,2023-06-01
-ACC-039,Sterling Investment Group,institutional,US,TRD-010,ACTIVE,LOW,2023-07-24
-ACC-040,Northbridge Capital Advisors,institutional,US,TRD-010,ACTIVE,LOW,2020-12-16
-ACC-041,Redwood Capital Management,institutional,US,TRD-011,ACTIVE,LOW,2022-12-29
-ACC-042,Cobalt Investment Partners,institutional,US,TRD-011,ACTIVE,LOW,2021-05-16
-ACC-043,Vanguard Asset Management,institutional,US,TRD-011,ACTIVE,LOW,2020-11-30
-ACC-044,Summit Advisors,institutional,US,TRD-011,ACTIVE,LOW,2022-08-04
-ACC-045,Granite Brokerage,retail,US,TRD-012,ACTIVE,MEDIUM,2022-02-16
-ACC-046,Liberty Personal Trading,retail,US,TRD-012,ACTIVE,MEDIUM,2021-07-06
-ACC-047,Citadel Direct Investing,retail,US,TRD-012,ACTIVE,MEDIUM,2023-08-03
-ACC-048,Obsidian Self-Directed,retail,US,TRD-012,ACTIVE,MEDIUM,2023-11-10
-ACC-049,Patriot Account,retail,US,TRD-013,ACTIVE,MEDIUM,2023-02-14
-ACC-050,Evergreen Trading,retail,US,TRD-013,ACTIVE,MEDIUM,2021-03-25
-ACC-051,Sentinel Portfolio,retail,US,TRD-013,ACTIVE,MEDIUM,2023-11-03
-ACC-052,Pacific Investments,retail,US,TRD-013,ACTIVE,MEDIUM,2021-10-26
-ACC-053,Alpine Brokerage,retail,US,TRD-014,ACTIVE,MEDIUM,2020-04-24
-ACC-054,Eagle Personal Trading,retail,US,TRD-014,ACTIVE,MEDIUM,2021-04-14
-ACC-055,Ironwood Direct Investing,retail,US,TRD-014,ACTIVE,MEDIUM,2020-03-06
-ACC-056,Meridian Self-Directed,retail,US,TRD-014,ACTIVE,MEDIUM,2021-10-08
-ACC-057,Ivory Account,retail,US,TRD-015,ACTIVE,MEDIUM,2022-04-01
-ACC-058,Horizon Trading,retail,US,TRD-015,ACTIVE,MEDIUM,2021-07-02
-ACC-059,Maple Portfolio,retail,US,TRD-015,ACTIVE,MEDIUM,2020-05-15
-ACC-060,Trident Investments,retail,US,TRD-015,ACTIVE,MEDIUM,2021-03-08
-ACC-061,Crestview Brokerage,retail,US,TRD-016,ACTIVE,MEDIUM,2023-03-07
-ACC-062,Dragonfly Personal Trading,retail,US,TRD-016,ACTIVE,MEDIUM,2021-10-06
-ACC-063,Golden Direct Investing,retail,US,TRD-016,ACTIVE,MEDIUM,2021-03-11
-ACC-064,Kestrel Self-Directed,retail,US,TRD-016,ACTIVE,MEDIUM,2023-09-04
-ACC-065,Quantum Account,retail,US,TRD-017,ACTIVE,MEDIUM,2022-10-19
-ACC-066,Beacon Trading,retail,US,TRD-017,ACTIVE,MEDIUM,2022-03-21
-ACC-067,Cardinal Portfolio,retail,US,TRD-017,ACTIVE,MEDIUM,2023-08-09
-ACC-068,Monarch Investments,retail,US,TRD-017,ACTIVE,MEDIUM,2022-07-28
-ACC-069,Harbor Brokerage,retail,US,TRD-018,ACTIVE,MEDIUM,2020-10-19
-ACC-070,Falcon Personal Trading,retail,US,TRD-018,ACTIVE,MEDIUM,2021-06-26
-ACC-071,Keystone Direct Investing,retail,US,TRD-018,ACTIVE,MEDIUM,2020-10-12
-ACC-072,Juniper Self-Directed,retail,US,TRD-018,ACTIVE,MEDIUM,2021-05-20
-ACC-073,Noble Account,retail,US,TRD-019,ACTIVE,MEDIUM,2023-02-23
-ACC-074,Apex Trading,retail,US,TRD-019,ACTIVE,MEDIUM,2023-01-08
-ACC-075,Bridgewater Portfolio,retail,US,TRD-019,ACTIVE,MEDIUM,2021-06-22
-ACC-076,Osprey Investments,retail,US,TRD-019,ACTIVE,MEDIUM,2023-04-12
-ACC-077,Polaris Brokerage,retail,US,TRD-020,ACTIVE,MEDIUM,2022-05-27
-ACC-078,Silverstone Alpha Fund,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2023-04-10
-ACC-079,Highland Macro Partners,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2022-03-28
-ACC-080,Oakwood Ventures LP,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2022-01-11
-ACC-081,Pinnacle Capital,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2021-03-25
-ACC-082,Cascade Fund,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2020-10-10
-ACC-083,Atlas Strategies,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2022-11-09
-ACC-084,Frontier Partners LP,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2022-10-07
-ACC-085,Sterling Global Fund,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2020-07-05
-ACC-086,Northbridge Alpha Fund,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2020-04-06
-ACC-087,Redwood Macro Partners,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2020-08-12
-ACC-088,Cobalt Ventures LP,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2020-11-09
-ACC-089,Vanguard Capital,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2023-07-09
-ACC-090,Summit Fund,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2020-11-23
-ACC-091,Granite Strategies,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2023-10-25
-ACC-092,Liberty Partners LP,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2022-05-14
-ACC-093,Citadel Global Fund,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2023-05-06
-ACC-094,Obsidian Alpha Fund,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2020-05-10
-ACC-095,Patriot Macro Partners,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2022-02-27
-ACC-096,Evergreen Ventures LP,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2022-02-20
-ACC-097,Sentinel Capital,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2023-05-05
-ACC-098,Pacific Fund,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2022-08-16
-ACC-099,Alpine Strategies,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2022-12-19
-ACC-100,Eagle Liquidity,market_maker,US,TRD-025,ACTIVE,LOW,2021-05-29
-ACC-101,Ironwood Market Services,market_maker,US,TRD-026,ACTIVE,LOW,2023-02-07
-ACC-102,Meridian Electronic Trading,market_maker,US,TRD-026,ACTIVE,LOW,2020-01-24
-ACC-103,Ivory Execution Services,market_maker,US,TRD-026,ACTIVE,LOW,2023-10-25
-ACC-104,Horizon Flow Trading,market_maker,US,TRD-026,ACTIVE,LOW,2020-08-22
-ACC-105,Maple Securities,market_maker,US,TRD-027,ACTIVE,LOW,2023-10-28
-ACC-106,Trident Trading LLC,market_maker,US,TRD-027,ACTIVE,LOW,2023-01-04
-ACC-107,Crestview Markets,market_maker,US,TRD-027,ACTIVE,LOW,2021-06-30
-ACC-108,Dragonfly Liquidity,market_maker,US,TRD-027,ACTIVE,LOW,2023-08-05
-ACC-109,Golden Market Services,market_maker,US,TRD-028,ACTIVE,LOW,2021-11-27
-ACC-110,Kestrel Electronic Trading,market_maker,US,TRD-028,ACTIVE,LOW,2020-08-16
-ACC-111,Quantum Investment Group,institutional,US,TRD-028,ACTIVE,LOW,2021-08-24
-ACC-112,Beacon Capital Advisors,institutional,US,TRD-028,ACTIVE,LOW,2022-06-09
-ACC-113,Cardinal Capital Management,institutional,US,TRD-029,ACTIVE,LOW,2020-11-19
-ACC-114,Monarch Investment Partners,institutional,US,TRD-029,ACTIVE,LOW,2022-07-18
-ACC-115,Harbor Asset Management,institutional,US,TRD-029,ACTIVE,LOW,2020-01-07
-ACC-116,Falcon Advisors,institutional,US,TRD-029,ACTIVE,LOW,2021-06-23
-ACC-117,Keystone Wealth Management,institutional,US,TRD-030,ACTIVE,LOW,2022-10-22
-ACC-118,Juniper Financial Group,institutional,US,TRD-030,ACTIVE,LOW,2020-12-31
-ACC-119,Noble Investment Group,institutional,US,TRD-030,ACTIVE,LOW,2022-11-05
-ACC-120,Apex Capital Advisors,institutional,US,TRD-030,ACTIVE,LOW,2020-08-05
-ACC-121,Bridgewater Capital Management,institutional,US,TRD-031,ACTIVE,LOW,2023-07-04
-ACC-122,Osprey Investment Partners,institutional,US,TRD-031,ACTIVE,LOW,2021-09-03
-ACC-123,Polaris Asset Management,institutional,US,TRD-031,ACTIVE,LOW,2023-08-01
-ACC-124,Silverstone Advisors,institutional,US,TRD-031,ACTIVE,LOW,2022-11-05
-ACC-125,Highland Wealth Management,institutional,US,TRD-032,ACTIVE,LOW,2023-06-01
-ACC-126,Oakwood Financial Group,institutional,US,TRD-032,ACTIVE,LOW,2021-02-11
-ACC-127,Pinnacle Investment Group,institutional,US,TRD-032,ACTIVE,LOW,2020-11-09
-ACC-128,Cascade Capital Advisors,institutional,US,TRD-032,ACTIVE,LOW,2022-02-04
-ACC-129,Atlas Capital Management,institutional,US,TRD-033,ACTIVE,LOW,2020-11-26
-ACC-130,Frontier Investment Partners,institutional,US,TRD-033,ACTIVE,LOW,2023-01-09
-ACC-131,Sterling Asset Management,institutional,US,TRD-033,ACTIVE,LOW,2022-12-22
-ACC-132,Northbridge Advisors,institutional,US,TRD-033,ACTIVE,LOW,2020-01-02
-ACC-133,Redwood Wealth Management,institutional,US,TRD-034,ACTIVE,LOW,2023-05-11
-ACC-134,Cobalt Financial Group,institutional,US,TRD-034,ACTIVE,LOW,2021-10-25
-ACC-135,Vanguard Investment Group,institutional,US,TRD-034,ACTIVE,LOW,2022-09-27
-ACC-136,Summit Capital Advisors,institutional,US,TRD-034,ACTIVE,LOW,2020-02-09
-ACC-137,Granite Capital Management,institutional,US,TRD-035,ACTIVE,LOW,2020-08-17
-ACC-138,Liberty Investment Partners,institutional,US,TRD-035,ACTIVE,LOW,2022-01-13
-ACC-139,Citadel Asset Management,institutional,US,TRD-035,ACTIVE,LOW,2021-09-21
-ACC-140,Obsidian Advisors,institutional,US,TRD-035,ACTIVE,LOW,2021-05-05
-ACC-141,Patriot Wealth Management,institutional,US,TRD-036,ACTIVE,LOW,2020-04-28
-ACC-142,Evergreen Financial Group,institutional,US,TRD-036,ACTIVE,LOW,2021-05-08
-ACC-143,Sentinel Investment Group,institutional,US,TRD-036,ACTIVE,LOW,2023-03-07
-ACC-144,Pacific Capital Advisors,institutional,US,TRD-036,ACTIVE,LOW,2020-06-10
-ACC-145,Alpine Capital Management,institutional,US,TRD-037,ACTIVE,LOW,2020-06-24
-ACC-146,Eagle Investment Partners,institutional,US,TRD-037,ACTIVE,LOW,2022-09-22
-ACC-147,Ironwood Asset Management,institutional,US,TRD-037,ACTIVE,LOW,2020-05-21
-ACC-148,Meridian Advisors,institutional,US,TRD-037,ACTIVE,LOW,2022-12-26
-ACC-149,Ivory Wealth Management,institutional,US,TRD-038,ACTIVE,LOW,2020-09-14
-ACC-150,Horizon Financial Group,institutional,US,TRD-038,ACTIVE,LOW,2020-09-19
-ACC-151,Maple Investment Group,institutional,US,TRD-038,ACTIVE,LOW,2023-09-13
-ACC-152,Trident Capital Advisors,institutional,US,TRD-038,ACTIVE,LOW,2022-08-31
-ACC-153,Crestview Capital Management,institutional,US,TRD-039,ACTIVE,LOW,2023-01-30
-ACC-154,Dragonfly Investment Partners,institutional,US,TRD-039,ACTIVE,LOW,2020-12-04
-ACC-155,Golden Portfolio,retail,US,TRD-039,ACTIVE,MEDIUM,2021-06-26
-ACC-156,Kestrel Investments,retail,US,TRD-039,ACTIVE,MEDIUM,2022-12-16
-ACC-157,Quantum Brokerage,retail,US,TRD-040,ACTIVE,MEDIUM,2023-05-27
-ACC-158,Beacon Personal Trading,retail,US,TRD-040,ACTIVE,MEDIUM,2022-05-16
-ACC-159,Cardinal Direct Investing,retail,US,TRD-040,ACTIVE,MEDIUM,2021-03-09
-ACC-160,Monarch Self-Directed,retail,US,TRD-040,ACTIVE,MEDIUM,2023-01-09
-ACC-161,Harbor Account,retail,US,TRD-041,ACTIVE,MEDIUM,2023-11-13
-ACC-162,Falcon Trading,retail,US,TRD-041,ACTIVE,MEDIUM,2021-02-15
-ACC-163,Keystone Portfolio,retail,US,TRD-041,ACTIVE,MEDIUM,2023-12-31
-ACC-164,Juniper Investments,retail,US,TRD-041,ACTIVE,MEDIUM,2021-09-30
-ACC-165,Noble Brokerage,retail,US,TRD-042,ACTIVE,MEDIUM,2022-03-28
-ACC-166,Apex Personal Trading,retail,US,TRD-042,ACTIVE,MEDIUM,2023-10-07
-ACC-167,Bridgewater Direct Investing,retail,US,TRD-042,ACTIVE,MEDIUM,2023-08-23
-ACC-168,Osprey Self-Directed,retail,US,TRD-042,ACTIVE,MEDIUM,2022-02-03
-ACC-169,Polaris Account,retail,US,TRD-043,ACTIVE,MEDIUM,2022-06-16
-ACC-170,Silverstone Trading,retail,US,TRD-043,ACTIVE,MEDIUM,2022-11-25
-ACC-171,Highland Portfolio,retail,US,TRD-043,ACTIVE,MEDIUM,2022-07-13
-ACC-172,Oakwood Investments,retail,US,TRD-043,ACTIVE,MEDIUM,2020-09-04
-ACC-173,Pinnacle Brokerage,retail,US,TRD-044,ACTIVE,MEDIUM,2021-05-22
-ACC-174,Cascade Personal Trading,retail,US,TRD-044,ACTIVE,MEDIUM,2021-04-05
-ACC-175,Atlas Direct Investing,retail,US,TRD-044,ACTIVE,MEDIUM,2020-05-11
-ACC-176,Frontier Self-Directed,retail,US,TRD-044,ACTIVE,MEDIUM,2021-11-23
-ACC-177,Sterling Account,retail,US,TRD-045,ACTIVE,MEDIUM,2020-02-13
-ACC-178,Northbridge Trading,retail,US,TRD-045,ACTIVE,MEDIUM,2023-04-19
-ACC-179,Redwood Portfolio,retail,US,TRD-045,ACTIVE,MEDIUM,2023-02-08
-ACC-180,Cobalt Investments,retail,US,TRD-045,ACTIVE,MEDIUM,2021-04-16
-ACC-181,Vanguard Brokerage,retail,US,TRD-046,ACTIVE,MEDIUM,2023-04-20
-ACC-182,Summit Personal Trading,retail,US,TRD-046,ACTIVE,MEDIUM,2021-03-27
-ACC-183,Granite Direct Investing,retail,US,TRD-046,ACTIVE,MEDIUM,2020-01-15
-ACC-184,Liberty Self-Directed,retail,US,TRD-046,ACTIVE,MEDIUM,2020-05-25
-ACC-185,Citadel Account,retail,US,TRD-047,ACTIVE,MEDIUM,2023-12-20
-ACC-186,Obsidian Trading,retail,US,TRD-047,ACTIVE,MEDIUM,2023-07-16
-ACC-187,Patriot Portfolio,retail,US,TRD-047,ACTIVE,MEDIUM,2020-04-30
-ACC-188,Evergreen Partners LP,hedge_fund,KY,TRD-047,ACTIVE,HIGH,2021-04-13
-ACC-189,Sentinel Global Fund,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2020-05-18
-ACC-190,Pacific Alpha Fund,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2020-03-05
-ACC-191,Alpine Macro Partners,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2021-11-07
-ACC-192,Eagle Ventures LP,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2020-05-25
-ACC-193,Ironwood Capital,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2022-11-18
-ACC-194,Meridian Fund,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2021-05-02
-ACC-195,Ivory Strategies,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2021-07-24
-ACC-196,Horizon Partners LP,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2023-10-02
-ACC-197,Maple Global Fund,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2022-09-21
-ACC-198,Trident Alpha Fund,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2021-03-14
-ACC-199,Crestview Macro Partners,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2023-01-09
-ACC-200,Dragonfly Ventures LP,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2020-09-27
-ACC-201,Golden Capital,hedge_fund,KY,,ACTIVE,HIGH,2023-03-15
-ACC-202,Kestrel Fund,hedge_fund,KY,,ACTIVE,HIGH,2023-03-26
-ACC-203,Quantum Strategies,hedge_fund,KY,,ACTIVE,HIGH,2022-08-26
-ACC-204,Beacon Partners LP,hedge_fund,KY,,ACTIVE,HIGH,2021-05-12
-ACC-205,Cardinal Global Fund,hedge_fund,KY,,ACTIVE,HIGH,2022-08-26
-ACC-206,Monarch Alpha Fund,hedge_fund,KY,,ACTIVE,HIGH,2022-04-13
-ACC-207,Harbor Macro Partners,hedge_fund,KY,,ACTIVE,HIGH,2021-01-24
-ACC-208,Falcon Ventures LP,hedge_fund,KY,,ACTIVE,HIGH,2020-07-12
-ACC-209,Keystone Capital,hedge_fund,KY,,ACTIVE,HIGH,2020-07-17
-ACC-210,Juniper Trading LLC,market_maker,US,,ACTIVE,LOW,2023-09-11
-ACC-211,Noble Markets,market_maker,US,,ACTIVE,LOW,2022-06-01
-ACC-212,Apex Liquidity,market_maker,US,,ACTIVE,LOW,2021-12-26
-ACC-213,Bridgewater Market Services,market_maker,US,,ACTIVE,LOW,2022-05-17
-ACC-214,Osprey Electronic Trading,market_maker,US,,ACTIVE,LOW,2022-04-21
-ACC-215,Polaris Execution Services,market_maker,US,,ACTIVE,LOW,2022-08-14
-ACC-216,Silverstone Flow Trading,market_maker,US,,ACTIVE,LOW,2020-04-20
-ACC-217,Highland Securities,market_maker,US,,ACTIVE,LOW,2023-10-11
-ACC-218,Oakwood Trading LLC,market_maker,US,,ACTIVE,LOW,2023-08-31
-ACC-219,Pinnacle Markets,market_maker,US,,ACTIVE,LOW,2023-08-16
-ACC-220,Cascade Liquidity,market_maker,US,,ACTIVE,LOW,2020-07-20
+account_id,account_name,account_type,registration_country,primary_trader_id,status,risk_rating,onboarding_date,mifid_client_category,compliance_status
+ACC-001,Citadel Capital Management,institutional,US,TRD-001,ACTIVE,LOW,2020-03-29,professional,active
+ACC-002,Obsidian Investment Partners,institutional,US,TRD-001,ACTIVE,LOW,2023-01-03,professional,active
+ACC-003,Patriot Asset Management,institutional,US,TRD-001,ACTIVE,LOW,2022-02-14,professional,active
+ACC-004,Evergreen Advisors,institutional,US,TRD-001,ACTIVE,LOW,2021-08-23,professional,active
+ACC-005,Sentinel Wealth Management,institutional,US,TRD-002,ACTIVE,LOW,2023-06-20,professional,under_review
+ACC-006,Pacific Financial Group,institutional,US,TRD-002,ACTIVE,LOW,2022-01-10,professional,active
+ACC-007,Alpine Investment Group,institutional,US,TRD-002,ACTIVE,LOW,2023-12-13,professional,active
+ACC-008,Eagle Capital Advisors,institutional,US,TRD-002,ACTIVE,LOW,2023-09-16,professional,active
+ACC-009,Ironwood Capital Management,institutional,US,TRD-003,ACTIVE,LOW,2021-08-15,professional,restricted
+ACC-010,Meridian Investment Partners,institutional,US,TRD-003,ACTIVE,LOW,2021-04-21,professional,under_review
+ACC-011,Ivory Asset Management,institutional,US,TRD-003,ACTIVE,LOW,2022-02-17,professional,active
+ACC-012,Horizon Advisors,institutional,US,TRD-003,ACTIVE,LOW,2023-07-25,professional,active
+ACC-013,Maple Wealth Management,institutional,US,TRD-004,ACTIVE,LOW,2020-11-29,professional,active
+ACC-014,Trident Financial Group,institutional,US,TRD-004,ACTIVE,LOW,2021-03-05,professional,active
+ACC-015,Crestview Investment Group,institutional,US,TRD-004,ACTIVE,LOW,2023-12-08,professional,under_review
+ACC-016,Dragonfly Capital Advisors,institutional,US,TRD-004,ACTIVE,LOW,2023-08-20,professional,active
+ACC-017,Golden Capital Management,institutional,US,TRD-005,ACTIVE,LOW,2023-07-24,professional,active
+ACC-018,Kestrel Investment Partners,institutional,US,TRD-005,ACTIVE,LOW,2021-05-16,professional,active
+ACC-019,Quantum Asset Management,institutional,US,TRD-005,ACTIVE,LOW,2022-02-16,professional,active
+ACC-020,Beacon Advisors,institutional,US,TRD-005,ACTIVE,LOW,2023-08-03,professional,active
+ACC-021,Cardinal Wealth Management,institutional,US,TRD-006,ACTIVE,LOW,2021-03-25,professional,active
+ACC-022,Monarch Financial Group,institutional,US,TRD-006,ACTIVE,LOW,2020-04-24,professional,active
+ACC-023,Harbor Investment Group,institutional,US,TRD-006,ACTIVE,LOW,2020-03-06,professional,active
+ACC-024,Falcon Capital Advisors,institutional,US,TRD-006,ACTIVE,LOW,2022-04-01,professional,active
+ACC-025,Keystone Capital Management,institutional,US,TRD-007,ACTIVE,LOW,2021-03-08,professional,under_review
+ACC-026,Juniper Investment Partners,institutional,US,TRD-007,ACTIVE,LOW,2023-03-07,professional,under_review
+ACC-027,Noble Asset Management,institutional,US,TRD-007,ACTIVE,LOW,2021-10-06,professional,active
+ACC-028,Apex Advisors,institutional,US,TRD-007,ACTIVE,LOW,2022-10-19,professional,active
+ACC-029,Bridgewater Wealth Management,institutional,US,TRD-008,ACTIVE,LOW,2023-08-09,professional,active
+ACC-030,Osprey Financial Group,institutional,US,TRD-008,ACTIVE,LOW,2021-06-26,professional,active
+ACC-031,Polaris Investment Group,institutional,US,TRD-008,ACTIVE,LOW,2023-02-23,professional,active
+ACC-032,Silverstone Capital Advisors,institutional,US,TRD-008,ACTIVE,LOW,2023-04-12,professional,active
+ACC-033,Highland Capital Management,institutional,US,TRD-009,ACTIVE,LOW,2023-04-10,professional,active
+ACC-034,Oakwood Investment Partners,institutional,US,TRD-009,ACTIVE,LOW,2021-03-25,professional,restricted
+ACC-035,Pinnacle Asset Management,institutional,US,TRD-009,ACTIVE,LOW,2020-10-10,professional,active
+ACC-036,Cascade Advisors,institutional,US,TRD-009,ACTIVE,LOW,2020-07-05,professional,active
+ACC-037,Atlas Wealth Management,institutional,US,TRD-010,ACTIVE,LOW,2020-08-12,professional,active
+ACC-038,Frontier Financial Group,institutional,US,TRD-010,ACTIVE,LOW,2020-11-23,professional,active
+ACC-039,Sterling Investment Group,institutional,US,TRD-010,ACTIVE,LOW,2022-05-14,professional,active
+ACC-040,Northbridge Capital Advisors,institutional,US,TRD-010,ACTIVE,LOW,2022-02-27,professional,active
+ACC-041,Redwood Capital Management,institutional,US,TRD-011,ACTIVE,LOW,2022-08-16,professional,active
+ACC-042,Cobalt Investment Partners,institutional,US,TRD-011,ACTIVE,LOW,2023-02-07,professional,under_review
+ACC-043,Vanguard Asset Management,institutional,US,TRD-011,ACTIVE,LOW,2020-01-24,professional,active
+ACC-044,Summit Advisors,institutional,US,TRD-011,ACTIVE,LOW,2020-08-22,professional,active
+ACC-045,Granite Brokerage,retail,US,TRD-012,ACTIVE,MEDIUM,2023-01-04,retail,active
+ACC-046,Liberty Personal Trading,retail,US,TRD-012,ACTIVE,MEDIUM,2023-08-05,retail,active
+ACC-047,Citadel Direct Investing,retail,US,TRD-012,ACTIVE,MEDIUM,2021-08-24,retail,active
+ACC-048,Obsidian Self-Directed,retail,US,TRD-012,ACTIVE,MEDIUM,2022-07-18,retail,active
+ACC-049,Patriot Account,retail,US,TRD-013,ACTIVE,MEDIUM,2021-06-23,retail,restricted
+ACC-050,Evergreen Trading,retail,US,TRD-013,ACTIVE,MEDIUM,2020-12-31,retail,active
+ACC-051,Sentinel Portfolio,retail,US,TRD-013,ACTIVE,MEDIUM,2020-08-05,retail,under_review
+ACC-052,Pacific Investments,retail,US,TRD-013,ACTIVE,MEDIUM,2021-09-03,retail,active
+ACC-053,Alpine Brokerage,retail,US,TRD-014,ACTIVE,MEDIUM,2022-11-05,retail,active
+ACC-054,Eagle Personal Trading,retail,US,TRD-014,ACTIVE,MEDIUM,2020-11-09,retail,active
+ACC-055,Ironwood Direct Investing,retail,US,TRD-014,ACTIVE,MEDIUM,2020-11-26,retail,active
+ACC-056,Meridian Self-Directed,retail,US,TRD-014,ACTIVE,MEDIUM,2022-12-22,retail,under_review
+ACC-057,Ivory Account,retail,US,TRD-015,ACTIVE,MEDIUM,2023-05-11,retail,active
+ACC-058,Horizon Trading,retail,US,TRD-015,ACTIVE,MEDIUM,2020-02-09,retail,active
+ACC-059,Maple Portfolio,retail,US,TRD-015,ACTIVE,MEDIUM,2022-01-13,retail,under_review
+ACC-060,Trident Investments,retail,US,TRD-015,ACTIVE,MEDIUM,2021-09-21,retail,active
+ACC-061,Crestview Brokerage,retail,US,TRD-016,ACTIVE,MEDIUM,2021-05-08,retail,under_review
+ACC-062,Dragonfly Personal Trading,retail,US,TRD-016,ACTIVE,MEDIUM,2020-06-10,retail,active
+ACC-063,Golden Direct Investing,retail,US,TRD-016,ACTIVE,MEDIUM,2022-09-22,retail,active
+ACC-064,Kestrel Self-Directed,retail,US,TRD-016,ACTIVE,MEDIUM,2022-12-26,retail,active
+ACC-065,Quantum Account,retail,US,TRD-017,ACTIVE,MEDIUM,2020-09-19,retail,active
+ACC-066,Beacon Trading,retail,US,TRD-017,ACTIVE,MEDIUM,2023-01-30,retail,active
+ACC-067,Cardinal Portfolio,retail,US,TRD-017,ACTIVE,MEDIUM,2022-12-16,retail,under_review
+ACC-068,Monarch Investments,retail,US,TRD-017,ACTIVE,MEDIUM,2022-05-16,retail,restricted
+ACC-069,Harbor Brokerage,retail,US,TRD-018,ACTIVE,MEDIUM,2023-01-09,retail,active
+ACC-070,Falcon Personal Trading,retail,US,TRD-018,ACTIVE,MEDIUM,2023-11-13,retail,active
+ACC-071,Keystone Direct Investing,retail,US,TRD-018,ACTIVE,MEDIUM,2021-09-30,retail,active
+ACC-072,Juniper Self-Directed,retail,US,TRD-018,ACTIVE,MEDIUM,2023-10-07,retail,active
+ACC-073,Noble Account,retail,US,TRD-019,ACTIVE,MEDIUM,2022-06-16,retail,under_review
+ACC-074,Apex Trading,retail,US,TRD-019,ACTIVE,MEDIUM,2022-07-13,retail,active
+ACC-075,Bridgewater Portfolio,retail,US,TRD-019,ACTIVE,MEDIUM,2021-04-05,retail,active
+ACC-076,Osprey Investments,retail,US,TRD-019,ACTIVE,MEDIUM,2020-02-13,retail,active
+ACC-077,Polaris Brokerage,retail,US,TRD-020,ACTIVE,MEDIUM,2021-04-16,retail,active
+ACC-078,Silverstone Alpha Fund,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2020-01-15,professional,active
+ACC-079,Highland Macro Partners,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2023-07-16,professional,active
+ACC-080,Oakwood Ventures LP,hedge_fund,KY,TRD-020,ACTIVE,HIGH,2020-05-18,professional,under_review
+ACC-081,Pinnacle Capital,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2021-11-07,professional,active
+ACC-082,Cascade Fund,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2021-05-02,professional,active
+ACC-083,Atlas Strategies,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2022-09-21,professional,active
+ACC-084,Frontier Partners LP,hedge_fund,KY,TRD-021,ACTIVE,HIGH,2020-09-27,professional,active
+ACC-085,Sterling Global Fund,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2023-03-15,professional,active
+ACC-086,Northbridge Alpha Fund,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2021-05-12,professional,active
+ACC-087,Redwood Macro Partners,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2022-04-13,professional,active
+ACC-088,Cobalt Ventures LP,hedge_fund,KY,TRD-022,ACTIVE,HIGH,2020-07-17,professional,active
+ACC-089,Vanguard Capital,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2021-12-26,professional,active
+ACC-090,Summit Fund,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2022-08-14,professional,under_review
+ACC-091,Granite Strategies,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2020-04-20,professional,active
+ACC-092,Liberty Partners LP,hedge_fund,KY,TRD-023,ACTIVE,HIGH,2023-08-16,professional,active
+ACC-093,Citadel Global Fund,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2022-04-04,professional,active
+ACC-094,Obsidian Alpha Fund,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2020-08-11,professional,active
+ACC-095,Patriot Macro Partners,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2021-01-24,professional,active
+ACC-096,Evergreen Ventures LP,hedge_fund,KY,TRD-024,ACTIVE,HIGH,2020-10-14,professional,active
+ACC-097,Sentinel Capital,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2021-07-24,professional,active
+ACC-098,Pacific Fund,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2020-06-03,professional,active
+ACC-099,Alpine Strategies,hedge_fund,KY,TRD-025,ACTIVE,HIGH,2023-02-01,professional,active
+ACC-100,Eagle Liquidity,market_maker,US,TRD-025,ACTIVE,LOW,2023-08-28,eligible_counterparty,restricted
+ACC-101,Ironwood Market Services,market_maker,US,TRD-026,ACTIVE,LOW,2020-01-31,eligible_counterparty,restricted
+ACC-102,Meridian Electronic Trading,market_maker,US,TRD-026,ACTIVE,LOW,2021-04-29,eligible_counterparty,active
+ACC-103,Ivory Execution Services,market_maker,US,TRD-026,ACTIVE,LOW,2022-09-21,eligible_counterparty,active
+ACC-104,Horizon Flow Trading,market_maker,US,TRD-026,ACTIVE,LOW,2022-04-01,eligible_counterparty,under_review
+ACC-105,Maple Securities,market_maker,US,TRD-027,ACTIVE,LOW,2020-12-03,eligible_counterparty,active
+ACC-106,Trident Trading LLC,market_maker,US,TRD-027,ACTIVE,LOW,2022-03-10,eligible_counterparty,active
+ACC-107,Crestview Markets,market_maker,US,TRD-027,ACTIVE,LOW,2022-07-20,eligible_counterparty,active
+ACC-108,Dragonfly Liquidity,market_maker,US,TRD-027,ACTIVE,LOW,2023-11-27,eligible_counterparty,restricted
+ACC-109,Golden Market Services,market_maker,US,TRD-028,ACTIVE,LOW,2023-02-12,eligible_counterparty,active
+ACC-110,Kestrel Electronic Trading,market_maker,US,TRD-028,ACTIVE,LOW,2022-09-23,eligible_counterparty,active
+ACC-111,Quantum Investment Group,institutional,US,TRD-028,ACTIVE,LOW,2021-08-30,professional,active
+ACC-112,Beacon Capital Advisors,institutional,US,TRD-028,ACTIVE,LOW,2020-04-29,professional,active
+ACC-113,Cardinal Capital Management,institutional,US,TRD-029,ACTIVE,LOW,2023-01-15,professional,active
+ACC-114,Monarch Investment Partners,institutional,US,TRD-029,ACTIVE,LOW,2021-10-04,professional,active
+ACC-115,Harbor Asset Management,institutional,US,TRD-029,ACTIVE,LOW,2023-04-11,professional,active
+ACC-116,Falcon Advisors,institutional,US,TRD-029,ACTIVE,LOW,2022-12-23,professional,active
+ACC-117,Keystone Wealth Management,institutional,US,TRD-030,ACTIVE,LOW,2022-11-06,professional,active
+ACC-118,Juniper Financial Group,institutional,US,TRD-030,ACTIVE,LOW,2021-01-15,professional,active
+ACC-119,Noble Investment Group,institutional,US,TRD-030,ACTIVE,LOW,2020-05-19,professional,active
+ACC-120,Apex Capital Advisors,institutional,US,TRD-030,ACTIVE,LOW,2021-04-26,professional,active
+ACC-121,Bridgewater Capital Management,institutional,US,TRD-031,ACTIVE,LOW,2023-03-12,professional,active
+ACC-122,Osprey Investment Partners,institutional,US,TRD-031,ACTIVE,LOW,2023-05-02,professional,active
+ACC-123,Polaris Asset Management,institutional,US,TRD-031,ACTIVE,LOW,2020-06-16,professional,active
+ACC-124,Silverstone Advisors,institutional,US,TRD-031,ACTIVE,LOW,2023-04-10,professional,active
+ACC-125,Highland Wealth Management,institutional,US,TRD-032,ACTIVE,LOW,2021-10-09,professional,under_review
+ACC-126,Oakwood Financial Group,institutional,US,TRD-032,ACTIVE,LOW,2021-02-22,professional,active
+ACC-127,Pinnacle Investment Group,institutional,US,TRD-032,ACTIVE,LOW,2021-10-05,professional,active
+ACC-128,Cascade Capital Advisors,institutional,US,TRD-032,ACTIVE,LOW,2022-03-21,professional,active
+ACC-129,Atlas Capital Management,institutional,US,TRD-033,ACTIVE,LOW,2023-08-14,professional,active
+ACC-130,Frontier Investment Partners,institutional,US,TRD-033,ACTIVE,LOW,2021-10-09,professional,under_review
+ACC-131,Sterling Asset Management,institutional,US,TRD-033,ACTIVE,LOW,2020-05-28,professional,active
+ACC-132,Northbridge Advisors,institutional,US,TRD-033,ACTIVE,LOW,2023-06-26,professional,restricted
+ACC-133,Redwood Wealth Management,institutional,US,TRD-034,ACTIVE,LOW,2020-07-23,professional,active
+ACC-134,Cobalt Financial Group,institutional,US,TRD-034,ACTIVE,LOW,2021-03-12,professional,active
+ACC-135,Vanguard Investment Group,institutional,US,TRD-034,ACTIVE,LOW,2020-09-28,professional,under_review
+ACC-136,Summit Capital Advisors,institutional,US,TRD-034,ACTIVE,LOW,2020-05-20,professional,under_review
+ACC-137,Granite Capital Management,institutional,US,TRD-035,ACTIVE,LOW,2022-01-26,professional,active
+ACC-138,Liberty Investment Partners,institutional,US,TRD-035,ACTIVE,LOW,2022-06-16,professional,active
+ACC-139,Citadel Asset Management,institutional,US,TRD-035,ACTIVE,LOW,2023-12-11,professional,active
+ACC-140,Obsidian Advisors,institutional,US,TRD-035,ACTIVE,LOW,2023-09-01,professional,active
+ACC-141,Patriot Wealth Management,institutional,US,TRD-036,ACTIVE,LOW,2023-09-29,professional,active
+ACC-142,Evergreen Financial Group,institutional,US,TRD-036,ACTIVE,LOW,2021-09-05,professional,under_review
+ACC-143,Sentinel Investment Group,institutional,US,TRD-036,ACTIVE,LOW,2020-07-31,professional,under_review
+ACC-144,Pacific Capital Advisors,institutional,US,TRD-036,ACTIVE,LOW,2020-10-02,professional,active
+ACC-145,Alpine Capital Management,institutional,US,TRD-037,ACTIVE,LOW,2020-08-07,professional,active
+ACC-146,Eagle Investment Partners,institutional,US,TRD-037,ACTIVE,LOW,2020-11-14,professional,active
+ACC-147,Ironwood Asset Management,institutional,US,TRD-037,ACTIVE,LOW,2023-05-23,professional,active
+ACC-148,Meridian Advisors,institutional,US,TRD-037,ACTIVE,LOW,2021-12-03,professional,active
+ACC-149,Ivory Wealth Management,institutional,US,TRD-038,ACTIVE,LOW,2023-07-22,professional,under_review
+ACC-150,Horizon Financial Group,institutional,US,TRD-038,ACTIVE,LOW,2022-11-01,professional,active
+ACC-151,Maple Investment Group,institutional,US,TRD-038,ACTIVE,LOW,2020-04-14,professional,active
+ACC-152,Trident Capital Advisors,institutional,US,TRD-038,ACTIVE,LOW,2022-05-17,professional,active
+ACC-153,Crestview Capital Management,institutional,US,TRD-039,ACTIVE,LOW,2020-03-31,professional,active
+ACC-154,Dragonfly Investment Partners,institutional,US,TRD-039,ACTIVE,LOW,2020-09-24,professional,active
+ACC-155,Golden Portfolio,retail,US,TRD-039,ACTIVE,MEDIUM,2021-06-20,retail,active
+ACC-156,Kestrel Investments,retail,US,TRD-039,ACTIVE,MEDIUM,2022-06-23,retail,active
+ACC-157,Quantum Brokerage,retail,US,TRD-040,ACTIVE,MEDIUM,2022-05-25,retail,active
+ACC-158,Beacon Personal Trading,retail,US,TRD-040,ACTIVE,MEDIUM,2020-08-17,retail,active
+ACC-159,Cardinal Direct Investing,retail,US,TRD-040,ACTIVE,MEDIUM,2023-11-16,retail,under_review
+ACC-160,Monarch Self-Directed,retail,US,TRD-040,ACTIVE,MEDIUM,2023-01-22,retail,active
+ACC-161,Harbor Account,retail,US,TRD-041,ACTIVE,MEDIUM,2022-01-26,retail,active
+ACC-162,Falcon Trading,retail,US,TRD-041,ACTIVE,MEDIUM,2020-10-30,retail,active
+ACC-163,Keystone Portfolio,retail,US,TRD-041,ACTIVE,MEDIUM,2020-03-26,retail,active
+ACC-164,Juniper Investments,retail,US,TRD-041,ACTIVE,MEDIUM,2020-03-22,retail,under_review
+ACC-165,Noble Brokerage,retail,US,TRD-042,ACTIVE,MEDIUM,2021-03-06,retail,active
+ACC-166,Apex Personal Trading,retail,US,TRD-042,ACTIVE,MEDIUM,2023-09-27,retail,active
+ACC-167,Bridgewater Direct Investing,retail,US,TRD-042,ACTIVE,MEDIUM,2023-02-20,retail,under_review
+ACC-168,Osprey Self-Directed,retail,US,TRD-042,ACTIVE,MEDIUM,2022-04-12,retail,restricted
+ACC-169,Polaris Account,retail,US,TRD-043,ACTIVE,MEDIUM,2020-11-12,retail,under_review
+ACC-170,Silverstone Trading,retail,US,TRD-043,ACTIVE,MEDIUM,2021-04-29,retail,under_review
+ACC-171,Highland Portfolio,retail,US,TRD-043,ACTIVE,MEDIUM,2020-12-28,retail,under_review
+ACC-172,Oakwood Investments,retail,US,TRD-043,ACTIVE,MEDIUM,2020-02-20,retail,active
+ACC-173,Pinnacle Brokerage,retail,US,TRD-044,ACTIVE,MEDIUM,2021-11-11,retail,active
+ACC-174,Cascade Personal Trading,retail,US,TRD-044,ACTIVE,MEDIUM,2022-04-23,retail,active
+ACC-175,Atlas Direct Investing,retail,US,TRD-044,ACTIVE,MEDIUM,2021-05-23,retail,active
+ACC-176,Frontier Self-Directed,retail,US,TRD-044,ACTIVE,MEDIUM,2023-12-07,retail,active
+ACC-177,Sterling Account,retail,US,TRD-045,ACTIVE,MEDIUM,2020-03-20,retail,under_review
+ACC-178,Northbridge Trading,retail,US,TRD-045,ACTIVE,MEDIUM,2021-03-31,retail,active
+ACC-179,Redwood Portfolio,retail,US,TRD-045,ACTIVE,MEDIUM,2022-07-31,retail,active
+ACC-180,Cobalt Investments,retail,US,TRD-045,ACTIVE,MEDIUM,2021-04-11,retail,active
+ACC-181,Vanguard Brokerage,retail,US,TRD-046,ACTIVE,MEDIUM,2023-09-13,retail,active
+ACC-182,Summit Personal Trading,retail,US,TRD-046,ACTIVE,MEDIUM,2021-11-03,retail,active
+ACC-183,Granite Direct Investing,retail,US,TRD-046,ACTIVE,MEDIUM,2020-05-22,retail,restricted
+ACC-184,Liberty Self-Directed,retail,US,TRD-046,ACTIVE,MEDIUM,2021-07-25,retail,active
+ACC-185,Citadel Account,retail,US,TRD-047,ACTIVE,MEDIUM,2022-11-09,retail,active
+ACC-186,Obsidian Trading,retail,US,TRD-047,ACTIVE,MEDIUM,2023-01-03,retail,active
+ACC-187,Patriot Portfolio,retail,US,TRD-047,ACTIVE,MEDIUM,2020-02-26,retail,active
+ACC-188,Evergreen Partners LP,hedge_fund,KY,TRD-047,ACTIVE,HIGH,2021-06-18,professional,active
+ACC-189,Sentinel Global Fund,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2021-06-27,professional,active
+ACC-190,Pacific Alpha Fund,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2023-05-06,professional,active
+ACC-191,Alpine Macro Partners,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2021-10-04,professional,active
+ACC-192,Eagle Ventures LP,hedge_fund,KY,TRD-048,ACTIVE,HIGH,2022-11-13,professional,active
+ACC-193,Ironwood Capital,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2023-03-26,professional,active
+ACC-194,Meridian Fund,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2020-03-31,professional,active
+ACC-195,Ivory Strategies,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2020-01-04,professional,active
+ACC-196,Horizon Partners LP,hedge_fund,KY,TRD-049,ACTIVE,HIGH,2023-01-07,professional,active
+ACC-197,Maple Global Fund,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2023-10-05,professional,active
+ACC-198,Trident Alpha Fund,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2022-06-02,professional,active
+ACC-199,Crestview Macro Partners,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2023-09-22,professional,under_review
+ACC-200,Dragonfly Ventures LP,hedge_fund,KY,TRD-050,ACTIVE,HIGH,2023-06-30,professional,active
+ACC-201,Golden Capital,hedge_fund,KY,,ACTIVE,HIGH,2020-09-12,professional,active
+ACC-202,Kestrel Fund,hedge_fund,KY,,ACTIVE,HIGH,2021-09-07,professional,active
+ACC-203,Quantum Strategies,hedge_fund,KY,,ACTIVE,HIGH,2023-09-27,professional,active
+ACC-204,Beacon Partners LP,hedge_fund,KY,,ACTIVE,HIGH,2022-04-04,professional,active
+ACC-205,Cardinal Global Fund,hedge_fund,KY,,ACTIVE,HIGH,2023-02-09,professional,active
+ACC-206,Monarch Alpha Fund,hedge_fund,KY,,ACTIVE,HIGH,2022-05-11,professional,active
+ACC-207,Harbor Macro Partners,hedge_fund,KY,,ACTIVE,HIGH,2022-02-15,professional,active
+ACC-208,Falcon Ventures LP,hedge_fund,KY,,ACTIVE,HIGH,2020-12-22,professional,active
+ACC-209,Keystone Capital,hedge_fund,KY,,ACTIVE,HIGH,2021-09-08,professional,active
+ACC-210,Juniper Trading LLC,market_maker,US,,ACTIVE,LOW,2020-01-01,eligible_counterparty,active
+ACC-211,Noble Markets,market_maker,US,,ACTIVE,LOW,2021-03-06,eligible_counterparty,active
+ACC-212,Apex Liquidity,market_maker,US,,ACTIVE,LOW,2023-04-02,eligible_counterparty,active
+ACC-213,Bridgewater Market Services,market_maker,US,,ACTIVE,LOW,2021-10-21,eligible_counterparty,active
+ACC-214,Osprey Electronic Trading,market_maker,US,,ACTIVE,LOW,2022-06-24,eligible_counterparty,active
+ACC-215,Polaris Execution Services,market_maker,US,,ACTIVE,LOW,2022-11-12,eligible_counterparty,active
+ACC-216,Silverstone Flow Trading,market_maker,US,,ACTIVE,LOW,2020-12-13,eligible_counterparty,active
+ACC-217,Highland Securities,market_maker,US,,ACTIVE,LOW,2021-08-04,eligible_counterparty,active
+ACC-218,Oakwood Trading LLC,market_maker,US,,ACTIVE,LOW,2023-07-20,eligible_counterparty,active
+ACC-219,Pinnacle Markets,market_maker,US,,ACTIVE,LOW,2020-07-10,eligible_counterparty,active
+ACC-220,Cascade Liquidity,market_maker,US,,ACTIVE,LOW,2021-04-26,eligible_counterparty,active

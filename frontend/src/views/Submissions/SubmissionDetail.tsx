@@ -7,6 +7,7 @@ interface SubmissionDetailProps {
   submission: Submission;
   onStatusUpdate: (status: string, comment?: string) => void;
   onRefreshRecommendations: () => void;
+  variantMap?: Record<string, string>;
 }
 
 type Tab = "summary" | "components" | "recommendations" | "comments" | "impact";
@@ -19,7 +20,11 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "impact", label: "Impact" },
 ];
 
-function statusVariant(status: string) {
+function statusVariant(status: string, variantMap?: Record<string, string>) {
+  if (variantMap && variantMap[status]) {
+    return variantMap[status] as "success" | "error" | "warning" | "info" | "muted";
+  }
+  // Fallback to hardcoded mapping
   switch (status) {
     case "approved":
     case "implemented":
@@ -61,6 +66,7 @@ export default function SubmissionDetail({
   submission,
   onStatusUpdate,
   onRefreshRecommendations,
+  variantMap,
 }: SubmissionDetailProps) {
   const [activeTab, setActiveTab] = useState<Tab>("summary");
 
@@ -96,7 +102,7 @@ export default function SubmissionDetail({
       {/* Tab content */}
       <div className="flex-1 overflow-auto p-3">
         {activeTab === "summary" && (
-          <SummaryTab submission={submission} />
+          <SummaryTab submission={submission} variantMap={variantMap} />
         )}
         {activeTab === "components" && (
           <ComponentsTab submission={submission} />
@@ -130,7 +136,7 @@ export default function SubmissionDetail({
 
 /* ---------- Summary Tab ---------- */
 
-function SummaryTab({ submission }: { submission: Submission }) {
+function SummaryTab({ submission, variantMap }: { submission: Submission; variantMap?: Record<string, string> }) {
   return (
     <div className="flex flex-col gap-3 text-xs">
       <div className="flex items-start justify-between">
@@ -142,7 +148,7 @@ function SummaryTab({ submission }: { submission: Submission }) {
         </div>
         <StatusBadge
           label={submission.status}
-          variant={statusVariant(submission.status)}
+          variant={statusVariant(submission.status, variantMap)}
         />
       </div>
 

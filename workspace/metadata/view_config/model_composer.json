@@ -1,0 +1,9 @@
+{
+  "view_id": "model_composer",
+  "description": "Model Composer view configuration",
+  "tabs": [
+    {"id": "validation", "label": "Validate", "icon": "check", "default": true},
+    {"id": "preview", "label": "Preview", "icon": "eye"},
+    {"id": "dependencies", "label": "Deps", "icon": "git-branch"}
+  ]
+}

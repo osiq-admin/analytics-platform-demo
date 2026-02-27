@@ -49,11 +49,23 @@
       "regulation": "MiFID II",
       "article": "RTS 25",
       "description": "Order record keeping — cross-reference execution records"
+    },
+    {
+      "regulation": "SEC",
+      "article": "§9(a)(2)",
+      "description": "Market manipulation — creating apparent active trading"
     }
   ],
   "alert_detail_layout": {
     "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
     "emphasis": ["scores", "marketData"],
     "investigation_hint": "Examine full-day volume vs VWAP proximity — high volume with prices near VWAP suggests wash patterns. Check if multiple accounts are involved."
+  },
+  "market_data_config": {
+    "chart_type": "candlestick",
+    "time_field": "timestamp",
+    "price_fields": {"open": "open", "high": "high", "low": "low", "close": "close"},
+    "volume_field": "volume",
+    "overlay_trades": true
   }
 }

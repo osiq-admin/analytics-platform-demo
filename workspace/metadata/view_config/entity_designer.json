@@ -1,0 +1,8 @@
+{
+  "view_id": "entity_designer",
+  "description": "Entity Designer view configuration",
+  "tabs": [
+    {"id": "details", "label": "Entity Details", "icon": "table", "default": true},
+    {"id": "relationships", "label": "Relationship Graph", "icon": "link"}
+  ]
+}

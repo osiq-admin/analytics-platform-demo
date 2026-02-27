@@ -4,6 +4,7 @@ import Panel from "../../components/Panel.tsx";
 import DataGrid from "../../components/DataGrid.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
+import { useGridColumns } from "../../hooks/useGridColumns.ts";
 import type { ColDef } from "ag-grid-community";
 
 interface DataFile {
@@ -42,10 +43,11 @@ export default function DataManager() {
       .catch(() => setPreview(null));
   }, [selected]);
 
-  const fileColumns: ColDef<DataFile>[] = [
+  const fallbackFileColumns: ColDef<DataFile>[] = [
     { field: "name", headerName: "Table", flex: 1 },
     { field: "type", headerName: "Type", width: 90 },
   ];
+  const fileColumns = useGridColumns("data_manager", fallbackFileColumns);
 
   const previewColumns: ColDef[] =
     preview?.columns.map((col) => ({

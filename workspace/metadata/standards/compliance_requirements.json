@@ -1,0 +1,160 @@
+{
+  "registry_id": "compliance_requirements",
+  "description": "Granular compliance requirements mapped to implementations",
+  "requirements": [
+    {
+      "requirement_id": "mar_12_1_a_wash",
+      "regulation": "MAR",
+      "article": "Art. 12(1)(a)",
+      "requirement_text": "Detect transactions giving false or misleading signals as to supply, demand, or price",
+      "implementation": "detection_model",
+      "implementation_id": "wash_full_day",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mar_12_1_a_wash_intraday",
+      "regulation": "MAR",
+      "article": "Art. 12(1)(a)",
+      "requirement_text": "Detect intraday wash patterns with short time windows",
+      "implementation": "detection_model",
+      "implementation_id": "wash_intraday",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mar_12_1_b_ramping",
+      "regulation": "MAR",
+      "article": "Art. 12(1)(b)",
+      "requirement_text": "Detect transactions securing the price at an abnormal or artificial level",
+      "implementation": "detection_model",
+      "implementation_id": "market_price_ramping",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mar_12_1_c_spoofing",
+      "regulation": "MAR",
+      "article": "Art. 12(1)(c)",
+      "requirement_text": "Detect fictitious orders or deceptive practices (spoofing/layering)",
+      "implementation": "detection_model",
+      "implementation_id": "spoofing_layering",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mar_14_insider",
+      "regulation": "MAR",
+      "article": "Art. 14",
+      "requirement_text": "Detect insider dealing — trading before material non-public information becomes public",
+      "implementation": "detection_model",
+      "implementation_id": "insider_dealing",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mar_16_surveillance",
+      "regulation": "MAR",
+      "article": "Art. 16",
+      "requirement_text": "Maintain effective surveillance systems to detect and report suspicious orders and transactions",
+      "implementation": "audit_trail",
+      "implementation_id": "audit_service",
+      "evidence_type": "audit_log",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mifid2_16_2_org",
+      "regulation": "MiFID II",
+      "article": "Art. 16(2)",
+      "requirement_text": "Establish adequate policies and procedures for compliance, including surveillance systems",
+      "implementation": "detection_model",
+      "implementation_id": "wash_full_day",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mifid2_rts25_records",
+      "regulation": "MiFID II",
+      "article": "RTS 25",
+      "requirement_text": "Maintain order records with precise timestamps and all required FIX attributes",
+      "implementation": "entity_field",
+      "implementation_id": "order.order_time",
+      "evidence_type": "field_value",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "mifid2_rts25_clock_sync",
+      "regulation": "MiFID II",
+      "article": "RTS 25",
+      "requirement_text": "Clock synchronisation — timestamps accurate to 1ms for HFT, 100ms for others",
+      "implementation": "entity_field",
+      "implementation_id": "execution.execution_time",
+      "evidence_type": "field_value",
+      "validation_frequency": "daily",
+      "status": "partial"
+    },
+    {
+      "requirement_id": "dodd_frank_747_spoofing",
+      "regulation": "Dodd-Frank",
+      "article": "§747",
+      "requirement_text": "Prohibition of spoofing — bidding or offering with intent to cancel before execution",
+      "implementation": "detection_model",
+      "implementation_id": "spoofing_layering",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "finra_5210_marking_close",
+      "regulation": "FINRA",
+      "article": "Rule 5210",
+      "requirement_text": "Prohibit trading designed to influence the closing price",
+      "implementation": "detection_model",
+      "implementation_id": "market_price_ramping",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "emir_9_reporting",
+      "regulation": "EMIR",
+      "article": "Art. 9",
+      "requirement_text": "Report derivative contract details to trade repositories",
+      "implementation": "entity_field",
+      "implementation_id": "product.instrument_type",
+      "evidence_type": "field_value",
+      "validation_frequency": "daily",
+      "status": "partial"
+    },
+    {
+      "requirement_id": "sec_10b5_insider",
+      "regulation": "SEC",
+      "article": "Rule 10b-5",
+      "requirement_text": "Detect fraudulent trading based on material non-public information",
+      "implementation": "detection_model",
+      "implementation_id": "insider_dealing",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    },
+    {
+      "requirement_id": "sec_9a2_wash",
+      "regulation": "SEC",
+      "article": "\u00a79(a)(2)",
+      "requirement_text": "Detect transactions creating apparent active trading to manipulate price",
+      "implementation": "detection_model",
+      "implementation_id": "wash_full_day",
+      "evidence_type": "alert_with_score",
+      "validation_frequency": "real-time",
+      "status": "implemented"
+    }
+  ]
+}

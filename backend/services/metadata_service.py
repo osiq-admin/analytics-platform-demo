@@ -10,7 +10,9 @@ from backend.models.match_patterns import MatchPattern
 from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
+from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
+from backend.models.workflow import DemoConfig, TourRegistry, WorkflowConfig
 
 
 class MetadataService:
@@ -935,3 +937,113 @@ class MetadataService:
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{validated.view_id}.json"
         path.write_text(validated.model_dump_json(indent=2))
+
+    # -- Standards Registries --
+
+    def load_iso_registry(self) -> dict:
+        """Load the ISO standards registry from workspace/metadata/standards/iso_mapping.json."""
+        path = self._base / "standards" / "iso_mapping.json"
+        if not path.exists():
+            return {"registry_id": "iso_standards", "iso_mappings": []}
+        from backend.models.standards import ISORegistry
+        config = ISORegistry.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    def load_fix_registry(self) -> dict:
+        """Load the FIX protocol registry from workspace/metadata/standards/fix_protocol.json."""
+        path = self._base / "standards" / "fix_protocol.json"
+        if not path.exists():
+            return {"registry_id": "fix_protocol", "fix_fields": []}
+        from backend.models.standards import FIXRegistry
+        config = FIXRegistry.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    def load_compliance_registry(self) -> dict:
+        """Load the compliance requirements from workspace/metadata/standards/compliance_requirements.json."""
+        path = self._base / "standards" / "compliance_requirements.json"
+        if not path.exists():
+            return {"registry_id": "compliance_requirements", "requirements": []}
+        from backend.models.standards import ComplianceRegistry
+        config = ComplianceRegistry.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    # -- Grid Configurations --
+
+    def load_grid_config(self, view_id: str) -> dict | None:
+        """Load grid column config for a view."""
+        path = self._base / "grids" / f"{view_id}.json"
+        if not path.exists():
+            return None
+        from backend.models.grids import GridConfig
+        config = GridConfig.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    # -- View Configurations --
+
+    def _view_config_dir(self) -> Path:
+        return self._base / "view_config"
+
+    def load_view_config(self, view_id: str) -> dict | None:
+        """Load view configuration (tabs, etc.) for a view. Returns model_dump() or None."""
+        folder = self._view_config_dir()
+        if not folder.exists():
+            return None
+        for f in folder.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("view_id") == view_id:
+                config = ViewConfig.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Theme Palettes --
+
+    def load_theme_palette(self, palette_id: str = "default") -> dict | None:
+        """Load a theme palette by palette_id. Scans workspace/metadata/theme/ directory."""
+        theme_dir = self._base / "theme"
+        if not theme_dir.exists():
+            return None
+        for f in theme_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("palette_id") == palette_id:
+                config = ThemePalette.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Workflow Configurations --
+
+    def load_workflow_config(self, workflow_id: str) -> dict | None:
+        """Load a workflow configuration by workflow_id. Scans workspace/metadata/workflows/ directory."""
+        workflows_dir = self._base / "workflows"
+        if not workflows_dir.exists():
+            return None
+        for f in workflows_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("workflow_id") == workflow_id:
+                config = WorkflowConfig.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Demo Configurations --
+
+    def load_demo_config(self, demo_id: str) -> dict | None:
+        """Load a demo checkpoint configuration by demo_id. Scans workspace/metadata/demo/ directory."""
+        demo_dir = self._base / "demo"
+        if not demo_dir.exists():
+            return None
+        for f in demo_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("demo_id") == demo_id:
+                config = DemoConfig.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Tour Registry --
+
+    def load_tour_registry(self) -> dict | None:
+        """Load the tour/scenario registry from workspace/metadata/tours/registry.json."""
+        path = self._base / "tours" / "registry.json"
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text())
+        registry = TourRegistry.model_validate(data)
+        return registry.model_dump()

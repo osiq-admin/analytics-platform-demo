@@ -107,7 +107,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         technologies: [{ name: "Recharts", role: "Renders BarChart and PieChart visualizations" }],
         metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Data from metadata-driven detection models.",
+          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Color palette loaded from /api/metadata/theme/palettes/default. Data from metadata-driven detection models.",
         metadataOpportunities: [
           "Support custom chart renderers loaded dynamically from metadata",
         ],
@@ -451,19 +451,29 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "View Tabs",
         viewId: "entities",
         description:
-          "Tab selector toggling between Details view and Relationships graph view. Tab selection persisted via useLocalStorage hook.",
+          "Tab selector toggling between Details view and Relationships graph view. Tab definitions loaded from view config metadata API with fallback to hardcoded.",
         files: [
-          { path: "frontend/src/views/EntityDesigner/index.tsx", role: "Tab rendering and state management" },
+          { path: "frontend/src/views/EntityDesigner/index.tsx", role: "Tab rendering with metadata-driven labels" },
+          { path: "frontend/src/hooks/useViewTabs.ts", role: "Hook for metadata-driven tab definitions" },
           { path: "frontend/src/hooks/useLocalStorage.ts", role: "Persists tab selection to localStorage" },
         ],
         stores: [],
-        apis: [],
-        dataSources: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/view_config/entity_designer",
+            role: "Returns tab definitions for entity designer",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/view_config/entity_designer.json", category: "metadata", role: "Tab definitions (id, label, icon, default)" },
+        ],
         technologies: [],
-        metadataMaturity: "code-driven",
-        maturityExplanation: "Tab definitions (Details, Relationships) are hardcoded in JSX.",
+        metadataMaturity: "mostly-metadata-driven",
+        maturityExplanation: "Tab definitions (id, label, icon, default) loaded from metadata JSON via API. Tab selection state handled by frontend useLocalStorage hook.",
         metadataOpportunities: [
-          "Define available tabs as metadata to allow view customization",
+          "Add tab visibility/ordering configuration to metadata",
         ],
       },
     ],
@@ -1549,10 +1559,12 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Data Sources",
         viewId: "data",
         description:
-          "Table listing all data files/tables available in DuckDB. Shows table name, row count, and column count. No metadata awareness, just runtime DuckDB introspection.",
+          "Table listing all data files/tables available in DuckDB. Column definitions loaded from grid metadata JSON via API with fallback to hardcoded columns.",
         files: [
           { path: "frontend/src/views/DataManager/index.tsx", role: "Main view with tables list" },
+          { path: "frontend/src/hooks/useGridColumns.ts", role: "Hook for metadata-driven grid columns" },
           { path: "backend/api/query.py", role: "Returns DuckDB table information" },
+          { path: "backend/api/metadata.py", role: "Grid column metadata API" },
         ],
         stores: [],
         apis: [
@@ -1562,15 +1574,22 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns list of DuckDB tables",
             routerFile: "backend/api/query.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/grids/data_manager",
+            role: "Returns grid column configuration for data manager",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
-        dataSources: [],
+        dataSources: [
+          { path: "workspace/metadata/grids/data_manager.json", category: "metadata", role: "Grid column definitions for table list" },
+        ],
         technologies: [{ name: "AG Grid", role: "Renders table list" }],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "No metadata awareness. Shows raw DuckDB tables without connecting them to entity metadata definitions.",
+          "Grid columns loaded from metadata JSON via API. DuckDB table listing still from runtime introspection. Fallback to hardcoded columns if API fails.",
         metadataOpportunities: [
           "Link tables to entity metadata to show metadata coverage",
-          "Show which tables correspond to metadata-defined entities",
         ],
       },
       {
@@ -1578,9 +1597,10 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Data Preview",
         viewId: "data",
         description:
-          "Preview rows from selected data table. Executes a simple SELECT query and renders results in AG Grid with dynamic columns.",
+          "Preview rows from selected data table. Executes a simple SELECT query and renders results in AG Grid. Column definitions can be metadata-driven via grid config API.",
         files: [
           { path: "frontend/src/views/DataManager/index.tsx", role: "Data preview with SQL execution" },
+          { path: "frontend/src/hooks/useGridColumns.ts", role: "Hook for metadata-driven grid columns" },
           { path: "backend/api/query.py", role: "Executes SELECT query for preview" },
         ],
         stores: [],
@@ -1592,14 +1612,15 @@ export const VIEW_TRACES: ViewTrace[] = [
             routerFile: "backend/api/query.py",
           },
         ],
-        dataSources: [],
+        dataSources: [
+          { path: "workspace/metadata/grids/data_manager.json", category: "metadata", role: "Grid column definitions shared with tables list" },
+        ],
         technologies: [{ name: "AG Grid", role: "Dynamic column grid for data preview" }],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Raw SQL data display without metadata-aware formatting, labels, or type handling.",
+          "Grid column metadata available via API. Dynamic preview columns still generated from SQL result schema. Formatting rules from metadata where applicable.",
         metadataOpportunities: [
-          "Use entity metadata to format columns (display names, types, formatting rules)",
-          "Apply domain value labels from metadata",
+          "Apply domain value labels from entity metadata to preview columns",
         ],
       },
     ],
@@ -1825,9 +1846,11 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Alert Filters",
         viewId: "alerts",
         description:
-          "Filter bar above the alerts grid. Allows filtering by model, score range, asset class, and trigger path.",
+          "Alert summary grid with metadata-driven column definitions and filter types. Column config loaded from grid metadata API with fallback to hardcoded.",
         files: [
           { path: "frontend/src/views/RiskCaseManager/index.tsx", role: "Filter bar rendering" },
+          { path: "frontend/src/views/RiskCaseManager/AlertSummary.tsx", role: "Alert summary grid with metadata columns" },
+          { path: "frontend/src/hooks/useGridColumns.ts", role: "Hook for metadata-driven grid columns" },
           { path: "frontend/src/stores/alertStore.ts", role: "Manages filter state" },
         ],
         stores: [
@@ -1837,15 +1860,23 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Provides filter state and actions",
           },
         ],
-        apis: [],
-        dataSources: [],
-        technologies: [],
-        metadataMaturity: "code-driven",
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/grids/risk_case_manager",
+            role: "Returns alert grid column and filter configuration",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/grids/risk_case_manager.json", category: "metadata", role: "Alert grid column definitions with filter types" },
+        ],
+        technologies: [{ name: "AG Grid", role: "Renders alert summary grid" }],
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Filter options (which fields, which operators) are hardcoded in the UI.",
+          "Column definitions and filter types loaded from grid metadata JSON. Custom cellRenderers (score badge, trigger badge) remain in frontend code. Fallback to hardcoded on API error.",
         metadataOpportunities: [
-          "Derive filterable fields from alert schema metadata",
-          "Make filter options configurable per deployment",
+          "Make filter operator options configurable per deployment",
         ],
       },
       {
@@ -1982,7 +2013,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Market Data",
         viewId: "alerts",
         description:
-          "Candlestick chart showing OHLCV market data for the product associated with the alert. Uses TradingView Lightweight Charts for financial charting.",
+          "Candlestick chart showing OHLCV market data for the product associated with the alert. Chart type and field mapping configured per detection model via market_data_config metadata.",
         files: [
           {
             path: "frontend/src/views/RiskCaseManager/AlertDetail/MarketDataChart.tsx",
@@ -2011,15 +2042,20 @@ export const VIEW_TRACES: ViewTrace[] = [
             category: "data",
             role: "End-of-day market data (OHLCV) for candlestick chart",
           },
+          {
+            path: "workspace/metadata/detection_models/*.json",
+            category: "metadata",
+            role: "market_data_config per detection model defines chart type, fields, and overlay behavior",
+          },
         ],
         technologies: [
           { name: "TradingView Lightweight Charts", role: "Financial candlestick chart rendering" },
         ],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Chart configuration (time range, indicators, styling) is hardcoded. Data comes from raw market data files, not from metadata definitions.",
+          "Chart type (candlestick/line), price fields, volume field, and trade overlay settings are defined per detection model in market_data_config metadata. Chart rendering code in frontend.",
         metadataOpportunities: [
-          "Allow chart configuration (time range, indicators) to be defined in settings metadata",
+          "Add indicator configuration (moving averages, VWAP) to market_data_config metadata",
         ],
       },
       {
@@ -2126,13 +2162,14 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Related Orders",
         viewId: "alerts",
         description:
-          "AG Grid showing orders and executions related to the alert. Helps investigators see the trading activity that triggered detection.",
+          "AG Grid showing orders and executions related to the alert. Column definitions loaded from grid metadata JSON via API with fallback to hardcoded.",
         files: [
           {
             path: "frontend/src/views/RiskCaseManager/AlertDetail/RelatedOrders.tsx",
-            role: "Related orders/executions grid",
+            role: "Related orders/executions grid with metadata columns",
           },
-          { path: "backend/api/query.py", role: "Executes SQL for related order lookup" },
+          { path: "frontend/src/hooks/useGridColumns.ts", role: "Hook for metadata-driven grid columns" },
+          { path: "backend/api/data.py", role: "Returns related orders and executions" },
         ],
         stores: [
           {
@@ -2143,10 +2180,22 @@ export const VIEW_TRACES: ViewTrace[] = [
         ],
         apis: [
           {
-            method: "POST",
-            path: "/api/query/execute",
-            role: "Executes SQL queries for related orders",
-            routerFile: "backend/api/query.py",
+            method: "GET",
+            path: "/api/data/orders",
+            role: "Returns related orders and executions",
+            routerFile: "backend/api/data.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/grids/related_executions",
+            role: "Returns execution grid column definitions",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/grids/related_orders",
+            role: "Returns order grid column definitions",
+            routerFile: "backend/api/metadata.py",
           },
         ],
         dataSources: [
@@ -2160,11 +2209,21 @@ export const VIEW_TRACES: ViewTrace[] = [
             category: "data",
             role: "Execution data for trade details",
           },
+          {
+            path: "workspace/metadata/grids/related_executions.json",
+            category: "metadata",
+            role: "Execution grid column definitions",
+          },
+          {
+            path: "workspace/metadata/grids/related_orders.json",
+            category: "metadata",
+            role: "Order grid column definitions",
+          },
         ],
         technologies: [{ name: "AG Grid", role: "Renders related orders table" }],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "SQL queries for related orders are hardcoded. Column definitions are fixed in the component.",
+          "Grid column definitions loaded from metadata JSON via API. Custom cellRenderers (side badge, price formatter) remain in frontend. Fallback to hardcoded on API error.",
         metadataOpportunities: [
           "Derive related order queries from entity relationship metadata",
           "Use entity metadata for column labels and formatting",
@@ -2528,12 +2587,45 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns regulatory coverage summary metrics",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
             path: "workspace/metadata/regulations/*.json",
             category: "metadata",
             role: "Regulation definition files with article and model mappings",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards registry with field mappings and validation rules",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol field mappings with regulatory relevance",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Granular compliance requirements mapped to implementations",
           },
         ],
         technologies: [],
@@ -2566,6 +2658,24 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns traceability graph (nodes + edges) for React Flow",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
@@ -2582,6 +2692,21 @@ export const VIEW_TRACES: ViewTrace[] = [
             path: "workspace/metadata/calculations/**/*.json",
             category: "metadata",
             role: "Calculation definitions referenced by models",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards with field-level mappings to entity fields",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol fields with regulatory relevance tags",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements linked to detection models and calculations",
           },
         ],
         technologies: [
@@ -2617,12 +2742,45 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns full regulatory registry with coverage status",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
             path: "workspace/metadata/regulations/*.json",
             category: "metadata",
             role: "Regulation definitions for registry display",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards referenced by regulation field requirements",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol fields with regulatory relevance",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements with coverage status",
           },
         ],
         technologies: [{ name: "AG Grid", role: "Regulatory coverage table" }],
@@ -2655,6 +2813,24 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns coverage gap analysis and suggestions",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
@@ -2666,6 +2842,21 @@ export const VIEW_TRACES: ViewTrace[] = [
             path: "workspace/metadata/detection_models/*.json",
             category: "metadata",
             role: "Available models for mapping suggestions",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards for compliance gap identification",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol mappings for regulatory gap analysis",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements for gap analysis and suggestions",
           },
         ],
         technologies: [],
@@ -2797,13 +2988,18 @@ export const VIEW_TRACES: ViewTrace[] = [
             category: "metadata",
             role: "Submission files updated by review actions",
           },
+          {
+            path: "workspace/metadata/workflows/submission.json",
+            category: "metadata",
+            role: "Workflow state definitions with transitions and badge variants",
+          },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Review workflow states are predefined but the submission content is metadata-driven. Status transitions are code-driven.",
+          "Workflow states (labels, badge variants, allowed transitions) loaded from metadata JSON via API. Submission content is metadata-driven. Review action logic remains in code.",
         metadataOpportunities: [
-          "Define workflow states and transitions as metadata for configurable approval processes",
+          "Add custom actions per workflow state from metadata",
         ],
       },
     ],
@@ -2901,13 +3097,19 @@ export const VIEW_TRACES: ViewTrace[] = [
             routerFile: "backend/api/demo.py",
           },
         ],
-        dataSources: [],
+        dataSources: [
+          {
+            path: "workspace/metadata/demo/default.json",
+            category: "metadata",
+            role: "Demo checkpoint definitions with labels, descriptions, and ordering",
+          },
+        ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Demo checkpoints and state progression are defined in backend logic. Toolbar layout and button labels are hardcoded in the component.",
+          "Demo checkpoints (labels, descriptions, ordering) defined in metadata JSON accessible via API. Toolbar button rendering and state progression logic remain in code.",
         metadataOpportunities: [
-          "Define demo steps and checkpoints as metadata for customizable demo flows",
+          "Add custom demo flows for different audience types",
         ],
       },
       {
@@ -2955,9 +3157,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Tours and scenarios are data-driven (from TypeScript data files) but toolbar layout and button logic are code-driven. Data files act like metadata but are compiled into the bundle.",
+          "Tours and scenarios are data-driven (TypeScript data files compiled into bundle + JSON registry served via /api/metadata/tours). Tour/scenario counts and categories accessible via metadata API. Toolbar layout code-driven.",
         metadataOpportunities: [
           "Load tour/scenario definitions from the backend as true metadata",
           "Make toolbar buttons configurable via metadata",

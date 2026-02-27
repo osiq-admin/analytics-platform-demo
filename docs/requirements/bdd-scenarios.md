@@ -910,3 +910,644 @@ Then the response includes entity count and names
 And the response includes detection model names
 And the context updates automatically when metadata changes
 ```
+
+---
+
+# Phase 2: Compliance Metadata & Metadata-Driven UI (M151-M170)
+
+---
+
+## Feature: ISO Standards Registry
+
+### Scenario: Browse ISO Standards Used by the Platform
+```gherkin
+Given the platform is running
+When I call GET /api/metadata/standards/iso
+Then the response contains 6 ISO standard entries
+And each entry includes iso_standard, standard_name, field_path, description, entities_using, and validation_rules
+And the standards include ISO 6166 (ISIN), ISO 10383 (MIC), ISO 10962 (CFI), ISO 4217 (Currency), ISO 3166-1 (Country), and ISO 8601 (Date/Time)
+```
+
+### Scenario: Validate ISIN Format Against ISO 6166 Rules
+```gherkin
+Given ISO standard "ISO 6166" defines validation rules:
+  | field  | value                      |
+  | length | 12                         |
+  | format | ^[A-Z]{2}[A-Z0-9]{9}[0-9]$ |
+When I validate ISIN "US0378331005" against the rules
+Then the validation passes (12 characters, matches regex)
+When I validate ISIN "12345" against the rules
+Then the validation fails (wrong length, wrong format)
+```
+
+### Scenario: Cross-Reference ISO Standard with Entities
+```gherkin
+Given ISO standard "ISO 10383" (MIC) is in the registry
+Then the entities_using field lists: venue, product, execution, order
+And the fields_using field lists: mic, exchange_mic, venue_mic
+And the regulatory_relevance includes "MiFID II RTS 25" and "MAR Art. 16"
+And the detection_models_using includes wash_full_day, wash_intraday, and spoofing_layering
+```
+
+### Scenario: ISO Standard Links to Detection Models
+```gherkin
+Given ISO standard "ISO 8601" (Date/Time) is in the registry
+Then detection_models_using lists all 5 models: wash_full_day, wash_intraday, insider_dealing, market_price_ramping, spoofing_layering
+And entities_using lists: execution, order, md_eod, md_intraday
+And fields_using includes exec_time, exec_date, order_time, order_date, trade_date, timestamp
+```
+
+---
+
+## Feature: FIX Protocol Registry
+
+### Scenario: Browse FIX Protocol Field Mappings
+```gherkin
+Given the platform is running
+When I call GET /api/metadata/standards/fix
+Then the response contains 6 FIX protocol field entries
+And each entry includes field_number, field_name, description, domain_values, entities_using, and regulatory_relevance
+```
+
+### Scenario: Verify FIX Field Domain Value Alignment
+```gherkin
+Given FIX field 40 (OrdType) maps to entity "order" field "order_type"
+Then the domain_values are ["MARKET", "LIMIT"]
+And the order entity metadata also defines order_type with matching domain values
+When I load order data
+Then all order_type values conform to the FIX field 40 domain
+```
+
+### Scenario: FIX Protocol Covers Order Lifecycle
+```gherkin
+Given FIX fields in the registry:
+  | FIX Tag | Name       | Entity    | Platform Field |
+  | 40      | OrdType    | order     | order_type     |
+  | 54      | Side       | order     | side           |
+  | 39      | OrdStatus  | order     | status         |
+  | 59      | TimeInForce| order     | time_in_force  |
+  | 150     | ExecType   | execution | exec_type      |
+  | 1057    | Aggressor  | execution | capacity       |
+Then every order lifecycle field is traceable to a FIX Protocol tag
+And each field's regulatory_relevance references MiFID II RTS 25 or MAR Art. 16
+```
+
+---
+
+## Feature: Compliance Requirements
+
+### Scenario: View Compliance Requirements with Implementation Status
+```gherkin
+Given the platform is running
+When I call GET /api/metadata/standards/compliance
+Then the response contains 14 compliance requirements
+And each requirement includes requirement_id, regulation, article, requirement_text, implementation, implementation_id, and status
+And requirements with status "implemented" have a corresponding detection model or entity field
+```
+
+### Scenario: Compliance Requirement References Detection Model
+```gherkin
+Given compliance requirement "mar_12_1_a_wash" exists
+Then it references regulation "MAR", article "Art. 12(1)(a)"
+And implementation type is "detection_model" with implementation_id "wash_full_day"
+And evidence_type is "alert_with_score"
+And validation_frequency is "real-time"
+And status is "implemented"
+```
+
+### Scenario: Identify Partially Implemented Requirements
+```gherkin
+Given compliance requirements are loaded
+When I filter requirements where status = "partial"
+Then I see:
+  | requirement_id           | regulation | article  | reason                                    |
+  | mifid2_rts25_clock_sync  | MiFID II   | RTS 25   | Clock synchronisation not fully verified   |
+  | emir_9_reporting         | EMIR       | Art. 9   | Derivative reporting fields present but not fully validated |
+And each partial requirement identifies what is missing for full compliance
+```
+
+### Scenario: Multi-Regulation Coverage for Single Model
+```gherkin
+Given detection model "wash_full_day" is referenced by compliance requirements
+When I filter requirements by implementation_id = "wash_full_day"
+Then I find requirements from multiple regulations:
+  | requirement_id       | regulation |
+  | mar_12_1_a_wash      | MAR        |
+  | mifid2_16_2_org      | MiFID II   |
+  | sec_9a2_wash         | SEC        |
+And this demonstrates multi-jurisdiction coverage from a single model
+```
+
+---
+
+## Feature: Enhanced Regulations
+
+### Scenario: Regulatory Registry Includes EMIR and SEC
+```gherkin
+Given the platform is running
+When I call GET /api/metadata/regulations
+Then the response contains 6 regulations: MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC
+And each regulation has id, name, full_name, jurisdiction, source_url, and articles
+```
+
+### Scenario: Multi-Jurisdiction Coverage Across EU and US
+```gherkin
+Given regulations in the registry:
+  | regulation | jurisdiction |
+  | MAR        | EU           |
+  | MiFID II   | EU           |
+  | EMIR       | EU           |
+  | Dodd-Frank | US           |
+  | FINRA      | US           |
+  | SEC        | US           |
+When I group regulations by jurisdiction
+Then EU has 3 regulations (MAR, MiFID II, EMIR)
+And US has 3 regulations (Dodd-Frank, FINRA, SEC)
+```
+
+### Scenario: EMIR Derivative Reporting Articles
+```gherkin
+Given regulation "EMIR" (EU Regulation 648/2012) is in the registry
+Then it includes 2 articles:
+  | article  | title                      | detection_pattern      |
+  | Art. 9   | Reporting Obligation       | derivative_reporting   |
+  | Art. 11  | Risk Mitigation Techniques | risk_mitigation        |
+And the source_url points to the official EUR-Lex publication
+```
+
+### Scenario: SEC Insider Trading and Wash Trading Articles
+```gherkin
+Given regulation "SEC" is in the registry
+Then it includes 2 articles:
+  | article    | title               | detection_pattern |
+  | Rule 10b-5 | Insider Trading     | insider_dealing   |
+  | §9(a)(2)   | Market Manipulation | wash_trading      |
+And each article's detection_pattern maps to an existing detection model
+```
+
+### Scenario: Regulation Source URLs Are Traceable
+```gherkin
+Given all 6 regulations have source_url fields
+Then each URL points to an authoritative legal source:
+  | regulation | source_domain          |
+  | MAR        | eur-lex.europa.eu      |
+  | MiFID II   | eur-lex.europa.eu      |
+  | EMIR       | eur-lex.europa.eu      |
+  | Dodd-Frank | congress.gov           |
+  | FINRA      | finra.org              |
+  | SEC        | sec.gov                |
+```
+
+---
+
+## Feature: Account MiFID Classification
+
+### Scenario: Account Has MiFID II Client Category
+```gherkin
+Given account entity has a "mifid_client_category" field
+And the field has domain values: retail, professional, eligible_counterparty
+When I load account data
+Then each account is assigned a MiFID II client category
+And institutional accounts are classified as "professional"
+And hedge fund accounts are classified as "eligible_counterparty"
+And retail accounts are classified as "retail"
+```
+
+### Scenario: Account Compliance Status Tracks Review State
+```gherkin
+Given account entity has a "compliance_status" field
+And the field has domain values: active, under_review, restricted, suspended
+When I query accounts
+Then most accounts have compliance_status "active"
+And accounts under investigation may show "under_review"
+And the compliance_status is visible in the account entity grid
+```
+
+### Scenario: MiFID Classification Drives Regulatory Scope
+```gherkin
+Given account ACC-42 has mifid_client_category "professional"
+And account ACC-42 has compliance_status "active"
+When an alert fires for ACC-42
+Then the alert entity context includes the MiFID classification
+And investigators can assess regulatory obligations based on client category
+And "eligible_counterparty" accounts have different reporting thresholds than "retail"
+```
+
+---
+
+## Feature: Product Regulatory Scope
+
+### Scenario: Product Has Regulatory Jurisdiction Tag
+```gherkin
+Given product entity has a "regulatory_scope" field
+And the field has domain values: EU, US, UK, APAC, MULTI
+When I load product data
+Then NYSE-listed products have regulatory_scope "US"
+And XLON-listed products have regulatory_scope "UK"
+And XETR-listed products have regulatory_scope "EU"
+```
+
+### Scenario: Regulatory Scope Derived from Venue Jurisdiction
+```gherkin
+Given product "AAPL" is listed on exchange_mic "XNGS" (NASDAQ)
+When XNGS is in the US jurisdiction
+Then product AAPL has regulatory_scope "US"
+And SEC rules apply to AAPL surveillance
+```
+
+### Scenario: Detection Models Support Multi-Jurisdiction
+```gherkin
+Given detection model "wash_full_day" has regulatory_coverage entries:
+  | regulation | article      |
+  | MAR        | Art. 12(1)(a)|
+  | MiFID II   | Art. 16(2)   |
+  | MiFID II   | RTS 25       |
+  | SEC        | §9(a)(2)     |
+When the model detects a wash trade for a product with regulatory_scope "US"
+Then the alert references SEC §9(a)(2) as the applicable regulation
+When the same model detects a wash trade for a product with regulatory_scope "EU"
+Then the alert references MAR Art. 12(1)(a) as the applicable regulation
+```
+
+---
+
+## Feature: Grid Column Metadata
+
+### Scenario: Data Manager Columns Loaded from Metadata API
+```gherkin
+Given grid column metadata exists at workspace/metadata/grids/data_manager.json
+When I call GET /api/metadata/grids/data_manager_tables
+Then the response includes columns with field, header_name, flex, width, and filter_type
+And the default_sort_field is "name" with direction "asc"
+When I navigate to Data Manager
+Then the AG Grid renders columns matching the metadata definition
+```
+
+### Scenario: Alert Summary Grid Columns from Metadata
+```gherkin
+Given grid metadata for risk_case_manager defines 8 columns:
+  | field              | header_name | filter_type           |
+  | alert_id           | Alert ID    | agTextColumnFilter    |
+  | model_id           | Model       | agTextColumnFilter    |
+  | product_id         | Product     | agTextColumnFilter    |
+  | account_id         | Account     | agTextColumnFilter    |
+  | accumulated_score  | Score       | agNumberColumnFilter  |
+  | score_threshold    | Threshold   | agNumberColumnFilter  |
+  | trigger_path       | Trigger     | agTextColumnFilter    |
+  | timestamp          | Time        | agDateColumnFilter    |
+When I navigate to Risk Case Manager
+Then the alert summary grid renders these 8 columns
+And numeric columns align right (numericColumn type)
+And the grid sorts by timestamp descending by default
+```
+
+### Scenario: Related Execution Columns from Metadata
+```gherkin
+Given grid metadata for related_executions defines 12 columns
+When I view an alert detail with related executions
+Then the execution grid renders columns including exec ID, order ID, date, time, side, qty, price, venue, exec type, capacity, product, and account
+And the side column renders as a styled badge (value_format: "side_badge")
+And the price column formats to 2 decimal places (value_format: "decimal_2")
+```
+
+### Scenario: Related Order Columns from Metadata
+```gherkin
+Given grid metadata for related_orders defines 11 columns
+When I view an alert detail with related orders
+Then the order grid renders columns including order ID, date, time, side, qty, type, limit price, TIF, trader, product, and account
+And each column's width and filter type matches the metadata definition
+```
+
+### Scenario: Adding a Column via Metadata Updates the Grid
+```gherkin
+Given the data_manager grid metadata has 2 columns
+When I add a 3rd column {"field": "row_count", "header_name": "Rows", "width": 80} to the metadata
+And I reload Data Manager
+Then the grid renders 3 columns including the new "Rows" column
+```
+
+---
+
+## Feature: Alert Filter Metadata
+
+### Scenario: Alert Summary Filters Driven by Column Metadata
+```gherkin
+Given risk_case_manager grid metadata defines filter_type for each column
+When I navigate to Risk Case Manager
+Then the model_id column has a text filter (agTextColumnFilter)
+And the accumulated_score column has a number filter (agNumberColumnFilter)
+And the timestamp column has a date filter (agDateColumnFilter)
+And I can filter alerts by typing in the model_id filter
+And I can filter alerts by score range using the number filter
+```
+
+### Scenario: Value Format Rules Applied to Grid Cells
+```gherkin
+Given grid metadata for risk_case_manager specifies value_format on columns:
+  | field        | value_format |
+  | model_id     | label        |
+  | trigger_path | label        |
+  | timestamp    | timestamp    |
+When alerts are rendered in the grid
+Then model_id "wash_full_day" displays as "Wash Full Day" (snake_to_title format)
+And trigger_path "score_based" displays as "Score Based"
+And timestamp values display in formatted date-time format
+```
+
+---
+
+## Feature: View Tab Metadata
+
+### Scenario: Entity Designer Tabs Loaded from API
+```gherkin
+Given view tab metadata exists at workspace/metadata/view_config/entity_designer.json
+When I call GET /api/metadata/view-config/entity_designer
+Then the response includes 2 tabs:
+  | id            | label             | icon  | default |
+  | details       | Entity Details    | table | true    |
+  | relationships | Relationship Graph| link  | false   |
+When I navigate to Entity Designer
+Then the detail panel shows 2 tabs matching the metadata
+And the "Entity Details" tab is selected by default
+```
+
+### Scenario: Model Composer Tabs Loaded from API
+```gherkin
+Given view tab metadata exists at workspace/metadata/view_config/model_composer.json
+When I call GET /api/metadata/view-config/model_composer
+Then the response includes 3 tabs:
+  | id           | label    | icon       | default |
+  | validation   | Validate | check      | true    |
+  | preview      | Preview  | eye        | false   |
+  | dependencies | Deps     | git-branch | false   |
+When I navigate to Model Composer
+Then the right panel shows 3 tabs matching the metadata
+And the "Validate" tab is selected by default
+```
+
+### Scenario: Adding a New Tab via Metadata
+```gherkin
+Given Entity Designer has 2 tabs defined in metadata
+When I add a 3rd tab {"id": "audit", "label": "Audit Log", "icon": "clock"} to the metadata
+And I reload Entity Designer
+Then the detail panel shows 3 tabs including "Audit Log"
+```
+
+---
+
+## Feature: Color Palette Metadata
+
+### Scenario: Chart Colors Loaded from Theme Palette
+```gherkin
+Given theme palette metadata exists at workspace/metadata/theme/palettes.json
+When I call GET /api/metadata/theme/palettes
+Then the response includes chart_colors array with 7 hex values
+And the chart_colors start with "#6366f1" (indigo) and include cyan, amber, red, emerald, violet, pink
+When I navigate to Dashboard
+Then chart series use colors from the palette in order
+```
+
+### Scenario: Asset Class Colors from Palette
+```gherkin
+Given the palette defines asset_class_colors:
+  | asset_class  | color   |
+  | equity       | #6366f1 |
+  | fx           | #22d3ee |
+  | commodity    | #f59e0b |
+  | index        | #10b981 |
+  | fixed_income | #8b5cf6 |
+When I view charts grouped by asset class
+Then each asset class renders in its assigned color
+And colors are consistent across all views (Dashboard, Regulatory Map, charts)
+```
+
+### Scenario: Graph Node Colors from Palette
+```gherkin
+Given the palette defines graph_node_colors:
+  | node_type        | color   |
+  | regulation       | #3b82f6 |
+  | article_covered  | #22c55e |
+  | article_uncovered| #ef4444 |
+  | detection_model  | #f97316 |
+  | calculation      | #a855f7 |
+When I navigate to Regulatory Map
+Then regulation nodes render in blue (#3b82f6)
+And covered article nodes render in green (#22c55e)
+And uncovered article nodes render in red (#ef4444)
+And detection model nodes render in orange (#f97316)
+```
+
+### Scenario: Layer Badge Variants from Palette
+```gherkin
+Given the palette defines layer_badge_variants:
+  | layer  | variant |
+  | oob    | info    |
+  | user   | warning |
+  | custom | success |
+When I view metadata items with layer badges
+Then OOB items show an "info" (blue) badge
+And user-defined items show a "warning" (amber) badge
+And custom items show a "success" (green) badge
+```
+
+---
+
+## Feature: Submission Workflow Metadata
+
+### Scenario: Workflow States Loaded from Metadata
+```gherkin
+Given submission workflow metadata exists at workspace/metadata/workflows/submission.json
+When I call GET /api/metadata/workflows/submission
+Then the response includes 5 workflow states: pending, in_review, approved, rejected, implemented
+And each state has id, label, badge_variant, and transitions
+```
+
+### Scenario: Valid State Transitions Enforced by Metadata
+```gherkin
+Given the submission workflow defines transitions:
+  | from_state | allowed_transitions              |
+  | pending    | in_review, approved, rejected    |
+  | in_review  | approved, rejected               |
+  | approved   | implemented                      |
+  | rejected   | pending                          |
+  | implemented| (none — terminal state)          |
+When a submission is in state "in_review"
+And I attempt to transition to "implemented"
+Then the transition is rejected because "implemented" is not in the allowed transitions for "in_review"
+When I transition to "approved" instead
+Then the transition succeeds
+```
+
+### Scenario: Badge Variants Match Workflow States
+```gherkin
+Given the workflow metadata assigns badge_variant to each state:
+  | state       | badge_variant |
+  | pending     | info          |
+  | in_review   | warning       |
+  | approved    | success       |
+  | rejected    | error         |
+  | implemented | success       |
+When I view the submission review queue
+Then each submission's status badge renders with the correct variant color
+And "Pending" shows as blue (info)
+And "Rejected" shows as red (error)
+And "Approved" shows as green (success)
+```
+
+### Scenario: Rejected Submission Can Be Resubmitted
+```gherkin
+Given a submission in state "rejected"
+When I review the rejection reason
+And I click "Resubmit"
+Then the submission transitions back to "pending"
+And the transition is valid per the workflow metadata (rejected → pending)
+And the submission re-enters the review queue
+```
+
+---
+
+## Feature: Demo Checkpoints Metadata
+
+### Scenario: Demo Checkpoints Loaded from Metadata
+```gherkin
+Given demo checkpoint metadata exists at workspace/metadata/demo/default.json
+When I call GET /api/metadata/demo/default
+Then the response includes 8 ordered checkpoints:
+  | id               | label            | order |
+  | pristine         | Pristine         | 0     |
+  | data_loaded      | Data Loaded      | 1     |
+  | pipeline_run     | Pipeline Run     | 2     |
+  | alerts_generated | Alerts Generated | 3     |
+  | act1_complete    | Act 1 Complete   | 4     |
+  | model_deployed   | Model Deployed   | 5     |
+  | act2_complete    | Act 2 Complete   | 6     |
+  | final            | Final            | 7     |
+```
+
+### Scenario: Demo Toolbar Renders Checkpoints from Metadata
+```gherkin
+Given demo checkpoint metadata is loaded
+When I view the demo toolbar
+Then the progress bar shows all 8 checkpoints in metadata order
+And each checkpoint label matches the metadata label field
+And checkpoint descriptions are available on hover
+```
+
+### Scenario: Demo Stepper Follows Metadata Order
+```gherkin
+Given the demo is at checkpoint "data_loaded" (order=1)
+When I click "Step" in the demo toolbar
+Then the demo advances to "pipeline_run" (order=2)
+And the checkpoint ordering is determined by the metadata "order" field
+When I click "Step" again
+Then the demo advances to "alerts_generated" (order=3)
+```
+
+### Scenario: Adding a Custom Checkpoint via Metadata
+```gherkin
+Given the demo has 8 checkpoints
+When I add a checkpoint {"id": "data_validated", "label": "Data Validated", "description": "All data quality checks passed", "order": 1.5} to the metadata
+And I reload the demo toolbar
+Then the new checkpoint appears between "Data Loaded" (order=1) and "Pipeline Run" (order=2)
+```
+
+---
+
+## Feature: Tour Registry Metadata
+
+### Scenario: Tour Registry Loaded from Metadata
+```gherkin
+Given tour registry metadata exists at workspace/metadata/tours/registry.json
+When I call GET /api/metadata/tours/registry
+Then the response includes 19 tours with tour_id, view_path, title, and step_count
+And scenario metadata shows 26 total scenarios across 7 categories
+```
+
+### Scenario: Tour Registry Matches View Paths
+```gherkin
+Given the tour registry defines tours for views:
+  | tour_id    | view_path   | title                  |
+  | dashboard  | /dashboard  | Dashboard Tour         |
+  | entities   | /entities   | Entity Designer Tour   |
+  | settings   | /settings   | Settings Manager Tour  |
+  | alerts     | /alerts     | Risk Case Manager Tour |
+  | sql        | /sql        | SQL Console Tour       |
+  | regulatory | /regulatory | Regulatory Traceability Tour |
+When I navigate to any view with a matching tour
+Then the tour help button (?) is available in the toolbar
+And clicking it launches the tour defined in the registry
+```
+
+### Scenario: Scenario Categories Organized in Registry
+```gherkin
+Given the tour registry defines scenario categories:
+  | category         | count |
+  | Settings         | 6     |
+  | Calculations     | 4     |
+  | Detection Models | 4     |
+  | Use Cases        | 4     |
+  | Entities         | 2     |
+  | Investigation    | 3     |
+  | Administration   | 3     |
+Then the total scenario count is 26
+And the Scenario Selector groups scenarios by these categories
+```
+
+---
+
+## Feature: Detection Model Market Data Configuration
+
+### Scenario: Model Specifies Market Data Chart Type
+```gherkin
+Given detection model "wash_full_day" has market_data_config:
+  | field          | value                                |
+  | chart_type     | candlestick                          |
+  | time_field     | timestamp                            |
+  | price_fields   | {open, high, low, close}             |
+  | volume_field   | volume                               |
+  | overlay_trades | true                                 |
+When I view an alert detail for wash_full_day
+Then the market data chart renders as a candlestick chart
+And trade markers overlay on the price chart
+And volume is shown below the price chart
+```
+
+### Scenario: Different Models Use Different Chart Configurations
+```gherkin
+Given all 5 detection models have market_data_config
+When I view alerts from different models
+Then each model's alert detail renders the chart according to its market_data_config
+And all models use candlestick charts with trade overlay
+And the chart configuration is metadata-driven, not hardcoded
+```
+
+---
+
+## Feature: Multi-Jurisdiction Regulatory Coverage on Models
+
+### Scenario: Detection Model Lists All Applicable Regulations
+```gherkin
+Given detection model "insider_dealing" has regulatory_coverage:
+  | regulation | article      | description                               |
+  | MAR        | Art. 14      | Prohibition of insider dealing             |
+  | MiFID II   | Art. 16(2)   | Organisational surveillance requirements   |
+  | SEC        | Rule 10b-5   | Fraud in connection with securities trading|
+When I view the model in Model Composer
+Then the regulatory coverage section lists all 3 regulations
+And each regulation shows the article reference and description
+```
+
+### Scenario: All Five Models Have Regulatory Coverage
+```gherkin
+Given the platform has 5 detection models
+When I load all model definitions
+Then each model has a non-empty regulatory_coverage array
+And the coverage spans both EU and US jurisdictions:
+  | model                | regulations_covered          |
+  | wash_full_day        | MAR, MiFID II, SEC           |
+  | wash_intraday        | MAR, MiFID II                |
+  | market_price_ramping | MAR, MiFID II, FINRA         |
+  | insider_dealing      | MAR, MiFID II, SEC           |
+  | spoofing_layering    | MAR, MiFID II, Dodd-Frank    |
+And the Regulatory Map graph shows these coverage relationships
+```

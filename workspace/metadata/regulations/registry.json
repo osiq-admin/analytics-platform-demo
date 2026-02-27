@@ -5,6 +5,7 @@
       "name": "MAR",
       "full_name": "EU Regulation 596/2014 (MAR)",
       "jurisdiction": "EU",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2014/596/oj",
       "articles": [
         {"id": "mar_12_1_a", "article": "Art. 12(1)(a)", "title": "Wash Trading", "description": "Transactions which give, or are likely to give, false or misleading signals as to the supply of, demand for, or price of a financial instrument", "detection_pattern": "wash_trading"},
         {"id": "mar_12_1_b", "article": "Art. 12(1)(b)", "title": "Price Manipulation", "description": "Transactions which secure, or are likely to secure, the price of one or several financial instruments at an abnormal or artificial level", "detection_pattern": "price_manipulation"},
@@ -18,6 +19,7 @@
       "name": "MiFID II",
       "full_name": "EU Directive 2014/65/EU (MiFID II)",
       "jurisdiction": "EU",
+      "source_url": "https://eur-lex.europa.eu/eli/dir/2014/65/oj",
       "articles": [
         {"id": "mifid2_16_2", "article": "Art. 16(2)", "title": "Organisational Requirements", "description": "Investment firms shall establish adequate policies and procedures to ensure compliance, including effective surveillance systems", "detection_pattern": "general_surveillance"},
         {"id": "mifid2_rts25", "article": "RTS 25", "title": "Order Record Keeping", "description": "Clock synchronisation and order record keeping obligations", "detection_pattern": "record_keeping"}
@@ -28,6 +30,7 @@
       "name": "Dodd-Frank",
       "full_name": "Dodd-Frank Wall Street Reform and Consumer Protection Act",
       "jurisdiction": "US",
+      "source_url": "https://www.congress.gov/bill/111th-congress/house-bill/4173",
       "articles": [
         {"id": "df_747", "article": "\u00a7747", "title": "Anti-Manipulation", "description": "Prohibition of spoofing, market manipulation, and disruptive trading practices", "detection_pattern": "spoofing"}
       ]
@@ -37,8 +40,31 @@
       "name": "FINRA",
       "full_name": "Financial Industry Regulatory Authority Rules",
       "jurisdiction": "US",
+      "source_url": "https://www.finra.org/rules-guidance/rulebooks/finra-rules",
       "articles": [
         {"id": "finra_5210", "article": "Rule 5210", "title": "Marking the Close", "description": "Prohibition of trading activity designed to influence the closing price", "detection_pattern": "price_manipulation"}
+      ]
+    },
+    {
+      "id": "emir",
+      "name": "EMIR",
+      "full_name": "EU Regulation 648/2012 (EMIR)",
+      "jurisdiction": "EU",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2012/648/oj",
+      "articles": [
+        {"id": "emir_9", "article": "Art. 9", "title": "Reporting Obligation", "description": "Counterparties and CCPs shall report details of derivative contracts to trade repositories", "detection_pattern": "derivative_reporting"},
+        {"id": "emir_11", "article": "Art. 11", "title": "Risk Mitigation Techniques", "description": "Timely confirmation, portfolio reconciliation, dispute resolution for non-centrally cleared OTC derivatives", "detection_pattern": "risk_mitigation"}
+      ]
+    },
+    {
+      "id": "sec",
+      "name": "SEC",
+      "full_name": "U.S. Securities and Exchange Commission Rules",
+      "jurisdiction": "US",
+      "source_url": "https://www.sec.gov/about/laws/securities-laws",
+      "articles": [
+        {"id": "sec_10b5", "article": "Rule 10b-5", "title": "Insider Trading", "description": "Employment of manipulative and deceptive devices \u2014 prohibits fraud in connection with purchase or sale of securities", "detection_pattern": "insider_dealing"},
+        {"id": "sec_9a2", "article": "\u00a79(a)(2)", "title": "Market Manipulation", "description": "Prohibition of transactions creating actual or apparent active trading to induce purchases or sales", "detection_pattern": "wash_trading"}
       ]
     }
   ]

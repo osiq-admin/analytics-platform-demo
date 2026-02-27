@@ -44,11 +44,23 @@
       "regulation": "MiFID II",
       "article": "Art. 16(2)",
       "description": "Organisational requirement — effective surveillance systems"
+    },
+    {
+      "regulation": "SEC",
+      "article": "§9(a)(2)",
+      "description": "Market manipulation — intraday wash pattern variant"
     }
   ],
   "alert_detail_layout": {
     "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
     "emphasis": ["scores", "relatedOrders"],
     "investigation_hint": "Compare order pairs — focus on matching quantities, close timestamps, and whether the same trader/account appears on both sides."
+  },
+  "market_data_config": {
+    "chart_type": "candlestick",
+    "time_field": "timestamp",
+    "price_fields": {"open": "open", "high": "high", "low": "low", "close": "close"},
+    "volume_field": "volume",
+    "overlay_trades": true
   }
 }

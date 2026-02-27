@@ -135,6 +135,20 @@
       "description": "Reference base price for data generation",
       "is_key": false,
       "nullable": false
+    },
+    {
+      "name": "regulatory_scope",
+      "type": "string",
+      "description": "Primary regulatory jurisdiction for this product",
+      "is_key": false,
+      "nullable": false,
+      "domain_values": [
+        "EU",
+        "US",
+        "UK",
+        "APAC",
+        "MULTI"
+      ]
     }
   ],
   "relationships": [

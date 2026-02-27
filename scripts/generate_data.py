@@ -140,6 +140,14 @@ RISK_RATING_BY_TYPE = {
     "market_maker": "LOW",
 }
 
+# MiFID II client category by account type
+MIFID_CATEGORY_BY_TYPE = {
+    "institutional": "professional",
+    "retail": "retail",
+    "hedge_fund": "professional",
+    "market_maker": "eligible_counterparty",
+}
+
 # Registration country by account type
 COUNTRY_BY_TYPE = {
     "institutional": "US",
@@ -318,6 +326,16 @@ class SyntheticDataGenerator:
     # Product catalog
     # -----------------------------------------------------------------------
 
+    @staticmethod
+    def _mic_to_regulatory_scope(mic: str) -> str:
+        """Map exchange MIC to regulatory jurisdiction."""
+        _mic_jurisdiction = {
+            "XETR": "EU", "XPAR": "EU",
+            "XNYS": "US", "XNAS": "US", "XCBO": "US", "XCME": "US",
+            "XLSE": "UK",
+        }
+        return _mic_jurisdiction.get(mic, "MULTI")
+
     def _build_product_catalog(self) -> dict[str, dict]:
         catalog: dict[str, dict] = {}
 
@@ -374,6 +392,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope(mic),
             }
         for f in FX_PAIRS:
             catalog[f["id"]] = {
@@ -387,6 +406,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope("XXXX"),
             }
         for c in COMMODITIES:
             catalog[c["id"]] = {
@@ -400,6 +420,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope("XXXX"),
             }
         for o in OPTIONS:
             opt_type = o["option_type"]
@@ -416,6 +437,7 @@ class SyntheticDataGenerator:
                 "underlying_product_id": _underlying_map.get(o["id"]),
                 "strike_price": _strike_map.get(o["id"]),
                 "expiry_date": "2024-03-15",
+                "regulatory_scope": self._mic_to_regulatory_scope("XCBO"),
             }
         for fu in FUTURES:
             catalog[fu["id"]] = {
@@ -429,6 +451,7 @@ class SyntheticDataGenerator:
                 "underlying_product_id": _underlying_map.get(fu["id"]),
                 "strike_price": None,
                 "expiry_date": "2024-03-29",
+                "regulatory_scope": self._mic_to_regulatory_scope("XCME"),
             }
         return catalog
 
@@ -473,6 +496,15 @@ class SyntheticDataGenerator:
             onboard_offset = self.rng.randint(0, onboard_days)
             onboarding_date = onboard_start + timedelta(days=onboard_offset)
 
+            # Compliance status: ~85% active, ~10% under_review, ~5% restricted
+            compliance_roll = self.rng.random()
+            if compliance_roll < 0.85:
+                compliance_status = "active"
+            elif compliance_roll < 0.95:
+                compliance_status = "under_review"
+            else:
+                compliance_status = "restricted"
+
             accounts[aid] = {
                 "type": acct_type,
                 "name": account_name,
@@ -482,6 +514,8 @@ class SyntheticDataGenerator:
                 "risk_rating": RISK_RATING_BY_TYPE[acct_type],
                 "primary_trader_id": primary_trader_id,
                 "onboarding_date": onboarding_date.isoformat(),
+                "mifid_client_category": MIFID_CATEGORY_BY_TYPE[acct_type],
+                "compliance_status": compliance_status,
             }
         return accounts
 
@@ -1291,12 +1325,13 @@ class SyntheticDataGenerator:
         return counts
 
     def _write_product_csv(self) -> int:
-        """Write the product dimension table CSV (17 columns, ISO-enriched)."""
+        """Write the product dimension table CSV (18 columns, ISO-enriched)."""
         fieldnames = [
             "product_id", "isin", "sedol", "ticker", "name", "asset_class",
             "instrument_type", "cfi_code", "underlying_product_id",
             "contract_size", "strike_price", "expiry_date", "exchange_mic",
             "currency", "tick_size", "lot_size", "base_price",
+            "regulatory_scope",
         ]
         rows = []
         for pid, info in sorted(self.products.items()):
@@ -1318,6 +1353,7 @@ class SyntheticDataGenerator:
                 "tick_size": info.get("tick_size", ""),
                 "lot_size": info.get("lot_size", ""),
                 "base_price": info.get("base_price", ""),
+                "regulatory_scope": info.get("regulatory_scope", "MULTI"),
             })
         return self._write_csv("product.csv", fieldnames, rows)
 
@@ -1350,10 +1386,11 @@ class SyntheticDataGenerator:
         return self._write_csv("venue.csv", fieldnames, rows)
 
     def _write_account_csv(self) -> int:
-        """Write the account dimension table CSV (220 rows, 8 columns)."""
+        """Write the account dimension table CSV (220 rows, 10 columns)."""
         fieldnames = [
             "account_id", "account_name", "account_type", "registration_country",
             "primary_trader_id", "status", "risk_rating", "onboarding_date",
+            "mifid_client_category", "compliance_status",
         ]
         rows = []
         for aid, info in sorted(self.accounts.items()):
@@ -1366,6 +1403,8 @@ class SyntheticDataGenerator:
                 "status": info["status"],
                 "risk_rating": info.get("risk_rating", ""),
                 "onboarding_date": info.get("onboarding_date", ""),
+                "mifid_client_category": info.get("mifid_client_category", ""),
+                "compliance_status": info.get("compliance_status", ""),
             })
         return self._write_csv("account.csv", fieldnames, rows)
 
@@ -1426,6 +1465,8 @@ class SyntheticDataGenerator:
                     {"name": "tick_size", "type": "decimal", "description": "Minimum price increment", "is_key": False, "nullable": False},
                     {"name": "lot_size", "type": "integer", "description": "Standard trading lot size", "is_key": False, "nullable": False},
                     {"name": "base_price", "type": "decimal", "description": "Reference base price for data generation", "is_key": False, "nullable": False},
+                    {"name": "regulatory_scope", "type": "string", "description": "Primary regulatory jurisdiction for this product", "is_key": False, "nullable": False,
+                     "domain_values": ["EU", "US", "UK", "APAC", "MULTI"]},
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},
@@ -1566,6 +1607,10 @@ class SyntheticDataGenerator:
                     {"name": "risk_rating", "type": "string", "description": "Internal risk tier based on account type", "is_key": False, "nullable": True,
                      "domain_values": ["LOW", "MEDIUM", "HIGH"]},
                     {"name": "onboarding_date", "type": "date", "description": "Date the account was opened (YYYY-MM-DD)", "is_key": False, "nullable": True},
+                    {"name": "mifid_client_category", "type": "string", "description": "MiFID II client classification per Directive 2014/65/EU Annex II", "is_key": False, "nullable": True,
+                     "domain_values": ["retail", "professional", "eligible_counterparty"]},
+                    {"name": "compliance_status", "type": "string", "description": "Account compliance review status", "is_key": False, "nullable": True,
+                     "domain_values": ["active", "under_review", "restricted", "suspended"]},
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},

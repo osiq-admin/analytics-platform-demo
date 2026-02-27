@@ -5,6 +5,7 @@ import {
   type DetectionModelDef,
 } from "../../stores/metadataStore.ts";
 import { api } from "../../api/client.ts";
+import { useViewTabs } from "../../hooks/useViewTabs.ts";
 import Panel from "../../components/Panel.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
@@ -15,6 +16,8 @@ import ValidationPanel from "../../components/ValidationPanel.tsx";
 import PreviewPanel from "../../components/PreviewPanel.tsx";
 import DependencyMiniDAG from "../../components/DependencyMiniDAG.tsx";
 import ExamplesDrawer from "../../components/ExamplesDrawer.tsx";
+
+type RightTab = "validation" | "preview" | "dependencies";
 
 interface DeployResult {
   model_id: string;
@@ -45,8 +48,15 @@ export default function ModelComposer() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
   const [wizardState, setWizardState] = useState<WizardState | null>(null);
-  const [rightTab, setRightTab] = useState<"validation" | "preview" | "dependencies">("validation");
+  const [rightTab, setRightTab] = useState<RightTab>("validation");
   const [examplesOpen, setExamplesOpen] = useState(false);
+
+  const fallbackRightTabs: { key: RightTab; label: string }[] = [
+    { key: "validation", label: "Validate" },
+    { key: "preview", label: "Preview" },
+    { key: "dependencies", label: "Deps" },
+  ];
+  const rightTabs = useViewTabs<RightTab>("model_composer", fallbackRightTabs);
 
   const handleWizardStateChange = useCallback((state: WizardState) => {
     setWizardState(state);
@@ -299,17 +309,17 @@ export default function ModelComposer() {
           <div className="w-64 shrink-0 rounded border border-border bg-surface flex flex-col overflow-hidden">
             {/* Tab bar */}
             <div className="h-8 shrink-0 flex items-center border-b border-border bg-surface-elevated">
-              {(["validation", "preview", "dependencies"] as const).map((tab) => (
+              {rightTabs.map((tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setRightTab(tab)}
+                  key={tab.key}
+                  onClick={() => setRightTab(tab.key)}
                   className={`flex-1 h-full text-[10px] font-semibold uppercase tracking-wide transition-colors ${
-                    rightTab === tab
+                    rightTab === tab.key
                       ? "text-accent border-b-2 border-accent"
                       : "text-muted hover:text-foreground"
                   }`}
                 >
-                  {tab === "validation" ? "Validate" : tab === "preview" ? "Preview" : "Deps"}
+                  {tab.label}
                 </button>
               ))}
             </div>

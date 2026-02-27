@@ -286,6 +286,45 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 6. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
 7. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
 
+### Standards & Compliance Registry
+- **ISO Standards**: 6 ISO standards with field mappings and validation rules (ISO 6166, 10383, 10962, 4217, 3166-1, 8601)
+- **FIX Protocol**: 6 FIX fields mapped to entity fields with regulatory relevance
+- **Compliance Requirements**: 14 granular requirements mapped to implementations (detection models, calculations, entity fields)
+- **Regulations**: 6 frameworks (MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC) with article-level detail and source URLs
+
+### Entity Compliance Fields
+- **Account**: MiFID II client classification (retail/professional/eligible_counterparty) and compliance status
+- **Product**: Regulatory jurisdiction scope (EU/US/UK/APAC/MULTI)
+- **Detection Models**: All 5 models now cover multiple jurisdictions (EU + US minimum)
+
+### Grid Column Metadata (M159-M161)
+- **Metadata-driven grids**: Column definitions (field, header, width, filter type) loaded from JSON metadata via API
+- **DataManager**: Table list columns from `workspace/metadata/grids/data_manager.json`
+- **Alert Summary**: 8 columns with filter types from `workspace/metadata/grids/risk_case_manager.json`
+- **Related Executions**: 12 execution columns from `workspace/metadata/grids/related_executions.json`
+- **Related Orders**: 11 order columns from `workspace/metadata/grids/related_orders.json`
+- **Market Data Config**: Per-model chart configuration (chart type, price fields, overlay) in detection model `market_data_config`
+- **Fallback resilience**: All grids fall back to hardcoded columns if metadata API fails
+- **Hook pattern**: `useGridColumns(viewId, fallback)` — generic hook used across all metadata-driven grids
+
+### View Configuration Metadata (M163-M164)
+- **View tabs**: Tab definitions (id, label, icon, default) loaded from metadata API
+  - Entity Designer: 2 tabs from `workspace/metadata/view_config/entity_designer.json`
+  - Model Composer: 3 tabs from `workspace/metadata/view_config/model_composer.json`
+- **Theme palettes**: Chart colors, asset class colors, badge variants, graph node colors from `workspace/metadata/theme/palettes.json`
+  - Dashboard uses metadata palette for all charts
+  - Regulatory Map uses metadata palette for graph node colors
+- **Hook pattern**: `useViewTabs(viewId, fallback)` and `useThemePalettes()` with module-level cache
+
+### Workflow & Template Metadata (M167-M169)
+- **Submission workflow**: State machine (pending → in_review → approved/rejected/implemented) from `workspace/metadata/workflows/submission.json`
+  - Badge variants and allowed transitions configurable via metadata
+  - `useWorkflowStates(workflowId)` hook with module-level cache
+- **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
+  - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
+- **Tour/scenario registry**: 19 tours and 26 scenarios catalogued in `workspace/metadata/tours/registry.json`
+  - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

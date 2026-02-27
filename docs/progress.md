@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M150 Documentation Sweep; 603 total tests: 421 backend + 182 E2E, 16 views, 26 scenarios, 71 architecture sections, 69% metadata-driven)
+**Last Updated**: 2026-02-27 (M170 Stage 5 Checkpoint; 709 total tests: 506 backend + 203 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette, 1 workflow, 1 demo config, 1 tour registry)
 
 ---
 
@@ -226,6 +226,26 @@
 | M148 | BDD Scenarios for Metadata Features | COMPLETE | 3 | 3 | BDD scenarios for widgets, navigation, format rules, audit trail, query presets |
 | M149 | Architecture Re-Audit | COMPLETE | 3 | 3 | Updated maturity ratings across 71 sections, 69% metadata-driven (was 50%) |
 | M150 | Documentation Sweep | COMPLETE | 6 | 6 | Updated progress.md, demo-guide.md, development-guidelines.md, feature-development-checklist.md, CLAUDE.md, MEMORY.md |
+| M151 | ISO Standards Registry | COMPLETE | 3 | 3 | Create ISO standards registry as structured metadata — 6 standards (ISO 6166, 10383, 10962, 4217, 3166-1, 8601) with field mappings and validation rules |
+| M152 | FIX Protocol & Compliance | COMPLETE | 3 | 3 | FIX protocol registry (6 fields) + compliance requirements (14 requirements) mapped to implementations |
+| M153 | EMIR & SEC Regulations | COMPLETE | 3 | 3 | Add EMIR, SEC to regulatory registry with source URLs — 6 total regulations |
+| M154 | Stage 1 Checkpoint | COMPLETE | 5 | 5 | Standards foundation — 435 backend tests passing, frontend builds clean, architecture registry + operations + docs updated |
+| M155 | Account MiFID II Classification | COMPLETE | 3 | 3 | MiFID II client category + compliance status on accounts |
+| M156 | Product Regulatory Jurisdiction | COMPLETE | 3 | 3 | Regulatory scope field on products |
+| M157 | Detection Model Coverage | COMPLETE | 3 | 3 | SEC coverage for multi-jurisdiction on all models |
+| M158 | Stage 2 Checkpoint | COMPLETE | 5 | 5 | Entity compliance — 445 backend tests passing, frontend builds clean, docs updated |
+| M159 | Grid Column Metadata | COMPLETE | 3 | 3 | Grid column definitions as metadata for DataManager — useGridColumns hook + API endpoint |
+| M160 | Alert Filter Schema | COMPLETE | 3 | 3 | Alert summary grid columns and filters as metadata for RiskCaseManager |
+| M161 | Related Orders Metadata | COMPLETE | 5 | 5 | Execution (12 cols) + order (11 cols) grid metadata + market_data_config on all 5 detection models |
+| M162 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Grid metadata — 463 backend tests passing, 5 sections upgraded to mostly-metadata-driven |
+| M163 | View Tabs Metadata | COMPLETE | 4 | 4 | View tab definitions as metadata — Entity Designer + Model Composer tabs from API |
+| M164 | Color Palettes Metadata | COMPLETE | 4 | 4 | Theme palettes as metadata — chart colors, asset class colors, graph node colors |
+| M165 | E2E Metadata Tests | COMPLETE | 3 | 3 | 21 E2E tests for standards, grids, view config, palettes APIs |
+| M166 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | View config — 478 backend + 203 E2E tests, entities.view-tabs upgraded |
+| M167 | Submission Workflow | COMPLETE | 4 | 4 | Workflow states as metadata — badge variants, transitions from API |
+| M168 | Demo Checkpoints | COMPLETE | 3 | 3 | Demo toolbar checkpoints as metadata — 8 checkpoints from API |
+| M169 | Tour Registry | COMPLETE | 3 | 3 | Tour/scenario registry via metadata API — 19 tours, 26 scenarios |
+| M170 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Workflow metadata — 506 backend tests, 3 more sections upgraded |
 
 ---
 

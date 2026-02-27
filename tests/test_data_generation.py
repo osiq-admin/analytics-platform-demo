@@ -105,6 +105,7 @@ class TestProductSchema:
             "instrument_type", "cfi_code", "underlying_product_id",
             "contract_size", "strike_price", "expiry_date", "exchange_mic",
             "currency", "tick_size", "lot_size", "base_price",
+            "regulatory_scope",
         }
         assert set(rows[0].keys()) == expected_cols
 
@@ -336,6 +337,7 @@ class TestAccountSchema:
             "account_id", "account_name", "account_type",
             "registration_country", "primary_trader_id", "status",
             "risk_rating", "onboarding_date",
+            "mifid_client_category", "compliance_status",
         }
         assert set(rows[0].keys()) == expected_cols
 

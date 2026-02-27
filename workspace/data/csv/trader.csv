@@ -1,51 +1,51 @@
 trader_id,trader_name,desk,trader_type,hire_date,status
-TRD-001,James Smith,Equity Flow,execution,2021-10-21,ACTIVE
-TRD-002,Mary Johnson,Equity Flow,portfolio,2019-03-24,ACTIVE
-TRD-003,John Williams,Equity Flow,execution,2020-02-19,ACTIVE
-TRD-004,Patricia Brown,Equity Flow,execution,2019-07-29,ACTIVE
-TRD-005,Robert Jones,Equity Flow,execution,2021-02-14,ACTIVE
-TRD-006,Jennifer Garcia,Equity Flow,execution,2018-11-05,ACTIVE
-TRD-007,Michael Miller,Equity Flow,execution,2019-02-06,ACTIVE
-TRD-008,Linda Davis,Equity Flow,execution,2018-03-02,ACTIVE
-TRD-009,David Rodriguez,Equity Flow,portfolio,2020-08-26,ACTIVE
-TRD-010,Elizabeth Martinez,Equity Flow,execution,2023-06-13,ACTIVE
-TRD-011,William Hernandez,Equity Flow,execution,2022-07-01,ACTIVE
-TRD-012,Barbara Lopez,Equity Flow,portfolio,2019-11-06,ACTIVE
-TRD-013,Richard Gonzalez,Equity Flow,execution,2022-05-19,ACTIVE
-TRD-014,Susan Wilson,Equity Flow,execution,2023-02-07,ACTIVE
-TRD-015,Joseph Anderson,Equity Flow,execution,2023-06-17,ACTIVE
-TRD-016,Jessica Thomas,Equity Flow,execution,2021-04-30,ACTIVE
-TRD-017,Thomas Taylor,Equity Flow,execution,2018-08-28,ACTIVE
-TRD-018,Sarah Moore,Equity Flow,execution,2018-09-07,ACTIVE
-TRD-019,Charles Jackson,Equity Flow,portfolio,2018-08-23,ACTIVE
-TRD-020,Karen Martin,Equity Flow,execution,2023-05-07,ACTIVE
-TRD-021,Christopher Lee,Equity Flow,execution,2023-12-16,ACTIVE
-TRD-022,Lisa Perez,Equity Flow,execution,2023-09-12,ACTIVE
-TRD-023,Daniel Thompson,Equity Flow,execution,2020-02-01,ACTIVE
-TRD-024,Nancy White,Equity Flow,execution,2018-10-06,ACTIVE
-TRD-025,Matthew Harris,Equity Flow,portfolio,2020-08-21,ACTIVE
-TRD-026,Betty Sanchez,Derivatives,execution,2022-07-12,ACTIVE
-TRD-027,Anthony Clark,Derivatives,execution,2019-05-07,ACTIVE
-TRD-028,Margaret Ramirez,Derivatives,execution,2020-10-05,ACTIVE
-TRD-029,Mark Lewis,Derivatives,execution,2018-06-12,ACTIVE
-TRD-030,Sandra Robinson,Derivatives,execution,2018-12-02,ACTIVE
-TRD-031,Donald Walker,Derivatives,execution,2022-09-14,ACTIVE
-TRD-032,Ashley Young,Derivatives,execution,2023-11-12,ACTIVE
-TRD-033,Steven Allen,Derivatives,execution,2021-07-19,ACTIVE
-TRD-034,Dorothy King,Derivatives,execution,2020-12-04,ACTIVE
-TRD-035,Paul Wright,Derivatives,execution,2020-04-16,ACTIVE
-TRD-036,Kimberly Scott,FX Spot,algorithmic,2021-07-10,ACTIVE
-TRD-037,Andrew Torres,FX Spot,algorithmic,2020-09-04,ACTIVE
-TRD-038,Emily Nguyen,FX Spot,algorithmic,2020-12-23,ACTIVE
-TRD-039,Joshua Hill,FX Spot,algorithmic,2022-06-10,ACTIVE
-TRD-040,Donna Flores,FX Spot,algorithmic,2019-06-21,ACTIVE
-TRD-041,Kenneth Green,FX Spot,algorithmic,2021-05-13,ACTIVE
-TRD-042,Michelle Adams,FX Spot,algorithmic,2023-02-16,ACTIVE
-TRD-043,Kevin Nelson,FX Spot,algorithmic,2021-07-19,ACTIVE
-TRD-044,Carol Baker,FX Spot,algorithmic,2018-10-25,ACTIVE
-TRD-045,Brian Hall,FX Spot,algorithmic,2018-02-08,ACTIVE
-TRD-046,Amanda Rivera,Commodities,execution,2023-02-21,ACTIVE
-TRD-047,George Campbell,Commodities,execution,2019-02-14,ACTIVE
-TRD-048,Melissa Mitchell,Commodities,execution,2018-10-28,ACTIVE
-TRD-049,Timothy Carter,Commodities,execution,2020-05-23,ACTIVE
-TRD-050,Deborah Roberts,Commodities,execution,2023-09-04,ACTIVE
+TRD-001,James Smith,Equity Flow,execution,2020-03-26,ACTIVE
+TRD-002,Mary Johnson,Equity Flow,execution,2018-07-09,ACTIVE
+TRD-003,John Williams,Equity Flow,execution,2023-05-01,ACTIVE
+TRD-004,Patricia Brown,Equity Flow,portfolio,2018-10-26,ACTIVE
+TRD-005,Robert Jones,Equity Flow,execution,2020-03-07,ACTIVE
+TRD-006,Jennifer Garcia,Equity Flow,portfolio,2022-04-22,ACTIVE
+TRD-007,Michael Miller,Equity Flow,execution,2020-09-26,ACTIVE
+TRD-008,Linda Davis,Equity Flow,execution,2018-01-23,ACTIVE
+TRD-009,David Rodriguez,Equity Flow,portfolio,2019-03-13,ACTIVE
+TRD-010,Elizabeth Martinez,Equity Flow,portfolio,2020-06-15,ACTIVE
+TRD-011,William Hernandez,Equity Flow,execution,2023-10-23,ACTIVE
+TRD-012,Barbara Lopez,Equity Flow,execution,2020-10-17,ACTIVE
+TRD-013,Richard Gonzalez,Equity Flow,portfolio,2019-05-13,ACTIVE
+TRD-014,Susan Wilson,Equity Flow,execution,2023-03-19,ACTIVE
+TRD-015,Joseph Anderson,Equity Flow,portfolio,2021-07-23,ACTIVE
+TRD-016,Jessica Thomas,Equity Flow,portfolio,2022-12-18,ACTIVE
+TRD-017,Thomas Taylor,Equity Flow,portfolio,2023-08-30,ACTIVE
+TRD-018,Sarah Moore,Equity Flow,execution,2023-01-01,ACTIVE
+TRD-019,Charles Jackson,Equity Flow,portfolio,2023-04-29,ACTIVE
+TRD-020,Karen Martin,Equity Flow,execution,2020-10-09,ACTIVE
+TRD-021,Christopher Lee,Equity Flow,portfolio,2021-02-09,ACTIVE
+TRD-022,Lisa Perez,Equity Flow,portfolio,2023-11-06,ACTIVE
+TRD-023,Daniel Thompson,Equity Flow,execution,2020-09-06,ACTIVE
+TRD-024,Nancy White,Equity Flow,execution,2018-11-14,ACTIVE
+TRD-025,Matthew Harris,Equity Flow,portfolio,2020-08-18,ACTIVE
+TRD-026,Betty Sanchez,Derivatives,execution,2021-01-17,ACTIVE
+TRD-027,Anthony Clark,Derivatives,execution,2021-10-07,ACTIVE
+TRD-028,Margaret Ramirez,Derivatives,execution,2021-08-02,ACTIVE
+TRD-029,Mark Lewis,Derivatives,execution,2018-11-27,ACTIVE
+TRD-030,Sandra Robinson,Derivatives,execution,2019-07-21,ACTIVE
+TRD-031,Donald Walker,Derivatives,execution,2019-09-10,ACTIVE
+TRD-032,Ashley Young,Derivatives,execution,2020-08-05,ACTIVE
+TRD-033,Steven Allen,Derivatives,execution,2022-04-18,ACTIVE
+TRD-034,Dorothy King,Derivatives,execution,2019-09-18,ACTIVE
+TRD-035,Paul Wright,Derivatives,execution,2020-05-26,ACTIVE
+TRD-036,Kimberly Scott,FX Spot,algorithmic,2018-09-21,ACTIVE
+TRD-037,Andrew Torres,FX Spot,algorithmic,2022-08-27,ACTIVE
+TRD-038,Emily Nguyen,FX Spot,algorithmic,2022-07-28,ACTIVE
+TRD-039,Joshua Hill,FX Spot,algorithmic,2021-09-17,ACTIVE
+TRD-040,Donna Flores,FX Spot,algorithmic,2023-03-24,ACTIVE
+TRD-041,Kenneth Green,FX Spot,algorithmic,2022-08-31,ACTIVE
+TRD-042,Michelle Adams,FX Spot,algorithmic,2018-09-13,ACTIVE
+TRD-043,Kevin Nelson,FX Spot,algorithmic,2020-04-27,ACTIVE
+TRD-044,Carol Baker,FX Spot,algorithmic,2022-09-17,ACTIVE
+TRD-045,Brian Hall,FX Spot,algorithmic,2022-05-15,ACTIVE
+TRD-046,Amanda Rivera,Commodities,execution,2018-03-22,ACTIVE
+TRD-047,George Campbell,Commodities,execution,2022-04-08,ACTIVE
+TRD-048,Melissa Mitchell,Commodities,execution,2023-05-08,ACTIVE
+TRD-049,Timothy Carter,Commodities,execution,2018-01-25,ACTIVE
+TRD-050,Deborah Roberts,Commodities,execution,2021-12-11,ACTIVE
