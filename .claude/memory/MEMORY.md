@@ -4,7 +4,7 @@
 Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. Pitching to product team — E2E concept demo, not production.
 
 ## Current State (2026-02-27)
-- **Branch**: `feat/phase14-medallion-core` — Phase 14 complete (M0-M175)
+- **Branch**: `main` — Phase 14 complete (M0-M175), fully merged and pushed
 - **GitHub**: `analytics-platform-demo` repo
 - **Tests**: 732 total (522 backend + 210 E2E Playwright) — ALL PASSING
 - **Frontend**: builds clean — 970 modules (`cd frontend && npm run build`)
@@ -14,7 +14,7 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 - **Alerts**: 82 across 5 models and 5 asset classes (MPR 68%, wash 17%, insider 9%, spoofing 6%)
 - **Architecture**: 77 sections (was 74, added 3 medallion sections)
 - **Tour scenarios**: 27 guided scenarios (S1-S27) in 8 categories
-- **Operation scripts**: 94 operations across 17 views (89 + 5 medallion ops)
+- **Operation scripts**: 98 operations across 17 views (81 original + 17 architecture_trace)
 - **Roadmap**: Restructured to 33 phases across 7 tiers — medallion architecture (11 tiers), data governance, business glossary, migration readiness
 - **Latest**: Phase 14 Medallion Architecture Core complete (M175). 11-tier metadata, 6 data contracts, 5 transformations, 5 pipeline stages, MedallionOverview view, 7 API endpoints, S27 scenario
 - **Next priority**: Phases 15-17 (Data Onboarding + Mapping)

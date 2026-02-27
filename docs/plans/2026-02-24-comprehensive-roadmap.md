@@ -20,7 +20,7 @@
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 - 83.1% metadata-driven (77 sections across 17 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
-- 27 guided scenarios, 94 operation scripts, 8 demo checkpoints
+- 27 guided scenarios, 98 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies

@@ -152,21 +152,21 @@ Every file and line containing hardcoded test counts. When test counts change, u
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 4 (Project Overview) | `716 tests (506 backend + 210 E2E)` |
-| `CLAUDE.md` | Line 9 (Quick Start comment) | `# Run backend tests (506)` |
-| `CLAUDE.md` | Line 22 (Architecture) | `506 backend tests + 210 E2E` |
-| `README.md` | Line 190 (Project Structure) | `# 572 tests (390 backend + 182 E2E Playwright)` ← **STALE** |
-| `README.md` | Line 197 (Testing section comment) | `# Backend tests (390)` ← **STALE** |
-| `README.md` | Line 207 (Testing section text) | `572 tests total: 390 backend...` ← **STALE** |
-| `docs/progress.md` | Line 5 (header) | `709 total tests: 506 backend + 203 E2E` ← **STALE** |
-| `docs/feature-development-checklist.md` | Line 5 (header) | `716 total tests: 506 backend + 210 E2E` |
-| `docs/feature-development-checklist.md` | Line 28 (Section 1) | `currently 506` |
-| `docs/feature-development-checklist.md` | Line 61 (Section 4) | `currently 506` |
+| `CLAUDE.md` | Line 4 (Project Overview) | `732 tests (522 backend + 210 E2E)` |
+| `CLAUDE.md` | Line 9 (Quick Start comment) | `# Run backend tests (522)` |
+| `CLAUDE.md` | Line 22 (Architecture) | `522 backend tests + 210 E2E` |
+| `README.md` | Line 190 (Project Structure) | `# 732 tests (522 backend + 210 E2E Playwright)` |
+| `README.md` | Line 197 (Testing section comment) | `# Backend tests (522)` |
+| `README.md` | Line 207 (Testing section text) | `732 tests total: 522 backend...` |
+| `docs/progress.md` | Line 5 (header) | `732 total tests: 522 backend + 210 E2E` |
+| `docs/feature-development-checklist.md` | Line 5 (header) | `732 total tests: 522 backend + 210 E2E` |
+| `docs/feature-development-checklist.md` | Line 28 (Section 1) | `currently 522` |
+| `docs/feature-development-checklist.md` | Line 61 (Section 4) | `currently 522` |
 | `docs/feature-development-checklist.md` | Line 74 (Section 5) | `currently 210` |
-| `docs/feature-development-checklist.md` | Line 295 (Quick Reference) | `# Backend tests (506+)` |
+| `docs/feature-development-checklist.md` | Line 295 (Quick Reference) | `# Backend tests (522+)` |
 | `docs/feature-development-checklist.md` | Line 298 (Quick Reference) | `# E2E Playwright tests (210+)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 19 | `572 tests (390 backend + 182 E2E)` ← **STALE** |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802-804 (Verification Plan) | `(390)`, `(182)`, `(964 modules)` ← **STALE** |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 19 | `732 tests (522 backend + 210 E2E)` |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802-804 (Verification Plan) | `(522)`, `(210)`, `(970 modules)` |
 
 ### E2E Test Count (currently 210)
 
@@ -180,9 +180,9 @@ Sum of backend + E2E. Same files as above.
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 11 | `# Build frontend (969 modules)` |
-| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (964 Vite modules)` ← **STALE** |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802 | `(964 modules)` ← **STALE** |
+| `CLAUDE.md` | Line 11 | `# Build frontend (970 modules)` |
+| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (970 Vite modules)` |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802 | `(970 modules)` |
 
 ---
 
@@ -214,7 +214,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/architecture-traceability.md` | Header |
 | Context-level `MEMORY.md` | Current State section |
 
-### Operation Script Count (currently 94 across 17 views)
+### Operation Script Count (currently 98 across 17 views)
 
 | File | Location |
 |------|----------|

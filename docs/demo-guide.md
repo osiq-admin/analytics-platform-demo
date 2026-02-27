@@ -553,7 +553,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 94 operations defined across 17 views
+- 98 operations defined across 17 views
 
 ### 7.3 Scenario Categories
 
