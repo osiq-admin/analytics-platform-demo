@@ -4,10 +4,10 @@
   "description": "Graduated scoring for same-side trading percentage in Market Price Ramping detection. Higher same-side percentages yield higher scores.",
   "value_type": "score_steps",
   "default": [
-    { "min_value": 0, "max_value": 0.6, "score": 0 },
-    { "min_value": 0.6, "max_value": 0.75, "score": 3 },
-    { "min_value": 0.75, "max_value": 0.9, "score": 7 },
-    { "min_value": 0.9, "max_value": null, "score": 10 }
+    { "min_value": 0, "max_value": 0.75, "score": 0 },
+    { "min_value": 0.75, "max_value": 0.85, "score": 3 },
+    { "min_value": 0.85, "max_value": 0.95, "score": 7 },
+    { "min_value": 0.95, "max_value": null, "score": 10 }
   ],
   "match_type": "hierarchy",
   "overrides": []
