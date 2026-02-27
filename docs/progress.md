@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M170 Stage 5 Checkpoint; 709 total tests: 506 backend + 203 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette, 1 workflow, 1 demo config, 1 tour registry)
+**Last Updated**: 2026-02-27 (M173 Phase 2 Complete; 716 total tests: 506 backend + 210 E2E, 16 views, 26 scenarios, 74 architecture sections, 83.8% metadata-driven, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette, 1 workflow, 1 demo config, 1 tour registry)
 
 ---
 
@@ -45,6 +45,7 @@
 | Metadata Architecture Overhaul — Stage 4 (M140-M143) | COMPLETE | Navigation manifest, Sidebar from metadata, E2E tests — 415 backend tests |
 | Metadata Architecture Overhaul — Stage 5 (M144-M147) | COMPLETE | Audit trail, AI context-summary, E2E tests — 421 backend tests |
 | Metadata Architecture Overhaul — Stage 6 (M148-M150) | COMPLETE | BDD scenarios, architecture re-audit, documentation sweep — 603 total tests, 69% metadata-driven |
+| Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry, BDD scenarios, architecture re-audit — 716 total tests (506+210), 83.8% metadata-driven |
 
 ---
 
@@ -246,6 +247,9 @@
 | M168 | Demo Checkpoints | COMPLETE | 3 | 3 | Demo toolbar checkpoints as metadata — 8 checkpoints from API |
 | M169 | Tour Registry | COMPLETE | 3 | 3 | Tour/scenario registry via metadata API — 19 tours, 26 scenarios |
 | M170 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Workflow metadata — 506 backend tests, 3 more sections upgraded |
+| M171 | BDD Scenarios | COMPLETE | 3 | 3 | BDD scenarios for compliance & metadata phase 2 features |
+| M172 | Architecture Re-Audit | COMPLETE | 4 | 4 | 83.8% metadata-driven (was 69%) — 31 fully + 31 mostly + 2 mixed + 2 code-driven + 8 infrastructure |
+| M173 | Documentation Sweep | COMPLETE | 5 | 5 | Update all counts, add Phase 2 metadata types to CLAUDE.md, progress.md, checklist |
 
 ---
 

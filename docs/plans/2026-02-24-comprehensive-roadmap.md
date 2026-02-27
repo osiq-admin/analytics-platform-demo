@@ -16,7 +16,7 @@
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 16 frontend views, 572 tests (390 backend + 182 E2E), Playwright verified
+- 16 frontend views, 716 tests (506 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 
 **What's already metadata-driven (~70%):**
@@ -787,6 +787,8 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 | **P0 — DONE** | Phase 12 (UI/UX Usability) | COMPLETE (M89-M92) | AG Grid + viewport fixes |
 | **P0 — DONE** | Phase 7B (Metadata UX & Guided Demo) | COMPLETE (M93-M120) | Gap fixes, domain suggestions, pattern banks, model wizard, use case studio, 25 guided scenarios, 87 E2E tests |
 | **P0 — DONE** | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections, slide-in architecture panel, metadata maturity ratings, 7 new E2E tests |
+| **P0 — DONE** | Metadata Architecture Overhaul (M129-M150) | COMPLETE | Navigation, widgets, format rules, audit trail, AI context from metadata — 603 tests, 69% metadata-driven |
+| **P0 — DONE** | Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry — 716 tests, 83.8% metadata-driven |
 | **P2 — Important** | Phase 13 (AI-Assisted Configuration) | Planned | LLM metadata awareness (partially addressed in Phase 7B AI calc builder) |
 | **P3 — Enhance** | Phase 14 (Alert Tuning + Models) | Planned | Distribution analysis, 10 new detection models |
 | **P3 — Enhance** | Phase 15 (Security Hardening) | Planned | SQL injection fix, JWT, CORS |
@@ -799,9 +801,9 @@ Each model is purely metadata-defined (JSON) using the dynamic architecture from
 ## Verification Plan
 
 After each phase:
-1. `cd frontend && npm run build` — no TypeScript errors (964 modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (390)
-3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (182) — stop port 8000 first
+1. `cd frontend && npm run build` — no TypeScript errors (969 modules)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (506)
+3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (210) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
 6. Regression: existing demo checkpoints still work
