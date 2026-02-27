@@ -45,5 +45,10 @@
       "article": "Art. 16(2)",
       "description": "Organisational requirement — effective surveillance systems"
     }
-  ]
+  ],
+  "alert_detail_layout": {
+    "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
+    "emphasis": ["scores", "relatedOrders"],
+    "investigation_hint": "Compare order pairs — focus on matching quantities, close timestamps, and whether the same trader/account appears on both sides."
+  }
 }

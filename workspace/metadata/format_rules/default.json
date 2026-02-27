@@ -1,0 +1,27 @@
+{
+    "format_group_id": "default",
+    "rules": {
+        "currency": {"type": "number", "precision": 2, "prefix": "$"},
+        "percentage": {"type": "number", "precision": 1, "suffix": "%"},
+        "score": {"type": "number", "precision": 2},
+        "integer": {"type": "number", "precision": 0},
+        "label": {"type": "label", "transform": "snake_to_title"},
+        "volume": {"type": "number", "precision": 0, "suffix": ""},
+        "price": {"type": "number", "precision": 4, "prefix": "$"},
+        "ratio": {"type": "number", "precision": 3}
+    },
+    "field_mappings": {
+        "total_value": "currency",
+        "accumulated_score": "score",
+        "score_threshold": "score",
+        "qty_match_ratio": "percentage",
+        "model_id": "label",
+        "asset_class": "label",
+        "price": "price",
+        "limit_price": "price",
+        "vwap": "price",
+        "volume": "volume",
+        "num_trades": "integer",
+        "qty_ratio": "ratio"
+    }
+}

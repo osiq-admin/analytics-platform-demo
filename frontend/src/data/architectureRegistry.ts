@@ -57,12 +57,12 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Card layout, labels, and metric definitions are hardcoded in JSX. Data is from SQL aggregation over engine-produced results, not from metadata definitions.",
+          "KPI cards are defined in widget metadata (workspace/metadata/widgets/dashboard.json) including labels, metric keys, and grid positions. Dashboard fetches config from /api/metadata/widgets/dashboard and renders accordingly with fallback. Data comes from SQL aggregation over engine-produced results.",
         metadataOpportunities: [
-          "Define KPI cards as metadata (label, metric key, format, icon) so new cards can be added without code changes",
-          "Allow dashboard layout to be configurable via metadata",
+          "Add icon and format specifiers to KPI card widget metadata",
+          "Support custom KPI formulas defined in widget metadata",
         ],
       },
       {
@@ -105,12 +105,11 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart and PieChart visualizations" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Data is from metadata-driven detection models but chart configuration (colors, widget order, chart types) is hardcoded.",
+          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Data from metadata-driven detection models.",
         metadataOpportunities: [
-          "Define chart color palettes per model via metadata",
-          "Make widget order and default chart types configurable",
+          "Support custom chart renderers loaded dynamically from metadata",
         ],
       },
       {
@@ -153,9 +152,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders histogram / bar chart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Score buckets and chart config are code-driven; underlying data is from metadata-driven detection.",
+          "Chart widget defined in metadata with default chart type, available types, and grid position. Score bucket boundaries are still code-driven; underlying data is from metadata-driven detection.",
         metadataOpportunities: ["Make score bucket boundaries configurable via settings metadata"],
       },
       {
@@ -198,9 +197,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart / PieChart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Trigger paths derive from metadata-driven model definitions but chart config is hardcoded.",
+          "Chart widget defined in metadata with default chart type and grid position. Trigger paths derive from metadata-driven model definitions.",
         metadataOpportunities: ["Allow trigger categories to be defined in model metadata"],
       },
       {
@@ -243,9 +242,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart / PieChart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Asset classes come from entity metadata but chart presentation is hardcoded.",
+          "Chart widget defined in metadata with default chart type and grid position. Asset classes come from entity metadata.",
         metadataOpportunities: ["Derive asset class categories dynamically from product entity metadata"],
       },
     ],
@@ -1182,25 +1181,26 @@ export const VIEW_TRACES: ViewTrace[] = [
           "Preset SQL query buttons providing common queries (e.g., alert summary, trade analysis). Loaded from backend preset definitions.",
         files: [
           { path: "frontend/src/views/SQLConsole/index.tsx", role: "Renders preset buttons" },
-          { path: "backend/api/query.py", role: "Returns preset query definitions" },
+          { path: "backend/api/query.py", role: "Returns preset query definitions from metadata" },
+          { path: "backend/models/query_presets.py", role: "QueryPreset Pydantic model" },
         ],
         stores: [],
         apis: [
           {
             method: "GET",
             path: "/api/query/presets",
-            role: "Returns predefined SQL query templates",
+            role: "Returns preset queries loaded from workspace/metadata/query_presets/",
             routerFile: "backend/api/query.py",
           },
         ],
-        dataSources: [],
-        technologies: [],
-        metadataMaturity: "code-driven",
-        maturityExplanation:
-          "Preset queries are hardcoded in the backend. Not driven by metadata.",
-        metadataOpportunities: [
-          "Define presets as metadata JSON files so users can add custom presets without code changes",
+        dataSources: [
+          { path: "workspace/metadata/query_presets/default.json", category: "metadata", role: "Preset query definitions" },
         ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Preset queries are loaded from workspace/metadata/query_presets/*.json via MetadataService. New presets can be added by editing JSON — no code changes needed.",
+        metadataOpportunities: [],
       },
       {
         id: "sql.chat-panel",
@@ -1876,7 +1876,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         technologies: [],
         metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Header content comes from metadata-driven detection output; layout is code-driven.",
+          "Header content comes from metadata-driven detection output. Panel layout, emphasis, and investigation hints now load from model alert_detail_layout metadata via API, with hardcoded fallback.",
       },
       {
         id: "alerts.business-description",
@@ -2209,11 +2209,10 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Mock sequences are metadata-like configuration; chat UI, message parsing, and AI interaction logic are code-driven.",
+          "Mock sequences are metadata-driven configuration. AI context auto-generates from live metadata state via /api/ai/context-summary (entities, models, calcs, settings, format rules, navigation). Chat UI and message parsing are code-driven.",
         metadataOpportunities: [
-          "Allow metadata-aware context injection so AI understands the current metadata schema",
           "Define chat capabilities as metadata (available tools, SQL access scope)",
         ],
       },
@@ -2823,19 +2822,38 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Navigation Sidebar",
         viewId: "app",
         description:
-          "Main navigation sidebar with 8 groups containing 16 view links. Groups: Overview, Metadata, Studio, Monitoring, Analysis, Intelligence, Governance, Admin. Navigation structure is hardcoded.",
+          "Main navigation sidebar with 8 groups containing 16 view links. Groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, AI. Navigation structure loaded from metadata API with fallback.",
         files: [
-          { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component" },
+          { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component (loads from metadata)" },
+          { path: "frontend/src/stores/navigationStore.ts", role: "Fetches navigation config from API" },
         ],
-        stores: [],
-        apis: [],
-        dataSources: [],
+        stores: [
+          {
+            name: "navigationStore",
+            path: "frontend/src/stores/navigationStore.ts",
+            role: "Provides navigation groups from metadata API",
+          },
+        ],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/navigation",
+            role: "Returns navigation manifest with groups and view items",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/navigation/main.json",
+            category: "metadata",
+            role: "Navigation manifest defining sidebar groups and view links",
+          },
+        ],
         technologies: [],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Navigation structure (groups, links, icons, routes) is entirely hardcoded in the Sidebar component.",
+          "Navigation structure (groups, labels, paths, ordering) loaded from workspace/metadata/navigation/main.json via API. Sidebar has hardcoded fallback for resilience. Adding/reordering views requires only JSON changes.",
         metadataOpportunities: [
-          "Define navigation structure as metadata so views can register themselves",
           "Allow role-based visibility via metadata configuration",
         ],
       },

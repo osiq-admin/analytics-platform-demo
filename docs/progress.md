@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (M128 Architecture Traceability Mode; 572 total tests: 390 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M150 Documentation Sweep; 603 total tests: 421 backend + 182 E2E, 16 views, 26 scenarios, 71 architecture sections, 69% metadata-driven)
 
 ---
 
@@ -39,6 +39,29 @@
 | Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
 | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 572 total tests, 964 modules |
+| Metadata Architecture Overhaul — Stage 1 (M129-M131) | COMPLETE | SQL presets to metadata, settings resolver Strategy pattern — 398 backend tests |
+| Metadata Architecture Overhaul — Stage 2 (M132-M135) | COMPLETE | Dashboard widget manifest, metadata-driven rendering, E2E tests — 404 backend tests |
+| Metadata Architecture Overhaul — Stage 3 (M136-M139) | COMPLETE | Format registry, model-specific alert layouts, useFormatRules hook — 411 backend tests |
+| Metadata Architecture Overhaul — Stage 4 (M140-M143) | COMPLETE | Navigation manifest, Sidebar from metadata, E2E tests — 415 backend tests |
+| Metadata Architecture Overhaul — Stage 5 (M144-M147) | COMPLETE | Audit trail, AI context-summary, E2E tests — 421 backend tests |
+| Metadata Architecture Overhaul — Stage 6 (M148-M150) | COMPLETE | BDD scenarios, architecture re-audit, documentation sweep — 603 total tests, 69% metadata-driven |
+
+---
+
+### Metadata Architecture Overhaul — Summary (M129-M150)
+
+| Metric | Before (M128) | After (M150) |
+|---|---|---|
+| Fully metadata-driven sections | 25 (34%) | 28 (39%) |
+| Mostly metadata-driven sections | 12 (16%) | 21 (30%) |
+| Combined FMD + Mostly | 37 (50%) | 49 (69%) |
+| Code-driven sections | 13 (18%) | 8 (11%) |
+| Backend tests | 390 | 421 |
+| E2E tests | 182 | 182 |
+| Total tests | 572 | 603 |
+| New metadata types | 0 | 4 (widgets, presets, navigation, format_rules) |
+| New Pydantic models | 0 | 7 |
+| New API endpoints | 0 | 6 |
 
 ---
 
@@ -181,6 +204,28 @@
 | M126 | Relationship Graph Visual Improvements (F-023) | COMPLETE | 1 | 1 | Smoothstep edges, label backgrounds, ArrowClosed arrowheads, increased dagre spacing |
 | M127 | Regulatory Map Redesign (F-024) | COMPLETE | 7 | 7 | Resizable panels, 2 tabs (Map + Details AG Grid), backend description fields, MiniMap, Controls, edge labels, h-full layout fix, tour path mapping fix — 957 modules |
 | M128 | Architecture Traceability Mode | COMPLETE | 12 | 12 | Toolbar toggle, TraceOverlay with info icons on 74 sections, TracePopup slide-in panel (source files, stores, APIs, metadata, technologies, maturity rating, improvements), architectureRegistry.ts (2,978 lines), MetadataMaturity badges, S26 scenario, overview tour updated, architecture_trace op on all 16 views, 7 new E2E tests — 964 modules |
+| M129 | SQL Presets to Metadata | COMPLETE | 4 | 4 | Moved hardcoded SQL presets to workspace/metadata/query_presets/default.json, QueryPreset Pydantic model, MetadataService.list_query_presets(), 4 new tests — 394 backend tests |
+| M130 | Settings Resolver Strategy Pattern | COMPLETE | 4 | 4 | Extracted HierarchyStrategy + MultiDimensionalStrategy classes, RESOLUTION_STRATEGIES registry, ResolutionStrategy protocol, 4 new tests — 398 backend tests |
+| M131 | Stage 1 Checkpoint | COMPLETE | 3 | 3 | Full regression pass, architecture registry updated, docs updated, pushed |
+| M132 | Dashboard Widget Metadata Schema | COMPLETE | 5 | 5 | WidgetDefinition Pydantic model, dashboard.json with 8 widgets, GET/PUT /api/metadata/widgets/{view_id}, 6 new tests — 404 backend tests |
+| M133 | Dashboard Frontend Refactor | COMPLETE | 4 | 4 | Removed hardcoded WIDGETS array, CHART_RENDERERS lookup, ChartWidget component, resolveKpiValue/resolveChartData helpers, fallback widgets — 964 modules build clean |
+| M134 | Dashboard Widget Config E2E Tests | COMPLETE | 3 | 3 | TestDashboardWidgetConfig class, widget loading test, chart rendering test, API test — 3 new E2E tests |
+| M135 | Stage 2 Checkpoint | COMPLETE | 6 | 6 | Full regression pass, architecture registry maturity updated, docs updated, pushed |
+| M136 | Format Registry Metadata | COMPLETE | 4 | 4 | FormatRule/FormatRulesConfig Pydantic models, default.json with 8 rules and 12 field mappings, GET /api/metadata/format-rules, 4 new tests — 408 backend tests |
+| M137 | Alert Detail Layouts | COMPLETE | 3 | 3 | alert_detail_layout field on DetectionModelDefinition, all 5 models updated with panels/emphasis/hints, 3 new tests — 411 backend tests |
+| M138 | Frontend Format Rules + Alert Layouts | COMPLETE | 3 | 3 | useFormatRules hook with caching, fromApiLayout converter, AlertDetail loads layout from API with fallback — 964 modules |
+| M139 | Stage 3 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry updated, docs updated, pushed |
+| M140 | Navigation Manifest Metadata | COMPLETE | 4 | 4 | NavItem/NavGroup/NavigationConfig Pydantic models, main.json with 8 groups and 16 views, GET /api/metadata/navigation, 4 new tests — 415 backend tests |
+| M141 | Sidebar from Metadata | COMPLETE | 3 | 3 | navigationStore Zustand store, Sidebar.tsx loads from API with FALLBACK_NAVIGATION — 965 modules |
+| M142 | Navigation E2E Tests | COMPLETE | 2 | 2 | TestNavigationMetadata: API returns 16 views, sidebar renders 16 links — 2 new E2E tests |
+| M143 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry sidebar → fully-metadata-driven, docs updated, pushed |
+| M144 | Metadata Audit Trail | COMPLETE | 3 | 3 | AuditService with append-only records, wired into 4 core save/delete methods, GET /api/metadata/audit, 3 new tests — 418 backend tests |
+| M145 | AI Context Summary | COMPLETE | 3 | 3 | GET /api/ai/context-summary auto-generates from live metadata (entities, models, calcs, settings, format rules, nav), 3 new tests — 421 backend tests |
+| M146 | Audit + AI E2E Tests | COMPLETE | 2 | 2 | TestAuditTrailE2E, TestAIContextE2E — 2 new E2E tests |
+| M147 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry + BDD updated, docs updated, pushed |
+| M148 | BDD Scenarios for Metadata Features | COMPLETE | 3 | 3 | BDD scenarios for widgets, navigation, format rules, audit trail, query presets |
+| M149 | Architecture Re-Audit | COMPLETE | 3 | 3 | Updated maturity ratings across 71 sections, 69% metadata-driven (was 50%) |
+| M150 | Documentation Sweep | COMPLETE | 6 | 6 | Updated progress.md, demo-guide.md, development-guidelines.md, feature-development-checklist.md, CLAUDE.md, MEMORY.md |
 
 ---
 

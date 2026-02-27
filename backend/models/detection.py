@@ -39,4 +39,5 @@ class DetectionModelDefinition(BaseModel):
     query: str = Field(default="", description="SQL template for detection")
     alert_template: dict[str, Any] = Field(default_factory=dict)
     regulatory_coverage: list[RegulatoryCoverage] = Field(default_factory=list)
+    alert_detail_layout: dict[str, Any] | None = Field(default=None, description="Model-specific alert detail panel configuration")
     metadata_layer: str = Field(default="oob", exclude=True)

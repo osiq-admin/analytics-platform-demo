@@ -1,0 +1,93 @@
+{
+  "view_id": "dashboard",
+  "widgets": [
+    {
+      "widget_id": "total-alerts",
+      "widget_type": "kpi_card",
+      "title": "Total Alerts",
+      "data_field": "total_alerts",
+      "format": {"type": "integer", "precision": 0},
+      "grid": {"col_span": 1, "order": 1}
+    },
+    {
+      "widget_id": "score-triggered-pct",
+      "widget_type": "kpi_card",
+      "title": "Score Triggered",
+      "data_field": "score_triggered_pct",
+      "format": {"type": "percentage", "precision": 1, "suffix": "%"},
+      "grid": {"col_span": 1, "order": 2}
+    },
+    {
+      "widget_id": "avg-score",
+      "widget_type": "kpi_card",
+      "title": "Avg Score",
+      "data_field": "avg_score",
+      "format": {"type": "number", "precision": 1},
+      "grid": {"col_span": 1, "order": 3}
+    },
+    {
+      "widget_id": "active-models",
+      "widget_type": "kpi_card",
+      "title": "Active Models",
+      "data_field": "active_models",
+      "format": {"type": "integer", "precision": 0},
+      "grid": {"col_span": 1, "order": 4}
+    },
+    {
+      "widget_id": "alerts-by-model",
+      "widget_type": "chart",
+      "title": "Alerts by Model",
+      "data_field": "by_model",
+      "chart_config": {
+        "x_field": "model_id",
+        "y_field": "cnt",
+        "default_chart_type": "horizontal_bar",
+        "available_chart_types": ["horizontal_bar", "bar", "line", "pie", "table"],
+        "color_palette": "categorical"
+      },
+      "grid": {"col_span": 2, "order": 5}
+    },
+    {
+      "widget_id": "score-distribution",
+      "widget_type": "chart",
+      "title": "Score Distribution",
+      "data_field": "score_distribution",
+      "chart_config": {
+        "x_field": "bucket",
+        "y_field": "cnt",
+        "default_chart_type": "bar",
+        "available_chart_types": ["bar", "horizontal_bar", "line", "table"],
+        "color_palette": "accent"
+      },
+      "grid": {"col_span": 2, "order": 6}
+    },
+    {
+      "widget_id": "alerts-by-trigger",
+      "widget_type": "chart",
+      "title": "Alerts by Trigger Path",
+      "data_field": "by_trigger",
+      "chart_config": {
+        "x_field": "trigger_path",
+        "y_field": "cnt",
+        "default_chart_type": "horizontal_bar",
+        "available_chart_types": ["horizontal_bar", "bar", "line", "pie", "table"],
+        "color_palette": "categorical"
+      },
+      "grid": {"col_span": 2, "order": 7}
+    },
+    {
+      "widget_id": "alerts-by-asset",
+      "widget_type": "chart",
+      "title": "Alerts by Asset Class",
+      "data_field": "by_asset",
+      "chart_config": {
+        "x_field": "asset_class",
+        "y_field": "cnt",
+        "default_chart_type": "pie",
+        "available_chart_types": ["pie", "bar", "horizontal_bar", "line", "table"],
+        "color_palette": "asset_class"
+      },
+      "grid": {"col_span": 2, "order": 8}
+    }
+  ]
+}

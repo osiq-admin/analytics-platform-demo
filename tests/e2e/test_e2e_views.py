@@ -91,6 +91,73 @@ class TestDashboard:
 
 
 # ============================================================================
+# Scenario 2b: Dashboard widget config — metadata-driven widget rendering
+# ============================================================================
+
+class TestDashboardWidgetConfig:
+    """Dashboard widget config E2E tests — verify metadata-driven widget rendering."""
+
+    def test_dashboard_loads_widgets_from_api(self, loaded_page):
+        """Verify dashboard fetches widget config from /api/metadata/widgets/dashboard."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        # Verify KPI summary cards render (from widget config)
+        cards = loaded_page.locator("[data-trace='dashboard.summary-cards']")
+        expect(cards).to_be_visible(timeout=10000)
+
+    def test_dashboard_chart_widgets_render(self, loaded_page):
+        """Verify all chart widgets render from config."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        # Check chart widget containers exist
+        expect(loaded_page.locator("text=Alerts by Model")).to_be_visible(timeout=10000)
+        expect(loaded_page.locator("text=Score Distribution")).to_be_visible(timeout=10000)
+
+    def test_widget_config_api_returns_data(self, loaded_page):
+        """Verify the widget config API is accessible and returns dashboard config."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/widgets/dashboard');
+                return { status: resp.status, data: await resp.json() };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["data"]["view_id"] == "dashboard"
+        assert len(result["data"]["widgets"]) >= 2
+
+
+# ============================================================================
+# Scenario 2c: Navigation metadata
+# ============================================================================
+
+class TestNavigationMetadata:
+    """Navigation metadata E2E tests — verify sidebar loads from API."""
+
+    def test_navigation_api_returns_all_views(self, loaded_page):
+        """Verify the navigation API returns all 16 views."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/navigation');
+                const data = await resp.json();
+                const paths = data.groups.flatMap(g => g.items.map(i => i.path));
+                return { status: resp.status, count: paths.length, paths };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 16
+
+    def test_sidebar_renders_all_groups(self, loaded_page):
+        """Verify sidebar renders all navigation groups from metadata."""
+        loaded_page.goto(f"{APP_URL}/dashboard")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        sidebar = loaded_page.locator("[data-tour='sidebar'], [data-trace='app.sidebar']")
+        expect(sidebar).to_be_visible(timeout=10000)
+        # Check that nav links exist (should be at least 16)
+        links = sidebar.locator("a")
+        assert links.count() >= 16
+
+
+# ============================================================================
 # Scenario 3: Entity Designer
 # ============================================================================
 
@@ -1148,3 +1215,43 @@ class TestArchitectureTraceability:
         # Should have entity-related trace elements
         trace_elements = loaded_page.locator("[data-trace^='entities.']")
         expect(trace_elements.first).to_be_visible(timeout=5000)
+
+
+# ============================================================================
+# Scenario 18: Audit trail
+# ============================================================================
+
+class TestAuditTrailE2E:
+    """Audit trail E2E tests — verify audit API is accessible."""
+
+    def test_audit_api_accessible(self, loaded_page):
+        """Verify the audit API endpoint is accessible and returns a list."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/audit');
+                const data = await resp.json();
+                return { status: resp.status, isArray: Array.isArray(data) };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["isArray"] is True
+
+
+# ============================================================================
+# Scenario 19: AI context summary
+# ============================================================================
+
+class TestAIContextE2E:
+    """AI context E2E tests — verify context-summary reflects metadata."""
+
+    def test_ai_context_summary_reflects_metadata(self, loaded_page):
+        """Verify the AI context-summary endpoint returns meaningful context."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/ai/context-summary');
+                const data = await resp.json();
+                return { status: resp.status, hasContext: data.context.length > 50 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["hasContext"] is True

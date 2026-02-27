@@ -63,6 +63,8 @@ The Dashboard provides a summary analytics view:
 
 **Widget Visibility (Phase 9):** Click the gear icon next to the Dashboard heading to toggle widget visibility. Each chart can be shown/hidden via toggle switches. Settings persist in localStorage.
 
+**Metadata-Driven Widgets (M132-M133):** All 8 dashboard widgets (4 KPI cards + 4 charts) are now defined in `workspace/metadata/widgets/dashboard.json`. The Dashboard fetches widget configuration from `/api/metadata/widgets/dashboard` at load time. Widget order, chart types, color palettes, and grid layout are all configurable via metadata. Add, reorder, or modify widgets by editing the JSON — no code changes required.
+
 The dashboard is the default landing page. Navigate to it from the sidebar under **Overview → Dashboard**.
 
 ## Act 1: Data & Discovery
@@ -177,6 +179,7 @@ Click any alert row to open the full 6-panel investigation workspace.
 - Examples: "Wash Trading: Focus on VWAP proximity, quantity matching, and related buy/sell orders."
 - "Insider Dealing: Focus on related products, profit/loss, and proximity to market events."
 - Emphasized panels get a subtle accent ring border to draw investigator attention
+- **Metadata-Driven (M137-M138):** Panel ordering, emphasis, and investigation hints are now loaded from each detection model's `alert_detail_layout` field in metadata. Edit `workspace/metadata/detection_models/*.json` to customize per-model investigation layouts without code changes.
 
 **Row 1: Business Description | Entity Context**
 - Model name, trigger path (all_passed vs score_based), accumulated score vs threshold
@@ -524,6 +527,20 @@ Click **Skip to End** to show the final state.
 | Entities | S19-S20 | Beginner |
 | Investigation | S21-S23 | Beginner → Advanced |
 | Admin | S24-S26 | Intermediate → Advanced |
+
+## Act 8: Metadata Configuration
+
+### 8.1 Dashboard Widget Configuration
+Navigate to **Overview → Dashboard**. Widget layout (KPI cards, charts, ordering) is defined in `workspace/metadata/widgets/dashboard.json`. Edit the JSON to add, reorder, or reconfigure widgets without code changes. The API at `GET /api/metadata/widgets/dashboard` serves the configuration.
+
+### 8.2 Navigation Configuration
+The sidebar navigation is loaded from `workspace/metadata/navigation/main.json`. Add new views by editing the JSON — no Sidebar.tsx changes needed.
+
+### 8.3 Format Rules
+Formatting rules for numeric fields, labels, and currencies are defined in `workspace/metadata/format_rules/default.json`. The `useFormatRules` hook fetches these rules to apply consistent formatting throughout the UI.
+
+### 8.4 Audit Trail
+Every metadata save/delete creates an immutable audit record in `workspace/metadata/_audit/`. Query the audit history via `GET /api/metadata/audit?metadata_type=entity&item_id=product`.
 
 ## Architecture Traceability Mode — M128
 

@@ -42,12 +42,15 @@ async def lifespan(app: FastAPI):
     from backend.services.validation_service import ValidationService
     from backend.services.recommendation_service import RecommendationService
     from backend.services.version_service import VersionService
+    from backend.services.audit_service import AuditService
 
     db_manager.connect(str(settings.workspace_dir / "analytics.duckdb"))
 
     # Make services available via app.state
     app.state.db = db_manager
     app.state.metadata = MetadataService(settings.workspace_dir)
+    app.state.audit = AuditService(settings.workspace_dir)
+    app.state.metadata.set_audit(app.state.audit)
     app.state.resolver = SettingsResolver()
     app.state.detection = DetectionEngine(
         settings.workspace_dir, db_manager, app.state.metadata, app.state.resolver

@@ -4,8 +4,10 @@ import shutil
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
 from backend.db import DuckDBManager
+from backend.main import app
 from backend.services.ai_assistant import AIAssistant
 
 
@@ -123,3 +125,69 @@ class TestInstructionsLoading:
         (ws / "metadata").mkdir()
         ai = AIAssistant(ws, db)
         assert "assistant" in ai._instructions.lower()
+
+
+@pytest.fixture
+def full_workspace(tmp_path):
+    """Create a workspace with full metadata for endpoint tests."""
+    ws = tmp_path / "workspace"
+    ws.mkdir()
+
+    real_ws = Path("workspace")
+
+    # Copy all metadata subdirectories needed for lifespan
+    for subdir in [
+        "entities",
+        "calculations",
+        "settings",
+        "detection_models",
+    ]:
+        src = real_ws / "metadata" / subdir
+        if src.exists():
+            shutil.copytree(src, ws / "metadata" / subdir)
+
+    # Copy AI-specific metadata
+    for fname in ["ai_instructions.md", "ai_mock_sequences.json"]:
+        src = real_ws / "metadata" / fname
+        if src.exists():
+            shutil.copy2(src, ws / "metadata" / fname)
+
+    # Create alerts directory (needed by AlertService)
+    (ws / "alerts" / "traces").mkdir(parents=True)
+
+    # Create submissions directory
+    (ws / "submissions").mkdir(parents=True)
+
+    return ws
+
+
+@pytest.fixture
+def client(full_workspace, monkeypatch):
+    """Test client with lifespan-managed app state."""
+    from backend import config
+
+    monkeypatch.setattr(config.settings, "workspace_dir", full_workspace)
+
+    with TestClient(app, raise_server_exceptions=False) as tc:
+        yield tc
+
+
+class TestAIMetadataAwareness:
+    """Tests for AI context-summary endpoint."""
+
+    def test_context_summary_returns_200(self, client):
+        resp = client.get("/api/ai/context-summary")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "context" in data
+        assert len(data["context"]) > 50
+
+    def test_context_includes_entity_info(self, client):
+        resp = client.get("/api/ai/context-summary")
+        context = resp.json()["context"]
+        assert "entities" in context.lower() or "entity" in context.lower()
+
+    def test_context_includes_model_info(self, client):
+        resp = client.get("/api/ai/context-summary")
+        context = resp.json()["context"]
+        assert "detection" in context.lower() or "model" in context.lower()

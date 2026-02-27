@@ -10,6 +10,15 @@ def _meta(request: Request):
     return request.app.state.metadata
 
 
+# -- Audit Trail --
+
+@router.get("/audit")
+def get_audit_history(request: Request, metadata_type: str | None = None, item_id: str | None = None):
+    if not hasattr(request.app.state, "audit"):
+        return []
+    return request.app.state.audit.get_history(metadata_type, item_id)
+
+
 # -- Entities --
 
 @router.get("/entities")
@@ -505,3 +514,38 @@ def simulate_upgrade(request: Request, body: dict):
     svc = OobVersionService(_meta(request)._base)
     report = svc.simulate_upgrade(body)
     return report.model_dump()
+
+
+# -- Format Rules --
+
+@router.get("/format-rules")
+def get_format_rules(request: Request):
+    """Return centralized format rules for field formatting."""
+    return _meta(request).load_format_rules()
+
+
+# -- Navigation --
+
+@router.get("/navigation")
+def get_navigation(request: Request):
+    """Return navigation configuration from metadata."""
+    return _meta(request).load_navigation()
+
+
+# -- Widget Configurations --
+
+@router.get("/widgets/{view_id}")
+def get_widget_config(view_id: str, request: Request):
+    """Return widget configuration for a view."""
+    config = _meta(request).load_widget_config(view_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
+@router.put("/widgets/{view_id}")
+def save_widget_config(view_id: str, body: dict, request: Request):
+    """Create or update widget configuration for a view."""
+    body["view_id"] = view_id
+    _meta(request).save_widget_config(body)
+    return {"saved": True, "view_id": view_id}

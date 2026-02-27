@@ -334,3 +334,45 @@ When the bottom pane has two distinct modes (e.g., detail vs. graph), use top-le
 import { Panel as ResizablePanel } from "react-resizable-panels";
 import Panel from "../../components/Panel.tsx";
 ```
+
+## 18. Widget Configuration Pattern
+
+Dashboard widgets are defined in metadata JSON (`workspace/metadata/widgets/{view_id}.json`), not hardcoded in components.
+
+**Adding a new widget:**
+1. Add a `WidgetDefinition` entry to the view's widget JSON file
+2. If it's a chart widget, add a renderer entry in the view's `CHART_RENDERERS` map
+3. The widget will be included automatically at the grid position specified in `grid_config`
+
+**Widget metadata structure:**
+```json
+{
+  "widget_id": "my-widget",
+  "label": "My Widget",
+  "widget_type": "chart",
+  "data_source": "stats.my_data",
+  "grid_config": { "row": 1, "col": 0, "col_span": 1, "order": 0 },
+  "chart_config": { "default_chart_type": "bar", "available_chart_types": ["bar", "pie"] }
+}
+```
+
+**API:** `GET /api/metadata/widgets/{view_id}` returns the config; `PUT` saves updates.
+
+**Fallback:** If the API fails, the Dashboard falls back to hardcoded widgets for resilience.
+
+**Reference:** `frontend/src/views/Dashboard/index.tsx`, `backend/models/widgets.py`, `workspace/metadata/widgets/dashboard.json`
+
+## 19. Navigation Metadata Pattern
+
+Sidebar navigation is loaded from `workspace/metadata/navigation/main.json` via the `navigationStore` Zustand store.
+
+**Adding a new view:**
+1. Add a `NavItem` entry to the appropriate group in `main.json`
+2. Add the route to `frontend/src/App.tsx`
+3. The sidebar link appears automatically at the position specified by `order`
+
+**API:** `GET /api/metadata/navigation` returns the full navigation config.
+
+**Fallback:** If the API fails, `Sidebar.tsx` falls back to `FALLBACK_NAVIGATION`.
+
+**Reference:** `frontend/src/layouts/Sidebar.tsx`, `frontend/src/stores/navigationStore.ts`, `workspace/metadata/navigation/main.json`

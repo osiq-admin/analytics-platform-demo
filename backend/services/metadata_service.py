@@ -7,13 +7,24 @@ from backend.models.calculations import CalculationDefinition
 from backend.models.detection import DetectionModelDefinition
 from backend.models.entities import EntityDefinition
 from backend.models.match_patterns import MatchPattern
+from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
+from backend.models.widgets import ViewWidgetConfig
 
 
 class MetadataService:
     def __init__(self, workspace_dir: Path):
         self._base = workspace_dir / "metadata"
+        self._audit: "AuditService | None" = None
+
+    def set_audit(self, audit) -> None:
+        self._audit = audit
+
+    def _record_audit(self, metadata_type: str, item_id: str, action: str,
+                      new_value: dict | None = None, previous_value: dict | None = None) -> None:
+        if self._audit:
+            self._audit.record(metadata_type, item_id, action, new_value, previous_value)
 
     # -- OOB Manifest & User Overrides --
 
@@ -67,8 +78,14 @@ class MetadataService:
             path = self._user_entity_path(entity.entity_id)
         else:
             path = self._entity_path(entity.entity_id)
+        prev = None
+        existed = path.exists()
+        if existed:
+            prev = json.loads(path.read_text())
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(entity.model_dump_json(indent=2))
+        self._record_audit("entity", entity.entity_id, "updated" if existed else "created",
+                           new_value=entity.model_dump(), previous_value=prev)
 
     def load_entity(self, entity_id: str) -> EntityDefinition | None:
         user_path = self._user_entity_path(entity_id)
@@ -102,12 +119,16 @@ class MetadataService:
     def delete_entity(self, entity_id: str) -> bool:
         user_path = self._user_entity_path(entity_id)
         if user_path.exists():
+            prev = json.loads(user_path.read_text())
             user_path.unlink()
+            self._record_audit("entity", entity_id, "deleted", previous_value=prev)
             return True
         if not self.is_oob_item("entities", entity_id):
             path = self._entity_path(entity_id)
             if path.exists():
+                prev = json.loads(path.read_text())
                 path.unlink()
+                self._record_audit("entity", entity_id, "deleted", previous_value=prev)
                 return True
         return False
 
@@ -132,7 +153,13 @@ class MetadataService:
             folder = self._calc_dir() / calc.layer.value
             folder.mkdir(parents=True, exist_ok=True)
             path = folder / f"{calc.calc_id}.json"
+        prev = None
+        existed = path.exists()
+        if existed:
+            prev = json.loads(path.read_text())
         path.write_text(calc.model_dump_json(indent=2))
+        self._record_audit("calculation", calc.calc_id, "updated" if existed else "created",
+                           new_value=calc.model_dump(), previous_value=prev)
 
     def load_calculation(self, calc_id: str) -> CalculationDefinition | None:
         user_path = self._user_calc_path(calc_id)
@@ -178,12 +205,16 @@ class MetadataService:
     def delete_calculation(self, calc_id: str) -> bool:
         user_path = self._user_calc_path(calc_id)
         if user_path is not None:
+            prev = json.loads(user_path.read_text())
             user_path.unlink()
+            self._record_audit("calculation", calc_id, "deleted", previous_value=prev)
             return True
         if not self.is_oob_item("calculations", calc_id):
             path = self._calc_path(calc_id)
             if path:
+                prev = json.loads(path.read_text())
                 path.unlink()
+                self._record_audit("calculation", calc_id, "deleted", previous_value=prev)
                 return True
         return False
 
@@ -213,7 +244,13 @@ class MetadataService:
                 folder = self._settings_dir() / "thresholds"
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{setting.setting_id}.json"
+        prev = None
+        existed = path.exists()
+        if existed:
+            prev = json.loads(path.read_text())
         path.write_text(setting.model_dump_json(indent=2))
+        self._record_audit("setting", setting.setting_id, "updated" if existed else "created",
+                           new_value=setting.model_dump(), previous_value=prev)
 
     def load_setting(self, setting_id: str) -> SettingDefinition | None:
         user_path = self._user_setting_path(setting_id)
@@ -259,12 +296,16 @@ class MetadataService:
     def delete_setting(self, setting_id: str) -> bool:
         user_path = self._user_setting_path(setting_id)
         if user_path is not None:
+            prev = json.loads(user_path.read_text())
             user_path.unlink()
+            self._record_audit("setting", setting_id, "deleted", previous_value=prev)
             return True
         if not self.is_oob_item("settings", setting_id):
             path = self._setting_path(setting_id)
             if path:
+                prev = json.loads(path.read_text())
                 path.unlink()
+                self._record_audit("setting", setting_id, "deleted", previous_value=prev)
                 return True
         return False
 
@@ -280,7 +321,13 @@ class MetadataService:
             folder = self._detection_dir()
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{model.model_id}.json"
+        prev = None
+        existed = path.exists()
+        if existed:
+            prev = json.loads(path.read_text())
         path.write_text(model.model_dump_json(indent=2))
+        self._record_audit("detection_model", model.model_id, "updated" if existed else "created",
+                           new_value=model.model_dump(), previous_value=prev)
 
     def load_detection_model(self, model_id: str) -> DetectionModelDefinition | None:
         user_path = self._user_detection_model_path(model_id)
@@ -315,12 +362,16 @@ class MetadataService:
     def delete_detection_model(self, model_id: str) -> bool:
         user_path = self._user_detection_model_path(model_id)
         if user_path.exists():
+            prev = json.loads(user_path.read_text())
             user_path.unlink()
+            self._record_audit("detection_model", model_id, "deleted", previous_value=prev)
             return True
         if not self.is_oob_item("detection_models", model_id):
             path = self._detection_dir() / f"{model_id}.json"
             if path.exists():
+                prev = json.loads(path.read_text())
                 path.unlink()
+                self._record_audit("detection_model", model_id, "deleted", previous_value=prev)
                 return True
         return False
 
@@ -808,3 +859,79 @@ class MetadataService:
                     if match:
                         count += 1
         return count
+
+    # -- Format Rules --
+
+    def load_format_rules(self) -> dict:
+        """Load format rules from metadata."""
+        fmt_dir = self._base / "format_rules"
+        if not fmt_dir.exists():
+            return {"format_group_id": "default", "rules": {}, "field_mappings": {}}
+        files = sorted(fmt_dir.glob("*.json"))
+        if not files:
+            return {"format_group_id": "default", "rules": {}, "field_mappings": {}}
+        from backend.models.format_rules import FormatRulesConfig
+        data = json.loads(files[0].read_text())
+        config = FormatRulesConfig.model_validate(data)
+        return config.model_dump()
+
+    # -- Navigation --
+
+    def load_navigation(self) -> dict:
+        """Load navigation configuration from metadata."""
+        nav_dir = self._base / "navigation"
+        if not nav_dir.exists():
+            return {"navigation_id": "main", "groups": []}
+        files = sorted(nav_dir.glob("*.json"))
+        if not files:
+            return {"navigation_id": "main", "groups": []}
+        data = json.loads(files[0].read_text())
+        from backend.models.navigation import NavigationConfig
+        config = NavigationConfig.model_validate(data)
+        # Sort groups by order, items by order within each group
+        result = config.model_dump()
+        result["groups"].sort(key=lambda g: g["order"])
+        for group in result["groups"]:
+            group["items"].sort(key=lambda i: i["order"])
+        return result
+
+    # -- Query Presets --
+
+    def _query_presets_dir(self) -> Path:
+        return self._base / "query_presets"
+
+    def list_query_presets(self) -> list[dict]:
+        """Load all query preset groups from JSON, flatten and sort by order."""
+        folder = self._query_presets_dir()
+        if not folder.exists():
+            return []
+        presets = []
+        for f in sorted(folder.glob("*.json")):
+            group = QueryPresetGroup.model_validate_json(f.read_text())
+            for p in group.presets:
+                presets.append(p.model_dump())
+        presets.sort(key=lambda p: p["order"])
+        return presets
+
+    # -- Widget Configurations --
+
+    def _widgets_dir(self) -> Path:
+        return self._base / "widgets"
+
+    def load_widget_config(self, view_id: str) -> dict | None:
+        """Load widget configuration for a view. Returns model_dump() or None."""
+        path = self._widgets_dir() / f"{view_id}.json"
+        if not path.exists():
+            return None
+        config = ViewWidgetConfig.model_validate_json(path.read_text())
+        # Sort widgets by grid order
+        config.widgets.sort(key=lambda w: w.grid.order)
+        return config.model_dump()
+
+    def save_widget_config(self, config: dict) -> None:
+        """Validate and save a widget configuration."""
+        validated = ViewWidgetConfig.model_validate(config)
+        folder = self._widgets_dir()
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{validated.view_id}.json"
+        path.write_text(validated.model_dump_json(indent=2))
