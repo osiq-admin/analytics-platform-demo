@@ -31,7 +31,8 @@
             "items": [
                 {"view_id": "pipeline", "label": "Pipeline", "path": "/pipeline", "icon": "Workflow", "order": 0},
                 {"view_id": "schema", "label": "Schema", "path": "/schema", "icon": "Table", "order": 1},
-                {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 2}
+                {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 2},
+                {"view_id": "medallion", "label": "Medallion", "path": "/medallion", "icon": "Layers", "order": 3}
             ]
         },
         {
