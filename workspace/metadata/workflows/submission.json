@@ -1,0 +1,36 @@
+{
+  "workflow_id": "submission",
+  "description": "Regulatory submission workflow with approval process",
+  "states": [
+    {
+      "id": "pending",
+      "label": "Pending",
+      "badge_variant": "info",
+      "transitions": ["in_review", "approved", "rejected"]
+    },
+    {
+      "id": "in_review",
+      "label": "In Review",
+      "badge_variant": "warning",
+      "transitions": ["approved", "rejected"]
+    },
+    {
+      "id": "approved",
+      "label": "Approved",
+      "badge_variant": "success",
+      "transitions": ["implemented"]
+    },
+    {
+      "id": "rejected",
+      "label": "Rejected",
+      "badge_variant": "error",
+      "transitions": ["pending"]
+    },
+    {
+      "id": "implemented",
+      "label": "Implemented",
+      "badge_variant": "success",
+      "transitions": []
+    }
+  ]
+}

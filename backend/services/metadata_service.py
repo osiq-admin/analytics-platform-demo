@@ -12,6 +12,7 @@ from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
 from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
+from backend.models.workflow import WorkflowConfig
 
 
 class MetadataService:
@@ -1005,5 +1006,19 @@ class MetadataService:
             data = json.loads(f.read_text())
             if data.get("palette_id") == palette_id:
                 config = ThemePalette.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Workflow Configurations --
+
+    def load_workflow_config(self, workflow_id: str) -> dict | None:
+        """Load a workflow configuration by workflow_id. Scans workspace/metadata/workflows/ directory."""
+        workflows_dir = self._base / "workflows"
+        if not workflows_dir.exists():
+            return None
+        for f in workflows_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("workflow_id") == workflow_id:
+                config = WorkflowConfig.model_validate(data)
                 return config.model_dump()
         return None

@@ -598,6 +598,18 @@ def get_theme_palette(palette_id: str, request: Request):
     return palette
 
 
+# -- Workflow Configurations --
+
+@router.get("/workflows/{workflow_id}")
+def get_workflow_config(workflow_id: str, request: Request):
+    """Return workflow configuration by workflow_id."""
+    svc = _meta(request)
+    config = svc.load_workflow_config(workflow_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
 # -- Grid Configurations --
 
 @router.get("/grids/{view_id}")

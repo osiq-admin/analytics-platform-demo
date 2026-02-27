@@ -10,23 +10,32 @@ import {
   useSubmissionStore,
   type Submission,
 } from "../../stores/submissionStore.ts";
+import {
+  useWorkflowStates,
+  type WorkflowState,
+} from "../../hooks/useWorkflowStates.ts";
 
 /* ---------- Status helpers ---------- */
 
-function statusVariant(status: string) {
-  switch (status) {
-    case "approved":
-    case "implemented":
-      return "success" as const;
-    case "rejected":
-      return "error" as const;
-    case "in_review":
-      return "warning" as const;
-    case "pending":
-      return "info" as const;
-    default:
-      return "muted" as const;
+/** Build a status-to-variant lookup from workflow states metadata. */
+function buildVariantMap(states: WorkflowState[]): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const s of states) {
+    map[s.id] = s.badge_variant;
   }
+  return map;
+}
+
+function statusVariantFromMap(
+  status: string,
+  variantMap: Record<string, string>,
+) {
+  return (variantMap[status] ?? "muted") as
+    | "success"
+    | "error"
+    | "warning"
+    | "info"
+    | "muted";
 }
 
 function formatDate(ts: string) {
@@ -40,7 +49,8 @@ function formatDate(ts: string) {
 /* ---------- Column defs ---------- */
 
 function buildColumnDefs(
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  variantMap: Record<string, string>,
 ): ColDef<Submission>[] {
   return [
     {
@@ -69,7 +79,7 @@ function buildColumnDefs(
         const el = document.createElement("span");
         el.className = "inline-flex items-center";
         // We use a simple colored text approach for the grid cell
-        const variant = statusVariant(params.value);
+        const variant = statusVariantFromMap(params.value, variantMap);
         const colors: Record<string, string> = {
           success: "text-green-500",
           error: "text-red-500",
@@ -137,6 +147,9 @@ export default function Submissions() {
     rerunRecommendations,
   } = useSubmissionStore();
 
+  const workflowStates = useWorkflowStates("submission");
+  const variantMap = useMemo(() => buildVariantMap(workflowStates), [workflowStates]);
+
   const [selected, setSelected] = useState<Submission | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -184,8 +197,8 @@ export default function Submissions() {
   }, [deleteTarget, deleteSubmission]);
 
   const columnDefs = useMemo(
-    () => buildColumnDefs((id) => setDeleteTarget(id)),
-    []
+    () => buildColumnDefs((id) => setDeleteTarget(id), variantMap),
+    [variantMap]
   );
 
   if (loading && submissions.length === 0) {
@@ -238,7 +251,7 @@ export default function Submissions() {
               <span>{selected.name}</span>
               <StatusBadge
                 label={selected.status}
-                variant={statusVariant(selected.status)}
+                variant={statusVariantFromMap(selected.status, variantMap)}
               />
             </span>
           }
@@ -258,6 +271,7 @@ export default function Submissions() {
             submission={selected}
             onStatusUpdate={handleStatusUpdate}
             onRefreshRecommendations={handleRefreshRecommendations}
+            variantMap={variantMap}
           />
         </Panel>
       )}
