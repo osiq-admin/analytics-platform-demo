@@ -326,6 +326,16 @@ class SyntheticDataGenerator:
     # Product catalog
     # -----------------------------------------------------------------------
 
+    @staticmethod
+    def _mic_to_regulatory_scope(mic: str) -> str:
+        """Map exchange MIC to regulatory jurisdiction."""
+        _mic_jurisdiction = {
+            "XETR": "EU", "XPAR": "EU",
+            "XNYS": "US", "XNAS": "US", "XCBO": "US", "XCME": "US",
+            "XLSE": "UK",
+        }
+        return _mic_jurisdiction.get(mic, "MULTI")
+
     def _build_product_catalog(self) -> dict[str, dict]:
         catalog: dict[str, dict] = {}
 
@@ -382,6 +392,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope(mic),
             }
         for f in FX_PAIRS:
             catalog[f["id"]] = {
@@ -395,6 +406,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope("XXXX"),
             }
         for c in COMMODITIES:
             catalog[c["id"]] = {
@@ -408,6 +420,7 @@ class SyntheticDataGenerator:
                 "contract_size": None,
                 "strike_price": None,
                 "expiry_date": None,
+                "regulatory_scope": self._mic_to_regulatory_scope("XXXX"),
             }
         for o in OPTIONS:
             opt_type = o["option_type"]
@@ -424,6 +437,7 @@ class SyntheticDataGenerator:
                 "underlying_product_id": _underlying_map.get(o["id"]),
                 "strike_price": _strike_map.get(o["id"]),
                 "expiry_date": "2024-03-15",
+                "regulatory_scope": self._mic_to_regulatory_scope("XCBO"),
             }
         for fu in FUTURES:
             catalog[fu["id"]] = {
@@ -437,6 +451,7 @@ class SyntheticDataGenerator:
                 "underlying_product_id": _underlying_map.get(fu["id"]),
                 "strike_price": None,
                 "expiry_date": "2024-03-29",
+                "regulatory_scope": self._mic_to_regulatory_scope("XCME"),
             }
         return catalog
 
@@ -1310,12 +1325,13 @@ class SyntheticDataGenerator:
         return counts
 
     def _write_product_csv(self) -> int:
-        """Write the product dimension table CSV (17 columns, ISO-enriched)."""
+        """Write the product dimension table CSV (18 columns, ISO-enriched)."""
         fieldnames = [
             "product_id", "isin", "sedol", "ticker", "name", "asset_class",
             "instrument_type", "cfi_code", "underlying_product_id",
             "contract_size", "strike_price", "expiry_date", "exchange_mic",
             "currency", "tick_size", "lot_size", "base_price",
+            "regulatory_scope",
         ]
         rows = []
         for pid, info in sorted(self.products.items()):
@@ -1337,6 +1353,7 @@ class SyntheticDataGenerator:
                 "tick_size": info.get("tick_size", ""),
                 "lot_size": info.get("lot_size", ""),
                 "base_price": info.get("base_price", ""),
+                "regulatory_scope": info.get("regulatory_scope", "MULTI"),
             })
         return self._write_csv("product.csv", fieldnames, rows)
 
@@ -1448,6 +1465,8 @@ class SyntheticDataGenerator:
                     {"name": "tick_size", "type": "decimal", "description": "Minimum price increment", "is_key": False, "nullable": False},
                     {"name": "lot_size", "type": "integer", "description": "Standard trading lot size", "is_key": False, "nullable": False},
                     {"name": "base_price", "type": "decimal", "description": "Reference base price for data generation", "is_key": False, "nullable": False},
+                    {"name": "regulatory_scope", "type": "string", "description": "Primary regulatory jurisdiction for this product", "is_key": False, "nullable": False,
+                     "domain_values": ["EU", "US", "UK", "APAC", "MULTI"]},
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"product_id": "product_id"}, "relationship_type": "one_to_many"},

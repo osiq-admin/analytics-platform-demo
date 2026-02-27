@@ -1,4 +1,4 @@
-"""Tests for account entity MiFID II classification and compliance status fields."""
+"""Tests for entity compliance fields: account MiFID II classification and product regulatory jurisdiction."""
 import shutil
 from pathlib import Path
 
@@ -90,3 +90,26 @@ class TestAccountCompliance:
         for row in rows:
             assert row["mifid_client_category"] in ("retail", "professional", "eligible_counterparty")
             assert row["compliance_status"] in ("active", "under_review", "restricted", "suspended")
+
+
+class TestProductCompliance:
+    def test_product_has_regulatory_scope(self, client):
+        resp = client.get("/api/metadata/entities")
+        product = next((e for e in resp.json() if e["entity_id"] == "product"), None)
+        assert product is not None
+        field_names = [f["name"] for f in product["fields"]]
+        assert "regulatory_scope" in field_names
+
+    def test_regulatory_scope_has_domain_values(self, client):
+        resp = client.get("/api/metadata/entities")
+        product = next((e for e in resp.json() if e["entity_id"] == "product"), None)
+        field = next((f for f in product["fields"] if f["name"] == "regulatory_scope"), None)
+        assert field is not None
+        assert "EU" in field["domain_values"]
+        assert "US" in field["domain_values"]
+
+    def test_product_regulatory_scope_in_data(self, client):
+        resp = client.post("/api/query/execute", json={"sql": "SELECT regulatory_scope FROM product LIMIT 5"})
+        assert resp.status_code == 200
+        for row in resp.json()["rows"]:
+            assert row["regulatory_scope"] in ("EU", "US", "UK", "APAC", "MULTI")
