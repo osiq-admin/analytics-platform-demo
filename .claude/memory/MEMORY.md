@@ -4,7 +4,7 @@
 Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. Pitching to product team — E2E concept demo, not production.
 
 ## Current State (2026-02-27)
-- **Branch**: `feat/phase13-data-calibration` — M174 complete, ready to merge
+- **Branch**: `main` — all phases complete (M0-M174), fully merged and pushed
 - **GitHub**: `analytics-platform-demo` repo
 - **Tests**: 716 total (506 backend + 210 E2E Playwright) — ALL PASSING
 - **Frontend**: builds clean — 969 modules (`cd frontend && npm run build`)
