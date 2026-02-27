@@ -12,7 +12,7 @@ from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
 from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
-from backend.models.workflow import WorkflowConfig
+from backend.models.workflow import DemoConfig, WorkflowConfig
 
 
 class MetadataService:
@@ -1020,5 +1020,19 @@ class MetadataService:
             data = json.loads(f.read_text())
             if data.get("workflow_id") == workflow_id:
                 config = WorkflowConfig.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Demo Configurations --
+
+    def load_demo_config(self, demo_id: str) -> dict | None:
+        """Load a demo checkpoint configuration by demo_id. Scans workspace/metadata/demo/ directory."""
+        demo_dir = self._base / "demo"
+        if not demo_dir.exists():
+            return None
+        for f in demo_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("demo_id") == demo_id:
+                config = DemoConfig.model_validate(data)
                 return config.model_dump()
         return None

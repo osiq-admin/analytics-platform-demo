@@ -610,6 +610,18 @@ def get_workflow_config(workflow_id: str, request: Request):
     return config
 
 
+# -- Demo Configurations --
+
+@router.get("/demo/{demo_id}")
+def get_demo_config(demo_id: str, request: Request):
+    """Return demo checkpoint configuration by demo_id."""
+    svc = _meta(request)
+    config = svc.load_demo_config(demo_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
 # -- Grid Configurations --
 
 @router.get("/grids/{view_id}")

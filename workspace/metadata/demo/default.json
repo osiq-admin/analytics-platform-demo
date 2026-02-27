@@ -1,0 +1,54 @@
+{
+  "demo_id": "default",
+  "description": "Default demo flow for trade surveillance platform",
+  "checkpoints": [
+    {
+      "id": "pristine",
+      "label": "Pristine",
+      "description": "Initial state with empty pipeline",
+      "order": 0
+    },
+    {
+      "id": "data_loaded",
+      "label": "Data Loaded",
+      "description": "All entities and market data loaded",
+      "order": 1
+    },
+    {
+      "id": "pipeline_run",
+      "label": "Pipeline Run",
+      "description": "Calculations and detection models executed",
+      "order": 2
+    },
+    {
+      "id": "alerts_generated",
+      "label": "Alerts Generated",
+      "description": "Alerts generated from detection results",
+      "order": 3
+    },
+    {
+      "id": "act1_complete",
+      "label": "Act 1 Complete",
+      "description": "Data loaded, entities configured, pipeline ready to run",
+      "order": 4
+    },
+    {
+      "id": "model_deployed",
+      "label": "Model Deployed",
+      "description": "Detection models deployed and configured",
+      "order": 5
+    },
+    {
+      "id": "act2_complete",
+      "label": "Act 2 Complete",
+      "description": "Models deployed, alerts generated, risk cases available",
+      "order": 6
+    },
+    {
+      "id": "final",
+      "label": "Final",
+      "description": "Full demo state with all data, models, alerts, and risk cases",
+      "order": 7
+    }
+  ]
+}
