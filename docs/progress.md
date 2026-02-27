@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M166 Stage 4 Checkpoint; 681 total tests: 478 backend + 203 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette)
+**Last Updated**: 2026-02-27 (M170 Stage 5 Checkpoint; 709 total tests: 506 backend + 203 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette, 1 workflow, 1 demo config, 1 tour registry)
 
 ---
 
@@ -242,6 +242,10 @@
 | M164 | Color Palettes Metadata | COMPLETE | 4 | 4 | Theme palettes as metadata — chart colors, asset class colors, graph node colors |
 | M165 | E2E Metadata Tests | COMPLETE | 3 | 3 | 21 E2E tests for standards, grids, view config, palettes APIs |
 | M166 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | View config — 478 backend + 203 E2E tests, entities.view-tabs upgraded |
+| M167 | Submission Workflow | COMPLETE | 4 | 4 | Workflow states as metadata — badge variants, transitions from API |
+| M168 | Demo Checkpoints | COMPLETE | 3 | 3 | Demo toolbar checkpoints as metadata — 8 checkpoints from API |
+| M169 | Tour Registry | COMPLETE | 3 | 3 | Tour/scenario registry via metadata API — 19 tours, 26 scenarios |
+| M170 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Workflow metadata — 506 backend tests, 3 more sections upgraded |
 
 ---
 

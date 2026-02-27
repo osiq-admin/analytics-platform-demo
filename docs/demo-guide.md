@@ -316,6 +316,15 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - Regulatory Map uses metadata palette for graph node colors
 - **Hook pattern**: `useViewTabs(viewId, fallback)` and `useThemePalettes()` with module-level cache
 
+### Workflow & Template Metadata (M167-M169)
+- **Submission workflow**: State machine (pending → in_review → approved/rejected/implemented) from `workspace/metadata/workflows/submission.json`
+  - Badge variants and allowed transitions configurable via metadata
+  - `useWorkflowStates(workflowId)` hook with module-level cache
+- **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
+  - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
+- **Tour/scenario registry**: 19 tours and 26 scenarios catalogued in `workspace/metadata/tours/registry.json`
+  - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

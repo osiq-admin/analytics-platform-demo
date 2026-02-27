@@ -2988,13 +2988,18 @@ export const VIEW_TRACES: ViewTrace[] = [
             category: "metadata",
             role: "Submission files updated by review actions",
           },
+          {
+            path: "workspace/metadata/workflows/submission.json",
+            category: "metadata",
+            role: "Workflow state definitions with transitions and badge variants",
+          },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Review workflow states are predefined but the submission content is metadata-driven. Status transitions are code-driven.",
+          "Workflow states (labels, badge variants, allowed transitions) loaded from metadata JSON via API. Submission content is metadata-driven. Review action logic remains in code.",
         metadataOpportunities: [
-          "Define workflow states and transitions as metadata for configurable approval processes",
+          "Add custom actions per workflow state from metadata",
         ],
       },
     ],
@@ -3092,13 +3097,19 @@ export const VIEW_TRACES: ViewTrace[] = [
             routerFile: "backend/api/demo.py",
           },
         ],
-        dataSources: [],
+        dataSources: [
+          {
+            path: "workspace/metadata/demo/default.json",
+            category: "metadata",
+            role: "Demo checkpoint definitions with labels, descriptions, and ordering",
+          },
+        ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Demo checkpoints and state progression are defined in backend logic. Toolbar layout and button labels are hardcoded in the component.",
+          "Demo checkpoints (labels, descriptions, ordering) defined in metadata JSON accessible via API. Toolbar button rendering and state progression logic remain in code.",
         metadataOpportunities: [
-          "Define demo steps and checkpoints as metadata for customizable demo flows",
+          "Add custom demo flows for different audience types",
         ],
       },
       {
@@ -3146,9 +3157,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Tours and scenarios are data-driven (from TypeScript data files) but toolbar layout and button logic are code-driven. Data files act like metadata but are compiled into the bundle.",
+          "Tours and scenarios are data-driven (TypeScript data files compiled into bundle + JSON registry served via /api/metadata/tours). Tour/scenario counts and categories accessible via metadata API. Toolbar layout code-driven.",
         metadataOpportunities: [
           "Load tour/scenario definitions from the backend as true metadata",
           "Make toolbar buttons configurable via metadata",
