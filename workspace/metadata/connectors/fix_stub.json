@@ -1,0 +1,13 @@
+{
+    "connector_id": "fix_stub",
+    "connector_type": "fix_protocol",
+    "format": "fix",
+    "config": {
+        "protocol_version": "FIX.4.4"
+    },
+    "schema_detection": "manual",
+    "quality_profile": true,
+    "landing_tier": "landing",
+    "target_entity": "",
+    "description": "FIX protocol connector stub — demonstrates extensibility for FIX 4.2/4.4/5.0 message parsing"
+}
