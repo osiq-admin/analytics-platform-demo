@@ -48,6 +48,7 @@
 | Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry, BDD scenarios, architecture re-audit — 716 total tests (506+210), 83.8% metadata-driven |
 | Development Workflow Protocol | COMPLETE | Single authoritative lifecycle protocol (Pre-Work → Planning → Execution → Completion), 3-tier Milestone Completion Protocol, Test Count Sync Registry, fixed all stale docs |
 | Roadmap Restructuring — Medallion Architecture | COMPLETE | Restructured roadmap from 20 phases to 33 phases across 7 tiers: medallion architecture (11 tiers), data governance, PII/masking/encryption, business glossary (ISO 11179), standards (ISO 8000/25012/27001, BCBS 239), migration readiness (SQLMesh, Arrow) |
+| Data Calibration (Phase 13) | IN PROGRESS | Fix alert distribution skew (F-001/F-010): add cross-asset trading, new patterns, MPR threshold tuning |
 
 ---
 
