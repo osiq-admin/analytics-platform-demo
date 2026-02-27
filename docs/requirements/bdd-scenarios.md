@@ -760,6 +760,118 @@ And the badge changes from "Custom" to "OOB"
 
 ---
 
+## Feature: SQL Query Presets from Metadata
+
+### Scenario: Presets Loaded from Metadata
+```gherkin
+Given the platform is running
+And query presets are defined in workspace/metadata/query_presets/default.json
+When I navigate to SQL Console
+And I open the presets dropdown
+Then I see presets matching the metadata file
+And each preset has a name and SQL query
+```
+
+### Scenario: Adding a New Preset via Metadata
+```gherkin
+Given 3 presets exist in the metadata file
+When I add a 4th preset to workspace/metadata/query_presets/default.json
+And I reload the SQL Console
+Then the new preset appears in the dropdown
+```
+
+---
+
+## Feature: Dashboard Widget Configuration
+
+### Scenario: Dashboard Renders from Widget Metadata
+```gherkin
+Given widget configuration exists at workspace/metadata/widgets/dashboard.json
+When I navigate to Dashboard
+Then KPI cards render matching the widget config
+And chart widgets render in the order specified by metadata
+```
+
+### Scenario: Reordering Dashboard Widgets
+```gherkin
+Given widgets A (order=1) and B (order=2) in dashboard config
+When I change widget B order to 0
+And I reload the Dashboard
+Then widget B appears before widget A
+```
+
+---
+
+## Feature: Navigation from Metadata
+
+### Scenario: Sidebar Renders from Navigation Manifest
+```gherkin
+Given navigation is defined in workspace/metadata/navigation/main.json
+When the application loads
+Then the sidebar shows groups matching the navigation manifest
+And each group shows items in the defined order
+```
+
+### Scenario: Adding a New View to Navigation
+```gherkin
+Given 16 views in the navigation manifest
+When I add a 17th view entry to the manifest
+And I reload the application
+Then the sidebar shows 17 navigation items
+```
+
+---
+
+## Feature: Format Rules from Metadata
+
+### Scenario: Labels Format According to Rules
+```gherkin
+Given format rules define model_id as "snake_to_title"
+When model_id "wash_intraday" is displayed in the UI
+Then it appears as "Wash Intraday"
+```
+
+### Scenario: Numeric Values Format According to Rules
+```gherkin
+Given format rules define score with precision 2
+When accumulated_score 85.678 is displayed
+Then it appears as "85.68"
+```
+
+---
+
+## Feature: Model-Specific Alert Layouts
+
+### Scenario: Wash Trading Alert Shows Relevant Panels
+```gherkin
+Given a wash trading alert exists
+When I view the alert detail
+Then the panel order matches wash_intraday.alert_detail_layout.panels
+And the "scores" panel is visually emphasized
+```
+
+### Scenario: Different Models Show Different Layouts
+```gherkin
+Given alerts from wash_intraday and insider_dealing models
+When I view each alert's detail
+Then each displays panels in a different order
+And each highlights different emphasis sections
+```
+
+---
+
+## Feature: Settings Resolution Strategy Pattern
+
+### Scenario: Custom Resolution Strategy
+```gherkin
+Given a new "weighted" resolution strategy is registered in RESOLUTION_STRATEGIES
+And a setting uses match_type "weighted"
+When I resolve the setting with context
+Then the weighted strategy is used instead of hierarchy or multi-dimensional
+```
+
+---
+
 ## Feature: Metadata Audit Trail
 
 ### Scenario: Saving Metadata Creates Audit Record
