@@ -935,3 +935,32 @@ class MetadataService:
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"{validated.view_id}.json"
         path.write_text(validated.model_dump_json(indent=2))
+
+    # -- Standards Registries --
+
+    def load_iso_registry(self) -> dict:
+        """Load the ISO standards registry from workspace/metadata/standards/iso_mapping.json."""
+        path = self._base / "standards" / "iso_mapping.json"
+        if not path.exists():
+            return {"registry_id": "iso_standards", "iso_mappings": []}
+        from backend.models.standards import ISORegistry
+        config = ISORegistry.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    def load_fix_registry(self) -> dict:
+        """Load the FIX protocol registry from workspace/metadata/standards/fix_protocol.json."""
+        path = self._base / "standards" / "fix_protocol.json"
+        if not path.exists():
+            return {"registry_id": "fix_protocol", "fix_fields": []}
+        from backend.models.standards import FIXRegistry
+        config = FIXRegistry.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    def load_compliance_registry(self) -> dict:
+        """Load the compliance requirements from workspace/metadata/standards/compliance_requirements.json."""
+        path = self._base / "standards" / "compliance_requirements.json"
+        if not path.exists():
+            return {"registry_id": "compliance_requirements", "requirements": []}
+        from backend.models.standards import ComplianceRegistry
+        config = ComplianceRegistry.model_validate_json(path.read_text())
+        return config.model_dump()

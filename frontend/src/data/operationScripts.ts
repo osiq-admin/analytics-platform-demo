@@ -722,6 +722,18 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "See AI-generated suggestions for new detection models that would address identified regulatory gaps.",
       },
       {
+        id: "view_iso_standards",
+        name: "View ISO Standards",
+        description:
+          "Browse ISO standards registry (ISO 6166, 10383, 10962, 4217, 3166-1, 8601) with field mappings and validation rules.",
+      },
+      {
+        id: "view_compliance_requirements",
+        name: "View Compliance Requirements",
+        description:
+          "Browse granular compliance requirements mapped to detection models, calculations, and entity fields. Each requirement links to its implementation (model, calc, or field). Status shows implemented, partial, or planned.",
+      },
+      {
         id: "architecture_trace",
         name: "Explore Architecture Trace",
         description:

@@ -1,0 +1,90 @@
+{
+  "registry_id": "iso_standards",
+  "description": "ISO standards registry mapping financial industry standards to platform entity fields, validation rules, and regulatory requirements.",
+  "iso_mappings": [
+    {
+      "iso_standard": "ISO 6166",
+      "standard_name": "International Securities Identification Number (ISIN)",
+      "field_path": "product.isin",
+      "description": "12-character alphanumeric code that uniquely identifies a specific securities issue. Format: 2-letter country code + 9-character alphanumeric national security identifier + 1 check digit.",
+      "entities_using": ["product"],
+      "fields_using": ["isin"],
+      "validation_rules": {
+        "length": 12,
+        "format": "^[A-Z]{2}[A-Z0-9]{9}[0-9]$"
+      },
+      "regulatory_relevance": ["MiFID II RTS 25", "MAR Art. 16"],
+      "detection_models_using": ["wash_full_day", "wash_intraday", "insider_dealing", "market_price_ramping", "spoofing_layering"]
+    },
+    {
+      "iso_standard": "ISO 10383",
+      "standard_name": "Market Identifier Code (MIC)",
+      "field_path": "venue.mic",
+      "description": "4-character alphanumeric code identifying exchanges, trading platforms, regulated or non-regulated markets and trade reporting facilities.",
+      "entities_using": ["venue", "product", "execution", "order"],
+      "fields_using": ["mic", "exchange_mic", "venue_mic"],
+      "validation_rules": {
+        "length": 4,
+        "format": "^[A-Z0-9]{4}$"
+      },
+      "regulatory_relevance": ["MiFID II RTS 25", "MAR Art. 16", "MiFID II Art. 16(2)"],
+      "detection_models_using": ["wash_full_day", "wash_intraday", "spoofing_layering"]
+    },
+    {
+      "iso_standard": "ISO 10962",
+      "standard_name": "Classification of Financial Instruments (CFI)",
+      "field_path": "product.cfi_code",
+      "description": "6-character alphabetical code providing a uniform classification of financial instruments. Categories: Equities, Debt, Collective Investment, Derivatives, etc.",
+      "entities_using": ["product"],
+      "fields_using": ["cfi_code"],
+      "validation_rules": {
+        "length": 6,
+        "format": "^[A-Z]{6}$"
+      },
+      "regulatory_relevance": ["MiFID II RTS 25", "EMIR Art. 9"],
+      "detection_models_using": ["wash_full_day", "wash_intraday", "insider_dealing", "market_price_ramping", "spoofing_layering"]
+    },
+    {
+      "iso_standard": "ISO 4217",
+      "standard_name": "Currency Codes",
+      "field_path": "product.currency",
+      "description": "3-letter alphabetic code representing currencies used in international transactions. Examples: USD, EUR, GBP, JPY.",
+      "entities_using": ["product"],
+      "fields_using": ["currency"],
+      "validation_rules": {
+        "length": 3,
+        "format": "^[A-Z]{3}$"
+      },
+      "regulatory_relevance": ["MiFID II RTS 25", "EMIR Art. 9"],
+      "detection_models_using": ["wash_full_day", "wash_intraday", "market_price_ramping"]
+    },
+    {
+      "iso_standard": "ISO 3166-1",
+      "standard_name": "Country Codes",
+      "field_path": "venue.country",
+      "description": "2-letter alphabetic code identifying countries and dependent territories. Used for venue jurisdiction and account registration.",
+      "entities_using": ["venue", "account"],
+      "fields_using": ["country", "registration_country"],
+      "validation_rules": {
+        "length": 2,
+        "format": "^[A-Z]{2}$"
+      },
+      "regulatory_relevance": ["MiFID II Art. 16(2)", "MAR Art. 16"],
+      "detection_models_using": ["insider_dealing", "wash_full_day"]
+    },
+    {
+      "iso_standard": "ISO 8601",
+      "standard_name": "Date and Time Format",
+      "field_path": "execution.exec_time",
+      "description": "International standard for date and time representations. All timestamps use ISO 8601 format for regulatory reporting and cross-timezone consistency.",
+      "entities_using": ["execution", "order", "md_eod", "md_intraday"],
+      "fields_using": ["exec_time", "exec_date", "order_time", "order_date", "trade_date", "timestamp"],
+      "validation_rules": {
+        "date_format": "YYYY-MM-DD",
+        "time_format": "HH:MM:SS.fff"
+      },
+      "regulatory_relevance": ["MiFID II RTS 25", "MAR Art. 16", "Dodd-Frank"],
+      "detection_models_using": ["wash_full_day", "wash_intraday", "insider_dealing", "market_price_ramping", "spoofing_layering"]
+    }
+  ]
+}

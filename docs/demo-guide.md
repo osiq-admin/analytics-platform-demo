@@ -286,6 +286,12 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 6. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
 7. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
 
+### Standards & Compliance Registry
+- **ISO Standards**: 6 ISO standards with field mappings and validation rules (ISO 6166, 10383, 10962, 4217, 3166-1, 8601)
+- **FIX Protocol**: 6 FIX fields mapped to entity fields with regulatory relevance
+- **Compliance Requirements**: 14 granular requirements mapped to implementations (detection models, calculations, entity fields)
+- **Regulations**: 6 frameworks (MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC) with article-level detail and source URLs
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

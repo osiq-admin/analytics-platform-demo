@@ -1,0 +1,60 @@
+{
+  "registry_id": "fix_protocol",
+  "description": "FIX Protocol field mappings used in order and execution entities",
+  "fix_fields": [
+    {
+      "field_number": 40,
+      "field_name": "OrdType",
+      "description": "Type of order placed",
+      "domain_values": ["MARKET", "LIMIT"],
+      "entities_using": ["order"],
+      "fields_using": ["order_type"],
+      "regulatory_relevance": "MiFID II RTS 25 order classification"
+    },
+    {
+      "field_number": 150,
+      "field_name": "ExecType",
+      "description": "Type of execution report",
+      "domain_values": ["FILL", "PARTIAL_FILL"],
+      "entities_using": ["execution"],
+      "fields_using": ["exec_type"],
+      "regulatory_relevance": "MAR Art. 16 transaction reporting"
+    },
+    {
+      "field_number": 39,
+      "field_name": "OrdStatus",
+      "description": "Current status of an order",
+      "domain_values": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELLED"],
+      "entities_using": ["order"],
+      "fields_using": ["status"],
+      "regulatory_relevance": "MiFID II RTS 25 order record keeping"
+    },
+    {
+      "field_number": 59,
+      "field_name": "TimeInForce",
+      "description": "How long the order remains active",
+      "domain_values": ["DAY", "GTC", "IOC", "FOK"],
+      "entities_using": ["order"],
+      "fields_using": ["time_in_force"],
+      "regulatory_relevance": "MiFID II RTS 25 order attributes"
+    },
+    {
+      "field_number": 1057,
+      "field_name": "AggressorIndicator",
+      "description": "Whether the order was the aggressor in the trade",
+      "domain_values": ["AGENCY", "PRINCIPAL"],
+      "entities_using": ["execution"],
+      "fields_using": ["capacity"],
+      "regulatory_relevance": "MiFID II RTS 25 aggressor/passive classification"
+    },
+    {
+      "field_number": 54,
+      "field_name": "Side",
+      "description": "Side of order — buy or sell",
+      "domain_values": ["BUY", "SELL"],
+      "entities_using": ["order", "execution"],
+      "fields_using": ["side"],
+      "regulatory_relevance": "MAR Art. 12 wash trading detection, MiFID II RTS 25"
+    }
+  ]
+}

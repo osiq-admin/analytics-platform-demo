@@ -549,3 +549,26 @@ def save_widget_config(view_id: str, body: dict, request: Request):
     body["view_id"] = view_id
     _meta(request).save_widget_config(body)
     return {"saved": True, "view_id": view_id}
+
+
+# -- Standards Registries --
+
+@router.get("/standards/iso")
+def get_iso_standards(request: Request):
+    """Return the ISO standards registry with field mappings and validation rules."""
+    svc = _meta(request)
+    return svc.load_iso_registry()
+
+
+@router.get("/standards/fix")
+def get_fix_standards(request: Request):
+    """Return the FIX protocol field registry."""
+    svc = _meta(request)
+    return svc.load_fix_registry()
+
+
+@router.get("/standards/compliance")
+def get_compliance_requirements(request: Request):
+    """Return compliance requirements registry."""
+    svc = _meta(request)
+    return svc.load_compliance_registry()

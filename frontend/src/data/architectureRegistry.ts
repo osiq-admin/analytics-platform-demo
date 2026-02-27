@@ -2528,12 +2528,45 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns regulatory coverage summary metrics",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
             path: "workspace/metadata/regulations/*.json",
             category: "metadata",
             role: "Regulation definition files with article and model mappings",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards registry with field mappings and validation rules",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol field mappings with regulatory relevance",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Granular compliance requirements mapped to implementations",
           },
         ],
         technologies: [],
@@ -2566,6 +2599,24 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns traceability graph (nodes + edges) for React Flow",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
@@ -2582,6 +2633,21 @@ export const VIEW_TRACES: ViewTrace[] = [
             path: "workspace/metadata/calculations/**/*.json",
             category: "metadata",
             role: "Calculation definitions referenced by models",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards with field-level mappings to entity fields",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol fields with regulatory relevance tags",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements linked to detection models and calculations",
           },
         ],
         technologies: [
@@ -2617,12 +2683,45 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns full regulatory registry with coverage status",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
             path: "workspace/metadata/regulations/*.json",
             category: "metadata",
             role: "Regulation definitions for registry display",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards referenced by regulation field requirements",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol fields with regulatory relevance",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements with coverage status",
           },
         ],
         technologies: [{ name: "AG Grid", role: "Regulatory coverage table" }],
@@ -2655,6 +2754,24 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Returns coverage gap analysis and suggestions",
             routerFile: "backend/api/metadata.py",
           },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/iso",
+            role: "Returns ISO standards registry with field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/fix",
+            role: "Returns FIX protocol field mappings",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/standards/compliance",
+            role: "Returns compliance requirements with implementation mappings",
+            routerFile: "backend/api/metadata.py",
+          },
         ],
         dataSources: [
           {
@@ -2666,6 +2783,21 @@ export const VIEW_TRACES: ViewTrace[] = [
             path: "workspace/metadata/detection_models/*.json",
             category: "metadata",
             role: "Available models for mapping suggestions",
+          },
+          {
+            path: "workspace/metadata/standards/iso_mapping.json",
+            category: "metadata",
+            role: "ISO standards for compliance gap identification",
+          },
+          {
+            path: "workspace/metadata/standards/fix_protocol.json",
+            category: "metadata",
+            role: "FIX protocol mappings for regulatory gap analysis",
+          },
+          {
+            path: "workspace/metadata/standards/compliance_requirements.json",
+            category: "metadata",
+            role: "Compliance requirements for gap analysis and suggestions",
           },
         ],
         technologies: [],
