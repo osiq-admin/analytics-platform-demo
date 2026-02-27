@@ -140,6 +140,14 @@ RISK_RATING_BY_TYPE = {
     "market_maker": "LOW",
 }
 
+# MiFID II client category by account type
+MIFID_CATEGORY_BY_TYPE = {
+    "institutional": "professional",
+    "retail": "retail",
+    "hedge_fund": "professional",
+    "market_maker": "eligible_counterparty",
+}
+
 # Registration country by account type
 COUNTRY_BY_TYPE = {
     "institutional": "US",
@@ -473,6 +481,15 @@ class SyntheticDataGenerator:
             onboard_offset = self.rng.randint(0, onboard_days)
             onboarding_date = onboard_start + timedelta(days=onboard_offset)
 
+            # Compliance status: ~85% active, ~10% under_review, ~5% restricted
+            compliance_roll = self.rng.random()
+            if compliance_roll < 0.85:
+                compliance_status = "active"
+            elif compliance_roll < 0.95:
+                compliance_status = "under_review"
+            else:
+                compliance_status = "restricted"
+
             accounts[aid] = {
                 "type": acct_type,
                 "name": account_name,
@@ -482,6 +499,8 @@ class SyntheticDataGenerator:
                 "risk_rating": RISK_RATING_BY_TYPE[acct_type],
                 "primary_trader_id": primary_trader_id,
                 "onboarding_date": onboarding_date.isoformat(),
+                "mifid_client_category": MIFID_CATEGORY_BY_TYPE[acct_type],
+                "compliance_status": compliance_status,
             }
         return accounts
 
@@ -1350,10 +1369,11 @@ class SyntheticDataGenerator:
         return self._write_csv("venue.csv", fieldnames, rows)
 
     def _write_account_csv(self) -> int:
-        """Write the account dimension table CSV (220 rows, 8 columns)."""
+        """Write the account dimension table CSV (220 rows, 10 columns)."""
         fieldnames = [
             "account_id", "account_name", "account_type", "registration_country",
             "primary_trader_id", "status", "risk_rating", "onboarding_date",
+            "mifid_client_category", "compliance_status",
         ]
         rows = []
         for aid, info in sorted(self.accounts.items()):
@@ -1366,6 +1386,8 @@ class SyntheticDataGenerator:
                 "status": info["status"],
                 "risk_rating": info.get("risk_rating", ""),
                 "onboarding_date": info.get("onboarding_date", ""),
+                "mifid_client_category": info.get("mifid_client_category", ""),
+                "compliance_status": info.get("compliance_status", ""),
             })
         return self._write_csv("account.csv", fieldnames, rows)
 
@@ -1566,6 +1588,10 @@ class SyntheticDataGenerator:
                     {"name": "risk_rating", "type": "string", "description": "Internal risk tier based on account type", "is_key": False, "nullable": True,
                      "domain_values": ["LOW", "MEDIUM", "HIGH"]},
                     {"name": "onboarding_date", "type": "date", "description": "Date the account was opened (YYYY-MM-DD)", "is_key": False, "nullable": True},
+                    {"name": "mifid_client_category", "type": "string", "description": "MiFID II client classification per Directive 2014/65/EU Annex II", "is_key": False, "nullable": True,
+                     "domain_values": ["retail", "professional", "eligible_counterparty"]},
+                    {"name": "compliance_status", "type": "string", "description": "Account compliance review status", "is_key": False, "nullable": True,
+                     "domain_values": ["active", "under_review", "restricted", "suspended"]},
                 ],
                 "relationships": [
                     {"target_entity": "execution", "join_fields": {"account_id": "account_id"}, "relationship_type": "one_to_many"},

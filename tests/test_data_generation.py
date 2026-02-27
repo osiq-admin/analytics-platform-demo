@@ -336,6 +336,7 @@ class TestAccountSchema:
             "account_id", "account_name", "account_type",
             "registration_country", "primary_trader_id", "status",
             "risk_rating", "onboarding_date",
+            "mifid_client_category", "compliance_status",
         }
         assert set(rows[0].keys()) == expected_cols
 

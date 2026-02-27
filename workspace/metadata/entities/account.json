@@ -72,6 +72,31 @@
       "description": "Date the account was opened (YYYY-MM-DD)",
       "is_key": false,
       "nullable": true
+    },
+    {
+      "name": "mifid_client_category",
+      "type": "string",
+      "description": "MiFID II client classification per Directive 2014/65/EU Annex II",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "retail",
+        "professional",
+        "eligible_counterparty"
+      ]
+    },
+    {
+      "name": "compliance_status",
+      "type": "string",
+      "description": "Account compliance review status",
+      "is_key": false,
+      "nullable": true,
+      "domain_values": [
+        "active",
+        "under_review",
+        "restricted",
+        "suspended"
+      ]
     }
   ],
   "relationships": [
