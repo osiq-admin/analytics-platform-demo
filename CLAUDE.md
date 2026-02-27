@@ -34,8 +34,8 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 
 ## Data Model (8 entities, ISO/FIX-aligned)
 - **product** (50): ISIN, CFI, MIC, asset_class, instrument_type, underlying, strike, expiry
-- **execution** (509): order_id FK, venue_mic, exec_type, capacity
-- **order** (519): order_type (MARKET/LIMIT), limit_price, time_in_force, trader_id
+- **execution** (761): order_id FK, venue_mic, exec_type, capacity
+- **order** (786): order_type (MARKET/LIMIT), limit_price, time_in_force, trader_id
 - **md_eod** (2,150): OHLCV + prev_close, num_trades, vwap
 - **md_intraday** (32K): bid/ask, trade_condition, equities + FX + futures
 - **venue** (6): ISO 10383 MIC codes
@@ -63,7 +63,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases across 7 tiers (medallion architecture, data governance, standards, migration readiness)
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M173 complete)
+- Progress tracker: `docs/progress.md` (M0-M174 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`
