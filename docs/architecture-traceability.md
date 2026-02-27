@@ -25,8 +25,9 @@ Toggle mode that overlays architecture info icons on every view section. Clickin
 | infrastructure | Framework/utility code | API client |
 
 ## Technical Details
-- **Registry:** `frontend/src/data/architectureRegistry.ts` — 71 sections across 16 views + app layout
-- **Maturity Distribution (M149):** 28 fully-metadata-driven (39%), 21 mostly-metadata-driven (30%), 5 mixed (7%), 8 code-driven (11%), 9 infrastructure (13%) — 69% metadata-driven overall
+- **Registry:** `frontend/src/data/architectureRegistry.ts` — 74 sections across 16 views + app layout
+- **Maturity Distribution (M172):** 31 fully-metadata-driven (42%), 31 mostly-metadata-driven (42%), 2 mixed (3%), 2 code-driven (3%), 8 infrastructure (11%) — **83.8% metadata-driven** overall
+- **Previous (M149):** 28 fully (39%), 21 mostly (30%), 5 mixed (7%), 8 code-driven (11%), 9 infrastructure (13%) — 69%
 - **Store:** `frontend/src/stores/traceabilityStore.ts` — Zustand store for toggle + popup state
 - **Overlay:** `frontend/src/components/TraceabilityMode/TraceOverlay.tsx` — MutationObserver scans for `data-trace` DOM attributes
 - **Popup:** `frontend/src/components/TraceabilityMode/TracePopup.tsx` — 400px slide-in panel
