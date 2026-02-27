@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-26 (M128 Architecture Traceability Mode; 572 total tests: 390 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M131 Stage 1 Checkpoint; 580 total tests: 398 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -39,6 +39,7 @@
 | Exploratory Testing Fixes (F-012) | COMPLETE | Entity Designer layout overhaul: tab-based detail, collapsible Panel, dagre graph, row selection, bidirectional navigation |
 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
 | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 572 total tests, 964 modules |
+| Metadata Architecture Overhaul — Stage 1 (M129-M131) | COMPLETE | SQL presets to metadata, settings resolver Strategy pattern — 398 backend tests |
 
 ---
 
@@ -181,6 +182,9 @@
 | M126 | Relationship Graph Visual Improvements (F-023) | COMPLETE | 1 | 1 | Smoothstep edges, label backgrounds, ArrowClosed arrowheads, increased dagre spacing |
 | M127 | Regulatory Map Redesign (F-024) | COMPLETE | 7 | 7 | Resizable panels, 2 tabs (Map + Details AG Grid), backend description fields, MiniMap, Controls, edge labels, h-full layout fix, tour path mapping fix — 957 modules |
 | M128 | Architecture Traceability Mode | COMPLETE | 12 | 12 | Toolbar toggle, TraceOverlay with info icons on 74 sections, TracePopup slide-in panel (source files, stores, APIs, metadata, technologies, maturity rating, improvements), architectureRegistry.ts (2,978 lines), MetadataMaturity badges, S26 scenario, overview tour updated, architecture_trace op on all 16 views, 7 new E2E tests — 964 modules |
+| M129 | SQL Presets to Metadata | COMPLETE | 4 | 4 | Moved hardcoded SQL presets to workspace/metadata/query_presets/default.json, QueryPreset Pydantic model, MetadataService.list_query_presets(), 4 new tests — 394 backend tests |
+| M130 | Settings Resolver Strategy Pattern | COMPLETE | 4 | 4 | Extracted HierarchyStrategy + MultiDimensionalStrategy classes, RESOLUTION_STRATEGIES registry, ResolutionStrategy protocol, 4 new tests — 398 backend tests |
+| M131 | Stage 1 Checkpoint | COMPLETE | 3 | 3 | Full regression pass, architecture registry updated, docs updated, pushed |
 
 ---
 

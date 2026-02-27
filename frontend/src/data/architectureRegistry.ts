@@ -1182,25 +1182,26 @@ export const VIEW_TRACES: ViewTrace[] = [
           "Preset SQL query buttons providing common queries (e.g., alert summary, trade analysis). Loaded from backend preset definitions.",
         files: [
           { path: "frontend/src/views/SQLConsole/index.tsx", role: "Renders preset buttons" },
-          { path: "backend/api/query.py", role: "Returns preset query definitions" },
+          { path: "backend/api/query.py", role: "Returns preset query definitions from metadata" },
+          { path: "backend/models/query_presets.py", role: "QueryPreset Pydantic model" },
         ],
         stores: [],
         apis: [
           {
             method: "GET",
             path: "/api/query/presets",
-            role: "Returns predefined SQL query templates",
+            role: "Returns preset queries loaded from workspace/metadata/query_presets/",
             routerFile: "backend/api/query.py",
           },
         ],
-        dataSources: [],
-        technologies: [],
-        metadataMaturity: "code-driven",
-        maturityExplanation:
-          "Preset queries are hardcoded in the backend. Not driven by metadata.",
-        metadataOpportunities: [
-          "Define presets as metadata JSON files so users can add custom presets without code changes",
+        dataSources: [
+          { path: "workspace/metadata/query_presets/default.json", category: "metadata", role: "Preset query definitions" },
         ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Preset queries are loaded from workspace/metadata/query_presets/*.json via MetadataService. New presets can be added by editing JSON — no code changes needed.",
+        metadataOpportunities: [],
       },
       {
         id: "sql.chat-panel",
