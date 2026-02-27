@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M143 Stage 4 Checkpoint; 597 total tests: 415 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M147 Stage 5 Checkpoint; 603 total tests: 421 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -43,6 +43,7 @@
 | Metadata Architecture Overhaul — Stage 2 (M132-M135) | COMPLETE | Dashboard widget manifest, metadata-driven rendering, E2E tests — 404 backend tests |
 | Metadata Architecture Overhaul — Stage 3 (M136-M139) | COMPLETE | Format registry, model-specific alert layouts, useFormatRules hook — 411 backend tests |
 | Metadata Architecture Overhaul — Stage 4 (M140-M143) | COMPLETE | Navigation manifest, Sidebar from metadata, E2E tests — 415 backend tests |
+| Metadata Architecture Overhaul — Stage 5 (M144-M147) | COMPLETE | Audit trail, AI context-summary, E2E tests — 421 backend tests |
 
 ---
 
@@ -200,6 +201,10 @@
 | M141 | Sidebar from Metadata | COMPLETE | 3 | 3 | navigationStore Zustand store, Sidebar.tsx loads from API with FALLBACK_NAVIGATION — 965 modules |
 | M142 | Navigation E2E Tests | COMPLETE | 2 | 2 | TestNavigationMetadata: API returns 16 views, sidebar renders 16 links — 2 new E2E tests |
 | M143 | Stage 4 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry sidebar → fully-metadata-driven, docs updated, pushed |
+| M144 | Metadata Audit Trail | COMPLETE | 3 | 3 | AuditService with append-only records, wired into 4 core save/delete methods, GET /api/metadata/audit, 3 new tests — 418 backend tests |
+| M145 | AI Context Summary | COMPLETE | 3 | 3 | GET /api/ai/context-summary auto-generates from live metadata (entities, models, calcs, settings, format rules, nav), 3 new tests — 421 backend tests |
+| M146 | Audit + AI E2E Tests | COMPLETE | 2 | 2 | TestAuditTrailE2E, TestAIContextE2E — 2 new E2E tests |
+| M147 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry + BDD updated, docs updated, pushed |
 
 ---
 

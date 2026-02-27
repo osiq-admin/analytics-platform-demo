@@ -757,3 +757,44 @@ Then the user-layer override is removed
 And the OOB default is restored
 And the badge changes from "Custom" to "OOB"
 ```
+
+---
+
+## Feature: Metadata Audit Trail
+
+### Scenario: Saving Metadata Creates Audit Record
+```gherkin
+Given the platform is running
+When I save an entity definition via the API
+Then an audit record is created in workspace/metadata/_audit/
+And the record contains timestamp, metadata_type, item_id, action, and new_value
+```
+
+### Scenario: Updating Metadata Records Previous Value
+```gherkin
+Given entity "test_entity" exists with name "V1"
+When I update the entity name to "V2"
+Then the audit record contains action "updated"
+And the audit record contains previous_value with name "V1"
+And the audit record contains new_value with name "V2"
+```
+
+### Scenario: Querying Audit History via API
+```gherkin
+Given several metadata changes have been recorded
+When I call GET /api/metadata/audit?metadata_type=entity&item_id=test_entity
+Then I receive a list of audit records filtered by entity type and item ID
+```
+
+---
+
+## Feature: AI Context Summary from Metadata
+
+### Scenario: Context Summary Reflects Current Metadata
+```gherkin
+Given the platform has 8 entities and 5 detection models defined in metadata
+When I call GET /api/ai/context-summary
+Then the response includes entity count and names
+And the response includes detection model names
+And the context updates automatically when metadata changes
+```

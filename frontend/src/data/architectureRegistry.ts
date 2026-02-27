@@ -2209,11 +2209,10 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Mock sequences are metadata-like configuration; chat UI, message parsing, and AI interaction logic are code-driven.",
+          "Mock sequences are metadata-driven configuration. AI context auto-generates from live metadata state via /api/ai/context-summary (entities, models, calcs, settings, format rules, navigation). Chat UI and message parsing are code-driven.",
         metadataOpportunities: [
-          "Allow metadata-aware context injection so AI understands the current metadata schema",
           "Define chat capabilities as metadata (available tools, SQL access scope)",
         ],
       },
