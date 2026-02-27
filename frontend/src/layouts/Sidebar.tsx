@@ -1,70 +1,29 @@
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { clsx } from "clsx";
+import { useNavigationStore } from "../stores/navigationStore.ts";
 
-interface NavItem {
-  label: string;
-  path: string;
-}
-
-interface NavGroup {
-  title: string;
-  items: NavItem[];
-}
-
-const navigation: NavGroup[] = [
-  {
-    title: "Overview",
-    items: [{ label: "Dashboard", path: "/dashboard" }],
-  },
-  {
-    title: "Define",
-    items: [
-      { label: "Entities", path: "/entities" },
-      { label: "Calculations", path: "/metadata" },
-    ],
-  },
-  {
-    title: "Configure",
-    items: [
-      { label: "Settings", path: "/settings" },
-      { label: "Mappings", path: "/mappings" },
-      { label: "Editor", path: "/editor" },
-    ],
-  },
-  {
-    title: "Operate",
-    items: [
-      { label: "Pipeline", path: "/pipeline" },
-      { label: "Schema", path: "/schema" },
-      { label: "SQL Console", path: "/sql" },
-    ],
-  },
-  {
-    title: "Compose",
-    items: [
-      { label: "Models", path: "/models" },
-      { label: "Use Cases", path: "/use-cases" },
-      { label: "Data", path: "/data" },
-    ],
-  },
-  {
-    title: "Investigate",
-    items: [{ label: "Risk Cases", path: "/alerts" }],
-  },
-  {
-    title: "Governance",
-    items: [
-      { label: "Regulatory Map", path: "/regulatory" },
-      { label: "Submissions", path: "/submissions" },
-    ],
-  },
-  {
-    title: "AI",
-    items: [{ label: "Assistant", path: "/assistant" }],
-  },
+// Fallback navigation if API is unavailable
+const FALLBACK_NAVIGATION = [
+  { title: "Overview", items: [{ label: "Dashboard", path: "/dashboard" }] },
+  { title: "Define", items: [{ label: "Entities", path: "/entities" }, { label: "Calculations", path: "/metadata" }] },
+  { title: "Configure", items: [{ label: "Settings", path: "/settings" }, { label: "Mappings", path: "/mappings" }, { label: "Editor", path: "/editor" }] },
+  { title: "Operate", items: [{ label: "Pipeline", path: "/pipeline" }, { label: "Schema", path: "/schema" }, { label: "SQL Console", path: "/sql" }] },
+  { title: "Compose", items: [{ label: "Models", path: "/models" }, { label: "Use Cases", path: "/use-cases" }, { label: "Data", path: "/data" }] },
+  { title: "Investigate", items: [{ label: "Risk Cases", path: "/alerts" }] },
+  { title: "Governance", items: [{ label: "Regulatory Map", path: "/regulatory" }, { label: "Submissions", path: "/submissions" }] },
+  { title: "AI", items: [{ label: "Assistant", path: "/assistant" }] },
 ];
 
 export default function Sidebar() {
+  const { groups, fetchNavigation } = useNavigationStore();
+
+  useEffect(() => {
+    fetchNavigation();
+  }, [fetchNavigation]);
+
+  const navigation = groups.length > 0 ? groups : FALLBACK_NAVIGATION;
+
   return (
     <aside className="w-56 shrink-0 border-r border-border bg-surface overflow-y-auto" data-tour="sidebar" data-trace="app.sidebar">
       <div className="px-4 py-4">
