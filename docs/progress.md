@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M175 Phase 14 Complete; 732 total tests: 522 backend + 210 E2E, 17 views, 27 scenarios, 77 architecture sections, 970 modules)
+**Last Updated**: 2026-02-27 (M183 Phase 15 Complete; 759 total tests: 549 backend + 210 E2E, 18 views, 28 scenarios, 80 architecture sections, 971 modules)
 
 ---
 
@@ -49,6 +49,7 @@
 | Development Workflow Protocol | COMPLETE | Single authoritative lifecycle protocol (Pre-Work → Planning → Execution → Completion), 3-tier Milestone Completion Protocol, Test Count Sync Registry, fixed all stale docs |
 | Roadmap Restructuring — Medallion Architecture | COMPLETE | Restructured roadmap from 20 phases to 33 phases across 7 tiers: medallion architecture (11 tiers), data governance, PII/masking/encryption, business glossary (ISO 11179), standards (ISO 8000/25012/27001, BCBS 239), migration readiness (SQLMesh, Arrow) |
 | Medallion Architecture Core (Phase 14) | COMPLETE | M175: 11-tier medallion architecture metadata, 6 data contracts, 5 transformations, 5 pipeline stages, MedallionOverview view with React Flow, 7 API endpoints, S27 scenario — 732 total tests (522+210), 17 views |
+| Data Onboarding & Connector Abstraction (Phase 15) | COMPLETE | M176-M183: Pydantic onboarding models, 6 connector metadata files, BaseConnector + LocalFileConnector + stubs, schema detector + data profiler, onboarding service + API endpoints, 5-step DataOnboarding wizard, tours/scenarios/operations/architecture — 759 total tests (549+210), 18 views |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 
 ---
@@ -266,6 +267,19 @@
 | Milestone | Title | Status | Planned | Actual | Notes |
 |---|---|---|---|---|---|
 | M175 | Medallion Architecture Core | COMPLETE | 5 | 5 | 11-tier metadata (tiers.json), 6 data contracts, 5 transformations, 5 pipeline stages, Pydantic models, MetadataService methods, 7 API endpoints (/api/medallion/*), MedallionOverview view (React Flow + Dagre), navigation + route, tour, S27 scenario, 5 operation scripts, 3 architecture registry entries |
+
+### Phase 15: Data Onboarding & Connector Abstraction (M176-M183)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M176 | Pydantic Onboarding Models + Tests | COMPLETE | 3 | 3 | Onboarding models with validation, backend tests |
+| M177 | Connector Metadata JSON Files | COMPLETE | 3 | 3 | 6 connector definitions as metadata (local_file, s3, sftp, api_rest, database, kafka) |
+| M178 | Connector Abstraction Layer | COMPLETE | 4 | 4 | BaseConnector + LocalFileConnector + stubs for S3/SFTP/API/DB/Kafka |
+| M179 | Schema Detector + Data Profiler | COMPLETE | 4 | 4 | Auto-detect schema from uploaded files, data profiling service |
+| M180 | Onboarding Service + API Endpoints | COMPLETE | 4 | 4 | OnboardingService, MetadataService connector methods, /api/onboarding/* endpoints |
+| M181 | DataOnboarding Wizard View | COMPLETE | 5 | 5 | Navigation + route, 5-step wizard (Source → Schema → Profile → Mapping → Review) |
+| M182 | Tours, Scenarios, Operations, Architecture | COMPLETE | 4 | 4 | Onboarding tour, S28 scenario, 6 operation scripts, 3 architecture registry entries (80 total sections) |
+| M183 | Test Suite + Build Verification | COMPLETE | 3 | 3 | 549 backend tests, 210 E2E tests, 971 frontend modules — all passing |
 
 ---
 
