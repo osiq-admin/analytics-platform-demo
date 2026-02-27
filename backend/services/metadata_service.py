@@ -10,6 +10,7 @@ from backend.models.match_patterns import MatchPattern
 from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
+from backend.models.widgets import ViewWidgetConfig
 
 
 class MetadataService:
@@ -827,3 +828,26 @@ class MetadataService:
                 presets.append(p.model_dump())
         presets.sort(key=lambda p: p["order"])
         return presets
+
+    # -- Widget Configurations --
+
+    def _widgets_dir(self) -> Path:
+        return self._base / "widgets"
+
+    def load_widget_config(self, view_id: str) -> dict | None:
+        """Load widget configuration for a view. Returns model_dump() or None."""
+        path = self._widgets_dir() / f"{view_id}.json"
+        if not path.exists():
+            return None
+        config = ViewWidgetConfig.model_validate_json(path.read_text())
+        # Sort widgets by grid order
+        config.widgets.sort(key=lambda w: w.grid.order)
+        return config.model_dump()
+
+    def save_widget_config(self, config: dict) -> None:
+        """Validate and save a widget configuration."""
+        validated = ViewWidgetConfig.model_validate(config)
+        folder = self._widgets_dir()
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{validated.view_id}.json"
+        path.write_text(validated.model_dump_json(indent=2))

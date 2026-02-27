@@ -505,3 +505,22 @@ def simulate_upgrade(request: Request, body: dict):
     svc = OobVersionService(_meta(request)._base)
     report = svc.simulate_upgrade(body)
     return report.model_dump()
+
+
+# -- Widget Configurations --
+
+@router.get("/widgets/{view_id}")
+def get_widget_config(view_id: str, request: Request):
+    """Return widget configuration for a view."""
+    config = _meta(request).load_widget_config(view_id)
+    if config is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return config
+
+
+@router.put("/widgets/{view_id}")
+def save_widget_config(view_id: str, body: dict, request: Request):
+    """Create or update widget configuration for a view."""
+    body["view_id"] = view_id
+    _meta(request).save_widget_config(body)
+    return {"saved": True, "view_id": view_id}
