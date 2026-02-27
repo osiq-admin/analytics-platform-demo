@@ -1215,3 +1215,43 @@ class TestArchitectureTraceability:
         # Should have entity-related trace elements
         trace_elements = loaded_page.locator("[data-trace^='entities.']")
         expect(trace_elements.first).to_be_visible(timeout=5000)
+
+
+# ============================================================================
+# Scenario 18: Audit trail
+# ============================================================================
+
+class TestAuditTrailE2E:
+    """Audit trail E2E tests — verify audit API is accessible."""
+
+    def test_audit_api_accessible(self, loaded_page):
+        """Verify the audit API endpoint is accessible and returns a list."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/metadata/audit');
+                const data = await resp.json();
+                return { status: resp.status, isArray: Array.isArray(data) };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["isArray"] is True
+
+
+# ============================================================================
+# Scenario 19: AI context summary
+# ============================================================================
+
+class TestAIContextE2E:
+    """AI context E2E tests — verify context-summary reflects metadata."""
+
+    def test_ai_context_summary_reflects_metadata(self, loaded_page):
+        """Verify the AI context-summary endpoint returns meaningful context."""
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/ai/context-summary');
+                const data = await resp.json();
+                return { status: resp.status, hasContext: data.context.length > 50 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["hasContext"] is True
