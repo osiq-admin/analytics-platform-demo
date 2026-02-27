@@ -14,13 +14,15 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 - **Architecture**: 74 sections, 83.8% metadata-driven
 - **Tour scenarios**: 26 guided scenarios (S1-S26) in 7 categories
 - **Operation scripts**: 89 operations across 16 views
+- **Roadmap**: Restructured to 33 phases across 7 tiers — medallion architecture (11 tiers), data governance, business glossary, migration readiness
+- **Next priority**: Phase 13 (Data Calibration) → Phase 14 (Medallion Core) → Phases 15-17 (Onboarding + Mapping)
 
 ## Key Files
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - **Feature checklist**: `docs/feature-development-checklist.md` — MANDATORY reference for every new feature
+- **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases, 7 tiers, medallion architecture
 - Progress tracker: `docs/progress.md`
 - Design doc: `docs/plans/2026-02-23-analytics-platform-demo-design.md`
-- Comprehensive roadmap: `docs/plans/2026-02-24-comprehensive-roadmap.md`
 - Demo guide: `docs/demo-guide.md`
 - Data gen: `scripts/generate_data.py`
 - Snapshot gen: `scripts/generate_snapshots.py`

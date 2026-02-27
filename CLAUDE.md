@@ -61,6 +61,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 
 ## Plans & Progress
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
+- **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases across 7 tiers (medallion architecture, data governance, standards, migration readiness)
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
 - Progress tracker: `docs/progress.md` (M0-M173 complete)
 - Demo guide: `docs/demo-guide.md`
