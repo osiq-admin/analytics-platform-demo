@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M147 Stage 5 Checkpoint; 603 total tests: 421 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M150 Documentation Sweep; 603 total tests: 421 backend + 182 E2E, 16 views, 26 scenarios, 71 architecture sections, 69% metadata-driven)
 
 ---
 
@@ -44,6 +44,24 @@
 | Metadata Architecture Overhaul — Stage 3 (M136-M139) | COMPLETE | Format registry, model-specific alert layouts, useFormatRules hook — 411 backend tests |
 | Metadata Architecture Overhaul — Stage 4 (M140-M143) | COMPLETE | Navigation manifest, Sidebar from metadata, E2E tests — 415 backend tests |
 | Metadata Architecture Overhaul — Stage 5 (M144-M147) | COMPLETE | Audit trail, AI context-summary, E2E tests — 421 backend tests |
+| Metadata Architecture Overhaul — Stage 6 (M148-M150) | COMPLETE | BDD scenarios, architecture re-audit, documentation sweep — 603 total tests, 69% metadata-driven |
+
+---
+
+### Metadata Architecture Overhaul — Summary (M129-M150)
+
+| Metric | Before (M128) | After (M150) |
+|---|---|---|
+| Fully metadata-driven sections | 25 (34%) | 28 (39%) |
+| Mostly metadata-driven sections | 12 (16%) | 21 (30%) |
+| Combined FMD + Mostly | 37 (50%) | 49 (69%) |
+| Code-driven sections | 13 (18%) | 8 (11%) |
+| Backend tests | 390 | 421 |
+| E2E tests | 182 | 182 |
+| Total tests | 572 | 603 |
+| New metadata types | 0 | 4 (widgets, presets, navigation, format_rules) |
+| New Pydantic models | 0 | 7 |
+| New API endpoints | 0 | 6 |
 
 ---
 
@@ -205,6 +223,9 @@
 | M145 | AI Context Summary | COMPLETE | 3 | 3 | GET /api/ai/context-summary auto-generates from live metadata (entities, models, calcs, settings, format rules, nav), 3 new tests — 421 backend tests |
 | M146 | Audit + AI E2E Tests | COMPLETE | 2 | 2 | TestAuditTrailE2E, TestAIContextE2E — 2 new E2E tests |
 | M147 | Stage 5 Checkpoint | COMPLETE | 5 | 5 | Full regression pass, architecture registry + BDD updated, docs updated, pushed |
+| M148 | BDD Scenarios for Metadata Features | COMPLETE | 3 | 3 | BDD scenarios for widgets, navigation, format rules, audit trail, query presets |
+| M149 | Architecture Re-Audit | COMPLETE | 3 | 3 | Updated maturity ratings across 71 sections, 69% metadata-driven (was 50%) |
+| M150 | Documentation Sweep | COMPLETE | 6 | 6 | Updated progress.md, demo-guide.md, development-guidelines.md, feature-development-checklist.md, CLAUDE.md, MEMORY.md |
 
 ---
 

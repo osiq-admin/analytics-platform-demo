@@ -528,6 +528,20 @@ Click **Skip to End** to show the final state.
 | Investigation | S21-S23 | Beginner → Advanced |
 | Admin | S24-S26 | Intermediate → Advanced |
 
+## Act 8: Metadata Configuration
+
+### 8.1 Dashboard Widget Configuration
+Navigate to **Overview → Dashboard**. Widget layout (KPI cards, charts, ordering) is defined in `workspace/metadata/widgets/dashboard.json`. Edit the JSON to add, reorder, or reconfigure widgets without code changes. The API at `GET /api/metadata/widgets/dashboard` serves the configuration.
+
+### 8.2 Navigation Configuration
+The sidebar navigation is loaded from `workspace/metadata/navigation/main.json`. Add new views by editing the JSON — no Sidebar.tsx changes needed.
+
+### 8.3 Format Rules
+Formatting rules for numeric fields, labels, and currencies are defined in `workspace/metadata/format_rules/default.json`. The `useFormatRules` hook fetches these rules to apply consistent formatting throughout the UI.
+
+### 8.4 Audit Trail
+Every metadata save/delete creates an immutable audit record in `workspace/metadata/_audit/`. Query the audit history via `GET /api/metadata/audit?metadata_type=entity&item_id=product`.
+
 ## Architecture Traceability Mode — M128
 
 Architecture Traceability Mode lets you inspect the technical architecture of every section in the platform. It reveals which source files, Zustand stores, API endpoints, metadata files, and technologies power each UI component — and rates how metadata-driven each section is.

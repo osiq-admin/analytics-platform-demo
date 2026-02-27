@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-26 (M128 — 572 total tests: 390 backend + 182 E2E, 26 scenarios, 16 views, 74 traced architecture sections)
+**Last Updated**: 2026-02-27 (M150 — 603 total tests: 421 backend + 182 E2E, 26 scenarios, 16 views, 71 architecture sections, 69% metadata-driven)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 421)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 390)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 421)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -227,6 +227,15 @@
 - [ ] If score_steps: ScoreStepBuilder renders the visual range bar
 - [ ] Overrides work with match patterns
 
+### When Adding a New Widget:
+- [ ] **Widget metadata**: Add `WidgetDefinition` to `workspace/metadata/widgets/{view_id}.json`
+- [ ] **Chart renderer**: If chart widget, add entry to the view's `CHART_RENDERERS` map
+- [ ] **Test**: Verify widget appears in the view after metadata change
+
+### When Adding a New Format Rule:
+- [ ] **Rule definition**: Add rule to `workspace/metadata/format_rules/default.json`
+- [ ] **Field mapping**: Map field names to the new rule in `field_mappings`
+
 ### When Adding a New API Endpoint:
 - [ ] Route handler in `backend/api/`
 - [ ] Pydantic model for request/response
@@ -295,3 +304,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-25 | Initial creation — covers all systems through Phase 7B (M120) | Claude Opus 4.6 |
 | 2026-02-26 | Updated for M124 (F-021 Entity Designer layout redesign) | Claude Opus 4.6 |
 | 2026-02-26 | Updated for M128 (Architecture Traceability Mode) — added view section trigger, updated test counts to 572 (390+182), 26 scenarios | Claude Opus 4.6 |
+| 2026-02-27 | Updated for M150 (Metadata Architecture Overhaul) — added widget/format rule triggers, updated test counts to 603 (421+182), 71 sections 69% metadata-driven | Claude Opus 4.6 |

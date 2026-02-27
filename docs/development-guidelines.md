@@ -361,3 +361,18 @@ Dashboard widgets are defined in metadata JSON (`workspace/metadata/widgets/{vie
 **Fallback:** If the API fails, the Dashboard falls back to hardcoded widgets for resilience.
 
 **Reference:** `frontend/src/views/Dashboard/index.tsx`, `backend/models/widgets.py`, `workspace/metadata/widgets/dashboard.json`
+
+## 19. Navigation Metadata Pattern
+
+Sidebar navigation is loaded from `workspace/metadata/navigation/main.json` via the `navigationStore` Zustand store.
+
+**Adding a new view:**
+1. Add a `NavItem` entry to the appropriate group in `main.json`
+2. Add the route to `frontend/src/App.tsx`
+3. The sidebar link appears automatically at the position specified by `order`
+
+**API:** `GET /api/metadata/navigation` returns the full navigation config.
+
+**Fallback:** If the API fails, `Sidebar.tsx` falls back to `FALLBACK_NAVIGATION`.
+
+**Reference:** `frontend/src/layouts/Sidebar.tsx`, `frontend/src/stores/navigationStore.ts`, `workspace/metadata/navigation/main.json`
