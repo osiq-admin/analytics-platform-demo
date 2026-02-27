@@ -93,3 +93,40 @@ def get_ai_context(request: Request):
             "settings": len(request.app.state.metadata.list_settings()),
         },
     }
+
+
+@router.get("/context-summary")
+def get_context_summary(request: Request):
+    """Return a concise AI context summary derived from current metadata state."""
+    metadata = request.app.state.metadata
+    context_parts = []
+
+    entities = metadata.list_entities()
+    entity_ids = [e.entity_id for e in entities]
+    context_parts.append(f"System has {len(entities)} entities: {', '.join(entity_ids)}")
+
+    calcs = metadata.list_calculations()
+    context_parts.append(f"{len(calcs)} calculations defined across the detection pipeline")
+
+    settings = metadata.list_settings()
+    context_parts.append(f"{len(settings)} configurable settings for threshold and scoring control")
+
+    models = metadata.list_detection_models()
+    model_names = [m.name for m in models]
+    context_parts.append(f"Detection models: {', '.join(model_names)}")
+
+    # Include format rules and navigation info if available
+    try:
+        fmt = metadata.load_format_rules()
+        context_parts.append(f"Format registry: {len(fmt.get('rules', {}))} rules, {len(fmt.get('field_mappings', {}))} field mappings")
+    except Exception:
+        pass
+
+    try:
+        nav = metadata.load_navigation()
+        view_count = sum(len(g.get("items", [])) for g in nav.get("groups", []))
+        context_parts.append(f"Navigation: {len(nav.get('groups', []))} groups, {view_count} views")
+    except Exception:
+        pass
+
+    return {"context": "\n".join(context_parts)}
