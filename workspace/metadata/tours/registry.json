@@ -20,10 +20,11 @@
     {"tour_id": "act2_guide", "view_path": "/models", "title": "Act 2: Model Composition", "step_count": 5},
     {"tour_id": "oob", "view_path": "/editor", "title": "OOB vs Custom Metadata Tour", "step_count": 7},
     {"tour_id": "ux_features", "view_path": "/entities", "title": "Grid & Layout Features", "step_count": 5},
-    {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3}
+    {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3},
+    {"tour_id": "medallion", "view_path": "/medallion", "title": "Medallion Architecture Tour", "step_count": 4}
   ],
   "scenarios": {
-    "total_count": 26,
+    "total_count": 27,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -31,7 +32,8 @@
       {"category": "Use Cases", "count": 4},
       {"category": "Entities", "count": 2},
       {"category": "Investigation", "count": 3},
-      {"category": "Administration", "count": 3}
+      {"category": "Administration", "count": 3},
+      {"category": "Architecture", "count": 1}
     ]
   }
 }

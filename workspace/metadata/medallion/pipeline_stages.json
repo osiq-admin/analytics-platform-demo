@@ -1,0 +1,54 @@
+{
+  "stages": [
+    {
+      "stage_id": "ingest_landing",
+      "name": "Ingest to Landing",
+      "tier_from": null,
+      "tier_to": "landing",
+      "order": 1,
+      "depends_on": [],
+      "entities": ["execution", "order", "product", "md_intraday", "md_eod", "venue", "account", "trader"],
+      "parallel": true
+    },
+    {
+      "stage_id": "landing_to_bronze",
+      "name": "Landing to Bronze",
+      "tier_from": "landing",
+      "tier_to": "bronze",
+      "order": 2,
+      "depends_on": ["ingest_landing"],
+      "entities": ["execution", "order", "product", "md_intraday", "md_eod", "venue", "account", "trader"],
+      "parallel": true
+    },
+    {
+      "stage_id": "bronze_to_silver",
+      "name": "Bronze to Silver",
+      "tier_from": "bronze",
+      "tier_to": "silver",
+      "order": 3,
+      "depends_on": ["landing_to_bronze"],
+      "entities": ["execution", "order", "product", "md_eod"],
+      "parallel": true
+    },
+    {
+      "stage_id": "silver_to_gold",
+      "name": "Silver to Gold",
+      "tier_from": "silver",
+      "tier_to": "gold",
+      "order": 4,
+      "depends_on": ["bronze_to_silver"],
+      "entities": ["alert", "calculation_result"],
+      "parallel": false
+    },
+    {
+      "stage_id": "gold_to_platinum",
+      "name": "Gold to Platinum",
+      "tier_from": "gold",
+      "tier_to": "platinum",
+      "order": 5,
+      "depends_on": ["silver_to_gold"],
+      "entities": ["dashboard_kpi", "regulatory_report"],
+      "parallel": false
+    }
+  ]
+}

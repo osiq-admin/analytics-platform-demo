@@ -12,13 +12,14 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-12 + 7B + Overhauls, M0-M173):**
+**What's built (Phases 1-14 + 7B + Overhauls, M0-M175):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 16 frontend views, 716 tests (506 backend + 210 E2E), Playwright verified
+- 17 frontend views, 732 tests (522 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 83.8% metadata-driven (74 sections across 16 views)
+- 83.8% metadata-driven (77 sections across 17 views)
+- 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - 26 guided scenarios, 89 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.8%):**
@@ -1326,7 +1327,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 |----------|-------|--------|-----------|
 | **P0 — DONE** | Phases 1-12, 7B, Overhauls (M0-M173) | COMPLETE | Foundation: 16 views, 716 tests, 83.8% metadata-driven |
 | **P1 — Next** | Phase 13 (Data Calibration) | **COMPLETE** | Fixed F-001/F-010: 82 alerts across 5 models and 5 asset classes (M174) |
-| **P1 — Next** | Phase 14 (Medallion Core) | PLANNED | Foundation for entire medallion architecture vision |
+| **P1 — Next** | Phase 14 (Medallion Core) | **COMPLETE** | M175: 11-tier metadata, 6 contracts, 5 transformations, MedallionOverview view, 7 APIs, S27 scenario — 732 tests (522+210), 17 views |
 | **P1 — Next** | Phase 15 (Data Onboarding) | PLANNED | Connector abstraction + multi-format ingestion |
 | **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | PLANNED | MappingStudio overhaul Part 1 — raw to canonical |
 | **P1 — Next** | Phase 17 (Silver→Gold Mapping) | PLANNED | MappingStudio overhaul Part 2 — canonical to analytics |

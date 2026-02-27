@@ -1,0 +1,11 @@
+{
+  "transformation_id": "landing_to_bronze_order",
+  "source_tier": "landing",
+  "target_tier": "bronze",
+  "entity": "order",
+  "description": "Type-cast and deduplicate raw orders",
+  "sql_template": "SELECT DISTINCT CAST(order_id AS VARCHAR) AS order_id, CAST(limit_px AS DECIMAL(18,4)) AS limit_price, CAST(order_ts AS TIMESTAMP) AS order_timestamp, trader_id, product_id, order_type FROM landing_order",
+  "parameters": {},
+  "quality_checks": ["row_count_nonzero", "no_null_keys", "no_duplicates"],
+  "error_handling": "quarantine"
+}

@@ -1,0 +1,18 @@
+{
+  "contract_id": "landing_to_bronze_product",
+  "source_tier": "landing",
+  "target_tier": "bronze",
+  "entity": "product",
+  "description": "Type-cast and validate product reference data",
+  "field_mappings": [
+    {"source": "product_id", "target": "product_id", "transform": "cast_varchar"},
+    {"source": "isin", "target": "isin", "transform": "validate_isin"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["product_id", "isin"]},
+    {"rule": "unique", "fields": ["product_id"]}
+  ],
+  "sla": {"freshness_minutes": 60, "completeness_pct": 100.0},
+  "owner": "data-engineering",
+  "classification": "internal"
+}

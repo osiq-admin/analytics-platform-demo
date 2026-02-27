@@ -299,3 +299,13 @@
 - **Root Cause**: Layout uses fixed `w-72` detail panel beside `flex-[3]` graph — wastes space. Backend traceability graph endpoint doesn't return `description` fields for article/model/calc nodes (data exists in registry.json and model JSON). No `MiniMap`, `Controls`, edge labels, or tooltips in React Flow config. Node details panel only shows sparse metadata (type, label, title, jurisdiction).
 - **Fix Applied**: Complete layout redesign with `react-resizable-panels` vertical split. Added two tabs: Traceability Map (graph + MiniMap + Controls + smoothstep edges + edge labels + arrowheads) and Regulation Details (AG Grid table with coverage badges). Detail pane moved to full-width bottom panel. Backend updated to return `description` fields for article, detection_model, and calculation nodes. Descriptions displayed in both node detail and article detail panes. Increased node size (200×60) and dagre spacing (nodesep: 40, ranksep: 120).
 - **Status**: FIXED
+
+---
+
+## Phase 14: Medallion Architecture Core (2026-02-27)
+
+**Scope**: M175 — 11-tier medallion architecture metadata, MedallionOverview view, 7 API endpoints, tour, S27 scenario.
+
+### Phase 14: Medallion Architecture Core
+- MedallionOverview view verified via Playwright — 11 tiers render, tier click shows detail panel with contracts + pipeline stages
+- No new findings

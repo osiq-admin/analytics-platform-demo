@@ -1,0 +1,11 @@
+{
+  "transformation_id": "silver_to_gold_alerts",
+  "source_tier": "silver",
+  "target_tier": "gold",
+  "entity": "alert",
+  "description": "Execute detection models against canonical silver data to produce gold-tier alerts",
+  "sql_template": "-- Executed programmatically by detection engine\n-- Each model runs its calculation DAG, evaluates thresholds, and produces scored alerts",
+  "parameters": {"score_threshold": "from_settings", "model_ids": "all_active"},
+  "quality_checks": ["score_range_valid", "model_id_exists", "alert_id_unique"],
+  "error_handling": "log_and_continue"
+}

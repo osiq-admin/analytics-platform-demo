@@ -1,0 +1,19 @@
+{
+  "contract_id": "landing_to_bronze_order",
+  "source_tier": "landing",
+  "target_tier": "bronze",
+  "entity": "order",
+  "description": "Type-cast and deduplicate raw order records",
+  "field_mappings": [
+    {"source": "order_id", "target": "order_id", "transform": "cast_varchar"},
+    {"source": "order_ts", "target": "order_timestamp", "transform": "parse_iso8601"},
+    {"source": "limit_px", "target": "limit_price", "transform": "cast_decimal"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["order_id", "trader_id"]},
+    {"rule": "unique", "fields": ["order_id"]}
+  ],
+  "sla": {"freshness_minutes": 5, "completeness_pct": 99.9},
+  "owner": "data-engineering",
+  "classification": "confidential"
+}

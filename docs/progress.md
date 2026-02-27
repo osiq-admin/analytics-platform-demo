@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M174 Phase 13 Complete; 716 total tests: 506 backend + 210 E2E, 16 views, 26 scenarios, 74 architecture sections, 83.8% metadata-driven, 82 alerts across 5 asset classes, 5 detection models)
+**Last Updated**: 2026-02-27 (M175 Phase 14 Complete; 732 total tests: 522 backend + 210 E2E, 17 views, 27 scenarios, 77 architecture sections, 970 modules)
 
 ---
 
@@ -48,6 +48,7 @@
 | Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry, BDD scenarios, architecture re-audit — 716 total tests (506+210), 83.8% metadata-driven |
 | Development Workflow Protocol | COMPLETE | Single authoritative lifecycle protocol (Pre-Work → Planning → Execution → Completion), 3-tier Milestone Completion Protocol, Test Count Sync Registry, fixed all stale docs |
 | Roadmap Restructuring — Medallion Architecture | COMPLETE | Restructured roadmap from 20 phases to 33 phases across 7 tiers: medallion architecture (11 tiers), data governance, PII/masking/encryption, business glossary (ISO 11179), standards (ISO 8000/25012/27001, BCBS 239), migration readiness (SQLMesh, Arrow) |
+| Medallion Architecture Core (Phase 14) | COMPLETE | M175: 11-tier medallion architecture metadata, 6 data contracts, 5 transformations, 5 pipeline stages, MedallionOverview view with React Flow, 7 API endpoints, S27 scenario — 732 total tests (522+210), 17 views |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 
 ---
@@ -259,6 +260,12 @@
 | Milestone | Title | Status | Planned | Actual | Notes |
 |---|---|---|---|---|---|
 | M174 | Data Calibration | COMPLETE | 5 | 5 | Fix F-001 (MPR 96%→68%) and F-010 (all 5 asset classes). Cross-asset normal trading (FX/FI/futures), 9 new detection patterns (wash FX+commodity, MPR commodity, insider equity, spoofing index), calibrate trend_sensitivity (1.5→3.5), score thresholds (equity 10→16), score steps, fix SettingsResolver pipeline bug, fix spoofing pattern counts. 82 total alerts: MPR 56, wash 14, insider 7, spoofing 5 |
+
+### Phase 14: Medallion Architecture Core (M175)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M175 | Medallion Architecture Core | COMPLETE | 5 | 5 | 11-tier metadata (tiers.json), 6 data contracts, 5 transformations, 5 pipeline stages, Pydantic models, MetadataService methods, 7 API endpoints (/api/medallion/*), MedallionOverview view (React Flow + Dagre), navigation + route, tour, S27 scenario, 5 operation scripts, 3 architecture registry entries |
 
 ---
 

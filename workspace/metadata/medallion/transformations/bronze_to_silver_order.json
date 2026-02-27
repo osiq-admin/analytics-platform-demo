@@ -1,0 +1,11 @@
+{
+  "transformation_id": "bronze_to_silver_order",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "entity": "order",
+  "description": "Map bronze orders to canonical entity model",
+  "sql_template": "SELECT o.order_id, o.trader_id, o.product_id, o.order_type, o.limit_price, o.order_timestamp AT TIME ZONE 'UTC' AS order_timestamp, t.desk FROM bronze_order o JOIN bronze_trader t ON o.trader_id = t.trader_id",
+  "parameters": {},
+  "quality_checks": ["referential_integrity", "no_null_keys"],
+  "error_handling": "quarantine"
+}

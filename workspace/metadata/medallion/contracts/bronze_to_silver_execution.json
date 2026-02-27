@@ -1,0 +1,20 @@
+{
+  "contract_id": "bronze_to_silver_execution",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "entity": "execution",
+  "description": "Map executions to canonical entity model with ISO/FIX alignment",
+  "field_mappings": [
+    {"source": "execution_id", "target": "execution_id", "transform": "passthrough"},
+    {"source": "venue_mic", "target": "venue_mic", "transform": "validate_mic_iso10383"},
+    {"source": "trade_timestamp", "target": "trade_timestamp", "transform": "normalize_utc"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["execution_id", "order_id", "product_id"]},
+    {"rule": "referential_integrity", "field": "order_id", "reference": "order.order_id"},
+    {"rule": "referential_integrity", "field": "product_id", "reference": "product.product_id"}
+  ],
+  "sla": {"freshness_minutes": 15, "completeness_pct": 99.5},
+  "owner": "data-engineering",
+  "classification": "confidential"
+}

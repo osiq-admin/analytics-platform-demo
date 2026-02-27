@@ -3094,6 +3094,49 @@ const S26_ARCHITECTURE_TRACE: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// S27: Medallion Architecture Walkthrough
+// ==========================================================================
+
+const S27_MEDALLION_ARCHITECTURE: ScenarioDefinition = {
+  id: "s27_medallion_architecture",
+  name: "S27: Medallion Architecture Walkthrough",
+  description: "Explore the 11-tier medallion data architecture — tiers, contracts, transformations, and pipeline stages",
+  category: "admin",
+  difficulty: "beginner",
+  estimatedMinutes: 3,
+  steps: [
+    {
+      target: "[data-tour='medallion-graph']",
+      title: "View Tier Graph",
+      content: "The React Flow diagram shows all 11 medallion tiers arranged left-to-right.",
+      route: "/medallion",
+      action: "navigate",
+      hint: "Navigate to the Medallion Architecture view to see the tier graph",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='medallion-graph']",
+      title: "Select a Tier",
+      content: "Click any tier node to inspect its properties in the detail panel.",
+      route: "/medallion",
+      action: "click",
+      actionTarget: "[data-tour='medallion-graph'] .react-flow__node",
+      hint: "Click the 'Bronze' tier node to inspect its properties",
+      delay: 3000,
+    },
+    {
+      target: "[data-trace='medallion.tier-detail']",
+      title: "Review Tier Details",
+      content: "The detail panel shows data state, format, retention, quality gate, access level, and related contracts.",
+      route: "/medallion",
+      action: "wait",
+      hint: "Review the tier detail panel showing data state, format, retention, quality gate, access level, and related contracts",
+      delay: 4000,
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3123,4 +3166,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s24_oob_metadata_review: S24_OOB_METADATA_REVIEW,
   s25_full_platform_demo: S25_FULL_PLATFORM_DEMO,
   s26_architecture_trace: S26_ARCHITECTURE_TRACE,
+  s27_medallion_architecture: S27_MEDALLION_ARCHITECTURE,
 };

@@ -1,0 +1,19 @@
+{
+  "contract_id": "landing_to_bronze_execution",
+  "source_tier": "landing",
+  "target_tier": "bronze",
+  "entity": "execution",
+  "description": "Type-cast and deduplicate raw execution records",
+  "field_mappings": [
+    {"source": "exec_id", "target": "execution_id", "transform": "cast_varchar"},
+    {"source": "trade_ts", "target": "trade_timestamp", "transform": "parse_iso8601"},
+    {"source": "qty", "target": "quantity", "transform": "cast_decimal"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["execution_id", "order_id"]},
+    {"rule": "unique", "fields": ["execution_id"]}
+  ],
+  "sla": {"freshness_minutes": 5, "completeness_pct": 99.9},
+  "owner": "data-engineering",
+  "classification": "confidential"
+}
