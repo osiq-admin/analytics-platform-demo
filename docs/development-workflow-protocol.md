@@ -202,7 +202,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Architecture Section Count (currently 74, 83.8% metadata-driven)
+### Architecture Section Count (currently 77, 83.1% metadata-driven)
 
 | File | Location |
 |------|----------|

@@ -18,11 +18,11 @@
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
 - 17 frontend views, 732 tests (522 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 83.8% metadata-driven (77 sections across 17 views)
+- 83.1% metadata-driven (77 sections across 17 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
-- 26 guided scenarios, 89 operation scripts, 8 demo checkpoints
+- 27 guided scenarios, 94 operation scripts, 8 demo checkpoints
 
-**What's already metadata-driven (~83.8%):**
+**What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
 - Detection models: JSON with query, scoring, alert templates
 - Settings: JSON with hierarchical overrides, priority system, context-aware resolution
