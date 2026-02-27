@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 74 sections across 16 views + 3 cross-cutting components.
+// 77 sections across 17 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -3164,6 +3164,134 @@ export const VIEW_TRACES: ViewTrace[] = [
           "Load tour/scenario definitions from the backend as true metadata",
           "Make toolbar buttons configurable via metadata",
         ],
+      },
+    ],
+  },
+  // =========================================================================
+  // VIEW 17: Medallion Overview
+  // =========================================================================
+  {
+    viewId: "medallion",
+    viewName: "Medallion Overview",
+    route: "/medallion",
+    sections: [
+      {
+        id: "medallion.title",
+        displayName: "View Header",
+        viewId: "medallion",
+        description:
+          "Static header text rendered in code. Could be loaded from view_config metadata in the future.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders view header" },
+        ],
+        stores: [],
+        apis: [],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "code-driven",
+        maturityExplanation:
+          "Static header text rendered in code",
+        metadataOpportunities: [
+          "Load view title from view_config metadata",
+        ],
+      },
+      {
+        id: "medallion.tier-graph",
+        displayName: "Tier Architecture Graph",
+        viewId: "medallion",
+        description:
+          "React Flow diagram showing all 11 tiers of the medallion architecture. Tiers are arranged left-to-right from raw data (Landing) through processed (Gold/Platinum) to operational tiers (Logging, Metrics, Archive). Edges show data contracts between tiers. Layout is computed dynamically with dagre auto-layout.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders React Flow graph with tier nodes and contract edges" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/medallion/tiers",
+            role: "Returns all 11 tier definitions",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/medallion/contracts",
+            role: "Returns data contracts between tiers",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/medallion/tiers.json",
+            category: "metadata",
+            role: "Tier definitions with data state, storage format, retention, quality gate, access level",
+          },
+          {
+            path: "workspace/metadata/medallion/contracts",
+            category: "metadata",
+            role: "Data contract JSON files defining field mappings, quality rules, and SLAs between tiers",
+          },
+        ],
+        technologies: [
+          { name: "React Flow", role: "Interactive graph rendering with dagre auto-layout" },
+          { name: "dagre", role: "Directed graph layout algorithm" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "All 11 tiers, edges, and contract counts are loaded from medallion metadata JSON files. Layout is computed dynamically from the data.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "medallion.tier-detail",
+        displayName: "Tier Detail Panel",
+        viewId: "medallion",
+        description:
+          "Detail panel showing properties of the selected tier: data state, storage format, retention policy, quality gate, access level, mutability. Related data contracts and pipeline stages are displayed below.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders tier detail panel with contracts and pipeline stages" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/medallion/tiers",
+            role: "Returns tier definitions for detail display",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/medallion/contracts",
+            role: "Returns contracts related to the selected tier",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/medallion/pipeline-stages",
+            role: "Returns pipeline stages for the selected tier",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/medallion/tiers.json",
+            category: "metadata",
+            role: "Tier properties displayed in the detail panel",
+          },
+          {
+            path: "workspace/metadata/medallion/contracts",
+            category: "metadata",
+            role: "Data contracts shown for the selected tier",
+          },
+          {
+            path: "workspace/metadata/medallion/pipeline_stages.json",
+            category: "metadata",
+            role: "Pipeline stages related to the selected tier",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Tier properties, data contracts, and pipeline stages are all loaded from medallion metadata. No hardcoded data.",
+        metadataOpportunities: [],
       },
     ],
   },
