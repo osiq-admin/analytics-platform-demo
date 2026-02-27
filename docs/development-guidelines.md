@@ -334,3 +334,30 @@ When the bottom pane has two distinct modes (e.g., detail vs. graph), use top-le
 import { Panel as ResizablePanel } from "react-resizable-panels";
 import Panel from "../../components/Panel.tsx";
 ```
+
+## 18. Widget Configuration Pattern
+
+Dashboard widgets are defined in metadata JSON (`workspace/metadata/widgets/{view_id}.json`), not hardcoded in components.
+
+**Adding a new widget:**
+1. Add a `WidgetDefinition` entry to the view's widget JSON file
+2. If it's a chart widget, add a renderer entry in the view's `CHART_RENDERERS` map
+3. The widget will be included automatically at the grid position specified in `grid_config`
+
+**Widget metadata structure:**
+```json
+{
+  "widget_id": "my-widget",
+  "label": "My Widget",
+  "widget_type": "chart",
+  "data_source": "stats.my_data",
+  "grid_config": { "row": 1, "col": 0, "col_span": 1, "order": 0 },
+  "chart_config": { "default_chart_type": "bar", "available_chart_types": ["bar", "pie"] }
+}
+```
+
+**API:** `GET /api/metadata/widgets/{view_id}` returns the config; `PUT` saves updates.
+
+**Fallback:** If the API fails, the Dashboard falls back to hardcoded widgets for resilience.
+
+**Reference:** `frontend/src/views/Dashboard/index.tsx`, `backend/models/widgets.py`, `workspace/metadata/widgets/dashboard.json`

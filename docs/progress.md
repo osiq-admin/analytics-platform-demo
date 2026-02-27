@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M131 Stage 1 Checkpoint; 580 total tests: 398 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
+**Last Updated**: 2026-02-27 (M135 Stage 2 Checkpoint; 586 total tests: 404 backend + 182 E2E, 16 views, 26 scenarios, 74 traced sections)
 
 ---
 
@@ -40,6 +40,7 @@
 | Exploratory Testing Fixes Round 2 (F-013/F-014/F-015) | COMPLETE | Format snake_case labels in Risk Cases/Alert Detail/Explainability/Calc Trace, format timestamps, fix Model Composer description overlap |
 | Architecture Traceability Mode (M128) | COMPLETE | 74 traced sections across 16 views + cross-cutting, slide-in architecture panel, metadata maturity ratings, S26 scenario, 7 new E2E tests — 572 total tests, 964 modules |
 | Metadata Architecture Overhaul — Stage 1 (M129-M131) | COMPLETE | SQL presets to metadata, settings resolver Strategy pattern — 398 backend tests |
+| Metadata Architecture Overhaul — Stage 2 (M132-M135) | COMPLETE | Dashboard widget manifest, metadata-driven rendering, E2E tests — 404 backend tests |
 
 ---
 
@@ -185,6 +186,10 @@
 | M129 | SQL Presets to Metadata | COMPLETE | 4 | 4 | Moved hardcoded SQL presets to workspace/metadata/query_presets/default.json, QueryPreset Pydantic model, MetadataService.list_query_presets(), 4 new tests — 394 backend tests |
 | M130 | Settings Resolver Strategy Pattern | COMPLETE | 4 | 4 | Extracted HierarchyStrategy + MultiDimensionalStrategy classes, RESOLUTION_STRATEGIES registry, ResolutionStrategy protocol, 4 new tests — 398 backend tests |
 | M131 | Stage 1 Checkpoint | COMPLETE | 3 | 3 | Full regression pass, architecture registry updated, docs updated, pushed |
+| M132 | Dashboard Widget Metadata Schema | COMPLETE | 5 | 5 | WidgetDefinition Pydantic model, dashboard.json with 8 widgets, GET/PUT /api/metadata/widgets/{view_id}, 6 new tests — 404 backend tests |
+| M133 | Dashboard Frontend Refactor | COMPLETE | 4 | 4 | Removed hardcoded WIDGETS array, CHART_RENDERERS lookup, ChartWidget component, resolveKpiValue/resolveChartData helpers, fallback widgets — 964 modules build clean |
+| M134 | Dashboard Widget Config E2E Tests | COMPLETE | 3 | 3 | TestDashboardWidgetConfig class, widget loading test, chart rendering test, API test — 3 new E2E tests |
+| M135 | Stage 2 Checkpoint | COMPLETE | 6 | 6 | Full regression pass, architecture registry maturity updated, docs updated, pushed |
 
 ---
 

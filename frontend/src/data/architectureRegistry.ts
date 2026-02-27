@@ -57,12 +57,12 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [],
-        metadataMaturity: "code-driven",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Card layout, labels, and metric definitions are hardcoded in JSX. Data is from SQL aggregation over engine-produced results, not from metadata definitions.",
+          "KPI cards are defined in widget metadata (workspace/metadata/widgets/dashboard.json) including labels, metric keys, and grid positions. Dashboard fetches config from /api/metadata/widgets/dashboard and renders accordingly with fallback. Data comes from SQL aggregation over engine-produced results.",
         metadataOpportunities: [
-          "Define KPI cards as metadata (label, metric key, format, icon) so new cards can be added without code changes",
-          "Allow dashboard layout to be configurable via metadata",
+          "Add icon and format specifiers to KPI card widget metadata",
+          "Support custom KPI formulas defined in widget metadata",
         ],
       },
       {
@@ -105,12 +105,11 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart and PieChart visualizations" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Data is from metadata-driven detection models but chart configuration (colors, widget order, chart types) is hardcoded.",
+          "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Data from metadata-driven detection models.",
         metadataOpportunities: [
-          "Define chart color palettes per model via metadata",
-          "Make widget order and default chart types configurable",
+          "Support custom chart renderers loaded dynamically from metadata",
         ],
       },
       {
@@ -153,9 +152,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders histogram / bar chart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Score buckets and chart config are code-driven; underlying data is from metadata-driven detection.",
+          "Chart widget defined in metadata with default chart type, available types, and grid position. Score bucket boundaries are still code-driven; underlying data is from metadata-driven detection.",
         metadataOpportunities: ["Make score bucket boundaries configurable via settings metadata"],
       },
       {
@@ -198,9 +197,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart / PieChart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Trigger paths derive from metadata-driven model definitions but chart config is hardcoded.",
+          "Chart widget defined in metadata with default chart type and grid position. Trigger paths derive from metadata-driven model definitions.",
         metadataOpportunities: ["Allow trigger categories to be defined in model metadata"],
       },
       {
@@ -243,9 +242,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           },
         ],
         technologies: [{ name: "Recharts", role: "Renders BarChart / PieChart" }],
-        metadataMaturity: "mixed",
+        metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
-          "Asset classes come from entity metadata but chart presentation is hardcoded.",
+          "Chart widget defined in metadata with default chart type and grid position. Asset classes come from entity metadata.",
         metadataOpportunities: ["Derive asset class categories dynamically from product entity metadata"],
       },
     ],

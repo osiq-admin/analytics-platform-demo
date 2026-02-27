@@ -63,6 +63,8 @@ The Dashboard provides a summary analytics view:
 
 **Widget Visibility (Phase 9):** Click the gear icon next to the Dashboard heading to toggle widget visibility. Each chart can be shown/hidden via toggle switches. Settings persist in localStorage.
 
+**Metadata-Driven Widgets (M132-M133):** All 8 dashboard widgets (4 KPI cards + 4 charts) are now defined in `workspace/metadata/widgets/dashboard.json`. The Dashboard fetches widget configuration from `/api/metadata/widgets/dashboard` at load time. Widget order, chart types, color palettes, and grid layout are all configurable via metadata. Add, reorder, or modify widgets by editing the JSON — no code changes required.
+
 The dashboard is the default landing page. Navigate to it from the sidebar under **Overview → Dashboard**.
 
 ## Act 1: Data & Discovery

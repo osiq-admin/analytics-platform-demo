@@ -41,6 +41,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "See which detection rules fire most frequently and identify patterns across the alert population.",
       },
       {
+        id: "configure_widgets",
+        name: "Configure Dashboard Widgets",
+        description:
+          "Dashboard widgets (KPI cards and charts) are defined in metadata at workspace/metadata/widgets/dashboard.json. Edit the JSON to add, remove, reorder, or reconfigure widgets — no code changes needed. The API endpoint GET/PUT /api/metadata/widgets/dashboard manages the configuration.",
+      },
+      {
         id: "architecture_trace",
         name: "Explore Architecture Trace",
         description:
@@ -51,6 +57,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Charts are interactive — hover for detailed tooltips with exact values",
       "Click the chart type switcher to toggle between bar, line, and pie views",
       "Use the time range selector to focus on specific detection windows",
+      "Widget layout is metadata-driven — edit workspace/metadata/widgets/dashboard.json to customize",
     ],
   },
 
