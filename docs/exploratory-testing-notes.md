@@ -13,11 +13,9 @@
 ### F-001: Alert Distribution Heavily Skewed Toward Market Price Ramping
 - **Screen**: Dashboard
 - **Observation**: market_price_ramping produces 414 of 430 alerts (96%). Other 4 models (insider_dealing, wash_full_day, wash_intraday, spoofing_layering) produce only ~16 combined. This is unrealistic for a demo — users expect a more balanced distribution across models.
-- **Root Cause**: TBD — need to explore data generation logic, model thresholds, and score calibration.
-- **Action Items**:
-  1. Explore what drives the imbalance (data generation? thresholds? score logic?)
-  2. Recalibrate to produce a more even/realistic alert distribution across all 5 models
-- **Status**: OPEN
+- **Root Cause**: (1) Normal trading only generated equity executions, (2) trend_sensitivity too low (1.5 stddev multiplier = most days qualify), (3) SettingsResolver not passed to CalculationEngine in pipeline, (4) MPR score thresholds too low, (5) score step tiers too easy to meet.
+- **Fix (M174)**: Raised trend_sensitivity 1.5→3.5, MPR score threshold equity 10→16, large_activity_score_steps equity first tier 5K→25K, same_side_pct tiers 0.6/0.75/0.9→0.75/0.85/0.95, fixed SettingsResolver pipeline bug. Result: MPR 56 of 82 alerts (68%) — realistic for surveillance.
+- **Status**: FIXED (Phase 13 — Data Calibration)
 
 ### F-002: Feature Need — Threshold & Score Tuning Analysis
 - **Screen**: Dashboard (applies platform-wide)
@@ -139,16 +137,9 @@
   - Index futures (ES_FUT, NQ_FUT) have ~1/day normal execution — too few to trigger detection thresholds
   - All 13 embedded detection patterns use equity or commodity products exclusively
 
-- **Fix Required** (in `scripts/generate_data.py`):
-  1. Add FX pairs to the normal daily trading loop (2-4 FX trades/day)
-  2. Add ZB_FUT to normal daily trading (0-1 trades/day)
-  3. Increase index futures daily volume (2-3 trades/day)
-  4. Add embedded detection patterns for FX (e.g., FX wash trading on EURUSD)
-  5. Add embedded detection patterns for fixed income (e.g., ramping on ZB_FUT)
-  6. Add embedded detection patterns for index futures (e.g., spoofing on ES_FUT)
-  7. Regenerate CSVs, run pipeline, regenerate alerts
-- **Related**: F-001 (alert distribution imbalance) — both are data generation calibration issues
-- **Status**: OPEN — future fix (data regeneration required)
+- **Fix (M174)**: Added FX (2-4/day), fixed income (60%/day), increased futures (1-3/day) to normal trading. Added 9 cross-asset detection patterns: 3 wash (FX EURUSD/USDJPY + commodity CL_FUT), 1 MPR (commodity GC_FUT), 3 insider (GOOGL/TSLA/JPM), 2 spoofing (index ES_FUT/NQ_FUT). Added fixed income to intraday data generation. Result: alerts across all 5 asset classes — equity 55, FI 12, index 7, commodity 4, FX 4.
+- **Related**: F-001 (alert distribution imbalance) — both fixed together in Phase 13
+- **Status**: FIXED (Phase 13 — Data Calibration)
 
 ### F-012: Entity Designer Layout — Wasted Space, Cramped Graph, No Row Selection
 - **Screen**: Entity Designer

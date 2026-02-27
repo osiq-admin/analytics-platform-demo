@@ -179,38 +179,18 @@ Every entity field carries governance metadata:
 
 ### Tier 0 — Quick Wins
 
-### Phase 13: Data Calibration & Alert Distribution Fix
+### Phase 13: Data Calibration & Alert Distribution Fix (**COMPLETE** — M174)
 
 *Fix alert distribution skew so detection models fire realistic, balanced alerts across entities.*
 
-**Goal:** Resolve F-001 (alert distribution skew — 85%+ alerts on one product) and F-010 (market data gaps) from exploratory testing. Calibrate data generation to produce balanced, realistic alert distributions across products, accounts, and time periods.
+**Status:** COMPLETE (2026-02-27). See `docs/plans/2026-02-27-phase13-data-calibration.md` for implementation plan.
 
-**Tasks:**
-
-#### Task 13.1: Analyze current alert distribution
-- Profile `workspace/alerts/alert_summary.parquet` to understand skew
-- Document which products, accounts, dates produce alerts and which don't
-- Identify root causes in `scripts/generate_data.py`
-
-#### Task 13.2: Fix data generation parameters
-- **Files:** Modify `scripts/generate_data.py`
-- Ensure wash trading patterns distributed across 3+ products (not just one)
-- Ensure market price ramping has sufficient price trend data
-- Ensure spoofing has cancel patterns across multiple accounts
-- Ensure insider dealing has market event correlation
-- Verify market data coverage (md_eod, md_intraday) for all products
-
-#### Task 13.3: Regenerate data and verify distribution
-- Run `uv run python -m scripts.generate_data`
-- Run pipeline, verify alert distribution is balanced
-- Run `uv run python -m scripts.generate_snapshots` to update demo checkpoints
-- Verify all 5 detection models fire alerts
-- Update demo data counts if they changed
-
-#### Task 13.4: Update tests and documentation
-- Run full test suite
-- Update any test fixtures that depend on specific data counts
-- Update progress.md
+**Results:**
+- **F-001 FIXED**: MPR reduced from 96% to 68% of alerts — realistic for surveillance
+- **F-010 FIXED**: All 5 asset classes now have alerts (equity 55, FI 12, index 7, commodity 4, FX 4)
+- **82 total alerts**: MPR 56, wash_full_day 7, wash_intraday 7, insider 7, spoofing 5
+- **Key changes**: Cross-asset normal trading (FX/FI/futures), 9 new detection patterns, trend_sensitivity 1.5→3.5, MPR score threshold calibration, SettingsResolver pipeline bug fix, spoofing pattern count fix
+- **Data**: execution 509→761, order 782→786, intraday includes fixed income
 
 ---
 
@@ -1345,7 +1325,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | Priority | Phase | Status | Rationale |
 |----------|-------|--------|-----------|
 | **P0 — DONE** | Phases 1-12, 7B, Overhauls (M0-M173) | COMPLETE | Foundation: 16 views, 716 tests, 83.8% metadata-driven |
-| **P1 — Next** | Phase 13 (Data Calibration) | PLANNED | Quick win: fix alert distribution skew for better demos |
+| **P1 — Next** | Phase 13 (Data Calibration) | **COMPLETE** | Fixed F-001/F-010: 82 alerts across 5 models and 5 asset classes (M174) |
 | **P1 — Next** | Phase 14 (Medallion Core) | PLANNED | Foundation for entire medallion architecture vision |
 | **P1 — Next** | Phase 15 (Data Onboarding) | PLANNED | Connector abstraction + multi-format ingestion |
 | **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | PLANNED | MappingStudio overhaul Part 1 — raw to canonical |

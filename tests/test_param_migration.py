@@ -51,9 +51,9 @@ def full_pipeline(pipeline_workspace, db):
     metadata = MetadataService(pipeline_workspace)
     loader = DataLoader(pipeline_workspace, db)
     loader.load_all()
-    calc_engine = CalculationEngine(pipeline_workspace, db, metadata)
-    calc_engine.run_all()
     resolver = SettingsResolver()
+    calc_engine = CalculationEngine(pipeline_workspace, db, metadata, resolver=resolver)
+    calc_engine.run_all()
     det_engine = DetectionEngine(pipeline_workspace, db, metadata, resolver)
     all_alerts = det_engine.evaluate_all()
     return {
@@ -95,11 +95,11 @@ class TestPipelineRegression:
         assert len(fired) > 0, "Pipeline must produce fired alerts after param migration"
 
     def test_alert_count_matches_baseline(self, full_pipeline):
-        """Alert count should remain in the baseline range (400-500, ~430 typical)."""
+        """Alert count should remain in the baseline range (50-150, ~82 typical)."""
         alerts = full_pipeline["alerts"]
         fired = [a for a in alerts if a.alert_fired]
-        assert 400 <= len(fired) <= 500, (
-            f"Fired alert count {len(fired)} outside baseline range 400-500"
+        assert 50 <= len(fired) <= 150, (
+            f"Fired alert count {len(fired)} outside baseline range 50-150"
         )
 
 

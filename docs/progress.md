@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M173 Phase 2 Complete; 716 total tests: 506 backend + 210 E2E, 16 views, 26 scenarios, 74 architecture sections, 83.8% metadata-driven, 6 regulations, 6 ISO standards, 14 compliance requirements, 4 grid configs, 2 view configs, 1 theme palette, 1 workflow, 1 demo config, 1 tour registry)
+**Last Updated**: 2026-02-27 (M174 Phase 13 Complete; 716 total tests: 506 backend + 210 E2E, 16 views, 26 scenarios, 74 architecture sections, 83.8% metadata-driven, 82 alerts across 5 asset classes, 5 detection models)
 
 ---
 
@@ -48,6 +48,7 @@
 | Compliance & Metadata Phase 2 (M151-M173) | COMPLETE | ISO/FIX/compliance standards, grid columns, view tabs, theme palettes, workflows, demo checkpoints, tour registry, BDD scenarios, architecture re-audit — 716 total tests (506+210), 83.8% metadata-driven |
 | Development Workflow Protocol | COMPLETE | Single authoritative lifecycle protocol (Pre-Work → Planning → Execution → Completion), 3-tier Milestone Completion Protocol, Test Count Sync Registry, fixed all stale docs |
 | Roadmap Restructuring — Medallion Architecture | COMPLETE | Restructured roadmap from 20 phases to 33 phases across 7 tiers: medallion architecture (11 tiers), data governance, PII/masking/encryption, business glossary (ISO 11179), standards (ISO 8000/25012/27001, BCBS 239), migration readiness (SQLMesh, Arrow) |
+| Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 
 ---
 
@@ -252,6 +253,12 @@
 | M171 | BDD Scenarios | COMPLETE | 3 | 3 | BDD scenarios for compliance & metadata phase 2 features |
 | M172 | Architecture Re-Audit | COMPLETE | 4 | 4 | 83.8% metadata-driven (was 69%) — 31 fully + 31 mostly + 2 mixed + 2 code-driven + 8 infrastructure |
 | M173 | Documentation Sweep | COMPLETE | 5 | 5 | Update all counts, add Phase 2 metadata types to CLAUDE.md, progress.md, checklist |
+
+### Phase 13: Data Calibration (M174)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M174 | Data Calibration | COMPLETE | 5 | 5 | Fix F-001 (MPR 96%→68%) and F-010 (all 5 asset classes). Cross-asset normal trading (FX/FI/futures), 9 new detection patterns (wash FX+commodity, MPR commodity, insider equity, spoofing index), calibrate trend_sensitivity (1.5→3.5), score thresholds (equity 10→16), score steps, fix SettingsResolver pipeline bug, fix spoofing pattern counts. 82 total alerts: MPR 56, wash 14, insider 7, spoofing 5 |
 
 ---
 

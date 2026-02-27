@@ -155,7 +155,7 @@ def generate_snapshots(workspace: Path) -> bool:
         log.info("CHECKPOINT: pipeline_run")
         log.info("=" * 60)
 
-        calc_engine = CalculationEngine(workspace, db, metadata)
+        calc_engine = CalculationEngine(workspace, db, metadata, resolver=SettingsResolver())
         results = calc_engine.run_all()
         log.info("Executed %d calculations", len(results))
         for calc_id, info in results.items():

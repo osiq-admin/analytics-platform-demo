@@ -3,13 +3,14 @@
   "name": "Trend Sensitivity",
   "description": "Standard deviation multiplier for trend detection sensitivity. Lower values detect more subtle trends.",
   "value_type": "decimal",
-  "default": 1.5,
+  "default": 3.5,
   "match_type": "hierarchy",
   "overrides": [
     {
       "match": { "asset_class": "equity" },
-      "value": 1.2,
-      "priority": 1
+      "value": 2.5,
+      "priority": 1,
+      "description": "Higher multiplier for equity — reduces noise from normal daily moves"
     },
     {
       "match": { "asset_class": "fx" },
