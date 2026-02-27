@@ -292,6 +292,11 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - **Compliance Requirements**: 14 granular requirements mapped to implementations (detection models, calculations, entity fields)
 - **Regulations**: 6 frameworks (MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC) with article-level detail and source URLs
 
+### Entity Compliance Fields
+- **Account**: MiFID II client classification (retail/professional/eligible_counterparty) and compliance status
+- **Product**: Regulatory jurisdiction scope (EU/US/UK/APAC/MULTI)
+- **Detection Models**: All 5 models now cover multiple jurisdictions (EU + US minimum)
+
 ## Act 2: Model Composition
 
 ### 2.1 Model Composer (Compose → Models)

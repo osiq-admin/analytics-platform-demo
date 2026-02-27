@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M154 Stage 1 Checkpoint; 617 total tests: 435 backend + 182 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements)
+**Last Updated**: 2026-02-27 (M158 Stage 2 Checkpoint; 627 total tests: 445 backend + 182 E2E, 16 views, 26 scenarios, 74 architecture sections, 6 regulations, 6 ISO standards, 14 compliance requirements)
 
 ---
 
@@ -230,6 +230,10 @@
 | M152 | FIX Protocol & Compliance | COMPLETE | 3 | 3 | FIX protocol registry (6 fields) + compliance requirements (14 requirements) mapped to implementations |
 | M153 | EMIR & SEC Regulations | COMPLETE | 3 | 3 | Add EMIR, SEC to regulatory registry with source URLs — 6 total regulations |
 | M154 | Stage 1 Checkpoint | COMPLETE | 5 | 5 | Standards foundation — 435 backend tests passing, frontend builds clean, architecture registry + operations + docs updated |
+| M155 | Account MiFID II Classification | COMPLETE | 3 | 3 | MiFID II client category + compliance status on accounts |
+| M156 | Product Regulatory Jurisdiction | COMPLETE | 3 | 3 | Regulatory scope field on products |
+| M157 | Detection Model Coverage | COMPLETE | 3 | 3 | SEC coverage for multi-jurisdiction on all models |
+| M158 | Stage 2 Checkpoint | COMPLETE | 5 | 5 | Entity compliance — 445 backend tests passing, frontend builds clean, docs updated |
 
 ---
 
