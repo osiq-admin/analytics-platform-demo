@@ -27,6 +27,32 @@ def workspace(tmp_path):
             {"id": "dependencies", "label": "Deps", "icon": "git-branch"}
         ]
     }))
+    # Theme palettes
+    (ws / "metadata" / "theme").mkdir(parents=True)
+    (ws / "metadata" / "theme" / "palettes.json").write_text(json.dumps({
+        "palette_id": "default",
+        "description": "Default color palette for charts, badges, and graph nodes",
+        "chart_colors": ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"],
+        "asset_class_colors": {
+            "equity": "#6366f1",
+            "fx": "#22d3ee",
+            "commodity": "#f59e0b",
+            "index": "#10b981",
+            "fixed_income": "#8b5cf6"
+        },
+        "layer_badge_variants": {
+            "oob": "info",
+            "user": "warning",
+            "custom": "success"
+        },
+        "graph_node_colors": {
+            "regulation": "#3b82f6",
+            "article_covered": "#22c55e",
+            "article_uncovered": "#ef4444",
+            "detection_model": "#f97316",
+            "calculation": "#a855f7"
+        }
+    }))
     for d in ["entities", "calculations", "settings", "detection_models", "query_presets"]:
         (ws / "metadata" / d).mkdir(parents=True)
     (ws / "data" / "csv").mkdir(parents=True)
@@ -99,3 +125,40 @@ class TestViewConfig:
         data = resp.json()
         assert "description" in data
         assert len(data["description"]) > 0
+
+
+class TestThemePalette:
+    def test_palette_loads(self, client):
+        resp = client.get("/api/metadata/theme/palettes/default")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["palette_id"] == "default"
+
+    def test_chart_colors_present(self, client):
+        resp = client.get("/api/metadata/theme/palettes/default")
+        data = resp.json()
+        assert len(data["chart_colors"]) >= 5
+        assert all(c.startswith("#") for c in data["chart_colors"])
+
+    def test_asset_class_colors(self, client):
+        resp = client.get("/api/metadata/theme/palettes/default")
+        data = resp.json()
+        assert "equity" in data["asset_class_colors"]
+        assert "fx" in data["asset_class_colors"]
+
+    def test_graph_node_colors(self, client):
+        resp = client.get("/api/metadata/theme/palettes/default")
+        data = resp.json()
+        assert "regulation" in data["graph_node_colors"]
+        assert "detection_model" in data["graph_node_colors"]
+        assert all(c.startswith("#") for c in data["graph_node_colors"].values())
+
+    def test_layer_badge_variants(self, client):
+        resp = client.get("/api/metadata/theme/palettes/default")
+        data = resp.json()
+        assert "oob" in data["layer_badge_variants"]
+        assert "user" in data["layer_badge_variants"]
+
+    def test_nonexistent_palette_returns_404(self, client):
+        resp = client.get("/api/metadata/theme/palettes/nonexistent")
+        assert resp.status_code == 404

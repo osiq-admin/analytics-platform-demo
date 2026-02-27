@@ -586,6 +586,18 @@ def get_view_config(view_id: str, request: Request):
     return config
 
 
+# -- Theme Palettes --
+
+@router.get("/theme/palettes/{palette_id}")
+def get_theme_palette(palette_id: str, request: Request):
+    """Return a theme palette by palette_id."""
+    svc = _meta(request)
+    palette = svc.load_theme_palette(palette_id)
+    if palette is None:
+        return JSONResponse({"error": "not found"}, status_code=404)
+    return palette
+
+
 # -- Grid Configurations --
 
 @router.get("/grids/{view_id}")

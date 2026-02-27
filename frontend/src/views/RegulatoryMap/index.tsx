@@ -18,6 +18,7 @@ import DataGrid from "../../components/DataGrid.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
+import { useThemePalettes } from "../../hooks/useThemePalettes.ts";
 import {
   useRegulatoryStore,
   type TraceabilityNode,
@@ -30,13 +31,17 @@ import {
 const NODE_WIDTH = 200;
 const NODE_HEIGHT = 60;
 
-const BORDER_COLORS: Record<string, string> = {
+/** Default graph node border colors — overridden at runtime by metadata palette. */
+const DEFAULT_BORDER_COLORS: Record<string, string> = {
   regulation: "#3b82f6",
   article_covered: "#22c55e",
   article_uncovered: "#ef4444",
   detection_model: "#f97316",
   calculation: "#a855f7",
 };
+
+/** Active border colors — set by RegulatoryMap component from useThemePalettes hook. */
+let BORDER_COLORS: Record<string, string> = DEFAULT_BORDER_COLORS;
 
 const EDGE_LABELS: Record<string, string> = {
   contains: "contains",
@@ -153,6 +158,12 @@ type ViewTab = "graph" | "details";
 export default function RegulatoryMap() {
   const { regulations, coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll } =
     useRegulatoryStore();
+  const palette = useThemePalettes();
+
+  // Update module-level border colors from metadata palette
+  BORDER_COLORS = Object.keys(palette.graph_node_colors).length > 0
+    ? palette.graph_node_colors
+    : DEFAULT_BORDER_COLORS;
 
   const [selectedNode, setSelectedNode] = useState<TraceabilityNode | null>(null);
   const [selectedRow, setSelectedRow] = useState<RegulationRow | null>(null);

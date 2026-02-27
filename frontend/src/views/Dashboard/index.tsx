@@ -15,17 +15,23 @@ import ChartTypeSwitcher from "../../components/ChartTypeSwitcher.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import { TOOLTIP_STYLE, TOOLTIP_LABEL_STYLE, TOOLTIP_ITEM_STYLE, TICK_STYLE } from "../../constants/chartStyles.ts";
 import { formatLabel } from "../../utils/format.ts";
+import { useThemePalettes } from "../../hooks/useThemePalettes.ts";
 
-const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"];
+/** Default chart colors — overridden at runtime by metadata palette via useThemePalettes. */
+const DEFAULT_COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6", "#ec4899"];
 
-/** Stable color per asset class so the chart is consistent across reloads. */
-const ASSET_CLASS_COLORS: Record<string, string> = {
+/** Default asset class colors — overridden at runtime by metadata palette. */
+const DEFAULT_ASSET_CLASS_COLORS: Record<string, string> = {
   equity: "#6366f1",
   fx: "#22d3ee",
   commodity: "#f59e0b",
   index: "#10b981",
   fixed_income: "#8b5cf6",
 };
+
+/** Active palette colors — set by Dashboard component from useThemePalettes hook. */
+let COLORS = DEFAULT_COLORS;
+let ASSET_CLASS_COLORS: Record<string, string> = DEFAULT_ASSET_CLASS_COLORS;
 
 /** Format a percentage to one decimal place */
 function pct(value: number, total: number): string {
@@ -431,6 +437,13 @@ export default function Dashboard() {
   const widgetConfig = useDashboardStore((s) => s.widgetConfig);
   const fetchWidgetConfig = useDashboardStore((s) => s.fetchWidgetConfig);
   const [showConfig, setShowConfig] = useState(false);
+  const palette = useThemePalettes();
+
+  // Update module-level palette colors from metadata
+  COLORS = palette.chart_colors.length > 0 ? palette.chart_colors : DEFAULT_COLORS;
+  ASSET_CLASS_COLORS = Object.keys(palette.asset_class_colors).length > 0
+    ? palette.asset_class_colors
+    : DEFAULT_ASSET_CLASS_COLORS;
 
   useEffect(() => {
     fetchStats();

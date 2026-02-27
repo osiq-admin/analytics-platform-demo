@@ -10,7 +10,7 @@ from backend.models.match_patterns import MatchPattern
 from backend.models.query_presets import QueryPresetGroup
 from backend.models.score_templates import ScoreTemplate
 from backend.models.settings import SettingDefinition
-from backend.models.view_config import ViewConfig
+from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
 
 
@@ -991,5 +991,19 @@ class MetadataService:
             data = json.loads(f.read_text())
             if data.get("view_id") == view_id:
                 config = ViewConfig.model_validate(data)
+                return config.model_dump()
+        return None
+
+    # -- Theme Palettes --
+
+    def load_theme_palette(self, palette_id: str = "default") -> dict | None:
+        """Load a theme palette by palette_id. Scans workspace/metadata/theme/ directory."""
+        theme_dir = self._base / "theme"
+        if not theme_dir.exists():
+            return None
+        for f in theme_dir.glob("*.json"):
+            data = json.loads(f.read_text())
+            if data.get("palette_id") == palette_id:
+                config = ThemePalette.model_validate(data)
                 return config.model_dump()
         return None
