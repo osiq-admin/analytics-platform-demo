@@ -43,5 +43,10 @@
       "article": "RTS 25",
       "description": "Order record keeping — cancellation pattern analysis"
     }
-  ]
+  ],
+  "alert_detail_layout": {
+    "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
+    "emphasis": ["relatedOrders", "scores"],
+    "investigation_hint": "Look for rapid order placement and cancellation patterns — spoofing typically shows large orders placed and cancelled within seconds to move prices."
+  }
 }

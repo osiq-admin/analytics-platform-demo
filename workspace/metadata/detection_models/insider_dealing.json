@@ -43,5 +43,10 @@
       "article": "Art. 16(2)",
       "description": "Organisational requirement — effective surveillance systems"
     }
-  ]
+  ],
+  "alert_detail_layout": {
+    "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders"],
+    "emphasis": ["entity", "scores"],
+    "investigation_hint": "Focus on entity relationships and timing — check if trading activity preceded material non-public information events. Review account and trader connections."
+  }
 }

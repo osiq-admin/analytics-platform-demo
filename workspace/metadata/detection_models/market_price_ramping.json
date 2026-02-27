@@ -50,5 +50,10 @@
       "article": "Rule 5210",
       "description": "Marking the close — trading activity near market close"
     }
-  ]
+  ],
+  "alert_detail_layout": {
+    "panels": ["business", "entity", "calcTrace", "scores", "relatedOrders", "marketData"],
+    "emphasis": ["marketData", "scores"],
+    "investigation_hint": "Analyze price impact relative to trading volume — ramping involves pushing prices in a desired direction through aggressive trading near market close or open."
+  }
 }
