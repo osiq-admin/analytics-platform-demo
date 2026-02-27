@@ -42,6 +42,11 @@
       "regulation": "MiFID II",
       "article": "Art. 16(2)",
       "description": "Organisational requirement — effective surveillance systems"
+    },
+    {
+      "regulation": "SEC",
+      "article": "Rule 10b-5",
+      "description": "Insider trading — fraud in purchase or sale of securities"
     }
   ],
   "alert_detail_layout": {

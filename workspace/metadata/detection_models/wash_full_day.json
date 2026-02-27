@@ -49,6 +49,11 @@
       "regulation": "MiFID II",
       "article": "RTS 25",
       "description": "Order record keeping — cross-reference execution records"
+    },
+    {
+      "regulation": "SEC",
+      "article": "§9(a)(2)",
+      "description": "Market manipulation — creating apparent active trading"
     }
   ],
   "alert_detail_layout": {

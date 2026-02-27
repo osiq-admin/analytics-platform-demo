@@ -113,3 +113,26 @@ class TestProductCompliance:
         assert resp.status_code == 200
         for row in resp.json()["rows"]:
             assert row["regulatory_scope"] in ("EU", "US", "UK", "APAC", "MULTI")
+
+
+class TestDetectionModelRegulatoryCoverage:
+    def test_wash_model_covers_sec(self, client):
+        resp = client.get("/api/metadata/detection-models")
+        wash = next((m for m in resp.json() if m["model_id"] == "wash_full_day"), None)
+        assert wash is not None
+        regs = [rc["regulation"] for rc in wash["regulatory_coverage"]]
+        assert "SEC" in regs
+
+    def test_insider_model_covers_sec(self, client):
+        resp = client.get("/api/metadata/detection-models")
+        insider = next((m for m in resp.json() if m["model_id"] == "insider_dealing"), None)
+        assert insider is not None
+        regs = [rc["regulation"] for rc in insider["regulatory_coverage"]]
+        assert "SEC" in regs
+
+    def test_all_models_have_multi_jurisdiction(self, client):
+        """Every model should reference at least 2 different regulations."""
+        resp = client.get("/api/metadata/detection-models")
+        for model in resp.json():
+            regs = set(rc["regulation"] for rc in model["regulatory_coverage"])
+            assert len(regs) >= 2, f"Model {model['model_id']} only covers {regs}"
