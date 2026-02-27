@@ -134,11 +134,12 @@
 
 ## 8. Documentation & Tracking
 
-### 8a. Progress Tracker
+### 8a. Progress Tracker & Workflow Protocol
 
+- [ ] **Follow `docs/development-workflow-protocol.md`**: The authoritative protocol for all documentation updates — Tier 1 (per-task), Tier 2 (per-stage), Tier 3 (per-phase)
 - [ ] **Update progress.md**: Add milestone entries with status, task counts
 - [ ] **Phase status**: Update the Overall Status table
-- [ ] **Test count**: Update total test counts (backend + E2E)
+- [ ] **Test count**: Update total test counts (backend + E2E) — see Test Count Sync Registry in the protocol
 
 ### 8b. Testing Checklist (per-phase)
 

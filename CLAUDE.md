@@ -43,11 +43,12 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 - **trader** (50): desk, trader_type
 
 ## Feature Development Workflow
-- **ALWAYS use /writing-plans skill** before executing any implementation plan
-- **ALWAYS reference the Feature Development Checklist** (`docs/feature-development-checklist.md`) when starting any new feature — it lists every system that needs updating (tests, tours, scenarios, operation scripts, docs, etc.)
-- Check existing plans in `docs/plans/` and build on them
-- Use subagent-driven development for same-session execution
-- After completing a feature: update progress.md, demo-guide.md, CLAUDE.md, MEMORY.md, then commit, push, merge
+- **ALWAYS follow `docs/development-workflow-protocol.md`** — the single authoritative protocol covering Pre-Work → Planning → Execution → Completion
+- **Phase A (Pre-Work)**: Verify clean git state, read current docs, verify test suite before starting
+- **Phase B (Planning)**: Invoke `/writing-plans` skill, create plan doc, update roadmap, commit plan
+- **Phase C (Execution)**: Follow the plan, run Tier 1/2 checks at milestones
+- **Phase D (Completion)**: Run the 3-tier Milestone Completion Protocol — updates ALL docs, syncs ALL counts
+- **ALWAYS reference the Feature Development Checklist** (`docs/feature-development-checklist.md`) for which systems need updating
 
 ## Broad Systems Requiring Updates on New Features
 These systems MUST be updated whenever certain feature types are added. See `docs/feature-development-checklist.md` Section 10 for full details:
@@ -59,8 +60,9 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - **New API Endpoint** → route, Pydantic model, backend test, E2E test, frontend integration
 
 ## Plans & Progress
+- **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M172 complete)
+- Progress tracker: `docs/progress.md` (M0-M173 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`
