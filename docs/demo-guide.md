@@ -37,7 +37,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 
 ## Guided Tours & Onboarding
 
-**First Visit:** An onboarding modal welcomes new users with a 4-phase overview (Define, Configure, Operate, Investigate) and offers to start the overview tour.
+**First Visit:** An onboarding modal welcomes new users with a 5-phase overview (Define, Ingest, Detect, Investigate, Advanced) and offers to start the overview tour.
 
 **View Tours:** Click the **Tour** button in the top-right toolbar to start a guided tour for the current view. Each tour highlights key elements with a spotlight overlay and step-by-step popover explaining what each part does.
 
@@ -52,7 +52,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 
 **Tooltips:** Hover over the `?` help buttons next to panel titles throughout the app for contextual help about what each section does.
 
-## Dashboard (Overview → Dashboard)
+## Dashboard (Detect → Dashboard)
 
 The Dashboard provides a summary analytics view:
 - **Row 1:** 4 summary cards — Total Alerts, Score Triggered %, Average Score, Active Models
@@ -65,7 +65,7 @@ The Dashboard provides a summary analytics view:
 
 **Metadata-Driven Widgets (M132-M133):** All 8 dashboard widgets (4 KPI cards + 4 charts) are now defined in `workspace/metadata/widgets/dashboard.json`. The Dashboard fetches widget configuration from `/api/metadata/widgets/dashboard` at load time. Widget order, chart types, color palettes, and grid layout are all configurable via metadata. Add, reorder, or modify widgets by editing the JSON — no code changes required.
 
-The dashboard is the default landing page. Navigate to it from the sidebar under **Overview → Dashboard**.
+The dashboard is the default landing page. Navigate to it from the sidebar under **Detect → Dashboard**.
 
 ## Act 1: Data & Discovery
 
@@ -96,14 +96,14 @@ Click **Step** in the toolbar to advance to `data_loaded`.
 - 6 venues (ISO MIC codes), 220 accounts, 50 traders
 - CSV → Parquet → DuckDB: "Edit the CSV, pipeline picks up changes"
 
-### 1.3 Schema Explorer (Operate → Schema)
+### 1.3 Schema Explorer (Advanced → Schema)
 
 **Key Points:**
 - Show DuckDB tables created from the loaded data
 - Click a table to see columns and types
 - "All data is queryable via standard SQL"
 
-### 1.4 SQL Console (Operate → SQL)
+### 1.4 SQL Console (Advanced → SQL Console)
 
 **Key Points:**
 - Run preset queries (click buttons in top right)
@@ -135,7 +135,7 @@ Click **Step** to advance to `pipeline_run`.
 - Click a calculation to see inputs, outputs, SQL logic
 - Show the calculation DAG — "dependencies drive execution order"
 
-### 1.7 Settings Manager (Configure → Settings)
+### 1.7 Settings Manager (Define → Settings)
 
 **Key Points:**
 - Settings with entity-context-dependent overrides
@@ -214,7 +214,7 @@ Click any alert row to open the full 6-panel investigation workspace.
 
 **Key Takeaway:** "Every alert is fully traceable — from the detection model, through each calculation's score, the settings that drove thresholds, market data context, and related trading activity."
 
-## Metadata Editor (Configure → Editor) — Phase 9
+## Metadata Editor (Advanced → Editor) — Phase 9
 
 The Metadata Editor provides side-by-side JSON + visual editing for all 4 metadata types.
 
@@ -226,7 +226,7 @@ The Metadata Editor provides side-by-side JSON + visual editing for all 4 metada
 - **Save**: Persists changes to the backend via CRUD API
 
 ### Interactive: Edit a Setting
-1. Navigate to **Configure → Editor**
+1. Navigate to **Advanced → Editor**
 2. Click **Settings** in the type selector
 3. Select "Wash Trading Score Threshold" from the dropdown
 4. In the Visual Editor, change the default value from 10 to 8
@@ -246,7 +246,7 @@ The Metadata Editor provides side-by-side JSON + visual editing for all 4 metada
 - **Model Composer**: "+ New Model" button, Edit/Delete on model detail
 - **Metadata Explorer**: Edit/Delete on calculation detail
 
-## Regulatory Traceability (Governance → Regulatory Map) — Phase 10
+## Regulatory Traceability (Investigate → Regulatory Map) — Phase 10
 
 The Regulatory Map provides end-to-end traceability from regulatory requirements to detection logic.
 
@@ -267,7 +267,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - **Suggestions Panel**: Automated gap analysis with actionable recommendations
 
 ### Interactive: Explore the Traceability Chain
-1. Navigate to **Governance → Regulatory Map**
+1. Navigate to **Investigate → Regulatory Map**
 2. See 4 coverage summary cards at the top
 3. In the Traceability Map, follow edges from **blue regulation node** → green articles → orange models → purple calculations
 4. Use edge labels to understand relationships: "contains", "detected by", "uses"
@@ -327,7 +327,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 
 ## Act 2: Model Composition
 
-### 2.1 Model Composer (Compose → Models)
+### 2.1 Model Composer (Detect → Models)
 
 **Key Points:**
 - View existing detection model definitions
@@ -353,7 +353,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - Ask questions about detection models, calculations, or scoring logic
 - The AI panel provides conversational guidance alongside the model composition view
 
-### 2.2 AI Assistant (AI → Assistant)
+### 2.2 AI Assistant (Advanced → Assistant)
 
 **Key Points:**
 - In mock mode: click scenario buttons to see pre-scripted conversations
@@ -363,7 +363,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - SQL from AI responses has "Run Query" buttons
 - With API key: live Claude conversations with full schema context
 
-### 2.3 Data Manager (Compose → Data)
+### 2.3 Data Manager (Advanced → Data)
 
 **Key Points:**
 - Browse loaded data tables
@@ -372,7 +372,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 
 ## Act 3: Wrap-Up
 
-### 3.1 Mapping Studio (Configure → Mappings)
+### 3.1 Mapping Studio (Ingest → Mappings)
 
 **Key Points:**
 - Metadata-driven bronze→silver field mapping for 3 entities (execution, order, product)
@@ -382,7 +382,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - Integrated with Data Onboarding wizard (Step 4 auto-suggests mappings from detected schema)
 
 **Interactive: Explore Field Mappings**
-1. Navigate to **Configure → Mappings**
+1. Navigate to **Ingest → Mappings**
 2. See the 3 entity mapping cards: execution, order, product — each showing field count and validation status
 3. Click an entity card (e.g., "execution") to see its field mapping table
 4. Review source→target field pairs, data types, transformation rules, and validation status
@@ -413,7 +413,7 @@ Click **Skip to End** to show the final state.
 
 ## Act 4: Model Composition Wizard — Phase 7B
 
-### 4.1 Seven-Step Model Wizard (Compose → Models)
+### 4.1 Seven-Step Model Wizard (Detect → Models)
 
 **Key Points:**
 - The Model Composer now features a full 7-step wizard for building detection models from scratch
@@ -421,7 +421,7 @@ Click **Skip to End** to show the final state.
 - Right panel shows real-time Validation, Preview (score simulation), and Dependency DAG
 
 **Interactive: Build a Detection Model**
-1. Navigate to **Compose → Models**
+1. Navigate to **Detect → Models**
 2. Click **+ New Model**
 3. **Step 1 (Define):** Enter name "Order Cancellation Surge", description, select time window, check granularity fields
 4. **Step 2 (Calculations):** Select 3-4 calculations across layers — click to select, click OPTIONAL badge to toggle to MUST_PASS
@@ -456,7 +456,7 @@ Click **Skip to End** to show the final state.
 
 ## Act 5: Use Cases & Governance — Phase 7B
 
-### 5.1 Use Case Studio (Compose → Use Cases)
+### 5.1 Use Case Studio (Detect → Use Cases)
 
 **Key Points:**
 - Create test scenarios ("use cases") to validate detection model behavior
@@ -465,7 +465,7 @@ Click **Skip to End** to show the final state.
 - Run pipeline on sample data to verify expected alerts
 
 **Interactive: Create a Use Case**
-1. Navigate to **Compose → Use Cases**
+1. Navigate to **Detect → Use Cases**
 2. Click **+ New Use Case**
 3. **Step 1:** Enter name "Wash Trading — Same Account, Same Day", pick a model
 4. **Step 2:** Review auto-selected calculations and settings
@@ -474,7 +474,7 @@ Click **Skip to End** to show the final state.
 7. **Step 5:** Review and **Save as Draft**
 8. To submit: click **Submit for Review** → use case enters governance workflow
 
-### 5.2 Submissions Queue (Governance → Submissions)
+### 5.2 Submissions Queue (Investigate → Submissions)
 
 **Key Points:**
 - AG Grid queue showing all submitted changes with status badges (pending/approved/rejected/changes_requested)
@@ -483,7 +483,7 @@ Click **Skip to End** to show the final state.
 - Approve, Reject, or Request Changes with comment
 
 **Interactive: Review a Submission**
-1. Navigate to **Governance → Submissions**
+1. Navigate to **Investigate → Submissions**
 2. Select a pending submission row
 3. Read the **Summary** tab for overview
 4. Check **Recommendations** tab — auto-generated governance advice
@@ -582,7 +582,7 @@ Click **Skip to End** to show the final state.
 ## Act 8: Metadata Configuration
 
 ### 8.1 Dashboard Widget Configuration
-Navigate to **Overview → Dashboard**. Widget layout (KPI cards, charts, ordering) is defined in `workspace/metadata/widgets/dashboard.json`. Edit the JSON to add, reorder, or reconfigure widgets without code changes. The API at `GET /api/metadata/widgets/dashboard` serves the configuration.
+Navigate to **Detect → Dashboard**. Widget layout (KPI cards, charts, ordering) is defined in `workspace/metadata/widgets/dashboard.json`. Edit the JSON to add, reorder, or reconfigure widgets without code changes. The API at `GET /api/metadata/widgets/dashboard` serves the configuration.
 
 ### 8.2 Navigation Configuration
 The sidebar navigation is loaded from `workspace/metadata/navigation/main.json`. Add new views by editing the JSON — no Sidebar.tsx changes needed.
@@ -650,7 +650,7 @@ Navigate to **Architecture → Onboarding** to access the 5-step data onboarding
 
 ## Data Quality Dashboard (DataQuality)
 
-Navigate to **Governance → Quality** to access the data quality monitoring dashboard.
+Navigate to **Ingest → Data Quality** to access the data quality monitoring dashboard.
 
 ### Key Points
 - **Path**: `/quality`
@@ -662,7 +662,7 @@ Navigate to **Governance → Quality** to access the data quality monitoring das
   - Data profiling panel with column-level statistics (null counts, cardinality, distribution)
 
 ### Interactive: Investigate Data Quality
-1. Navigate to **Governance → Quality**
+1. Navigate to **Ingest → Data Quality**
 2. See the entity score cards showing overall quality scores per entity
 3. Click an entity card to see its dimension breakdown
 4. Review the spider chart showing strengths and weaknesses across ISO 25012 dimensions
@@ -675,7 +675,7 @@ Navigate to **Governance → Quality** to access the data quality monitoring das
 
 ## Reference Data / Master Data Management (ReferenceData)
 
-Navigate to **Governance → Reference Data** to browse golden records for the 4 master data entities.
+Navigate to **Define → Reference Data** to browse golden records for the 4 master data entities.
 
 ### Key Points
 - **Entity tabs**: Product Master (25 golden records), Venue Master (6), Account Master (220), Trader Master (50) — 301 total golden records
@@ -688,7 +688,7 @@ Navigate to **Governance → Reference Data** to browse golden records for the 4
 - **Field-level provenance**: Every field tracks its value source, confidence score, and last update timestamp
 
 ### Interactive: Explore Golden Records
-1. Navigate to **Governance → Reference Data**
+1. Navigate to **Define → Reference Data**
 2. See entity tabs with record count badges
 3. Click **Product Master** tab — 25 golden records appear (50 CSV rows deduplicated by ISIN)
 4. Click a golden record (e.g., GR-PRO-0001) — detail panel shows field values with provenance
@@ -768,7 +768,7 @@ Each section is rated on a 5-level metadata maturity scale:
 
 ---
 
-## OOB vs User Metadata (Configure → Editor) — Phase 11
+## OOB vs User Metadata (Advanced → Editor) — Phase 11
 
 Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metadata and user customizations. All metadata items now carry a `metadata_layer` field indicating their provenance.
 

@@ -12,7 +12,7 @@ frontend/src/
 ├── index.css                # Tailwind CSS 4 theme (dark/light CSS variables)
 ├── layouts/
 │   ├── AppLayout.tsx        # Main shell with sidebar + toolbar + content area
-│   └── Sidebar.tsx          # Navigation grouped by: Define, Configure, Operate, Compose, Investigate, AI
+│   └── Sidebar.tsx          # Navigation grouped by: Define, Ingest, Detect, Investigate, Advanced
 ├── components/
 │   ├── Panel.tsx            # Widget panel with title bar and action buttons
 │   ├── DataGrid.tsx         # AG Grid wrapper with theme integration

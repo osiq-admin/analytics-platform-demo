@@ -9,7 +9,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='sidebar']",
         title: "Navigation Sidebar",
-        content: "The sidebar organizes views into 8 groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, and AI.",
+        content: "The sidebar organizes views into 5 workflow-ordered groups: Define, Ingest, Detect, Investigate, and Advanced.",
         placement: "right",
       },
       {

@@ -3101,7 +3101,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Navigation Sidebar",
         viewId: "app",
         description:
-          "Main navigation sidebar with 8 groups containing 19 view links. Groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, AI. Navigation structure loaded from metadata API with fallback.",
+          "Main navigation sidebar with 5 groups containing 20 view links. Groups: Define, Ingest, Detect, Investigate, Advanced. Navigation structure loaded from metadata API with fallback.",
         files: [
           { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component (loads from metadata)" },
           { path: "frontend/src/stores/navigationStore.ts", role: "Fetches navigation config from API" },
