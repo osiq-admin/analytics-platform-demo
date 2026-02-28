@@ -1,0 +1,28 @@
+{
+  "mapping_id": "silver_to_gold_calcs",
+  "source_entity": "execution",
+  "target_entity": "calculation_result",
+  "source_tier": "silver",
+  "target_tier": "gold",
+  "description": "Silver canonical entity fields to Gold calculation inputs. Maps the canonical execution, product, and market data fields used by the calculation DAG.",
+  "status": "active",
+  "created_by": "system",
+  "field_mappings": [
+    {"source_field": "execution_id", "target_field": "execution_id", "transform": "direct", "description": "Primary key passthrough"},
+    {"source_field": "product_id", "target_field": "product_id", "transform": "direct", "description": "Product FK for join"},
+    {"source_field": "account_id", "target_field": "account_id", "transform": "direct", "description": "Account FK for entity context"},
+    {"source_field": "trader_id", "target_field": "trader_id", "transform": "direct", "description": "Trader FK for entity context"},
+    {"source_field": "side", "target_field": "side", "transform": "direct", "description": "BUY/SELL indicator"},
+    {"source_field": "price", "target_field": "price", "transform": "direct", "description": "Execution price"},
+    {"source_field": "quantity", "target_field": "quantity", "transform": "direct", "description": "Trade quantity"},
+    {"source_field": "execution_date", "target_field": "execution_date", "transform": "direct", "description": "Trade date (ISO 8601)"},
+    {"source_field": "execution_time", "target_field": "execution_time", "transform": "direct", "description": "Trade time (ISO 8601)"},
+    {"source_field": "venue_mic", "target_field": "venue_mic", "transform": "direct", "description": "Venue MIC code (ISO 10383)"},
+    {"source_field": "exec_type", "target_field": "exec_type", "transform": "direct", "description": "Execution type (FIX ExecType)"},
+    {"source_field": "capacity", "target_field": "capacity", "transform": "direct", "description": "AGENCY/PRINCIPAL"},
+    {"source_field": "order_id", "target_field": "order_id", "transform": "direct", "description": "Order FK for related order lookup"},
+    {"source_field": "instrument_type", "target_field": "instrument_type", "transform": "direct", "description": "Product instrument type (via product join)"},
+    {"source_field": "asset_class", "target_field": "asset_class", "transform": "direct", "description": "Asset class (via product join)"},
+    {"source_field": "contract_size", "target_field": "contract_size", "transform": "direct", "description": "Option/future contract size (via product join)"}
+  ]
+}

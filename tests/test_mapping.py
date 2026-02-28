@@ -118,6 +118,40 @@ class TestMappingAPI:
         data = resp.json()
         assert data["valid"] is True
 
+    def test_silver_to_gold_mapping_loads(self, workspace, client):
+        """Silver-to-Gold calculation mapping loads with correct tiers and fields."""
+        (workspace / "metadata" / "mappings" / "silver_to_gold_calcs.json").write_text(json.dumps({
+            "mapping_id": "silver_to_gold_calcs",
+            "source_entity": "execution",
+            "target_entity": "calculation_result",
+            "source_tier": "silver",
+            "target_tier": "gold",
+            "status": "active",
+            "field_mappings": [
+                {"source_field": "execution_id", "target_field": "execution_id", "transform": "direct"},
+                {"source_field": "price", "target_field": "price", "transform": "direct"},
+            ],
+        }))
+        resp = client.get("/api/mappings/silver_to_gold_calcs")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["source_tier"] == "silver"
+        assert data["target_tier"] == "gold"
+        assert len(data["field_mappings"]) == 2
+
+    def test_list_mappings_includes_silver_to_gold(self, workspace, client):
+        """List mappings includes silver_to_gold_calcs when present."""
+        (workspace / "metadata" / "mappings" / "silver_to_gold_calcs.json").write_text(json.dumps({
+            "mapping_id": "silver_to_gold_calcs",
+            "source_entity": "execution",
+            "target_entity": "calculation_result",
+            "field_mappings": [],
+        }))
+        resp = client.get("/api/mappings/")
+        assert resp.status_code == 200
+        ids = [m["mapping_id"] for m in resp.json()]
+        assert "silver_to_gold_calcs" in ids
+
     def test_list_mappings_returns_empty_for_fresh(self, client):
         """List mappings endpoint works even with no extra mappings."""
         resp = client.get("/api/mappings/")
