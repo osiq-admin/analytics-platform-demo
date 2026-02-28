@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import time
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal
 from pathlib import Path
 
 from backend.db import DuckDBManager
@@ -283,9 +284,10 @@ class ReferenceService:
                 merged_value = values[0]
                 confidence = 1.0
 
-            data[field] = merged_value
+            coerced = self._coerce_value(merged_value)
+            data[field] = coerced
             provenance[field] = FieldProvenance(
-                value=merged_value,
+                value=coerced,
                 source=f"csv:{entity}.csv",
                 confidence=confidence,
                 last_updated=timestamp,
@@ -310,6 +312,19 @@ class ReferenceService:
             status="active",
             version=1,
         )
+
+    @staticmethod
+    def _coerce_value(value):
+        """Coerce non-primitive DuckDB types to JSON-serializable primitives."""
+        if value is None or isinstance(value, (str, int, float, bool)):
+            return value
+        if isinstance(value, datetime):
+            return value.isoformat()
+        if isinstance(value, date):
+            return value.isoformat()
+        if isinstance(value, Decimal):
+            return float(value)
+        return str(value)
 
     def _apply_merge_strategy(
         self, strategy: str, values: list, source_priority: list[str] | None

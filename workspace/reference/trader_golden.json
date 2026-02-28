@@ -1,0 +1,2958 @@
+{
+  "entity": "trader",
+  "golden_key": "trader_id",
+  "record_count": 50,
+  "records": [
+    {
+      "golden_id": "GR-TRA-0001",
+      "entity": "trader",
+      "natural_key": "TRD-001",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-03-26",
+        "status": "ACTIVE",
+        "trader_id": "TRD-001",
+        "trader_name": "James Smith",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-03-26",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-001",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "James Smith",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0002",
+      "entity": "trader",
+      "natural_key": "TRD-002",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2018-07-09",
+        "status": "ACTIVE",
+        "trader_id": "TRD-002",
+        "trader_name": "Mary Johnson",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-07-09",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-002",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Mary Johnson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0003",
+      "entity": "trader",
+      "natural_key": "TRD-003",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-05-01",
+        "status": "ACTIVE",
+        "trader_id": "TRD-003",
+        "trader_name": "John Williams",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-05-01",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-003",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "John Williams",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0004",
+      "entity": "trader",
+      "natural_key": "TRD-004",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2018-10-26",
+        "status": "ACTIVE",
+        "trader_id": "TRD-004",
+        "trader_name": "Patricia Brown",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-10-26",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-004",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Patricia Brown",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0005",
+      "entity": "trader",
+      "natural_key": "TRD-005",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-03-07",
+        "status": "ACTIVE",
+        "trader_id": "TRD-005",
+        "trader_name": "Robert Jones",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-03-07",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-005",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Robert Jones",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0006",
+      "entity": "trader",
+      "natural_key": "TRD-006",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2022-04-22",
+        "status": "ACTIVE",
+        "trader_id": "TRD-006",
+        "trader_name": "Jennifer Garcia",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-04-22",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-006",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Jennifer Garcia",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0007",
+      "entity": "trader",
+      "natural_key": "TRD-007",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-09-26",
+        "status": "ACTIVE",
+        "trader_id": "TRD-007",
+        "trader_name": "Michael Miller",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-09-26",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-007",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Michael Miller",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0008",
+      "entity": "trader",
+      "natural_key": "TRD-008",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2018-01-23",
+        "status": "ACTIVE",
+        "trader_id": "TRD-008",
+        "trader_name": "Linda Davis",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-01-23",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-008",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Linda Davis",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0009",
+      "entity": "trader",
+      "natural_key": "TRD-009",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2019-03-13",
+        "status": "ACTIVE",
+        "trader_id": "TRD-009",
+        "trader_name": "David Rodriguez",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2019-03-13",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-009",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "David Rodriguez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0010",
+      "entity": "trader",
+      "natural_key": "TRD-010",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-06-15",
+        "status": "ACTIVE",
+        "trader_id": "TRD-010",
+        "trader_name": "Elizabeth Martinez",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-06-15",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-010",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Elizabeth Martinez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0011",
+      "entity": "trader",
+      "natural_key": "TRD-011",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-10-23",
+        "status": "ACTIVE",
+        "trader_id": "TRD-011",
+        "trader_name": "William Hernandez",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-10-23",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-011",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "William Hernandez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0012",
+      "entity": "trader",
+      "natural_key": "TRD-012",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-10-17",
+        "status": "ACTIVE",
+        "trader_id": "TRD-012",
+        "trader_name": "Barbara Lopez",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-10-17",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-012",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Barbara Lopez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0013",
+      "entity": "trader",
+      "natural_key": "TRD-013",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2019-05-13",
+        "status": "ACTIVE",
+        "trader_id": "TRD-013",
+        "trader_name": "Richard Gonzalez",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2019-05-13",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-013",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Richard Gonzalez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0014",
+      "entity": "trader",
+      "natural_key": "TRD-014",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-03-19",
+        "status": "ACTIVE",
+        "trader_id": "TRD-014",
+        "trader_name": "Susan Wilson",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-03-19",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-014",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Susan Wilson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0015",
+      "entity": "trader",
+      "natural_key": "TRD-015",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2021-07-23",
+        "status": "ACTIVE",
+        "trader_id": "TRD-015",
+        "trader_name": "Joseph Anderson",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-07-23",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-015",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Joseph Anderson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0016",
+      "entity": "trader",
+      "natural_key": "TRD-016",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2022-12-18",
+        "status": "ACTIVE",
+        "trader_id": "TRD-016",
+        "trader_name": "Jessica Thomas",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-12-18",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-016",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Jessica Thomas",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0017",
+      "entity": "trader",
+      "natural_key": "TRD-017",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-08-30",
+        "status": "ACTIVE",
+        "trader_id": "TRD-017",
+        "trader_name": "Thomas Taylor",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-08-30",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-017",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Thomas Taylor",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0018",
+      "entity": "trader",
+      "natural_key": "TRD-018",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-01-01",
+        "status": "ACTIVE",
+        "trader_id": "TRD-018",
+        "trader_name": "Sarah Moore",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-01-01",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-018",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Sarah Moore",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0019",
+      "entity": "trader",
+      "natural_key": "TRD-019",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-04-29",
+        "status": "ACTIVE",
+        "trader_id": "TRD-019",
+        "trader_name": "Charles Jackson",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-04-29",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-019",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Charles Jackson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0020",
+      "entity": "trader",
+      "natural_key": "TRD-020",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-10-09",
+        "status": "ACTIVE",
+        "trader_id": "TRD-020",
+        "trader_name": "Karen Martin",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-10-09",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-020",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Karen Martin",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0021",
+      "entity": "trader",
+      "natural_key": "TRD-021",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2021-02-09",
+        "status": "ACTIVE",
+        "trader_id": "TRD-021",
+        "trader_name": "Christopher Lee",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-02-09",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-021",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Christopher Lee",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0022",
+      "entity": "trader",
+      "natural_key": "TRD-022",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2023-11-06",
+        "status": "ACTIVE",
+        "trader_id": "TRD-022",
+        "trader_name": "Lisa Perez",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-11-06",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-022",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Lisa Perez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0023",
+      "entity": "trader",
+      "natural_key": "TRD-023",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-09-06",
+        "status": "ACTIVE",
+        "trader_id": "TRD-023",
+        "trader_name": "Daniel Thompson",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-09-06",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-023",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Daniel Thompson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0024",
+      "entity": "trader",
+      "natural_key": "TRD-024",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2018-11-14",
+        "status": "ACTIVE",
+        "trader_id": "TRD-024",
+        "trader_name": "Nancy White",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-11-14",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-024",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Nancy White",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0025",
+      "entity": "trader",
+      "natural_key": "TRD-025",
+      "data": {
+        "desk": "Equity Flow",
+        "hire_date": "2020-08-18",
+        "status": "ACTIVE",
+        "trader_id": "TRD-025",
+        "trader_name": "Matthew Harris",
+        "trader_type": "portfolio"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Equity Flow",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-08-18",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-025",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Matthew Harris",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "portfolio",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0026",
+      "entity": "trader",
+      "natural_key": "TRD-026",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2021-01-17",
+        "status": "ACTIVE",
+        "trader_id": "TRD-026",
+        "trader_name": "Betty Sanchez",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-01-17",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-026",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Betty Sanchez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0027",
+      "entity": "trader",
+      "natural_key": "TRD-027",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2021-10-07",
+        "status": "ACTIVE",
+        "trader_id": "TRD-027",
+        "trader_name": "Anthony Clark",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-10-07",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-027",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Anthony Clark",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0028",
+      "entity": "trader",
+      "natural_key": "TRD-028",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2021-08-02",
+        "status": "ACTIVE",
+        "trader_id": "TRD-028",
+        "trader_name": "Margaret Ramirez",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-08-02",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-028",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Margaret Ramirez",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0029",
+      "entity": "trader",
+      "natural_key": "TRD-029",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2018-11-27",
+        "status": "ACTIVE",
+        "trader_id": "TRD-029",
+        "trader_name": "Mark Lewis",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-11-27",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-029",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Mark Lewis",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0030",
+      "entity": "trader",
+      "natural_key": "TRD-030",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2019-07-21",
+        "status": "ACTIVE",
+        "trader_id": "TRD-030",
+        "trader_name": "Sandra Robinson",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2019-07-21",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-030",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Sandra Robinson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0031",
+      "entity": "trader",
+      "natural_key": "TRD-031",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2019-09-10",
+        "status": "ACTIVE",
+        "trader_id": "TRD-031",
+        "trader_name": "Donald Walker",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2019-09-10",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-031",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Donald Walker",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0032",
+      "entity": "trader",
+      "natural_key": "TRD-032",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2020-08-05",
+        "status": "ACTIVE",
+        "trader_id": "TRD-032",
+        "trader_name": "Ashley Young",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-08-05",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-032",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Ashley Young",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0033",
+      "entity": "trader",
+      "natural_key": "TRD-033",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2022-04-18",
+        "status": "ACTIVE",
+        "trader_id": "TRD-033",
+        "trader_name": "Steven Allen",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-04-18",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-033",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Steven Allen",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0034",
+      "entity": "trader",
+      "natural_key": "TRD-034",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2019-09-18",
+        "status": "ACTIVE",
+        "trader_id": "TRD-034",
+        "trader_name": "Dorothy King",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2019-09-18",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-034",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Dorothy King",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0035",
+      "entity": "trader",
+      "natural_key": "TRD-035",
+      "data": {
+        "desk": "Derivatives",
+        "hire_date": "2020-05-26",
+        "status": "ACTIVE",
+        "trader_id": "TRD-035",
+        "trader_name": "Paul Wright",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Derivatives",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-05-26",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-035",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Paul Wright",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0036",
+      "entity": "trader",
+      "natural_key": "TRD-036",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2018-09-21",
+        "status": "ACTIVE",
+        "trader_id": "TRD-036",
+        "trader_name": "Kimberly Scott",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-09-21",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-036",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Kimberly Scott",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0037",
+      "entity": "trader",
+      "natural_key": "TRD-037",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2022-08-27",
+        "status": "ACTIVE",
+        "trader_id": "TRD-037",
+        "trader_name": "Andrew Torres",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-08-27",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-037",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Andrew Torres",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0038",
+      "entity": "trader",
+      "natural_key": "TRD-038",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2022-07-28",
+        "status": "ACTIVE",
+        "trader_id": "TRD-038",
+        "trader_name": "Emily Nguyen",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-07-28",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-038",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Emily Nguyen",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0039",
+      "entity": "trader",
+      "natural_key": "TRD-039",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2021-09-17",
+        "status": "ACTIVE",
+        "trader_id": "TRD-039",
+        "trader_name": "Joshua Hill",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-09-17",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-039",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Joshua Hill",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0040",
+      "entity": "trader",
+      "natural_key": "TRD-040",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2023-03-24",
+        "status": "ACTIVE",
+        "trader_id": "TRD-040",
+        "trader_name": "Donna Flores",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-03-24",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-040",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Donna Flores",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0041",
+      "entity": "trader",
+      "natural_key": "TRD-041",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2022-08-31",
+        "status": "ACTIVE",
+        "trader_id": "TRD-041",
+        "trader_name": "Kenneth Green",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-08-31",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-041",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Kenneth Green",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0042",
+      "entity": "trader",
+      "natural_key": "TRD-042",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2018-09-13",
+        "status": "ACTIVE",
+        "trader_id": "TRD-042",
+        "trader_name": "Michelle Adams",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-09-13",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-042",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Michelle Adams",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0043",
+      "entity": "trader",
+      "natural_key": "TRD-043",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2020-04-27",
+        "status": "ACTIVE",
+        "trader_id": "TRD-043",
+        "trader_name": "Kevin Nelson",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2020-04-27",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-043",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Kevin Nelson",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0044",
+      "entity": "trader",
+      "natural_key": "TRD-044",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2022-09-17",
+        "status": "ACTIVE",
+        "trader_id": "TRD-044",
+        "trader_name": "Carol Baker",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-09-17",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-044",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Carol Baker",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0045",
+      "entity": "trader",
+      "natural_key": "TRD-045",
+      "data": {
+        "desk": "FX Spot",
+        "hire_date": "2022-05-15",
+        "status": "ACTIVE",
+        "trader_id": "TRD-045",
+        "trader_name": "Brian Hall",
+        "trader_type": "algorithmic"
+      },
+      "provenance": {
+        "desk": {
+          "value": "FX Spot",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-05-15",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-045",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Brian Hall",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "algorithmic",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0046",
+      "entity": "trader",
+      "natural_key": "TRD-046",
+      "data": {
+        "desk": "Commodities",
+        "hire_date": "2018-03-22",
+        "status": "ACTIVE",
+        "trader_id": "TRD-046",
+        "trader_name": "Amanda Rivera",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Commodities",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-03-22",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-046",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Amanda Rivera",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0047",
+      "entity": "trader",
+      "natural_key": "TRD-047",
+      "data": {
+        "desk": "Commodities",
+        "hire_date": "2022-04-08",
+        "status": "ACTIVE",
+        "trader_id": "TRD-047",
+        "trader_name": "George Campbell",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Commodities",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2022-04-08",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-047",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "George Campbell",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0048",
+      "entity": "trader",
+      "natural_key": "TRD-048",
+      "data": {
+        "desk": "Commodities",
+        "hire_date": "2023-05-08",
+        "status": "ACTIVE",
+        "trader_id": "TRD-048",
+        "trader_name": "Melissa Mitchell",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Commodities",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2023-05-08",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-048",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Melissa Mitchell",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0049",
+      "entity": "trader",
+      "natural_key": "TRD-049",
+      "data": {
+        "desk": "Commodities",
+        "hire_date": "2018-01-25",
+        "status": "ACTIVE",
+        "trader_id": "TRD-049",
+        "trader_name": "Timothy Carter",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Commodities",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2018-01-25",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-049",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Timothy Carter",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-TRA-0050",
+      "entity": "trader",
+      "natural_key": "TRD-050",
+      "data": {
+        "desk": "Commodities",
+        "hire_date": "2021-12-11",
+        "status": "ACTIVE",
+        "trader_id": "TRD-050",
+        "trader_name": "Deborah Roberts",
+        "trader_type": "execution"
+      },
+      "provenance": {
+        "desk": {
+          "value": "Commodities",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "hire_date": {
+          "value": "2021-12-11",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "status": {
+          "value": "ACTIVE",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_id": {
+          "value": "TRD-050",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_name": {
+          "value": "Deborah Roberts",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        },
+        "trader_type": {
+          "value": "execution",
+          "source": "csv:trader.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.395267+00:00"
+        }
+      },
+      "source_records": [
+        "trader.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.395267+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    }
+  ],
+  "last_reconciled": "2026-02-28T12:37:35.395267+00:00"
+}

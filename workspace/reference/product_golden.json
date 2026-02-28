@@ -1,0 +1,2708 @@
+{
+  "entity": "product",
+  "golden_key": "isin",
+  "record_count": 25,
+  "records": [
+    {
+      "golden_id": "GR-PRO-0001",
+      "entity": "product",
+      "natural_key": "US02079K3059",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 142.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US02079K3059",
+        "lot_size": 100,
+        "name": "Alphabet Inc.",
+        "product_id": "GOOGL",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "GOOGL"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 142.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US02079K3059",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Alphabet Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "GOOGL",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "GOOGL",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0002",
+      "entity": "product",
+      "natural_key": "US0231351067",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 175.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US0231351067",
+        "lot_size": 100,
+        "name": "Amazon.com Inc.",
+        "product_id": "AMZN",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "AMZN"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 175.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US0231351067",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Amazon.com Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "AMZN",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "AMZN",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0003",
+      "entity": "product",
+      "natural_key": "US0378331005",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 185.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US0378331005",
+        "lot_size": 100,
+        "name": "Apple Inc.",
+        "product_id": "AAPL",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "AAPL"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 185.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US0378331005",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Apple Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "AAPL",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "AAPL",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0004",
+      "entity": "product",
+      "natural_key": "US0605051046",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 34.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US0605051046",
+        "lot_size": 100,
+        "name": "Bank of America",
+        "product_id": "BAC",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "BAC"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 34.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US0605051046",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Bank of America",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "BAC",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "BAC",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0005",
+      "entity": "product",
+      "natural_key": "US1667641005",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 150.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US1667641005",
+        "lot_size": 100,
+        "name": "Chevron Corp.",
+        "product_id": "CVX",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "CVX"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 150.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US1667641005",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Chevron Corp.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "CVX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "CVX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0006",
+      "entity": "product",
+      "natural_key": "US20825C1045",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 115.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US20825C1045",
+        "lot_size": 100,
+        "name": "ConocoPhillips",
+        "product_id": "COP",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "COP"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 115.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US20825C1045",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "ConocoPhillips",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "COP",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "COP",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0007",
+      "entity": "product",
+      "natural_key": "US22160K1051",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 670.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US22160K1051",
+        "lot_size": 100,
+        "name": "Costco Wholesale",
+        "product_id": "COST",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "COST"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 670.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US22160K1051",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Costco Wholesale",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "COST",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "COST",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0008",
+      "entity": "product",
+      "natural_key": "US2546871060",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 95.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US2546871060",
+        "lot_size": 100,
+        "name": "Walt Disney",
+        "product_id": "DIS",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "DIS"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 95.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US2546871060",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Walt Disney",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "DIS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "DIS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0009",
+      "entity": "product",
+      "natural_key": "US30231G1022",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 100.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US30231G1022",
+        "lot_size": 100,
+        "name": "Exxon Mobil",
+        "product_id": "XOM",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "XOM"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 100.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US30231G1022",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Exxon Mobil",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "XOM",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "XOM",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0010",
+      "entity": "product",
+      "natural_key": "US30303M1027",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 360.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US30303M1027",
+        "lot_size": 100,
+        "name": "Meta Platforms",
+        "product_id": "META",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "META"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 360.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US30303M1027",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Meta Platforms",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "META",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "META",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0011",
+      "entity": "product",
+      "natural_key": "US38141G1040",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 380.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US38141G1040",
+        "lot_size": 100,
+        "name": "Goldman Sachs",
+        "product_id": "GS",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "GS"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 380.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US38141G1040",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Goldman Sachs",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "GS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "GS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0012",
+      "entity": "product",
+      "natural_key": "US4370761029",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 350.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US4370761029",
+        "lot_size": 100,
+        "name": "Home Depot",
+        "product_id": "HD",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "HD"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 350.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US4370761029",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Home Depot",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "HD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "HD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0013",
+      "entity": "product",
+      "natural_key": "US46625H1005",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 175.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US46625H1005",
+        "lot_size": 100,
+        "name": "JPMorgan Chase",
+        "product_id": "JPM",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "JPM"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 175.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US46625H1005",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "JPMorgan Chase",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "JPM",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "JPM",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0014",
+      "entity": "product",
+      "natural_key": "US4781601046",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 160.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US4781601046",
+        "lot_size": 100,
+        "name": "Johnson & Johnson",
+        "product_id": "JNJ",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "JNJ"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 160.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US4781601046",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Johnson & Johnson",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "JNJ",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "JNJ",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0015",
+      "entity": "product",
+      "natural_key": "US57636Q1040",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 430.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US57636Q1040",
+        "lot_size": 100,
+        "name": "Mastercard Inc.",
+        "product_id": "MA",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "MA"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 430.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US57636Q1040",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Mastercard Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "MA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "MA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0016",
+      "entity": "product",
+      "natural_key": "US58933Y1055",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 120.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US58933Y1055",
+        "lot_size": 100,
+        "name": "Merck & Co.",
+        "product_id": "MRK",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "MRK"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 120.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US58933Y1055",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Merck & Co.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "MRK",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "MRK",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0017",
+      "entity": "product",
+      "natural_key": "US5949181045",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 380.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US5949181045",
+        "lot_size": 100,
+        "name": "Microsoft Corp.",
+        "product_id": "MSFT",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "MSFT"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 380.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US5949181045",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Microsoft Corp.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "MSFT",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "MSFT",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0018",
+      "entity": "product",
+      "natural_key": "US6174464486",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 90.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US6174464486",
+        "lot_size": 100,
+        "name": "Morgan Stanley",
+        "product_id": "MS",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "MS"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 90.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US6174464486",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Morgan Stanley",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "MS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "MS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0019",
+      "entity": "product",
+      "natural_key": "US6541061031",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 105.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US6541061031",
+        "lot_size": 100,
+        "name": "Nike Inc.",
+        "product_id": "NKE",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "NKE"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 105.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US6541061031",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Nike Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "NKE",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "NKE",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0020",
+      "entity": "product",
+      "natural_key": "US67066G1040",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 620.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US67066G1040",
+        "lot_size": 100,
+        "name": "NVIDIA Corp.",
+        "product_id": "NVDA",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "NVDA"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 620.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US67066G1040",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "NVIDIA Corp.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "NVDA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "NVDA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0021",
+      "entity": "product",
+      "natural_key": "US7170811035",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 28.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US7170811035",
+        "lot_size": 100,
+        "name": "Pfizer Inc.",
+        "product_id": "PFE",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "PFE"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 28.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US7170811035",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Pfizer Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "PFE",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "PFE",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0022",
+      "entity": "product",
+      "natural_key": "US88160R1014",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 245.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNAS",
+        "instrument_type": "common_stock",
+        "isin": "US88160R1014",
+        "lot_size": 100,
+        "name": "Tesla Inc.",
+        "product_id": "TSLA",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "TSLA"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 245.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNAS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US88160R1014",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Tesla Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "TSLA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "TSLA",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0023",
+      "entity": "product",
+      "natural_key": "US91324P1021",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 530.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US91324P1021",
+        "lot_size": 100,
+        "name": "UnitedHealth Group",
+        "product_id": "UNH",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "UNH"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 530.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US91324P1021",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "UnitedHealth Group",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "UNH",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "UNH",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0024",
+      "entity": "product",
+      "natural_key": "US92826C8394",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 270.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US92826C8394",
+        "lot_size": 100,
+        "name": "Visa Inc.",
+        "product_id": "V",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "V"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 270.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US92826C8394",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Visa Inc.",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "V",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "V",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-PRO-0025",
+      "entity": "product",
+      "natural_key": "US9497461015",
+      "data": {
+        "asset_class": "equity",
+        "base_price": 50.0,
+        "cfi_code": "ESXXXX",
+        "currency": "USD",
+        "exchange_mic": "XNYS",
+        "instrument_type": "common_stock",
+        "isin": "US9497461015",
+        "lot_size": 100,
+        "name": "Wells Fargo",
+        "product_id": "WFC",
+        "regulatory_scope": "US",
+        "tick_size": 0.01,
+        "ticker": "WFC"
+      },
+      "provenance": {
+        "asset_class": {
+          "value": "equity",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "base_price": {
+          "value": 50.0,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "cfi_code": {
+          "value": "ESXXXX",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "exchange_mic": {
+          "value": "XNYS",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "instrument_type": {
+          "value": "common_stock",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "isin": {
+          "value": "US9497461015",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "lot_size": {
+          "value": 100,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "name": {
+          "value": "Wells Fargo",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "product_id": {
+          "value": "WFC",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "regulatory_scope": {
+          "value": "US",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "tick_size": {
+          "value": 0.01,
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        },
+        "ticker": {
+          "value": "WFC",
+          "source": "csv:product.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.391138+00:00"
+        }
+      },
+      "source_records": [
+        "product.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.391138+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    }
+  ],
+  "last_reconciled": "2026-02-28T12:37:35.391138+00:00"
+}
