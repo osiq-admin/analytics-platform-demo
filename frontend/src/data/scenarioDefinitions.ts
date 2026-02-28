@@ -15,16 +15,16 @@ const S1_VIEW_SETTINGS: ScenarioDefinition = {
   id: "s1_view_settings",
   name: "View Settings Overview",
   description:
-    "Walk through the Settings Manager UI — understand the layout, search for settings, and view details including score steps and the resolution tester.",
+    "Walk through the Settings UI — understand the layout, search for settings, and view details including score steps and the resolution tester.",
   category: "settings",
   difficulty: "beginner",
   estimatedMinutes: 3,
   steps: [
     {
       target: "[data-tour='settings-list']",
-      title: "Settings Manager",
+      title: "Settings",
       content:
-        "Welcome to the Settings Manager. This is the central hub for all detection thresholds and scoring parameters. The left panel lists every setting in the system.",
+        "Welcome to Settings. This is the central hub for all detection thresholds and scoring parameters. The left panel lists every setting in the system.",
       placement: "right",
       route: "/settings",
       action: "navigate",
@@ -96,7 +96,7 @@ const S2_MODIFY_THRESHOLD: ScenarioDefinition = {
   id: "s2_modify_threshold",
   name: "Modify a Threshold Setting",
   description:
-    "Change a wash trading threshold and understand the impact. Learn the flow from Settings Manager to the Metadata Editor and back.",
+    "Change a wash trading threshold and understand the impact. Learn the flow from Settings to the Editor and back.",
   category: "settings",
   difficulty: "beginner",
   estimatedMinutes: 5,
@@ -139,14 +139,14 @@ const S2_MODIFY_THRESHOLD: ScenarioDefinition = {
     },
     {
       target: "[data-tour='editor-type-selector']",
-      title: "Open the Metadata Editor",
+      title: "Open the Editor",
       content:
-        "To edit this setting's raw definition, let's switch to the Metadata Editor. This gives you full control over the JSON structure.",
+        "To edit this setting's raw definition, let's switch to the Editor. This gives you full control over the JSON structure.",
       placement: "bottom",
       route: "/editor",
       action: "navigate",
       actionTarget: "[data-tour='editor-type-selector']",
-      hint: "Navigate to the Metadata Editor using the sidebar (under Configure).",
+      hint: "Navigate to Editor using the sidebar (under Configure).",
       delay: 2500,
     },
     {
@@ -200,7 +200,7 @@ const S2_MODIFY_THRESHOLD: ScenarioDefinition = {
       target: "[data-tour='settings-resolver']",
       title: "Verify the Change",
       content:
-        "Navigate back to Settings Manager to confirm the default value now shows 9. Use the Resolution Tester to check that the new default applies when no override matches.",
+        "Navigate back to Settings to confirm the default value now shows 9. Use the Resolution Tester to check that the new default applies when no override matches.",
       placement: "left",
       route: "/settings",
       action: "navigate",
@@ -233,7 +233,7 @@ const S3_PRODUCT_OVERRIDE: ScenarioDefinition = {
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager.",
+      hint: "Navigate to Settings using the sidebar.",
       delay: 2500,
     },
     {
@@ -368,7 +368,7 @@ const S4_SCORE_STEPS: ScenarioDefinition = {
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager.",
+      hint: "Navigate to Settings using the sidebar.",
       delay: 2500,
     },
     {
@@ -487,7 +487,7 @@ const S5_MATCH_PATTERNS: ScenarioDefinition = {
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager.",
+      hint: "Navigate to Settings using the sidebar.",
       delay: 2500,
     },
     {
@@ -612,7 +612,7 @@ const S6_RESOLUTION_DEEP_DIVE: ScenarioDefinition = {
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager.",
+      hint: "Navigate to Settings using the sidebar.",
       delay: 3500,
     },
     {
@@ -732,21 +732,21 @@ const S7_EXPLORE_CALC_DAG: ScenarioDefinition = {
   id: "s7_explore_calc_dag",
   name: "Explore Calculation DAG",
   description:
-    "Walk through the Metadata Explorer to understand calculation layers, dependencies, and the DAG visualization. Learn how transaction, time window, aggregation, and derived layers chain together.",
+    "Walk through the Calculations view to understand calculation layers, dependencies, and the DAG visualization. Learn how transaction, time window, aggregation, and derived layers chain together.",
   category: "calculations",
   difficulty: "beginner",
   estimatedMinutes: 4,
   steps: [
     {
       target: "[data-tour='sidebar']",
-      title: "Navigate to Metadata Explorer",
+      title: "Navigate to Calculations",
       content:
-        "The Metadata Explorer is the central hub for browsing all calculation definitions. It shows the full list, a dependency DAG, and detailed views of each calculation.",
+        "The Calculations view is the central hub for browsing all calculation definitions. It shows the full list, a dependency DAG, and detailed views of each calculation.",
       placement: "right",
       route: "/metadata",
       action: "navigate",
       actionTarget: "[data-tour='sidebar']",
-      hint: "Click 'Metadata Explorer' in the sidebar under the Analyze section.",
+      hint: "Click 'Calculations' in the sidebar under the Define section.",
       delay: 3000,
     },
     {
@@ -833,7 +833,7 @@ const S8_CREATE_MANUAL_CALC: ScenarioDefinition = {
   id: "s8_create_manual_calc",
   name: "Create a Manual Calculation",
   description:
-    "Create a new derived-layer calculation using the Metadata Editor. Write SQL logic with $param references, define inputs and outputs, then verify the result in the Metadata Explorer.",
+    "Create a new derived-layer calculation using the Editor. Write SQL logic with $param references, define inputs and outputs, then verify the result in Calculations.",
   category: "calculations",
   difficulty: "intermediate",
   estimatedMinutes: 8,
@@ -841,14 +841,14 @@ const S8_CREATE_MANUAL_CALC: ScenarioDefinition = {
   steps: [
     {
       target: "[data-tour='editor-type-selector']",
-      title: "Open the Metadata Editor",
+      title: "Open the Editor",
       content:
-        "We'll create a new calculation using the Metadata Editor. This gives you full control over the calculation definition including SQL logic, parameters, inputs, and outputs.",
+        "We'll create a new calculation using the Editor. This gives you full control over the calculation definition including SQL logic, parameters, inputs, and outputs.",
       placement: "bottom",
       route: "/editor",
       action: "navigate",
       actionTarget: "[data-tour='editor-type-selector']",
-      hint: "Navigate to the Metadata Editor using the sidebar (under Configure).",
+      hint: "Navigate to Editor using the sidebar (under Configure).",
       delay: 2500,
     },
     {
@@ -876,14 +876,14 @@ const S8_CREATE_MANUAL_CALC: ScenarioDefinition = {
     },
     {
       target: "[data-tour='sidebar']",
-      title: "Switch to Metadata Explorer Form",
+      title: "Switch to Calculations Form",
       content:
-        "For a guided creation experience, let's use the Metadata Explorer's built-in form. Navigate to the Metadata Explorer where you can click '+ New Calculation'.",
+        "For a guided creation experience, let's use the Calculations view's built-in form. Navigate to Calculations where you can click '+ New Calculation'.",
       placement: "right",
       route: "/metadata",
       action: "navigate",
       actionTarget: "[data-tour='sidebar']",
-      hint: "Navigate to the Metadata Explorer using the sidebar.",
+      hint: "Navigate to Calculations using the sidebar.",
       delay: 2500,
     },
     {
@@ -977,7 +977,7 @@ const S9_AI_CALC_BUILDER: ScenarioDefinition = {
   id: "s9_ai_calc_builder",
   name: "AI-Assisted Calculation",
   description:
-    "Use the AI Assistant to generate a calculation from natural language. Describe what you want to compute, review the AI-generated definition with confidence scoring, refine if needed, and save.",
+    "Use the Assistant to generate a calculation from natural language. Describe what you want to compute, review the AI-generated definition with confidence scoring, refine if needed, and save.",
   category: "calculations",
   difficulty: "intermediate",
   estimatedMinutes: 6,
@@ -985,21 +985,21 @@ const S9_AI_CALC_BUILDER: ScenarioDefinition = {
   steps: [
     {
       target: "[data-tour='sidebar']",
-      title: "Navigate to AI Assistant",
+      title: "Navigate to Assistant",
       content:
-        "The AI Assistant can help generate calculation definitions from natural language descriptions. It understands the platform's calculation structure, layers, and parameter syntax.",
+        "The Assistant can help generate calculation definitions from natural language descriptions. It understands the platform's calculation structure, layers, and parameter syntax.",
       placement: "right",
       route: "/assistant",
       action: "navigate",
       actionTarget: "[data-tour='sidebar']",
-      hint: "Click 'AI Assistant' in the sidebar to open the AI query interface.",
+      hint: "Click 'Assistant' in the sidebar to open the AI query interface.",
       delay: 2500,
     },
     {
       target: "[data-tour='assistant-scenarios']",
-      title: "AI Assistant Modes",
+      title: "Assistant Modes",
       content:
-        "The AI Assistant runs in mock mode for this demo — pre-scripted conversations demonstrate the capabilities. In a live deployment, it connects to Claude API for real-time generation. Mock scenarios show calculation generation, data exploration, and more.",
+        "The Assistant runs in mock mode for this demo — pre-scripted conversations demonstrate the capabilities. In a live deployment, it connects to Claude API for real-time generation. Mock scenarios show calculation generation, data exploration, and more.",
       placement: "bottom",
       action: "wait",
       hint: "Look at the scenario picker at the top. It shows pre-built conversations you can load.",
@@ -1047,14 +1047,14 @@ const S9_AI_CALC_BUILDER: ScenarioDefinition = {
     },
     {
       target: "[data-tour='sidebar']",
-      title: "Verify in Metadata Explorer",
+      title: "Verify in Calculations",
       content:
-        "After accepting an AI-generated calculation, navigate to the Metadata Explorer to verify it appears in the list and DAG. The calculation integrates seamlessly with manually created ones.",
+        "After accepting an AI-generated calculation, navigate to Calculations to verify it appears in the list and DAG. The calculation integrates seamlessly with manually created ones.",
       placement: "right",
       route: "/metadata",
       action: "navigate",
       actionTarget: "[data-tour='sidebar']",
-      hint: "Navigate to the Metadata Explorer to verify the new calculation appears in the list.",
+      hint: "Navigate to Calculations to verify the new calculation appears in the list.",
       delay: 2500,
     },
     {
@@ -1091,7 +1091,7 @@ const S10_PARAMETERIZE_CALC: ScenarioDefinition = {
       route: "/metadata",
       action: "navigate",
       actionTarget: "[data-tour='sidebar']",
-      hint: "Navigate to the Metadata Explorer.",
+      hint: "Navigate to Calculations using the sidebar.",
       delay: 3000,
     },
     {
@@ -1119,12 +1119,12 @@ const S10_PARAMETERIZE_CALC: ScenarioDefinition = {
       target: "[data-tour='editor-type-selector']",
       title: "View the Raw JSON",
       content:
-        "Let's switch to the Metadata Editor to see the full JSON definition, including the parameters block that maps $param names to their settings sources.",
+        "Let's switch to the Editor to see the full JSON definition, including the parameters block that maps $param names to their settings sources.",
       placement: "bottom",
       route: "/editor",
       action: "navigate",
       actionTarget: "[data-tour='editor-type-selector']",
-      hint: "Navigate to the Metadata Editor.",
+      hint: "Navigate to Editor using the sidebar.",
       delay: 2500,
     },
     {
@@ -1154,12 +1154,12 @@ const S10_PARAMETERIZE_CALC: ScenarioDefinition = {
       target: "[data-tour='settings-list']",
       title: "Find the Referenced Setting",
       content:
-        "Now let's trace to the other end — the Settings Manager. Navigate here and look for 'business_date_cutoff'. This is where the actual parameter value is configured, with possible overrides per asset class or exchange.",
+        "Now let's trace to the other end — Settings. Navigate here and look for 'business_date_cutoff'. This is where the actual parameter value is configured, with possible overrides per asset class or exchange.",
       placement: "right",
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager and look for the 'business_date_cutoff' setting.",
+      hint: "Navigate to Settings and look for the 'business_date_cutoff' setting.",
       delay: 3000,
     },
     {
@@ -1181,7 +1181,7 @@ const S10_PARAMETERIZE_CALC: ScenarioDefinition = {
       route: "/pipeline",
       action: "navigate",
       actionTarget: "[data-tour='pipeline-run']",
-      hint: "Navigate to the Pipeline Monitor to see how parameters are resolved during execution.",
+      hint: "Navigate to Pipeline to see how parameters are resolved during execution.",
       delay: 3000,
     },
     {
@@ -1214,14 +1214,14 @@ const S11_FULL_MODEL_WIZARD: ScenarioDefinition = {
   steps: [
     {
       target: "[data-tour='model-list']",
-      title: "Model Composer Overview",
+      title: "Models Overview",
       content:
-        "Welcome to the Model Composer — the central hub for building and deploying detection models. The left panel lists existing models (Wash Trading, MPR, Insider Dealing, Spoofing). We'll create a brand-new model from scratch.",
+        "Welcome to Models — the central hub for building and deploying detection models. The left panel lists existing models (Wash Trading, MPR, Insider Dealing, Spoofing). We'll create a brand-new model from scratch.",
       placement: "right",
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer using the sidebar.",
+      hint: "Navigate to Models using the sidebar.",
       delay: 3000,
     },
     {
@@ -1348,23 +1348,23 @@ const S12_CLONE_MODIFY_MODEL: ScenarioDefinition = {
       target: "[data-tour='model-list']",
       title: "Browse Existing Models",
       content:
-        "The model list shows all 5 detection models. Each entry displays the model name, an OOB/Custom badge, and a calculation count. We'll explore and modify the 'Wash Trading (Full Day)' model.",
+        "The model list shows all 5 detection models. Each entry displays the model name, an OOB/Custom badge, and a calculation count. We'll explore and modify the 'Wash Trading — Full Day' model.",
       placement: "right",
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer.",
+      hint: "Navigate to Models using the sidebar.",
       delay: 2500,
     },
     {
       target: "[data-tour='model-list'] button:nth-child(2)",
-      title: "Select Wash Trading (Full Day)",
+      title: "Select Wash Trading — Full Day",
       content:
-        "Click on 'Wash Trading (Full Day)' — the platform's primary wash trading detection model. It uses multiple aggregation and derived calculations with MUST_PASS and OPTIONAL strictness levels.",
+        "Click on 'Wash Trading — Full Day' — the platform's primary wash trading detection model. It uses multiple aggregation and derived calculations with MUST_PASS and OPTIONAL strictness levels.",
       placement: "right",
       action: "click",
       actionTarget: "[data-tour='model-list'] button:nth-child(2)",
-      hint: "Click on 'Wash Trading (Full Day)' in the model list.",
+      hint: "Click on 'Wash Trading — Full Day' in the model list.",
       validation: "[data-tour='model-detail']",
       delay: 2500,
     },
@@ -1467,7 +1467,7 @@ const S13_ADD_CALC_TO_MODEL: ScenarioDefinition = {
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer.",
+      hint: "Navigate to Models using the sidebar.",
       delay: 2500,
     },
     {
@@ -1583,7 +1583,7 @@ const S14_MODEL_BEST_PRACTICES: ScenarioDefinition = {
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer.",
+      hint: "Navigate to Models using the sidebar.",
       delay: 3000,
     },
     {
@@ -1706,14 +1706,14 @@ const S15_CREATE_USE_CASE: ScenarioDefinition = {
   steps: [
     {
       target: ".w-72",
-      title: "Use Case Studio",
+      title: "Use Cases",
       content:
-        "Welcome to the Use Case Studio. This is where you define, test, and manage detection use cases. The left panel lists all existing use cases with their status badges (draft, ready, submitted, approved, rejected). The center area shows details or the creation wizard.",
+        "Welcome to Use Cases. This is where you define, test, and manage detection use cases. The left panel lists all existing use cases with their status badges (draft, ready, submitted, approved, rejected). The center area shows details or the creation wizard.",
       placement: "right",
       route: "/use-cases",
       action: "navigate",
       actionTarget: ".w-72",
-      hint: "Navigate to the Use Case Studio using the sidebar.",
+      hint: "Navigate to Use Cases using the sidebar.",
       delay: 3000,
     },
     {
@@ -1760,7 +1760,7 @@ const S15_CREATE_USE_CASE: ScenarioDefinition = {
       target: ".space-y-4 h4:first-of-type",
       title: "Step 2: Select Components",
       content:
-        "Components are grouped by type: Detection Models, Calculations, and Settings. Click to select the components this use case should include. For a wash trading use case, select the 'Wash Trading (Full Day)' detection model and related calculations like 'Self-Trade Ratio' and 'Same-Day Turnaround'.",
+        "Components are grouped by type: Detection Models, Calculations, and Settings. Click to select the components this use case should include. For a wash trading use case, select the 'Wash Trading — Full Day' detection model and related calculations like 'Self-Trade Ratio' and 'Same-Day Turnaround'.",
       placement: "left",
       action: "wait",
       hint: "Click on a detection model and 2-3 related calculations to include them in the use case.",
@@ -1849,7 +1849,7 @@ const S16_SUBMIT_USE_CASE: ScenarioDefinition = {
       route: "/use-cases",
       action: "navigate",
       actionTarget: ".w-72",
-      hint: "Navigate to the Use Case Studio and identify a use case with 'draft' status.",
+      hint: "Navigate to Use Cases and identify a use case with 'draft' status.",
       delay: 3000,
     },
     {
@@ -2034,7 +2034,7 @@ const S18_IMPLEMENT_FEEDBACK: ScenarioDefinition = {
   id: "s18_implement_feedback",
   name: "Implement Feedback",
   description:
-    "Handle a 'changes requested' submission — read reviewer comments, navigate back to the Use Case Studio, make the requested changes, and resubmit for another review cycle.",
+    "Handle a 'changes requested' submission — read reviewer comments, navigate back to Use Cases, make the requested changes, and resubmit for another review cycle.",
   category: "use_cases",
   difficulty: "advanced",
   estimatedMinutes: 8,
@@ -2079,7 +2079,7 @@ const S18_IMPLEMENT_FEEDBACK: ScenarioDefinition = {
       target: ".flex.border-b.border-border button:first-child",
       title: "Note the Use Case Reference",
       content:
-        "Switch back to the Summary tab and note the 'Use Case' ID field. This links the submission to its source use case in the Use Case Studio. You'll navigate there next to make the requested changes.",
+        "Switch back to the Summary tab and note the 'Use Case' ID field. This links the submission to its source use case in Use Cases. You'll navigate there next to make the requested changes.",
       placement: "bottom",
       action: "click",
       actionTarget: ".flex.border-b.border-border button:first-child",
@@ -2088,9 +2088,9 @@ const S18_IMPLEMENT_FEEDBACK: ScenarioDefinition = {
     },
     {
       target: ".w-72",
-      title: "Navigate to Use Case Studio",
+      title: "Navigate to Use Cases",
       content:
-        "Switch to the Use Case Studio to find and edit the original use case. The left panel lists all use cases — find the one matching the submission's use case ID.",
+        "Switch to Use Cases to find and edit the original use case. The left panel lists all use cases — find the one matching the submission's use case ID.",
       placement: "right",
       route: "/use-cases",
       action: "navigate",
@@ -2166,21 +2166,21 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
   id: "s19_explore_entity_model",
   name: "Explore Entity Data Model",
   description:
-    "Walk through the Entity Designer to understand the platform's 8-entity data model — fields, types, relationships, and how entities connect via foreign keys.",
+    "Walk through the Entities view to understand the platform's 8-entity data model — fields, types, relationships, and how entities connect via foreign keys.",
   category: "entities",
   difficulty: "beginner",
   estimatedMinutes: 5,
   steps: [
     {
       target: "[data-tour='entity-list']",
-      title: "Entity Designer Overview",
+      title: "Entities Overview",
       content:
-        "Welcome to the Entity Designer. The top pane lists all 8 entities in a full-width grid. Below is the detail pane showing Fields and Relationships tabs. Switch to the Relationship Graph tab (top-right) for the visual entity graph.",
+        "Welcome to Entities. The top pane lists all 8 entities in a full-width grid. Below is the detail pane showing Fields and Relationships tabs. Switch to the Relationship Graph tab (top-right) for the visual entity graph.",
       placement: "bottom",
       route: "/entities",
       action: "navigate",
       actionTarget: "[data-tour='entity-list']",
-      hint: "Navigate to the Entity Designer using the sidebar (under Explore).",
+      hint: "Navigate to Entities using the sidebar (under Define).",
       delay: 3000,
     },
     {
@@ -2200,7 +2200,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-fields']",
       title: "Product Fields — ISO Identifiers",
       content:
-        "The Fields tab shows all 17 columns for the product entity. Notice the industry-standard fields: ISIN, CFI, and MIC. The Domain column shows which fields have constrained value sets. Click any field row to open the Domain Values pane — view metadata-defined values and data-only values from the database.",
+        "The Fields tab shows all 18 columns for the product entity. Notice the industry-standard fields: ISIN, CFI, and MIC. The Domain column shows which fields have constrained value sets. Click any field row to open the Domain Values pane — view metadata-defined values and data-only values from the database.",
       placement: "bottom",
       action: "wait",
       hint: "Review the field definitions grid. Look for ISIN, CFI, and MIC columns — these are ISO-standard identifiers.",
@@ -2220,7 +2220,7 @@ const S19_EXPLORE_ENTITY_MODEL: ScenarioDefinition = {
       target: "[data-tour='entity-list'] .ag-body-viewport .ag-row[row-index='1']",
       title: "Select the Execution Entity",
       content:
-        "Click on 'execution' to see its 13 fields. Executions represent trade fills — 509 rows with FIX Protocol fields like exec_type and capacity. Each execution references an order via the order_id foreign key.",
+        "Click on 'execution' to see its 13 fields. Executions represent trade fills — 761 rows with FIX Protocol fields like exec_type and capacity. Each execution references an order via the order_id foreign key.",
       placement: "right",
       action: "click",
       actionTarget:
@@ -2268,7 +2268,7 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
   id: "s20_import_preview_data",
   name: "Import and Preview Data",
   description:
-    "Explore raw data files, preview CSV contents in the Data Manager, verify loaded tables in the Schema Explorer, and run a query in the SQL Console.",
+    "Explore raw data files, preview CSV contents in the Data view, verify loaded tables in Schema, and run a query in SQL Console.",
   category: "entities",
   difficulty: "beginner",
   estimatedMinutes: 4,
@@ -2276,14 +2276,14 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
   steps: [
     {
       target: "[data-tour='data-list']",
-      title: "Data Manager — File List",
+      title: "Data — File List",
       content:
-        "The Data Manager shows all data files loaded into the platform. The left panel lists CSV and Parquet files for each entity — execution.csv, product.csv, order.csv, and more. Each file corresponds to one of the 8 entities you explored in the Entity Designer.",
+        "The Data view shows all data files loaded into the platform. The left panel lists CSV and Parquet files for each entity — execution.csv, product.csv, order.csv, and more. Each file corresponds to one of the 8 entities you explored in Entities.",
       placement: "right",
       route: "/data",
       action: "navigate",
       actionTarget: "[data-tour='data-list']",
-      hint: "Navigate to the Data Manager using the sidebar (under Explore).",
+      hint: "Navigate to Data using the sidebar (under Compose).",
       delay: 3000,
     },
     {
@@ -2303,7 +2303,7 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
       target: "[data-tour='data-preview']",
       title: "Inspect Column Count and Data",
       content:
-        "The preview grid shows 509 execution rows with 13 columns. Scroll horizontally to see all fields. Notice the FIX Protocol fields: exec_type (TRADE, CANCEL), capacity (AGENCY, PRINCIPAL), and the venue_mic linking to ISO 10383 venue codes.",
+        "The preview grid shows 761 execution rows with 13 columns. Scroll horizontally to see all fields. Notice the FIX Protocol fields: exec_type (TRADE, CANCEL), capacity (AGENCY, PRINCIPAL), and the venue_mic linking to ISO 10383 venue codes.",
       placement: "left",
       action: "wait",
       hint: "Scroll through the preview grid. Count the columns and note the FIX Protocol field values.",
@@ -2326,10 +2326,10 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
       target: "[data-tour='data-preview']",
       title: "ISO-Standard Fields",
       content:
-        "Notice the ISO-standard fields in product.csv: ISIN (e.g., US0378331005 for AAPL), CFI code (ESVUFR for equity), and primary_mic (XNGS for NASDAQ). These standards ensure the demo data mirrors real-world trade surveillance data formats.",
+        "Notice the ISO-standard fields in product.csv: ISIN (e.g., US0378331005 for AAPL), CFI code (ESXXXX for equity), and exchange_mic (XNYS for NYSE). These standards ensure the demo data mirrors real-world trade surveillance data formats.",
       placement: "left",
       action: "wait",
-      hint: "Find the ISIN, CFI, and primary_mic columns. Note the standard codes used.",
+      hint: "Find the ISIN, CFI, and exchange_mic columns. Note the standard codes used.",
       delay: 3500,
     },
     {
@@ -2341,7 +2341,7 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
       route: "/sql",
       action: "navigate",
       actionTarget: "[data-tour='sql-editor']",
-      hint: "Navigate to the SQL Console using the sidebar (under Explore).",
+      hint: "Navigate to SQL Console using the sidebar (under Operate).",
       delay: 2500,
     },
     {
@@ -2359,7 +2359,7 @@ const S20_IMPORT_PREVIEW_DATA: ScenarioDefinition = {
       target: "[data-tour='sql-results']",
       title: "View Query Results",
       content:
-        "The results grid shows the query output with full AG Grid features — sorting, filtering, and column resizing. You've now traced the full data path: raw files → Data Manager → Schema Explorer → SQL Console. The same data feeds into the detection pipeline and alert generation.",
+        "The results grid shows the query output with full AG Grid features — sorting, filtering, and column resizing. You've now traced the full data path: raw files → Data → Schema → SQL Console. The same data feeds into the detection pipeline and alert generation.",
       placement: "top",
       action: "wait",
       hint: "Review the query results. Try modifying the SQL and running it again.",
@@ -2379,7 +2379,7 @@ const S21_ALERT_INVESTIGATION: ScenarioDefinition = {
   id: "s21_alert_investigation",
   name: "Alert Investigation Workflow",
   description:
-    "Full investigation flow from the Dashboard summary metrics through the Risk Case Manager — sort, drill into an alert, review score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
+    "Full investigation flow from the Dashboard summary metrics through Risk Cases — sort, drill into an alert, review score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
   category: "investigation",
   difficulty: "beginner",
   estimatedMinutes: 8,
@@ -2400,7 +2400,7 @@ const S21_ALERT_INVESTIGATION: ScenarioDefinition = {
       target: "[data-tour='dashboard-by-model']",
       title: "Alerts by Detection Model",
       content:
-        "The 'Alerts by Model' chart breaks down alerts across the 5 detection models: Wash Trading (Full Day), Wash Trading (Intraday), Market Price Ramping, Insider Dealing, and Spoofing/Layering. Note which model generates the most alerts — this indicates where to focus your investigation.",
+        "The 'Alerts by Model' chart breaks down alerts across the 5 detection models: Wash Trading — Full Day, Wash Trading — Intraday, Market Price Ramping, Insider Dealing, and Spoofing / Layering. Note which model generates the most alerts — this indicates where to focus your investigation.",
       placement: "right",
       action: "wait",
       hint: "Review the chart to identify which detection model has the most alerts.",
@@ -2418,14 +2418,14 @@ const S21_ALERT_INVESTIGATION: ScenarioDefinition = {
     },
     {
       target: "[data-tour='alert-grid']",
-      title: "Risk Case Manager — Alert Grid",
+      title: "Risk Cases — Alert Grid",
       content:
-        "Navigate to the Risk Case Manager to see individual alerts. The AG Grid displays every alert with columns for score, model, product, alert date, and status. We'll sort by score to find the highest-priority cases.",
+        "Navigate to Risk Cases to see individual alerts. The AG Grid displays every alert with columns for score, model, product, alert date, and status. We'll sort by score to find the highest-priority cases.",
       placement: "bottom",
       route: "/alerts",
       action: "navigate",
       actionTarget: "[data-tour='alert-grid']",
-      hint: "Navigate to the Risk Case Manager using the sidebar.",
+      hint: "Navigate to Risk Cases using the sidebar.",
       delay: 3000,
     },
     {
@@ -2505,7 +2505,7 @@ const S21_ALERT_INVESTIGATION: ScenarioDefinition = {
       target: "[data-tour='alert-grid']",
       title: "Investigation Complete",
       content:
-        "You've completed a full alert investigation: Dashboard overview → Risk Case Manager → score breakdown → calculation trace → market data → related orders → settings trace. This workflow covers every dimension needed to assess whether an alert represents genuine market abuse or a false positive.",
+        "You've completed a full alert investigation: Dashboard overview → Risk Cases → score breakdown → calculation trace → market data → related orders → settings trace. This workflow covers every dimension needed to assess whether an alert represents genuine market abuse or a false positive.",
       placement: "bottom",
       action: "wait",
       delay: 3000,
@@ -2520,7 +2520,7 @@ const S22_CROSS_ALERT_ANALYSIS: ScenarioDefinition = {
   id: "s22_cross_alert_analysis",
   name: "Cross-Alert Analysis",
   description:
-    "Compare alerts across detection models to find patterns — filter alerts by model, analyze scores with SQL queries, and use the AI Assistant to identify cross-model correlations.",
+    "Compare alerts across detection models to find patterns — filter alerts by model, analyze scores with SQL queries, and use the Assistant to identify cross-model correlations.",
   category: "investigation",
   difficulty: "intermediate",
   estimatedMinutes: 6,
@@ -2530,23 +2530,23 @@ const S22_CROSS_ALERT_ANALYSIS: ScenarioDefinition = {
       target: "[data-tour='alert-grid']",
       title: "Start with the Alert Grid",
       content:
-        "We'll compare alerts across detection models to identify patterns. The Risk Case Manager grid shows all alerts — we'll filter by model to isolate specific detection types and compare their characteristics.",
+        "We'll compare alerts across detection models to identify patterns. Risk Cases grid shows all alerts — we'll filter by model to isolate specific detection types and compare their characteristics.",
       placement: "bottom",
       route: "/alerts",
       action: "navigate",
       actionTarget: "[data-tour='alert-grid']",
-      hint: "Navigate to the Risk Case Manager.",
+      hint: "Navigate to Risk Cases using the sidebar.",
       delay: 2500,
     },
     {
       target: "[data-tour='alert-filters']",
       title: "Filter by Detection Model",
       content:
-        "Use the column filters to isolate alerts from a single detection model — for example, 'Wash Trading (Full Day)'. This lets you analyze one model's output in isolation. Notice the score range and product distribution for this model type.",
+        "Use the column filters to isolate alerts from a single detection model — for example, 'Wash Trading — Full Day'. This lets you analyze one model's output in isolation. Notice the score range and product distribution for this model type.",
       placement: "bottom",
       action: "click",
       actionTarget: "[data-tour='alert-filters']",
-      hint: "Click the filter icon on the Model column. Select 'Wash Trading (Full Day)' to filter.",
+      hint: "Click the filter icon on the Model column. Select 'Wash Trading — Full Day' to filter.",
       delay: 3000,
     },
     {
@@ -2583,21 +2583,21 @@ const S22_CROSS_ALERT_ANALYSIS: ScenarioDefinition = {
     },
     {
       target: "[data-tour='assistant-chat']",
-      title: "Ask the AI Assistant",
+      title: "Ask the Assistant",
       content:
-        "Use the AI Assistant to ask about cross-model patterns. Try: 'Which products have alerts from multiple detection models?' or 'Are there traders who appear frequently across different alert types?' The assistant can synthesize patterns across the entire data set.",
+        "Use the Assistant to ask about cross-model patterns. Try: 'Which products have alerts from multiple detection models?' or 'Are there traders who appear frequently across different alert types?' The Assistant can synthesize patterns across the entire data set.",
       placement: "right",
       route: "/assistant",
       action: "navigate",
       actionTarget: "[data-tour='assistant-chat']",
-      hint: "Navigate to the AI Assistant and ask about cross-model alert patterns.",
+      hint: "Navigate to the Assistant and ask about cross-model alert patterns.",
       delay: 3000,
     },
     {
       target: "[data-tour='assistant-scenarios']",
       title: "Use Built-in Scenarios",
       content:
-        "The AI Assistant has built-in analysis scenarios that run pre-defined investigative queries. These cover common patterns: trader-level risk aggregation, product heat maps, and temporal clustering. Select a scenario to see a structured analysis without writing custom queries.",
+        "The Assistant has built-in analysis scenarios that run pre-defined investigative queries. These cover common patterns: trader-level risk aggregation, product heat maps, and temporal clustering. Select a scenario to see a structured analysis without writing custom queries.",
       placement: "left",
       action: "wait",
       hint: "Browse the scenario buttons on the right. Click one to run a pre-built analysis.",
@@ -2622,7 +2622,7 @@ const S23_REGULATORY_AUDIT: ScenarioDefinition = {
   id: "s23_regulatory_audit",
   name: "Regulatory Coverage Audit",
   description:
-    "Audit regulatory coverage using the Regulatory Map — review obligation cards, explore the traceability graph, identify coverage gaps, and navigate to the Model Composer to address them.",
+    "Audit regulatory coverage using the Regulatory Map — review obligation cards, explore the traceability graph, identify coverage gaps, and navigate to Models to address them.",
   category: "investigation",
   difficulty: "advanced",
   estimatedMinutes: 7,
@@ -2693,21 +2693,21 @@ const S23_REGULATORY_AUDIT: ScenarioDefinition = {
     },
     {
       target: "[data-tour='model-list']",
-      title: "Navigate to Model Composer",
+      title: "Navigate to Models",
       content:
-        "To address a coverage gap, navigate to the Model Composer where you can create or modify detection models. The gap analysis from the Regulatory Map tells you exactly what detection capability is missing — now you'll implement it.",
+        "To address a coverage gap, navigate to Models where you can create or modify detection models. The gap analysis from the Regulatory Map tells you exactly what detection capability is missing — now you'll implement it.",
       placement: "right",
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer to create or modify a detection model that addresses the gap.",
+      hint: "Navigate to Models to create or modify a detection model that addresses the gap.",
       delay: 2500,
     },
     {
       target: "[data-tour='model-list']",
       title: "Address the Gap",
       content:
-        "In the Model Composer, you can create a new detection model or enhance an existing one based on the regulatory suggestions. Add the required calculations, configure thresholds, and define the detection query. When saved, the model will automatically appear in the Regulatory Map's traceability graph.",
+        "In Models, you can create a new detection model or enhance an existing one based on the regulatory suggestions. Add the required calculations, configure thresholds, and define the detection query. When saved, the model will automatically appear in the Regulatory Map's traceability graph.",
       placement: "right",
       action: "wait",
       hint: "Review existing models and identify which one to enhance, or create a new model for the uncovered obligation.",
@@ -2717,7 +2717,7 @@ const S23_REGULATORY_AUDIT: ScenarioDefinition = {
       target: "[data-tour='regulatory-cards']",
       title: "Regulatory Audit Complete",
       content:
-        "You've completed a full regulatory coverage audit: reviewed obligation cards, explored the traceability graph, identified gaps, reviewed AI suggestions, and navigated to the Model Composer to address shortfalls. This closed-loop workflow ensures continuous regulatory compliance.",
+        "You've completed a full regulatory coverage audit: reviewed obligation cards, explored the traceability graph, identified gaps, reviewed AI suggestions, and navigated to Models to address shortfalls. This closed-loop workflow ensures continuous regulatory compliance.",
       placement: "right",
       route: "/regulatory",
       action: "navigate",
@@ -2746,14 +2746,14 @@ const S24_OOB_METADATA_REVIEW: ScenarioDefinition = {
   steps: [
     {
       target: "[data-tour='editor-type-selector']",
-      title: "Metadata Editor — Layer System",
+      title: "Editor — Layer System",
       content:
-        "The Metadata Editor manages all configuration in the platform. A key concept is the layer system: 'OOB' (Out-of-Box) items ship with the platform, while 'Custom' items are user modifications. This separation enables safe upgrades — your customizations are preserved when the platform updates its defaults.",
+        "The Editor manages all configuration in the platform. A key concept is the layer system: 'OOB' (Out-of-Box) items ship with the platform, while 'Custom' items are user modifications. This separation enables safe upgrades — your customizations are preserved when the platform updates its defaults.",
       placement: "bottom",
       route: "/editor",
       action: "navigate",
       actionTarget: "[data-tour='editor-type-selector']",
-      hint: "Navigate to the Metadata Editor using the sidebar (under Configure).",
+      hint: "Navigate to Editor using the sidebar (under Configure).",
       delay: 3000,
     },
     {
@@ -2859,19 +2859,19 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='data-list']",
       title: "Step 1: Data Ingestion",
       content:
-        "We begin at the Data Manager — the entry point for all trade data. The platform ingests CSV files for 8 entity types: products, orders, executions, market data, venues, accounts, and traders. This raw data feeds into everything downstream.",
+        "We begin at the Data view — the entry point for all trade data. The platform ingests CSV files for 8 entity types: products, orders, executions, market data, venues, accounts, and traders. This raw data feeds into everything downstream.",
       placement: "right",
       route: "/data",
       action: "navigate",
       actionTarget: "[data-tour='data-list']",
-      hint: "Navigate to the Data Manager to see the raw data files loaded into the platform.",
+      hint: "Navigate to Data to see the raw data files loaded into the platform.",
       delay: 3000,
     },
     {
       target: "[data-tour='data-preview']",
       title: "Preview Raw Data",
       content:
-        "Click on a file to preview its contents. The Data Manager provides a quick-look grid for any loaded file — useful for verifying data quality before running detection. Notice the ISO-standard fields (ISIN, MIC) and FIX Protocol values (OrdType, ExecType).",
+        "Click on a file to preview its contents. The Data view provides a quick-look grid for any loaded file — useful for verifying data quality before running detection. Notice the ISO-standard fields (ISIN, MIC) and FIX Protocol values (OrdType, ExecType).",
       placement: "left",
       action: "click",
       actionTarget:
@@ -2884,12 +2884,12 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='entity-list']",
       title: "Step 2: Entity Data Model",
       content:
-        "The Entity Designer shows how data is structured. Use the Entity Details tab for Fields/Relationships, or the Relationship Graph tab for the visual entity map. Eight entities form the data model.",
+        "The Entities view shows how data is structured. Use the Entity Details tab for Fields/Relationships, or the Relationship Graph tab for the visual entity map. Eight entities form the data model.",
       placement: "bottom",
       route: "/entities",
       action: "navigate",
       actionTarget: "[data-tour='entity-list']",
-      hint: "Navigate to the Entity Designer to see the data model.",
+      hint: "Navigate to Entities to see the data model.",
       delay: 2500,
     },
     {
@@ -2906,19 +2906,19 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='pipeline-dag']",
       title: "Step 3: Run the Detection Pipeline",
       content:
-        "The Pipeline Monitor shows the detection DAG — the sequence of calculations and detection models that process raw data into alerts. Each node represents a calculation step; edges show dependencies. The DAG ensures calculations execute in the correct order.",
+        "The Pipeline view shows the detection DAG — the sequence of calculations and detection models that process raw data into alerts. Each node represents a calculation step; edges show dependencies. The DAG ensures calculations execute in the correct order.",
       placement: "right",
       route: "/pipeline",
       action: "navigate",
       actionTarget: "[data-tour='pipeline-dag']",
-      hint: "Navigate to the Pipeline Monitor to see the detection pipeline.",
+      hint: "Navigate to Pipeline to see the detection pipeline.",
       delay: 2500,
     },
     {
       target: "[data-tour='pipeline-run']",
       title: "Execute the Pipeline",
       content:
-        "Click 'Run Pipeline' to execute all detection models on the loaded data. The DAG nodes animate as each calculation completes — green for success, red for failure. When finished, new alerts appear in the Risk Case Manager.",
+        "Click 'Run Pipeline' to execute all detection models on the loaded data. The DAG nodes animate as each calculation completes — green for success, red for failure. When finished, new alerts appear in Risk Cases.",
       placement: "bottom",
       action: "click",
       actionTarget: "[data-tour='pipeline-run']",
@@ -2929,12 +2929,12 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='alert-grid']",
       title: "Step 4: Investigate Alerts",
       content:
-        "The Risk Case Manager shows all generated alerts. Sort by score to find the highest-priority cases. Each alert includes a full investigation package: score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
+        "Risk Cases shows all generated alerts. Sort by score to find the highest-priority cases. Each alert includes a full investigation package: score breakdown, calculation trace DAG, market data chart, related orders, and settings trace.",
       placement: "bottom",
       route: "/alerts",
       action: "navigate",
       actionTarget: "[data-tour='alert-grid']",
-      hint: "Navigate to the Risk Case Manager and sort by score to find the top alert.",
+      hint: "Navigate to Risk Cases and sort by score to find the top alert.",
       delay: 2500,
     },
     {
@@ -2953,24 +2953,24 @@ const S25_FULL_PLATFORM_DEMO: ScenarioDefinition = {
       target: "[data-tour='settings-list']",
       title: "Step 5: Tune Thresholds",
       content:
-        "Based on the investigation, you may want to adjust detection sensitivity. The Settings Manager lets you modify thresholds — lower them to catch more activity, raise them to reduce false positives. Use the Resolution Tester to verify how changes affect specific products.",
+        "Based on the investigation, you may want to adjust detection sensitivity. Settings lets you modify thresholds — lower them to catch more activity, raise them to reduce false positives. Use the Resolution Tester to verify how changes affect specific products.",
       placement: "right",
       route: "/settings",
       action: "navigate",
       actionTarget: "[data-tour='settings-list']",
-      hint: "Navigate to the Settings Manager to review and tune detection thresholds.",
+      hint: "Navigate to Settings to review and tune detection thresholds.",
       delay: 2500,
     },
     {
       target: "[data-tour='model-list']",
       title: "Step 6: Review Detection Models",
       content:
-        "The Model Composer lets you review and modify the detection models that generated the alerts. Each model defines which calculations to run, how to score them, and what thresholds trigger alerts. Use the validation panel to ensure model integrity.",
+        "Models lets you review and modify the detection models that generated the alerts. Each model defines which calculations to run, how to score them, and what thresholds trigger alerts. Use the validation panel to ensure model integrity.",
       placement: "right",
       route: "/models",
       action: "navigate",
       actionTarget: "[data-tour='model-list']",
-      hint: "Navigate to the Model Composer to review the detection models.",
+      hint: "Navigate to Models to review the detection models.",
       delay: 2500,
     },
     {
@@ -3068,14 +3068,14 @@ const S26_ARCHITECTURE_TRACE: ScenarioDefinition = {
     },
     {
       target: "[data-trace^='entities.']",
-      title: "Navigate to Entity Designer",
+      title: "Navigate to Entities",
       content:
-        "Close the popup and navigate to **Entity Designer** to see architecture traces on entity-related sections.",
+        "Close the popup and navigate to **Entities** to see architecture traces on entity-related sections.",
       placement: "right",
       route: "/entities",
       action: "navigate",
       actionTarget: "[data-trace^='entities.']",
-      hint: "Navigate to the Entity Designer view to see architecture traces on entity-related sections.",
+      hint: "Navigate to the Entities view to see architecture traces on entity-related sections.",
       delay: 2500,
     },
     {
@@ -3196,19 +3196,19 @@ const S29_MAPPING_STUDIO: ScenarioDefinition = {
   id: "s29_mapping_studio",
   name: "S29: Create & Validate a Mapping",
   description:
-    "Walk through the Mapping Studio to select a mapping, view field mappings, and validate completeness against entity definitions.",
+    "Walk through the Mappings view to select a mapping, view field mappings, and validate completeness against entity definitions.",
   category: "admin",
   difficulty: "beginner",
   estimatedMinutes: 4,
   steps: [
     {
       target: "[data-tour='mapping-selector']",
-      title: "Open Mapping Studio",
-      content: "Navigate to the Mapping Studio under the Configure section. Select an existing mapping from the dropdown to view its field mappings.",
+      title: "Open Mappings",
+      content: "Navigate to Mappings under the Configure section. Select an existing mapping from the dropdown to view its field mappings.",
       route: "/mappings",
       action: "navigate",
       actionTarget: "[data-tour='mapping-selector']",
-      hint: "Click 'Mapping Studio' in the sidebar under Configure.",
+      hint: "Click 'Mappings' in the sidebar under Configure.",
       delay: 2500,
     },
     {
@@ -3270,7 +3270,7 @@ const S30_PIPELINE_ORCHESTRATION: ScenarioDefinition = {
       route: "/pipeline",
       action: "navigate",
       actionTarget: "[data-tour='pipeline-stages']",
-      hint: "Navigate to the Pipeline Monitor view.",
+      hint: "Navigate to Pipeline using the sidebar.",
       delay: 3000,
     },
     {

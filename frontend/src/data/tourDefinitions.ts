@@ -9,7 +9,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='sidebar']",
         title: "Navigation Sidebar",
-        content: "The sidebar organizes views into workflow phases: Define, Configure, Operate, Compose, and Investigate.",
+        content: "The sidebar organizes views into 8 groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, and AI.",
         placement: "right",
       },
       {
@@ -111,13 +111,13 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='settings-score-steps']",
         title: "Score Steps",
-        content: "Score steps define the escalation ladder: how accumulated scores map to trigger paths (review → escalate → fire).",
+        content: "Score steps define how calculated values map to numeric risk scores. Each step specifies a value range and the score assigned when a value falls within that range.",
         placement: "bottom",
       },
       {
         target: "[data-tour='settings-resolver']",
         title: "Resolution Tester",
-        content: "Test how settings resolve for a specific context (product + asset class). See which override wins and why.",
+        content: "Test how settings resolve for a specific context using flexible dimensions (e.g. asset_class, product_id, region). See which override wins and why.",
         placement: "left",
       },
     ],
@@ -138,7 +138,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='model-detail']",
         title: "Model Configuration",
-        content: "View and edit model parameters: calculation chain, strictness level, and deployment status.",
+        content: "View and edit model parameters: calculation chain with strictness levels, scoring logic, and deploy & run actions.",
         placement: "left",
       },
     ],
@@ -159,7 +159,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='alert-filters']",
         title: "Filtering & Sorting",
-        content: "Use column headers to sort and filter alerts by model, score, trigger path, or date.",
+        content: "The header bar shows the total alert count and a Generate Alerts button to re-run detection. Use the grid's column headers below to sort and filter.",
         placement: "bottom",
       },
     ],
@@ -213,7 +213,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='pipeline-stages']",
         title: "Medallion Pipeline Stages",
-        content: "The pipeline stages progress bar shows all medallion tier-to-tier stages loaded from metadata. Click any stage button to execute it individually.",
+        content: "The pipeline stages are shown as a row of clickable stage buttons loaded from medallion metadata. Click any stage button to execute that tier-to-tier transformation individually.",
         placement: "bottom",
       },
     ],
@@ -287,14 +287,14 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='data-list']",
         title: "Data Files",
-        content: "CSV data files loaded into the system: executions, orders, products, and market data.",
+        content: "Database tables loaded into the system: executions, orders, products, and market data.",
         placement: "right",
         route: "/data",
       },
       {
         target: "[data-tour='data-preview']",
         title: "Data Preview",
-        content: "Click any file to preview its contents in a data grid. Shows first 100 rows.",
+        content: "Click any table to preview its contents in a data grid. Shows the first 50 rows.",
         placement: "left",
       },
     ],
@@ -315,7 +315,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='assistant-scenarios']",
         title: "Scenario Presets",
-        content: "Pre-built analysis scenarios to explore common investigation workflows.",
+        content: "Pre-built analysis scenarios to explore common investigation workflows. Scenario presets are only visible in mock mode.",
         placement: "bottom",
       },
     ],
@@ -408,7 +408,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='data-list']",
         title: "Step 1: Raw Data",
-        content: "Start by exploring the raw data files. These CSV files contain executions, orders, products, and market data.",
+        content: "Start by exploring the raw data tables. These database tables contain executions, orders, products, and market data.",
         placement: "right",
         route: "/data",
       },
@@ -479,7 +479,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='model-detail']",
         title: "Model Parameters",
-        content: "Each model defines its calculation chain, detection SQL, and strictness level.",
+        content: "Each model defines its calculation chain and strictness levels. Click Edit to view the detection SQL and modify parameters.",
         placement: "left",
       },
       {
@@ -696,7 +696,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='quality-spider']",
         title: "Quality Spider Chart",
-        content: "Radar chart showing scores across 7 quality dimensions: completeness, accuracy, consistency, timeliness, uniqueness, validity, and currentness.",
+        content: "Radar chart showing scores across ISO-aligned quality dimensions loaded from the API, such as completeness, accuracy, consistency, timeliness, uniqueness, and validity.",
         placement: "right",
       },
       {

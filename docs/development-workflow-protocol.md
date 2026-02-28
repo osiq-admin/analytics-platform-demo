@@ -121,6 +121,7 @@ All of Tier 1, plus:
 | Progress header | `docs/progress.md` line 5 | Update milestone range and test counts |
 | CLAUDE.md counts | `CLAUDE.md` lines 4, 22 | Update test counts, metadata types, milestone range |
 | Feature checklist counts | `docs/feature-development-checklist.md` lines 5, 28, 61, 74 | Update test counts |
+| Content Accuracy Audit | See [feature-development-checklist.md Section 11](feature-development-checklist.md#11-content-accuracy-verification) | For each file in the staleness table, verify descriptions, labels, counts, and selectors match current codebase. Cross-reference: (1) tour step descriptions against actual view component source, (2) scenario sidebar labels against navigation metadata, (3) scenario data counts/values against actual data files, (4) architecture registry descriptions against actual component behavior, (5) scenario/operation counts in registry files against actual definitions, (6) README/CLAUDE.md counts against test/build output |
 | Architecture traceability | `docs/architecture-traceability.md` | Update if maturity % changed |
 | Exploratory testing | `docs/exploratory-testing-notes.md` | Add findings if any |
 | BDD scenarios | `docs/requirements/bdd-scenarios.md` | Add scenarios if applicable |

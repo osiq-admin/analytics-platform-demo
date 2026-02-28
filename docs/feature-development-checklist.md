@@ -294,6 +294,41 @@
 
 ---
 
+## 11. Content Accuracy Verification
+
+**Purpose**: Catch stale descriptions, counts, selectors, and labels before they accumulate. Many files contain hardcoded text that silently drifts from reality when views, sidebar groups, data, or components change.
+
+### Staleness Table
+
+| File | What Can Go Stale | How to Verify |
+|------|-------------------|---------------|
+| `frontend/src/data/tourDefinitions.ts` | Step descriptions, selector targets, sidebar group lists, feature claims | Compare step text against actual view component source; verify `data-tour` selectors exist in components |
+| `frontend/src/data/scenarioDefinitions.ts` | Sidebar labels, data counts/values, model names, row-index values, selectors, step narratives | Check sidebar labels against `workspace/metadata/navigation/main.json`; verify data counts against actual CSV/entity data; verify selectors exist in components |
+| `frontend/src/data/architectureRegistry.ts` | Section descriptions, `data_sources`, maturity levels, column/panel claims, counts | Compare descriptions against actual view component source; verify API endpoints; count actual operations/scenarios |
+| `frontend/src/data/operationScripts.ts` | Operation names, descriptions, counts per view | Verify operations match actual UI capabilities per view |
+| `workspace/metadata/tours/registry.json` | Tour counts, scenario counts | Count actual tours/scenarios in source definitions |
+| `workspace/metadata/navigation/main.json` | View count, group names, labels | Count actual routes and views in `frontend/src/routes.tsx` |
+| `README.md`, `CLAUDE.md` | Test counts, view counts, module counts, entity counts | Run tests, build frontend, count entities |
+
+### When to Run
+
+- After **every milestone completion** (Phase D Tier 2)
+- After any UI change that affects sidebar, views, columns, panels, or data
+- Before creating PRs
+
+### How to Verify
+
+1. **Tour steps**: Open `tourDefinitions.ts`, read each step's `content` and `selector` — confirm the text matches what the view actually shows and the selector targets an element that exists in the component
+2. **Scenario labels**: Open `scenarioDefinitions.ts`, compare every sidebar label and group name against `workspace/metadata/navigation/main.json`
+3. **Scenario data values**: Check any hardcoded counts, row indices, or model names against actual CSV files and entity metadata
+4. **Architecture registry**: Open `architectureRegistry.ts`, compare each section's `description` against the actual view component source; verify listed `apiEndpoints` exist in `backend/api/`
+5. **Operation scripts**: Open `operationScripts.ts`, confirm each view's operations describe capabilities that actually exist in the current UI
+6. **Registry counts**: Count tours in `tourDefinitions.ts`, scenarios in `scenarioDefinitions.ts`, and compare against `workspace/metadata/tours/registry.json`
+7. **Navigation**: Count views in `main.json` and compare against routes in `frontend/src/routes.tsx`
+8. **README/CLAUDE.md**: Run `uv run pytest tests/ --ignore=tests/e2e -v`, `uv run pytest tests/e2e/ -v`, and `cd frontend && npm run build` — compare output counts against documented values
+
+---
+
 ## Quick Reference: Test Commands
 
 ```bash
