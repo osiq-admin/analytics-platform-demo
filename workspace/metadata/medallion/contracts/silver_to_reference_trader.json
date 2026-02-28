@@ -1,0 +1,21 @@
+{
+  "contract_id": "silver_to_reference_trader",
+  "source_tier": "silver",
+  "target_tier": "reference",
+  "entity": "trader",
+  "description": "Reconcile silver trader records into golden master records by trader_id",
+  "field_mappings": [
+    {"source": "trader_id", "target": "trader_id", "transform": "passthrough"},
+    {"source": "trader_name", "target": "trader_name", "transform": "normalize_whitespace"},
+    {"source": "desk", "target": "desk", "transform": "passthrough"},
+    {"source": "trader_type", "target": "trader_type", "transform": "passthrough"},
+    {"source": "status", "target": "status", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["trader_id", "trader_name", "desk"]},
+    {"rule": "unique", "fields": ["trader_id"]}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100},
+  "owner": "data-steward",
+  "classification": "internal"
+}

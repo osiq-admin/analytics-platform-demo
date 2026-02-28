@@ -1,0 +1,24 @@
+{
+  "contract_id": "silver_to_reference_product",
+  "source_tier": "silver",
+  "target_tier": "reference",
+  "entity": "product",
+  "description": "Reconcile silver product records into golden master records by ISIN",
+  "field_mappings": [
+    {"source": "product_id", "target": "product_id", "transform": "passthrough"},
+    {"source": "isin", "target": "isin", "transform": "validate_isin_iso6166"},
+    {"source": "name", "target": "name", "transform": "normalize_whitespace"},
+    {"source": "asset_class", "target": "asset_class", "transform": "passthrough"},
+    {"source": "cfi_code", "target": "cfi_code", "transform": "validate_cfi_iso10962"},
+    {"source": "exchange_mic", "target": "exchange_mic", "transform": "validate_mic_iso10383"},
+    {"source": "currency", "target": "currency", "transform": "validate_currency_iso4217"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["product_id", "isin", "name", "asset_class"]},
+    {"rule": "unique", "fields": ["isin"]},
+    {"rule": "regex", "field": "isin", "pattern": "^[A-Z]{2}[A-Z0-9]{9}[0-9]$"}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100},
+  "owner": "data-steward",
+  "classification": "internal"
+}

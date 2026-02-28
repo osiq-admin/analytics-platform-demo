@@ -51,6 +51,17 @@
       "depends_on": ["silver_to_gold"],
       "entities": ["dashboard_kpi", "regulatory_report"],
       "parallel": false
+    },
+    {
+      "stage_id": "silver_to_reference",
+      "name": "Silver to Reference",
+      "tier_from": "silver",
+      "tier_to": "reference",
+      "order": 6,
+      "depends_on": ["bronze_to_silver"],
+      "entities": ["product", "venue", "account", "trader"],
+      "parallel": true,
+      "contract_id": "silver_to_reference_product"
     }
   ]
 }
