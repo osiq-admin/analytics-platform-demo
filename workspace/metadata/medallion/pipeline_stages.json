@@ -38,7 +38,9 @@
       "order": 4,
       "depends_on": ["bronze_to_silver"],
       "entities": ["alert", "calculation_result"],
-      "parallel": false
+      "parallel": false,
+      "transformation_id": "silver_to_gold_alerts",
+      "contract_id": "silver_to_gold_alerts"
     },
     {
       "stage_id": "gold_to_platinum",

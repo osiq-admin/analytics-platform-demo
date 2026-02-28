@@ -80,6 +80,8 @@ class PipelineStage(BaseModel):
     depends_on: list[str] = Field(default_factory=list)
     entities: list[str] = Field(default_factory=list)
     parallel: bool = False
+    transformation_id: str = ""
+    contract_id: str = ""
 
 
 class MedallionConfig(BaseModel):
