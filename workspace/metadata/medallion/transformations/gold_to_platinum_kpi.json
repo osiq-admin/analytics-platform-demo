@@ -1,0 +1,11 @@
+{
+  "transformation_id": "gold_to_platinum_kpi",
+  "source_tier": "gold",
+  "target_tier": "platinum",
+  "entity": "kpi",
+  "description": "Aggregate gold-tier alerts and calculation results into executive KPI metrics for dashboards",
+  "sql_template": "SELECT model_id, COUNT(DISTINCT alert_id) AS alert_count, ROUND(AVG(score), 2) AS avg_score, COUNT(CASE WHEN score >= threshold THEN 1 END) AS breach_count, CURRENT_TIMESTAMP AS computed_at FROM gold_alerts GROUP BY model_id",
+  "parameters": {"threshold": "from_settings", "aggregation_window": "1_day"},
+  "quality_checks": ["kpi_id_unique", "score_range_valid", "completeness_95pct"],
+  "error_handling": "log_and_continue"
+}
