@@ -1,0 +1,19 @@
+{
+  "contract_id": "silver_to_gold_calc_results",
+  "source_tier": "silver",
+  "target_tier": "gold",
+  "entity": "calculation_result",
+  "description": "Data quality contract for Silver-to-Gold calculation results. Validates that the calculation DAG produces complete, valid outputs before they feed into detection models.",
+  "field_mappings": [
+    {"source": "execution_id", "target": "execution_id", "transform": "passthrough"},
+    {"source": "product_id", "target": "product_id", "transform": "passthrough"},
+    {"source": "calculated_value", "target": "trade_value", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["execution_id", "product_id"]},
+    {"rule": "range_check", "field": "calculated_value", "min": 0}
+  ],
+  "sla": {"freshness_minutes": 30, "completeness_pct": 99.5},
+  "owner": "surveillance-ops",
+  "classification": "internal"
+}
