@@ -156,6 +156,8 @@ export default function MedallionOverview() {
   const [stages, setStages] = useState<PipelineStage[]>([]);
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stageStatus, setStageStatus] = useState<Record<string, { status: string; duration_ms: number; quality_score: number | null }>>({});
+  const [runningStage, setRunningStage] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -179,6 +181,33 @@ export default function MedallionOverview() {
     },
     []
   );
+
+  const handleRunStage = useCallback(async (stageId: string) => {
+    setRunningStage(stageId);
+    try {
+      const result = await api.post<{
+        stage_id: string;
+        status: string;
+        duration_ms: number;
+        contract_validation?: { quality_score?: number };
+      }>(`/pipeline/stages/${stageId}/run`);
+      setStageStatus((prev) => ({
+        ...prev,
+        [result.stage_id]: {
+          status: result.status,
+          duration_ms: result.duration_ms,
+          quality_score: result.contract_validation?.quality_score ?? null,
+        },
+      }));
+    } catch {
+      setStageStatus((prev) => ({
+        ...prev,
+        [stageId]: { status: "failed", duration_ms: 0, quality_score: null },
+      }));
+    } finally {
+      setRunningStage(null);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -313,7 +342,17 @@ export default function MedallionOverview() {
                       key={s.stage_id}
                       className="border border-border rounded p-2 mb-1"
                     >
-                      <p className="font-medium">{s.name}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium">{s.name}</p>
+                        <button
+                          onClick={() => handleRunStage(s.stage_id)}
+                          disabled={runningStage === s.stage_id}
+                          className="px-2 py-0.5 text-[10px] rounded border border-blue-500 text-blue-400 hover:bg-blue-500/10 disabled:opacity-50"
+                          data-tour="medallion-run-stage"
+                        >
+                          {runningStage === s.stage_id ? "Running..." : "Run Stage"}
+                        </button>
+                      </div>
                       <p className="text-muted">
                         {s.tier_from ?? "source"} → {s.tier_to}
                       </p>
@@ -321,6 +360,19 @@ export default function MedallionOverview() {
                         {s.entities.length} entities
                         {s.parallel ? " (parallel)" : " (sequential)"}
                       </p>
+                      {stageStatus[s.stage_id] && (
+                        <div className="mt-1 pt-1 border-t border-border/50 flex items-center gap-2">
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                            stageStatus[s.stage_id].status === "completed" ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+                          }`}>
+                            {stageStatus[s.stage_id].status}
+                          </span>
+                          <span className="text-[10px] text-muted">{stageStatus[s.stage_id].duration_ms}ms</span>
+                          {stageStatus[s.stage_id].quality_score !== null && (
+                            <span className="text-[10px] text-muted">Quality: {stageStatus[s.stage_id].quality_score}%</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
