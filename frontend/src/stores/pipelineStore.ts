@@ -10,14 +10,45 @@ export interface PipelineStep {
   duration_ms?: number;
   row_count?: number;
   error?: string;
+  depends_on?: string[];
+}
+
+export interface MedallionStage {
+  stage_id: string;
+  name: string;
+  tier_from: string | null;
+  tier_to: string;
+  order: number;
+  depends_on: string[];
+  entities: string[];
+  transformation_id: string;
+  contract_id: string;
+}
+
+export interface StageRunResult {
+  stage_id: string;
+  status: string;
+  duration_ms: number;
+  steps: { step: string; status: string; rows?: number; alerts?: number; fired?: number; error?: string }[];
+  contract_validation: {
+    passed: boolean;
+    quality_score: number;
+    rule_results: { rule: string; field: string; passed: boolean; violation_count: number; details: string }[];
+  } | null;
+  error: string;
 }
 
 interface PipelineState {
   steps: PipelineStep[];
   running: boolean;
   error: string | null;
+  stages: MedallionStage[];
+  stageResult: StageRunResult | null;
+  stageRunning: boolean;
   runPipeline: () => Promise<void>;
   runCalculation: (calcId: string) => Promise<void>;
+  fetchStages: () => Promise<void>;
+  runStage: (stageId: string) => Promise<void>;
 }
 
 export const usePipelineStore = create<PipelineState>((set, get) => {
@@ -48,6 +79,9 @@ export const usePipelineStore = create<PipelineState>((set, get) => {
     steps: [],
     running: false,
     error: null,
+    stages: [],
+    stageResult: null,
+    stageRunning: false,
 
     runPipeline: async () => {
       set({ running: true, error: null });
@@ -69,6 +103,27 @@ export const usePipelineStore = create<PipelineState>((set, get) => {
         await api.post(`/pipeline/run/${calcId}`);
       } catch (e) {
         set({ error: String(e), running: false });
+      }
+    },
+
+    fetchStages: async () => {
+      try {
+        const data = await api.get<MedallionStage[]>("/pipeline/stages");
+        set({ stages: data });
+      } catch (e) {
+        set({ error: String(e) });
+      }
+    },
+
+    runStage: async (stageId: string) => {
+      set({ stageRunning: true, stageResult: null, error: null });
+      try {
+        const result = await api.post<StageRunResult>(
+          `/pipeline/stages/${stageId}/run`
+        );
+        set({ stageResult: result, stageRunning: false });
+      } catch (e) {
+        set({ error: String(e), stageRunning: false });
       }
     },
   };

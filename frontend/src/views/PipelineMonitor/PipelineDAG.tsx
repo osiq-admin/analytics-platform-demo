@@ -29,9 +29,26 @@ function layoutSteps(steps: PipelineStep[]) {
     g.setNode(step.calc_id, { width: 150, height: 50 });
   }
 
-  // Chain by layer order
-  for (let i = 1; i < steps.length; i++) {
-    g.setEdge(steps[i - 1].calc_id, steps[i].calc_id);
+  // Build edges from actual depends_on
+  const stepIds = new Set(steps.map((s) => s.calc_id));
+  for (const step of steps) {
+    if (step.depends_on) {
+      for (const dep of step.depends_on) {
+        if (stepIds.has(dep)) {
+          g.setEdge(dep, step.calc_id);
+        }
+      }
+    }
+  }
+  // Fallback for steps with empty depends_on (connect from previous layer)
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    if (i > 0 && (!step.depends_on || step.depends_on.length === 0)) {
+      const prevLayerSteps = steps.filter((s, j) => j < i && s.layer !== step.layer);
+      if (prevLayerSteps.length > 0) {
+        g.setEdge(prevLayerSteps[prevLayerSteps.length - 1].calc_id, step.calc_id);
+      }
+    }
   }
 
   dagre.layout(g);
@@ -57,16 +74,14 @@ function layoutSteps(steps: PipelineStep[]) {
     };
   });
 
-  const edges: Edge[] = [];
-  for (let i = 1; i < steps.length; i++) {
-    edges.push({
-      id: `${steps[i - 1].calc_id}-${steps[i].calc_id}`,
-      source: steps[i - 1].calc_id,
-      target: steps[i].calc_id,
-      animated: steps[i].status === "running",
-      style: { stroke: statusColors[steps[i - 1].status] },
-    });
-  }
+  const stepMap = new Map(steps.map((s) => [s.calc_id, s]));
+  const edges: Edge[] = g.edges().map((e) => ({
+    id: `${e.v}-${e.w}`,
+    source: e.v,
+    target: e.w,
+    animated: stepMap.get(e.w)?.status === "running",
+    style: { stroke: statusColors[stepMap.get(e.v)?.status ?? "pending"] },
+  }));
 
   return { nodes, edges };
 }
