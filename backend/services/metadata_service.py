@@ -1152,3 +1152,58 @@ class MetadataService:
             return False
         p.unlink()
         return True
+
+    # --- Reference Data / MDM ---
+
+    def load_reference_config(self, entity: str):
+        """Load a reference config for an entity."""
+        from backend.models.reference import ReferenceConfig
+        p = self._base / "reference" / f"{entity}.json"
+        if not p.exists():
+            return None
+        return ReferenceConfig.model_validate_json(p.read_text())
+
+    def list_reference_configs(self) -> list:
+        """List all reference configs."""
+        from backend.models.reference import ReferenceConfig
+        d = self._base / "reference"
+        if not d.exists():
+            return []
+        results = []
+        for f in sorted(d.glob("*.json")):
+            if f.name == ".gitkeep":
+                continue
+            results.append(ReferenceConfig.model_validate_json(f.read_text()))
+        return results
+
+    def save_reference_config(self, config) -> None:
+        """Save a reference config."""
+        d = self._base / "reference"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / f"{config.entity}.json"
+        p.write_text(config.model_dump_json(indent=2))
+
+    def load_golden_records(self, entity: str):
+        """Load all golden records for an entity."""
+        from backend.models.reference import GoldenRecordSet
+        p = self._base.parent / "reference" / f"{entity}_golden.json"
+        if not p.exists():
+            return None
+        return GoldenRecordSet.model_validate_json(p.read_text())
+
+    def save_golden_records(self, entity: str, record_set) -> None:
+        """Save golden records for an entity."""
+        d = self._base.parent / "reference"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / f"{entity}_golden.json"
+        p.write_text(record_set.model_dump_json(indent=2))
+
+    def load_golden_record(self, entity: str, golden_id: str):
+        """Load a single golden record by ID."""
+        record_set = self.load_golden_records(entity)
+        if not record_set:
+            return None
+        for rec in record_set.records:
+            if rec.golden_id == golden_id:
+                return rec
+        return None
