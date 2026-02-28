@@ -28,7 +28,7 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (971 Vite modules)             │
+│  React 19 SPA (969 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (11 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
@@ -159,10 +159,10 @@ Toolbar toggle overlays info icons on every section across all 18 views:
 
 ### Guided Experience
 
-- **28 scenarios** in 9 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
+- **29 scenarios** in 9 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
 - **Per-view tours** with spotlight overlay and step-by-step popovers
 - **3 demo workflow guides** (Act 1: data discovery, Act 2: model composition, Act 3: investigation)
-- **104 operation scripts** across 18 views via per-view help panels
+- **105 operation scripts** across 18 views via per-view help panels
 - **Onboarding modal** for first-time visitors
 - **8 demo checkpoints**: Pristine → Data Loaded → Pipeline Run → Alerts → Acts 1-3 → Final
 
@@ -189,14 +189,14 @@ Toolbar toggle overlays info icons on every section across all 18 views:
 │   ├── use_cases/       # Use case definitions
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
-├── tests/               # 759 tests (549 backend + 210 E2E Playwright)
+├── tests/               # 772 tests (562 backend + 210 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing
 
 ```bash
-# Backend tests (549)
+# Backend tests (562)
 uv run pytest tests/ --ignore=tests/e2e -v
 
 # E2E Playwright tests (210)
@@ -206,7 +206,7 @@ uv run pytest tests/e2e/ -v
 cd frontend && npm run build
 ```
 
-759 tests total: 549 backend unit/integration + 210 E2E Playwright. All 18 views have dedicated E2E coverage.
+772 tests total: 562 backend unit/integration + 210 E2E Playwright. All 18 views have dedicated E2E coverage.
 
 ## Development
 

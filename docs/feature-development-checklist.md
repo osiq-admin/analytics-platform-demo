@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-27 (M183 — 759 total tests: 549 backend + 210 E2E, 28 scenarios, 18 views, 80 architecture sections, 82.5% metadata-driven)
+**Last Updated**: 2026-02-28 (M196 — 772 total tests: 562 backend + 210 E2E, 29 scenarios, 18 views, 80 architecture sections, 82.5% metadata-driven)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 549)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 562)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 549)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 562)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -297,7 +297,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (549+)
+# Backend tests (562+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
 # E2E Playwright tests (210+)
@@ -329,3 +329,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-27 | Updated for M150 (Metadata Architecture Overhaul) — added widget/format rule triggers, updated test counts to 603 (421+182), 71 sections 69% metadata-driven | Claude Opus 4.6 |
 | 2026-02-27 | Updated for M172 (Compliance & Metadata Phase 2) — added grid/view-tab/workflow triggers, updated test counts to 716 (506+210), 74 sections 83.8% metadata-driven | Claude Opus 4.6 |
 | 2026-02-27 | Updated for M175 (Phase 14 Medallion Core) — updated test counts to 732 (522+210), 77 sections 83.1%, added architecture audit/tour registry/count registry update triggers to "When Adding a New View" | Claude Opus 4.6 |
+| 2026-02-28 | Updated for M196 (Phase 15.5 + 16 Tour Quality Fixes + Bronze→Silver Mapping) — updated test counts to 772 (562+210), 29 scenarios, added mapping triggers | Claude Opus 4.6 |

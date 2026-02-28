@@ -12,15 +12,16 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-14 + 7B + Overhauls, M0-M175):**
+**What's built (Phases 1-16 + 7B + Overhauls, M0-M196):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 18 frontend views, 759 tests (549 backend + 210 E2E), Playwright verified
+- 18 frontend views, 772 tests (562 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 - 82.5% metadata-driven (80 sections across 18 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
-- 28 guided scenarios, 104 operation scripts, 8 demo checkpoints
+- Bronze→Silver mapping engine with metadata-driven MappingStudio
+- 29 guided scenarios, 105 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -1312,11 +1313,11 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | ~~T9~~ | ~~ModelCreateForm missing critical fields~~ | | ~~RESOLVED (M101-M102)~~ |
 | ~~T10~~ | ~~No domain value suggestions~~ | | ~~RESOLVED (M95-M100)~~ |
 | ~~T11~~ | ~~No visual score step builder~~ | | ~~RESOLVED (M99)~~ |
-| T12 | MappingStudio is UI-only prototype | `frontend/src/views/MappingStudio/` | Phase 16 |
+| ~~T12~~ | ~~MappingStudio is UI-only prototype~~ | | ~~RESOLVED (M191-M196, Phase 16)~~ |
 | T13 | No data quality validation gates | `backend/engine/data_loader.py` | Phase 18 |
 | T14 | No PII detection or classification | All entity data | Phase 21 |
 | T15 | No data lineage tracking | Pipeline execution | Phase 24 |
-| T16 | Hardcoded CSV reader (no connector abstraction) | `backend/engine/data_loader.py` | Phase 15 |
+| ~~T16~~ | ~~Hardcoded CSV reader (no connector abstraction)~~ | | ~~RESOLVED (M176-M183, Phase 15)~~ |
 | T17 | Platform-specific DuckDB SQL throughout | `backend/engine/*.py` | Phase 26 |
 
 ---
@@ -1329,7 +1330,8 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P1 — Next** | Phase 13 (Data Calibration) | **COMPLETE** | Fixed F-001/F-010: 82 alerts across 5 models and 5 asset classes (M174) |
 | **P1 — Next** | Phase 14 (Medallion Core) | **COMPLETE** | M175: 11-tier metadata, 6 contracts, 5 transformations, MedallionOverview view, 7 APIs, S27 scenario — 732 tests (522+210), 17 views |
 | **P1 — Next** | Phase 15 (Data Onboarding) | **COMPLETE** | M176-M183: 6 connectors, BaseConnector + LocalFileConnector, schema detector, data profiler, DataOnboarding wizard, S28 — 759 tests (549+210), 18 views |
-| **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | PLANNED | MappingStudio overhaul Part 1 — raw to canonical |
+| **P1 — Next** | Phase 15.5 (Tour Quality Fixes) | **COMPLETE** | M184-M190: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts |
+| **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | **COMPLETE** | M191-M196: Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 tests (562+210) |
 | **P1 — Next** | Phase 17 (Silver→Gold Mapping) | PLANNED | MappingStudio overhaul Part 2 — canonical to analytics |
 | **P2 — Important** | Phase 18 (Data Quality) | PLANNED | Quality gates, quarantine, ISO 8000/25012 |
 | **P2 — Important** | Phase 19 (Reference Data/MDM) | PLANNED | Golden records, cross-source reconciliation |
@@ -1351,7 +1353,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 
 After each phase:
 1. `cd frontend && npm run build` — no TypeScript errors (969+ modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (506+)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (562+)
 3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (210+) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
