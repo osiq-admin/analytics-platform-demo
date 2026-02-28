@@ -1,0 +1,108 @@
+{
+  "mapping_id": "execution_bronze_silver",
+  "source_entity": "execution",
+  "target_entity": "execution",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "description": "Bronze to Silver mapping for trade executions — standardizes field names, casts timestamps, and validates foreign keys",
+  "status": "active",
+  "field_mappings": [
+    {
+      "source_field": "execution_id",
+      "target_field": "execution_id",
+      "transform": "direct",
+      "description": "Primary key — pass through"
+    },
+    {
+      "source_field": "order_id",
+      "target_field": "order_id",
+      "transform": "direct",
+      "description": "FK to order entity — validated against order table"
+    },
+    {
+      "source_field": "product_id",
+      "target_field": "product_id",
+      "transform": "direct",
+      "description": "FK to product entity — validated against product table"
+    },
+    {
+      "source_field": "account_id",
+      "target_field": "account_id",
+      "transform": "direct",
+      "description": "FK to account entity — validated against account table"
+    },
+    {
+      "source_field": "trader_id",
+      "target_field": "trader_id",
+      "transform": "direct",
+      "description": "FK to trader entity — validated against trader table"
+    },
+    {
+      "source_field": "side",
+      "target_field": "side",
+      "transform": "uppercase",
+      "description": "Normalize to uppercase (BUY/SELL)"
+    },
+    {
+      "source_field": "price",
+      "target_field": "price",
+      "transform": "cast_decimal",
+      "description": "Cast to decimal with 4-digit precision"
+    },
+    {
+      "source_field": "quantity",
+      "target_field": "quantity",
+      "transform": "cast_decimal",
+      "description": "Cast to decimal"
+    },
+    {
+      "source_field": "execution_date",
+      "target_field": "execution_date",
+      "transform": "cast_date",
+      "description": "Cast to ISO 8601 date (YYYY-MM-DD)"
+    },
+    {
+      "source_field": "execution_time",
+      "target_field": "execution_time",
+      "transform": "cast_time",
+      "description": "Cast to HH:MM:SS.fff format with millisecond precision"
+    },
+    {
+      "source_field": "venue_mic",
+      "target_field": "venue_mic",
+      "transform": "uppercase",
+      "description": "Normalize MIC code to uppercase, validate against ISO 10383"
+    },
+    {
+      "source_field": "exec_type",
+      "target_field": "exec_type",
+      "transform": "uppercase",
+      "description": "Normalize execution type (FILL/PARTIAL_FILL)"
+    },
+    {
+      "source_field": "capacity",
+      "target_field": "capacity",
+      "transform": "uppercase",
+      "description": "Normalize capacity (AGENCY/PRINCIPAL)"
+    },
+    {
+      "source_field": null,
+      "target_field": "execution_timestamp",
+      "transform": "concat",
+      "transform_args": {
+        "fields": ["execution_date", "execution_time"],
+        "separator": "T"
+      },
+      "description": "Derived field — combine date and time into ISO 8601 timestamp"
+    },
+    {
+      "source_field": null,
+      "target_field": "notional_value",
+      "transform": "multiply",
+      "transform_args": {
+        "fields": ["price", "quantity"]
+      },
+      "description": "Derived field — price * quantity for notional exposure"
+    }
+  ]
+}
