@@ -136,3 +136,91 @@ class TestQualityEngineProfiling:
         profile = engine.profile_entity("nonexistent", "x", "y")
         assert profile.row_count == 0
         assert profile.field_profiles == []
+
+
+class TestQualityAPI:
+    @pytest.fixture
+    def workspace(self, tmp_path):
+        ws = tmp_path / "workspace"
+        for d in ["metadata/quality", "metadata/medallion/contracts", "metadata/entities",
+                   "metadata/calculations/transaction", "metadata/detection_models",
+                   "metadata/settings/thresholds", "metadata/medallion",
+                   "metadata/connectors", "data/csv", "data/parquet", "quarantine"]:
+            (ws / d).mkdir(parents=True, exist_ok=True)
+        # Write quality dimensions
+        import json
+        dims = {"dimensions": [
+            {"id": "completeness", "name": "Completeness", "weight": 0.5,
+             "rule_types": ["not_null"], "score_method": "ratio",
+             "thresholds": {"good": 99, "warning": 95, "critical": 90}},
+            {"id": "accuracy", "name": "Accuracy", "weight": 0.5,
+             "rule_types": ["range_check"], "score_method": "ratio",
+             "thresholds": {"good": 99, "warning": 95, "critical": 90}},
+        ]}
+        (ws / "metadata" / "quality" / "dimensions.json").write_text(json.dumps(dims))
+        # Write a contract
+        contract = {
+            "contract_id": "test_contract", "source_tier": "bronze",
+            "target_tier": "silver", "entity": "execution",
+            "quality_rules": [{"rule": "not_null", "fields": ["execution_id"]}],
+        }
+        (ws / "metadata" / "medallion" / "contracts" / "test_contract.json").write_text(json.dumps(contract))
+        # Write a quarantine record
+        qr = {
+            "record_id": "q001", "source_tier": "bronze", "target_tier": "silver",
+            "entity": "execution", "failed_rules": [{"rule": "not_null"}],
+            "original_data": {"execution_id": "E1"}, "timestamp": "2026-02-28T10:00:00Z",
+            "status": "pending", "retry_count": 0, "notes": "",
+        }
+        (ws / "quarantine" / "q001.json").write_text(json.dumps(qr))
+        return ws
+
+    @pytest.fixture
+    def client(self, workspace, monkeypatch):
+        from backend import config
+        from backend.main import app
+        from starlette.testclient import TestClient
+        monkeypatch.setattr(config.settings, "workspace_dir", workspace)
+        with TestClient(app, raise_server_exceptions=False) as tc:
+            yield tc
+
+    def test_get_dimensions(self, client):
+        resp = client.get("/api/quality/dimensions")
+        assert resp.status_code == 200
+        dims = resp.json()
+        assert len(dims) == 2
+
+    def test_quarantine_list(self, client):
+        resp = client.get("/api/quality/quarantine")
+        assert resp.status_code == 200
+        records = resp.json()
+        assert len(records) >= 1
+
+    def test_quarantine_summary(self, client):
+        resp = client.get("/api/quality/quarantine/summary")
+        assert resp.status_code == 200
+        assert resp.json()["total_records"] >= 1
+
+    def test_quarantine_get_record(self, client):
+        resp = client.get("/api/quality/quarantine/q001")
+        assert resp.status_code == 200
+        assert resp.json()["record_id"] == "q001"
+
+    def test_quarantine_get_not_found(self, client):
+        resp = client.get("/api/quality/quarantine/nonexistent")
+        assert resp.status_code == 404
+
+    def test_quarantine_retry(self, client):
+        resp = client.post("/api/quality/quarantine/q001/retry")
+        assert resp.status_code == 200
+        assert resp.json()["retry_count"] == 1
+        assert resp.json()["status"] == "retried"
+
+    def test_quarantine_override(self, client):
+        resp = client.post("/api/quality/quarantine/q001/override?notes=approved")
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "overridden"
+
+    def test_quarantine_discard(self, client):
+        resp = client.delete("/api/quality/quarantine/q001")
+        assert resp.status_code == 200
