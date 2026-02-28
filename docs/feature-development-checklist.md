@@ -47,7 +47,7 @@
 
 - [ ] **Navigation entry**: Add to `workspace/metadata/navigation/main.json` under the correct group (sidebar loads from metadata API)
 - [ ] **Route**: Add to `frontend/src/routes.tsx` router configuration
-- [ ] **Section grouping**: Place under correct category (Overview/Define/Configure/Operate/Compose/Investigate/Governance/AI)
+- [ ] **Section grouping**: Place under correct category (Define/Ingest/Detect/Investigate/Advanced)
 - [ ] **Active state**: Verify the sidebar link highlights when on that view
 
 ---

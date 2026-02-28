@@ -3416,7 +3416,7 @@ const S32_REFERENCE_DATA_RECONCILIATION: ScenarioDefinition = {
       target: "[data-tour='reference-entity-tabs']",
       title: "Navigate to Reference Data",
       content:
-        "Open the Reference Data / MDM view from the Governance sidebar group.",
+        "Open the Reference Data / MDM view from the Define sidebar group.",
       action: "navigate",
       route: "/reference",
       placement: "bottom",

@@ -89,29 +89,30 @@ uv run python -m scripts.generate_snapshots
 - Alert fires when: all gates pass AND (all checks pass OR score >= threshold)
 - Settings resolve per entity context: product-specific → hierarchy/multi-dim → default fallback
 
-## 19 Views
+## 20 Views
 
 | Area | View | What It Does |
 |------|------|-------------|
-| **Overview** | Dashboard | Summary cards, 4 chart widgets with type switching + visibility toggles |
 | **Define** | Entity Designer | 8 entities with fields, relationships, domain values, React Flow graph |
 | | Metadata Explorer | Calculation browser with DAG, SQL logic, layer visualization |
-| **Configure** | Settings Manager | Hierarchical overrides, score steps, resolution tester |
+| | Settings Manager | Hierarchical overrides, score steps, resolution tester |
+| | Reference Data | Golden records for 4 master data entities with provenance and reconciliation |
+| **Ingest** | Data Onboarding | 5-step wizard: Source → Schema → Profile → Mapping → Review, 6 connector types |
 | | Mapping Studio | Drag-and-drop source → canonical field mapping |
-| | Metadata Editor | Side-by-side Monaco JSON + visual form, bidirectional sync |
-| **Compose** | Model Composer | 7-step wizard: Define → Calcs → Scoring → Query → Review → Test → Deploy |
-| | Data Manager | Browse and preview loaded data tables |
-| | Use Case Studio | 5-step wizard for test scenarios with sample data + expected results |
-| **Operate** | Pipeline Monitor | Calculation DAG execution status |
-| | Schema Explorer | DuckDB tables, columns, types |
-| | SQL Console | Monaco editor, preset queries, AI-assisted query generation |
-| **Investigate** | Risk Case Manager | Alert grid → 6-panel investigation workspace |
-| | AI Assistant | Claude-powered chat (live or mock) with Run Query integration |
-| **Governance** | Regulatory Map | Traceability graph + regulation details (MAR, MiFID II, Dodd-Frank, FINRA) |
-| | Submissions | Review queue with auto-recommendations, approve/reject workflow |
 | | Data Quality | Quality dimension scores, spider charts, quarantine queue, entity profiling |
-| **Architecture** | Medallion Overview | 11-tier medallion data architecture with React Flow, data contracts, pipeline stages |
-| | Data Onboarding | 5-step wizard: Source → Schema → Profile → Mapping → Review, 6 connector types |
+| | Medallion Overview | 11-tier medallion data architecture with React Flow, data contracts, pipeline stages |
+| **Detect** | Model Composer | 7-step wizard: Define → Calcs → Scoring → Query → Review → Test → Deploy |
+| | Use Case Studio | 5-step wizard for test scenarios with sample data + expected results |
+| | Pipeline Monitor | Calculation DAG execution status |
+| | Dashboard | Summary cards, 4 chart widgets with type switching + visibility toggles |
+| **Investigate** | Risk Case Manager | Alert grid → 6-panel investigation workspace |
+| | Submissions | Review queue with auto-recommendations, approve/reject workflow |
+| | Regulatory Map | Traceability graph + regulation details (MAR, MiFID II, Dodd-Frank, FINRA) |
+| **Advanced** | Schema Explorer | DuckDB tables, columns, types |
+| | SQL Console | Monaco editor, preset queries, AI-assisted query generation |
+| | Data Manager | Browse and preview loaded data tables |
+| | Metadata Editor | Side-by-side Monaco JSON + visual form, bidirectional sync |
+| | AI Assistant | Claude-powered chat (live or mock) with Run Query integration |
 
 ## Key Features
 
@@ -146,7 +147,7 @@ Clean separation between out-of-box (vendor-shipped) and user customizations:
 
 ### Architecture Traceability Mode
 
-Toolbar toggle overlays info icons on every section across all 19 views:
+Toolbar toggle overlays info icons on every section across all 20 views:
 - 86 traced sections showing source files, Zustand stores, API endpoints, metadata sources
 - 5-level metadata maturity rating per section (Fully Metadata-Driven → Infrastructure)
 - Improvement opportunities for each section
@@ -163,7 +164,7 @@ Toolbar toggle overlays info icons on every section across all 19 views:
 - **31 scenarios** in 12 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
 - **Per-view tours** with spotlight overlay and step-by-step popovers
 - **3 demo workflow guides** (Act 1: data discovery, Act 2: model composition, Act 3: investigation)
-- **116 operation scripts** across 19 views via per-view help panels
+- **116 operation scripts** across 20 views via per-view help panels
 - **Onboarding modal** for first-time visitors
 - **8 demo checkpoints**: Pristine → Data Loaded → Pipeline Run → Alerts → Acts 1-3 → Final
 
