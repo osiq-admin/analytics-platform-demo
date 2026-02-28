@@ -1,0 +1,35 @@
+{
+  "project": {
+    "root": ".",
+    "backend_source": "backend/",
+    "frontend_source": "frontend/src/",
+    "test_dir": "tests/",
+    "e2e_dir": "tests/e2e/",
+    "test_command": "uv run pytest",
+    "build_command": "cd frontend && npm run build",
+    "python_version": "3.11"
+  },
+  "quality_gate": {
+    "tests_must_pass": true,
+    "coverage_minimum": 80,
+    "max_cyclomatic_complexity": 15,
+    "security_max_high": 0,
+    "security_max_medium": 5,
+    "no_new_regressions": true,
+    "max_flaky_tests": 5
+  },
+  "performance": {
+    "baseline_sigma": 3,
+    "duration_regression_threshold_pct": 50,
+    "min_runs_for_baseline": 5
+  },
+  "flaky_detection": {
+    "window_size": 20,
+    "flip_rate_threshold": 0.3,
+    "entropy_threshold": 0.5
+  },
+  "reports": {
+    "output_dir": "qa/reports",
+    "keep_last_n_runs": 50
+  }
+}
