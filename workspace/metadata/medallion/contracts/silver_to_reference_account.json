@@ -1,0 +1,22 @@
+{
+  "contract_id": "silver_to_reference_account",
+  "source_tier": "silver",
+  "target_tier": "reference",
+  "entity": "account",
+  "description": "Reconcile silver account records into golden master records by account_id",
+  "field_mappings": [
+    {"source": "account_id", "target": "account_id", "transform": "passthrough"},
+    {"source": "account_name", "target": "account_name", "transform": "normalize_whitespace"},
+    {"source": "account_type", "target": "account_type", "transform": "passthrough"},
+    {"source": "risk_rating", "target": "risk_rating", "transform": "passthrough"},
+    {"source": "country", "target": "country", "transform": "validate_country_iso3166"},
+    {"source": "mifid_client_category", "target": "mifid_client_category", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["account_id", "account_name", "account_type"]},
+    {"rule": "unique", "fields": ["account_id"]}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100},
+  "owner": "data-steward",
+  "classification": "internal"
+}

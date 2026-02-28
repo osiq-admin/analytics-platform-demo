@@ -1,11 +1,10 @@
 """Playwright E2E test configuration and fixtures."""
-import os
 import subprocess
 import time
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import sync_playwright, Page, Browser
+from playwright.sync_api import sync_playwright, Page
 
 
 APP_PORT = 8333

@@ -2,11 +2,9 @@
 from __future__ import annotations
 
 import logging
-import re
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
-import pyarrow as pa
 import pyarrow.parquet as pq
 
 from backend.db import DuckDBManager
@@ -135,7 +133,6 @@ class CalculationEngine:
 
         # Execute SQL and fetch results
         result = cursor.execute(sql)
-        columns = [desc[0] for desc in result.description]
         rows = result.fetchall()
         cursor.close()
 
@@ -144,11 +141,11 @@ class CalculationEngine:
         cursor = self._db.cursor()
         try:
             cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
-        except Exception:
+        except Exception:  # nosec B110 — DuckDB type mismatch on DROP; safe to ignore
             pass
         try:
             cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
-        except Exception:
+        except Exception:  # nosec B110 — DuckDB type mismatch on DROP; safe to ignore
             pass
         cursor.execute(f'CREATE TABLE "{table_name}" AS {sql}')
         cursor.close()
@@ -220,7 +217,7 @@ class CalculationEngine:
         parquet_path = layer_dir / f"{table_name}.parquet"
 
         cursor = self._db.cursor()
-        arrow_table = cursor.execute(f'SELECT * FROM "{table_name}"').fetch_arrow_table()
+        arrow_table = cursor.execute(f'SELECT * FROM "{table_name}"').fetch_arrow_table()  # nosec B608
         cursor.close()
 
         pq.write_table(arrow_table, parquet_path)

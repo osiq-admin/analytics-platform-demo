@@ -1,0 +1,446 @@
+{
+  "entity": "venue",
+  "golden_key": "mic",
+  "record_count": 6,
+  "records": [
+    {
+      "golden_id": "GR-VEN-0001",
+      "entity": "venue",
+      "natural_key": "XCBO",
+      "data": {
+        "asset_classes": "equity,option",
+        "close_time": "15:00:00",
+        "country": "US",
+        "mic": "XCBO",
+        "name": "Cboe Options Exchange",
+        "open_time": "08:30:00",
+        "short_name": "CBOE",
+        "timezone": "America/Chicago"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "equity,option",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "15:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "US",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XCBO",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "Cboe Options Exchange",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "08:30:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "CBOE",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "America/Chicago",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-VEN-0002",
+      "entity": "venue",
+      "natural_key": "XCME",
+      "data": {
+        "asset_classes": "index,commodity,fixed_income",
+        "close_time": "16:00:00",
+        "country": "US",
+        "mic": "XCME",
+        "name": "Chicago Mercantile Exchange",
+        "open_time": "17:00:00",
+        "short_name": "CME",
+        "timezone": "America/Chicago"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "index,commodity,fixed_income",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "16:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "US",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XCME",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "Chicago Mercantile Exchange",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "17:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "CME",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "America/Chicago",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-VEN-0003",
+      "entity": "venue",
+      "natural_key": "XNAS",
+      "data": {
+        "asset_classes": "equity",
+        "close_time": "16:00:00",
+        "country": "US",
+        "mic": "XNAS",
+        "name": "Nasdaq Stock Market",
+        "open_time": "09:30:00",
+        "short_name": "NASDAQ",
+        "timezone": "America/New_York"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "equity",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "16:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "US",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XNAS",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "Nasdaq Stock Market",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "09:30:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "NASDAQ",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "America/New_York",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-VEN-0004",
+      "entity": "venue",
+      "natural_key": "XNYM",
+      "data": {
+        "asset_classes": "commodity",
+        "close_time": "17:00:00",
+        "country": "US",
+        "mic": "XNYM",
+        "name": "New York Mercantile Exchange",
+        "open_time": "18:00:00",
+        "short_name": "NYMEX",
+        "timezone": "America/New_York"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "commodity",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "17:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "US",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XNYM",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "New York Mercantile Exchange",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "18:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "NYMEX",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "America/New_York",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-VEN-0005",
+      "entity": "venue",
+      "natural_key": "XNYS",
+      "data": {
+        "asset_classes": "equity",
+        "close_time": "16:00:00",
+        "country": "US",
+        "mic": "XNYS",
+        "name": "New York Stock Exchange",
+        "open_time": "09:30:00",
+        "short_name": "NYSE",
+        "timezone": "America/New_York"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "equity",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "16:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "US",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XNYS",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "New York Stock Exchange",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "09:30:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "NYSE",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "America/New_York",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    },
+    {
+      "golden_id": "GR-VEN-0006",
+      "entity": "venue",
+      "natural_key": "XXXX",
+      "data": {
+        "asset_classes": "fx,commodity",
+        "close_time": "23:59:59",
+        "country": "—",
+        "mic": "XXXX",
+        "name": "Off-Exchange / OTC",
+        "open_time": "00:00:00",
+        "short_name": "OTC",
+        "timezone": "UTC"
+      },
+      "provenance": {
+        "asset_classes": {
+          "value": "fx,commodity",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "close_time": {
+          "value": "23:59:59",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "country": {
+          "value": "—",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "mic": {
+          "value": "XXXX",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "name": {
+          "value": "Off-Exchange / OTC",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "open_time": {
+          "value": "00:00:00",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "short_name": {
+          "value": "OTC",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        },
+        "timezone": {
+          "value": "UTC",
+          "source": "csv:venue.csv",
+          "confidence": 1.0,
+          "last_updated": "2026-02-28T12:37:35.399428+00:00"
+        }
+      },
+      "source_records": [
+        "venue.csv:0"
+      ],
+      "confidence_score": 1.0,
+      "last_reconciled": "2026-02-28T12:37:35.399428+00:00",
+      "status": "active",
+      "version": 1,
+      "notes": ""
+    }
+  ],
+  "last_reconciled": "2026-02-28T12:37:35.399428+00:00"
+}

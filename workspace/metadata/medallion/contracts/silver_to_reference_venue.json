@@ -1,0 +1,21 @@
+{
+  "contract_id": "silver_to_reference_venue",
+  "source_tier": "silver",
+  "target_tier": "reference",
+  "entity": "venue",
+  "description": "Reconcile silver venue records into golden master records by MIC",
+  "field_mappings": [
+    {"source": "mic", "target": "mic", "transform": "validate_mic_iso10383"},
+    {"source": "name", "target": "name", "transform": "normalize_whitespace"},
+    {"source": "country", "target": "country", "transform": "validate_country_iso3166"},
+    {"source": "timezone", "target": "timezone", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["mic", "name", "country"]},
+    {"rule": "unique", "fields": ["mic"]},
+    {"rule": "regex", "field": "mic", "pattern": "^[A-Z]{4}$"}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100},
+  "owner": "data-steward",
+  "classification": "internal"
+}

@@ -1,5 +1,4 @@
 """Tests for SQL query presets loaded from metadata JSON."""
-import json
 import shutil
 from pathlib import Path
 

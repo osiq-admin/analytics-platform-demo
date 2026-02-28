@@ -2,7 +2,6 @@
 import logging
 from pathlib import Path
 
-import pyarrow as pa
 import pyarrow.csv as pcsv
 import pyarrow.parquet as pq
 
@@ -58,7 +57,7 @@ class DataLoader:
         cursor = self._db.cursor()
         cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
         cursor.execute(
-            f'CREATE VIEW "{table_name}" AS SELECT * FROM read_parquet(\'{parquet_path}\')'
+            f'CREATE VIEW "{table_name}" AS SELECT * FROM read_parquet(\'{parquet_path}\')'  # nosec B608
         )
         cursor.close()
 

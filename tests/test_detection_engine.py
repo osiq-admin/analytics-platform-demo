@@ -1,13 +1,11 @@
 """Tests for the Detection Engine — graduated scoring, MUST_PASS/OPTIONAL, alert triggering."""
 import json
-from pathlib import Path
 
 import pytest
 
 from backend.db import DuckDBManager
 from backend.engine.detection_engine import DetectionEngine
 from backend.engine.settings_resolver import SettingsResolver
-from backend.models.detection import Strictness
 from backend.services.metadata_service import MetadataService
 
 

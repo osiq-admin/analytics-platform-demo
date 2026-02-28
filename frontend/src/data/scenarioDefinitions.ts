@@ -3397,6 +3397,89 @@ const S31_DATA_QUALITY_INVESTIGATION: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// Scenario Definitions — Reference Data & MDM (S32)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// S32: Reference Data — Golden Record Reconciliation (Intermediate, 5 min)
+// --------------------------------------------------------------------------
+const S32_REFERENCE_DATA_RECONCILIATION: ScenarioDefinition = {
+  id: "s32_reference_data_reconciliation",
+  name: "Reference Data — Golden Record Reconciliation",
+  description:
+    "Explore master data golden records with field-level provenance and run reconciliation",
+  category: "governance",
+  difficulty: "intermediate",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='reference-entity-tabs']",
+      title: "Navigate to Reference Data",
+      content:
+        "Open the Reference Data / MDM view from the Governance sidebar group.",
+      action: "navigate",
+      route: "/reference",
+      placement: "bottom",
+      hint: "Navigate to Reference Data using the sidebar.",
+      delay: 500,
+    },
+    {
+      target: "[data-tour='reference-entity-tabs'] button:first-child",
+      title: "Select Product Entity",
+      content:
+        "Click the Product Master tab to view product golden records.",
+      action: "click",
+      actionTarget: "[data-tour='reference-entity-tabs'] button:first-child",
+      placement: "bottom",
+      hint: "Click the Product Master tab",
+      delay: 1500,
+    },
+    {
+      target: "[data-tour='reference-golden-list']",
+      title: "Browse Golden Records",
+      content:
+        "View 25 deduplicated product golden records, each with unique ISIN key and confidence score.",
+      action: "wait",
+      placement: "right",
+      hint: "Browse the golden record list",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='reference-golden-list'] button:first-child",
+      title: "Select a Golden Record",
+      content:
+        "Click the first golden record to view its detail and field-level provenance.",
+      action: "click",
+      actionTarget: "[data-tour='reference-golden-list'] button:first-child",
+      placement: "right",
+      hint: "Click a golden record to select it",
+      delay: 1500,
+    },
+    {
+      target: "[data-tour='reference-detail']",
+      title: "Examine Provenance",
+      content:
+        "Review field values with source tracking — each field shows the CSV source, confidence score, and last updated timestamp.",
+      action: "wait",
+      placement: "left",
+      hint: "Examine the field-level provenance",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='reference-reconciliation'] button",
+      title: "Run Reconciliation",
+      content:
+        "Click Reconcile to re-run match/merge against source data. Review results: golden record counts, updates, conflicts, and confidence distribution.",
+      action: "click",
+      actionTarget: "[data-tour='reference-reconciliation'] button",
+      placement: "top",
+      hint: "Click the Reconcile button",
+      delay: 2000,
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3431,4 +3514,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s29_mapping_studio: S29_MAPPING_STUDIO,
   s30_pipeline_orchestration: S30_PIPELINE_ORCHESTRATION,
   s31_data_quality_investigation: S31_DATA_QUALITY_INVESTIGATION,
+  s32_reference_data_reconciliation: S32_REFERENCE_DATA_RECONCILIATION,
 };

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class Strictness(StrEnum):
-    MUST_PASS = "MUST_PASS"
+    MUST_PASS = "MUST_PASS"  # nosec B105 — detection model strictness level, not a password
     OPTIONAL = "OPTIONAL"
 
 

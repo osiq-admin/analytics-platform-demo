@@ -38,6 +38,7 @@ function getTourIdForPath(pathname: string): string | null {
     medallion: "medallion",
     onboarding: "onboarding",
     quality: "data-quality",
+    reference: "reference-data",
   };
   return map[seg] ?? "overview";
 }

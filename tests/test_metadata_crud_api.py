@@ -1,5 +1,4 @@
 """Tests for Metadata CRUD API — PUT/DELETE for all 4 metadata types."""
-import json
 
 import pytest
 from fastapi.testclient import TestClient

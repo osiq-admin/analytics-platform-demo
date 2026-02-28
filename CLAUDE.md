@@ -1,27 +1,37 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 19 views, 862 tests (645 backend + 217 E2E), 8 entities, 5 detection models, 31 guided scenarios.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 20 views, 1018 tests (794 backend + 224 E2E), 8 entities, 5 detection models, 32 guided scenarios.
 
 ## Quick Start
 ```bash
-./start.sh                          # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v   # Run backend tests (645)
-uv run pytest tests/e2e/ -v                   # Run E2E Playwright tests (217)
-cd frontend && npm run build                  # Build frontend (970 modules)
-uv run python -m scripts.generate_data        # Regenerate CSVs
-uv run python -m scripts.generate_snapshots   # Regenerate snapshots
+./start.sh                                    # Start app on port 8000
+uv run python -m qa test backend              # Run backend tests (794)
+uv run python -m qa test e2e                  # Run E2E Playwright tests (224)
+uv run python -m qa quality --python           # Run quality scan (ruff, bandit, radon, vulture, coverage)
+uv run python -m qa gate                       # Evaluate quality gate
+cd frontend && npm run build                   # Build frontend (971 modules)
+uv run python -m scripts.generate_data         # Regenerate CSVs
+uv run python -m scripts.generate_snapshots    # Regenerate snapshots
 ```
 
 ## Architecture
-- **Backend**: `backend/` — FastAPI + DuckDB, 23 API route modules, calculation/detection engines
-- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 19 views, Zustand stores
+- **Backend**: `backend/` — FastAPI + DuckDB, 24 API route modules, calculation/detection engines
+- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 20 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
 - **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)
-- **Tests**: `tests/` — 645 backend tests + 217 E2E Playwright tests
+- **Tests**: `tests/` — 794 backend tests + 224 E2E Playwright tests
 - **Scripts**: `scripts/` — data generation, snapshot generation
 - **Docs**: `docs/` — progress tracker, demo guide, plans, schemas, checklists
+
+## QA Automation Framework
+- **Package**: `qa/` — built-in test/quality automation toolkit
+- **CLI**: `uv run python -m qa <command>`
+- **Commands**: test, quality, report, gate, baseline, watch, hooks
+- **Reports**: `qa/reports/runs/` (test runs), `qa/reports/quality/` (quality scans), `qa/reports/baselines/` (regression baselines)
+- **Config**: `qa/config/` — suites.json, tools.json, gate.json
+- **ALWAYS** use QA automation commands instead of direct pytest/ruff/bandit invocations
 
 ## Key Conventions
 - Everything is metadata: entities, calculations, settings, models — all JSON on disk
@@ -63,7 +73,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases across 7 tiers (medallion architecture, data governance, standards, migration readiness)
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M215 complete)
+- Progress tracker: `docs/progress.md` (M0-M227 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

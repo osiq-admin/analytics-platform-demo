@@ -9,7 +9,6 @@ from backend.engine.calculation_engine import CalculationEngine
 from backend.engine.detection_engine import DetectionEngine
 from backend.engine.settings_resolver import SettingsResolver
 from backend.services.pipeline_orchestrator import PipelineOrchestrator
-from backend.services.query_service import QueryService
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/pipeline", tags=["pipeline"])

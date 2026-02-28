@@ -1,0 +1,49 @@
+{
+  "python": {
+    "ruff": {
+      "enabled": true,
+      "command": "ruff check {targets}",
+      "report_format": "json",
+      "report_flag": "--output-format json",
+      "targets": ["backend/", "tests/", "scripts/"]
+    },
+    "bandit": {
+      "enabled": true,
+      "command": "bandit -r {targets} -f json",
+      "targets": ["backend/", "scripts/", "qa/"]
+    },
+    "radon": {
+      "enabled": true,
+      "command_cc": "radon cc {targets} -j -n C",
+      "command_mi": "radon mi {targets} -j",
+      "targets": ["backend/", "scripts/", "qa/"]
+    },
+    "vulture": {
+      "enabled": true,
+      "command": "vulture {targets} --min-confidence 90",
+      "targets": ["backend/", "scripts/", "qa/"]
+    },
+    "coverage": {
+      "enabled": true,
+      "command": "uv run python -m coverage run -m pytest tests/ --ignore=tests/e2e -q",
+      "report_command": "uv run python -m coverage json -o {output_file}",
+      "fail_under": 80,
+      "timeout": 300
+    }
+  },
+  "typescript": {
+    "eslint": {
+      "enabled": false,
+      "command": "cd frontend && npx eslint src/ --format json",
+      "note": "Enable when ESLint is configured"
+    }
+  },
+  "cross_language": {
+    "semgrep": {
+      "enabled": false,
+      "command": "semgrep scan --config auto --json {targets}",
+      "targets": ["backend/", "frontend/src/"],
+      "note": "Enable after installing semgrep"
+    }
+  }
+}

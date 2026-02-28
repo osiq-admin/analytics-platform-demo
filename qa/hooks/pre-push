@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# QA Toolkit pre-push hook
+# Runs affected backend tests + frontend build before push.
+# Bypass with: git push --no-verify
+set -euo pipefail
+
+echo "[qa] Pre-push: checking for regressions..."
+
+# Get changed files in commits about to be pushed
+changed=$(git diff --name-only @{push}..HEAD 2>/dev/null || git diff --name-only origin/main..HEAD 2>/dev/null || echo "")
+
+if echo "$changed" | grep -q '\.py$'; then
+    echo "[qa] Running affected backend tests..."
+    if ! uv run python -m qa test affected --failfast --quiet 2>/dev/null; then
+        echo "[qa] FAILED: Backend tests failed. Push blocked."
+        echo "[qa] Use 'git push --no-verify' to bypass."
+        exit 1
+    fi
+    echo "[qa] Backend tests passed."
+fi
+
+if echo "$changed" | grep -q '^frontend/'; then
+    echo "[qa] Building frontend..."
+    if ! (cd frontend && npm run build --silent 2>/dev/null); then
+        echo "[qa] FAILED: Frontend build failed. Push blocked."
+        echo "[qa] Use 'git push --no-verify' to bypass."
+        exit 1
+    fi
+    echo "[qa] Frontend build passed."
+fi
+
+echo "[qa] Pre-push checks passed."
+exit 0

@@ -2,7 +2,6 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from backend.models.quality import QuarantineRecord
 
 router = APIRouter(prefix="/api/quality", tags=["quality"])
 
@@ -50,7 +49,7 @@ def get_all_scores(request: Request):
             try:
                 score = engine.score_entity(contract, table_name)
                 scores.append(score.model_dump())
-            except Exception:
+            except Exception:  # nosec B110 — individual contract scoring may fail; skip gracefully
                 pass
     return scores
 

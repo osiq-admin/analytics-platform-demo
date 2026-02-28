@@ -4,9 +4,16 @@ import pytest
 import pyarrow as pa
 from backend.models.onboarding import (
     ConnectorConfig, DetectedColumn, DetectedSchema,
-    ColumnProfile, DataProfile, OnboardingJob,
+    DataProfile, OnboardingJob,
 )
 from backend.connectors.local_file import LocalFileConnector
+from backend.services.schema_detector import detect_schema
+from backend.services.schema_detector import _detect_pattern
+from backend.services.data_profiler import profile_data
+from backend.services import onboarding_service
+from backend import config
+from backend.main import app
+from starlette.testclient import TestClient
 
 
 class TestOnboardingModels:
@@ -106,13 +113,6 @@ class TestConnectors:
             conn.detect_schema("any")
 
 
-from backend.services.schema_detector import detect_schema
-from backend.services.schema_detector import _detect_pattern
-from backend.services.data_profiler import profile_data
-from backend.services import onboarding_service
-from backend import config
-from backend.main import app
-from starlette.testclient import TestClient
 
 
 class TestSchemaDetector:

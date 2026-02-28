@@ -5,10 +5,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.db import DuckDBManager
 from backend.engine.data_loader import DataLoader
 from backend.main import app
-from backend.services.metadata_service import MetadataService
 
 
 @pytest.fixture
@@ -46,9 +44,6 @@ def compliance_workspace(tmp_path):
 def client(compliance_workspace, monkeypatch):
     """Create a test client with data loaded into DuckDB."""
     from backend import config
-    from backend.engine.settings_resolver import SettingsResolver
-    from backend.engine.detection_engine import DetectionEngine
-    from backend.services.alert_service import AlertService
 
     monkeypatch.setattr(config.settings, "workspace_dir", compliance_workspace)
 

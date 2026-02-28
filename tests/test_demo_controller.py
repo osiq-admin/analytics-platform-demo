@@ -1,6 +1,4 @@
 """Tests for Demo Controller — state machine, snapshots, reset/step/jump."""
-import json
-from pathlib import Path
 
 import pytest
 

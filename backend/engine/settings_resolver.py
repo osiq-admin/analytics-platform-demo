@@ -1,5 +1,5 @@
 """Settings resolution engine with hierarchy, multi-dimensional matching, and score step evaluation."""
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Protocol
 
 from backend.models.settings import ScoreStep, SettingDefinition, SettingOverride

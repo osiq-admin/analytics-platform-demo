@@ -1,0 +1,23 @@
+{
+  "entity": "account",
+  "golden_key": "account_id",
+  "display_name": "Account Master",
+  "description": "Golden records for trading accounts — deduplicated by account_id with risk rating reconciliation",
+  "match_rules": [
+    {"strategy": "exact", "fields": ["account_id"], "threshold": 1.0, "weight": 1.0},
+    {"strategy": "fuzzy", "fields": ["account_name"], "threshold": 0.9, "weight": 0.7}
+  ],
+  "merge_rules": [
+    {"field": "account_name", "strategy": "longest", "source_priority": []},
+    {"field": "account_type", "strategy": "most_frequent", "source_priority": []},
+    {"field": "risk_rating", "strategy": "most_recent", "source_priority": []},
+    {"field": "country", "strategy": "source_priority", "source_priority": ["iso_3166", "csv"]},
+    {"field": "mifid_client_category", "strategy": "source_priority", "source_priority": ["mifid2", "csv"]}
+  ],
+  "external_sources": [
+    {"source_id": "iso_3166", "field": "country", "validation_type": "lookup", "description": "Country code validation (ISO 3166)"},
+    {"source_id": "mifid2", "field": "mifid_client_category", "validation_type": "lookup", "description": "MiFID II client categorization"}
+  ],
+  "auto_reconcile": true,
+  "reconciliation_schedule": "on_demand"
+}

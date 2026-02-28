@@ -1,6 +1,5 @@
 """Tests for quarantine service."""
 import pytest
-from pathlib import Path
 from backend.services.quarantine_service import QuarantineService
 
 

@@ -69,12 +69,12 @@ class AIAssistant:
         try:
             for table_name in ["execution", "alerts_summary"]:
                 result = self._query_service.execute(
-                    f'SELECT COUNT(*) AS cnt FROM "{table_name}"', limit=1
+                    f'SELECT COUNT(*) AS cnt FROM "{table_name}"', limit=1  # nosec B608
                 )
                 if result.get("rows"):
                     count = result["rows"][0].get("cnt", "?")
                     parts.append(f"\n`{table_name}` has {count} rows.")
-        except Exception:
+        except Exception:  # nosec B110 — table may not exist yet; non-critical context
             pass
 
         return "\n".join(parts)

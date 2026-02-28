@@ -6,7 +6,6 @@ Covers:
 - View configurations: entity_designer, model_composer
 - Theme palettes: default palette with chart, asset class, and graph node colors
 """
-import pytest
 from playwright.sync_api import Page
 
 

@@ -1,6 +1,5 @@
 import csv
 import pytest
-from pathlib import Path
 from backend.engine.data_loader import DataLoader
 from backend.db import DuckDBManager
 

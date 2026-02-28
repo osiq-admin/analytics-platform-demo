@@ -16,9 +16,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import math
 import random
-from datetime import date, datetime, time, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -330,7 +329,7 @@ class SyntheticDataGenerator:
         self.workspace = workspace_dir
         self.csv_dir = workspace_dir / "data" / "csv"
         self.entities_dir = workspace_dir / "metadata" / "entities"
-        self.rng = random.Random(seed)
+        self.rng = random.Random(seed)  # nosec B311 — synthetic data generation, not cryptography
 
         self.trading_days = _get_trading_days(DATE_START, DATE_END)
         self.products = self._build_product_catalog()
@@ -767,26 +766,61 @@ class SyntheticDataGenerator:
         key_futures_ids = [pid for pid in ["ES_FUT", "NQ_FUT", "CL_FUT", "GC_FUT"]
                           if pid in self.products]
 
-        for pid in equity_ids:
-            for day in self.trading_days:
-                close = self.eod_prices.get(pid, {}).get(day)
-                if close is None:
-                    continue
-                self._generate_intraday_day(pid, day, close)
-
         fi_ids = [pid for pid, info in self.products.items()
                   if info["asset_class"] == "fixed_income"]
 
-        for pid in fx_ids + key_futures_ids + fi_ids:
-            for day in self.trading_days:
-                close = self.eod_prices.get(pid, {}).get(day)
-                if close is None:
-                    continue
-                self._generate_intraday_day(pid, day, close, n_ticks=(10, 15))
+        self._generate_intraday_for_products(equity_ids)
+        self._generate_intraday_for_products(fx_ids + key_futures_ids + fi_ids, n_ticks=(10, 15))
 
         # Embed trend days for MPR patterns
         for pat in MPR_PATTERNS:
             self._embed_trend_day(pat)
+
+    def _generate_intraday_for_products(self, product_ids: list[str],
+                                         n_ticks: tuple[int, int] | None = None) -> None:
+        """Generate intraday data for a list of products across all trading days."""
+        for pid in product_ids:
+            for day in self.trading_days:
+                close = self.eod_prices.get(pid, {}).get(day)
+                if close is None:
+                    continue
+                self._generate_intraday_day(pid, day, close, n_ticks=n_ticks)
+
+    def _compute_bid_ask(self, price: float, info: dict) -> tuple[float, float]:
+        """Compute bid/ask prices based on asset class spread conventions.
+
+        Returns (bid, ask) tuple with appropriate decimal precision and minimum spread enforced.
+        """
+        asset_class = info["asset_class"]
+        instrument_type = info["instrument_type"]
+
+        if asset_class == "fx":
+            dp = 4
+            spread = price * self.rng.uniform(0.00005, 0.0003)
+            min_spread = 0.0001  # 1 pip minimum
+        elif asset_class == "fixed_income":
+            dp = 4
+            spread = self.rng.uniform(0.015625, 0.0625)  # 1/64 to 1/16 of a point
+            min_spread = 0.015625
+        elif instrument_type == "future":
+            dp = 2
+            spread = self.rng.uniform(0.25, 1.00)
+            min_spread = 0.25
+        else:  # equity
+            dp = 2
+            spread = price * self.rng.uniform(0.0001, 0.0005)
+            min_spread = 0.01  # 1 cent minimum
+
+        bid = round(price - spread / 2, dp)
+        ask = round(price + spread / 2, dp)
+        # Enforce minimum spread after rounding
+        if ask <= bid:
+            bid = round(price - min_spread / 2, dp)
+            ask = round(price + min_spread / 2, dp)
+        if ask <= bid:
+            ask = bid + min_spread
+
+        return bid, ask
 
     def _generate_intraday_day(self, pid: str, day: date, close: float,
                                n_ticks: tuple[int, int] | None = None) -> None:
@@ -818,32 +852,7 @@ class SyntheticDataGenerator:
             noise = price * self.rng.gauss(0, 0.003)
             price = round(price + noise, 4)
 
-            # Derive bid/ask from trade price
-            if info["asset_class"] == "fx":
-                dp = 4
-                spread = price * self.rng.uniform(0.00005, 0.0003)
-                min_spread = 0.0001  # 1 pip minimum
-            elif info["asset_class"] == "fixed_income":
-                dp = 4
-                spread = self.rng.uniform(0.015625, 0.0625)  # 1/64 to 1/16 of a point
-                min_spread = 0.015625
-            elif info["instrument_type"] == "future":
-                dp = 2
-                spread = self.rng.uniform(0.25, 1.00)
-                min_spread = 0.25
-            else:  # equity
-                dp = 2
-                spread = price * self.rng.uniform(0.0001, 0.0005)
-                min_spread = 0.01  # 1 cent minimum
-
-            bid = round(price - spread / 2, dp)
-            ask = round(price + spread / 2, dp)
-            # Enforce minimum spread after rounding
-            if ask <= bid:
-                bid = round(price - min_spread / 2, dp)
-                ask = round(price + min_spread / 2, dp)
-            if ask <= bid:
-                ask = bid + min_spread
+            bid, ask = self._compute_bid_ask(price, info)
 
             qty = int(base_vol / n_trades * self.rng.uniform(0.3, 2.0) / 1000)
             qty = max(qty, 100)
@@ -888,32 +897,7 @@ class SyntheticDataGenerator:
             second = self.rng.randint(0, 59)
             ms = self.rng.randint(0, 999)
 
-            # Derive bid/ask from trade price
-            if info["asset_class"] == "fx":
-                dp = 4
-                spread = price * self.rng.uniform(0.00005, 0.0003)
-                min_spread = 0.0001  # 1 pip minimum
-            elif info["asset_class"] == "fixed_income":
-                dp = 4
-                spread = self.rng.uniform(0.015625, 0.0625)  # 1/64 to 1/16 of a point
-                min_spread = 0.015625
-            elif info["instrument_type"] == "future":
-                dp = 2
-                spread = self.rng.uniform(0.25, 1.00)
-                min_spread = 0.25
-            else:  # equity
-                dp = 2
-                spread = price * self.rng.uniform(0.0001, 0.0005)
-                min_spread = 0.01  # 1 cent minimum
-
-            bid = round(price - spread / 2, dp)
-            ask = round(price + spread / 2, dp)
-            # Enforce minimum spread after rounding
-            if ask <= bid:
-                bid = round(price - min_spread / 2, dp)
-                ask = round(price + min_spread / 2, dp)
-            if ask <= bid:
-                ask = bid + min_spread
+            bid, ask = self._compute_bid_ask(price, info)
 
             self.md_intraday.append({
                 "product_id": pid,
@@ -940,59 +924,49 @@ class SyntheticDataGenerator:
     # Normal trading (background noise)
     # -----------------------------------------------------------------------
 
+    def _filter_products_by(self, key: str, values: str | tuple[str, ...]) -> list[str]:
+        """Filter product IDs by a field matching one or more values."""
+        if isinstance(values, str):
+            values = (values,)
+        return [pid for pid, info in self.products.items() if info.get(key) in values]
+
     def _generate_normal_trading(self) -> None:
         """Generate normal trading activity across accounts and products."""
-        # Select tradeable products by asset class
-        stock_ids = [pid for pid, info in self.products.items()
-                     if info["instrument_type"] == "common_stock"]
-        option_ids = [pid for pid, info in self.products.items()
-                      if info["instrument_type"] in ("call_option", "put_option")]
-        future_ids = [pid for pid, info in self.products.items()
-                      if info["instrument_type"] == "future"]
-        fx_ids = [pid for pid, info in self.products.items()
-                  if info["asset_class"] == "fx"]
-        fi_ids = [pid for pid, info in self.products.items()
-                  if info["asset_class"] == "fixed_income"]
+        stock_ids = self._filter_products_by("instrument_type", "common_stock")
+        option_ids = self._filter_products_by("instrument_type", ("call_option", "put_option"))
+        future_ids = self._filter_products_by("instrument_type", "future")
+        fx_ids = self._filter_products_by("asset_class", "fx")
+        fi_ids = self._filter_products_by("asset_class", "fixed_income")
 
-        # Active accounts for normal trading (first 100 accounts)
         active_accounts = list(self.accounts.keys())[:100]
         trader_ids = list(self.traders.keys())
 
+        # Trading specs: (product_ids, trades_per_day_range, account_slice, trader_slice)
+        trading_specs = [
+            (stock_ids,  (6, 10), active_accounts,      trader_ids),
+            (option_ids, (1, 3),  active_accounts[:50],  trader_ids[:25]),
+            (future_ids, (1, 3),  active_accounts[:30],  trader_ids[:15]),
+            (fx_ids,     (2, 4),  active_accounts[:60],  trader_ids[:20]),
+        ]
+
         for day in self.trading_days:
-            # ~8 stock executions per day across various accounts
-            for _ in range(self.rng.randint(6, 10)):
-                pid = self.rng.choice(stock_ids)
-                acc = self.rng.choice(active_accounts)
-                trader = self.rng.choice(trader_ids)
-                self._add_normal_execution(pid, acc, trader, day)
+            for product_ids, count_range, accounts, traders in trading_specs:
+                for _ in range(self.rng.randint(*count_range)):
+                    self._add_normal_execution(
+                        self.rng.choice(product_ids),
+                        self.rng.choice(accounts),
+                        self.rng.choice(traders),
+                        day,
+                    )
 
-            # ~2 option trades per day
-            for _ in range(self.rng.randint(1, 3)):
-                pid = self.rng.choice(option_ids)
-                acc = self.rng.choice(active_accounts[:50])
-                trader = self.rng.choice(trader_ids[:25])
-                self._add_normal_execution(pid, acc, trader, day)
-
-            # ~2-3 futures trades per day (increased from ~1)
-            for _ in range(self.rng.randint(1, 3)):
-                pid = self.rng.choice(future_ids)
-                acc = self.rng.choice(active_accounts[:30])
-                trader = self.rng.choice(trader_ids[:15])
-                self._add_normal_execution(pid, acc, trader, day)
-
-            # ~3 FX executions per day
-            for _ in range(self.rng.randint(2, 4)):
-                pid = self.rng.choice(fx_ids)
-                acc = self.rng.choice(active_accounts[:60])
-                trader = self.rng.choice(trader_ids[:20])
-                self._add_normal_execution(pid, acc, trader, day)
-
-            # ~1 fixed income execution per day
+            # ~1 fixed income execution per day (conditional on probability)
             if fi_ids and self.rng.random() < 0.6:
-                pid = self.rng.choice(fi_ids)
-                acc = self.rng.choice(active_accounts[:40])
-                trader = self.rng.choice(trader_ids[:10])
-                self._add_normal_execution(pid, acc, trader, day)
+                self._add_normal_execution(
+                    self.rng.choice(fi_ids),
+                    self.rng.choice(active_accounts[:40]),
+                    self.rng.choice(trader_ids[:10]),
+                    day,
+                )
 
     def _add_normal_execution(self, pid: str, acc: str, trader: str, day: date) -> None:
         info = self.products[pid]
@@ -1736,7 +1710,7 @@ class SyntheticDataGenerator:
 
 def _get_trading_days(start: date, end: date) -> list[date]:
     """Return weekdays (Mon-Fri) in the date range, excluding US market holidays."""
-    holidays = {
+    _holidays = {
         date(2024, 1, 1),   # New Year's Day
         date(2024, 1, 15),  # MLK Day — note: we keep this as trading day for wash pattern
         date(2024, 2, 19),  # Presidents' Day

@@ -77,7 +77,7 @@ class AIContextBuilder:
             for (table_name,) in tables:
                 lines.append(f"## {table_name}")
                 cols = cursor.execute(
-                    f"SELECT column_name, data_type FROM information_schema.columns "
+                    f"SELECT column_name, data_type FROM information_schema.columns "  # nosec B608
                     f"WHERE table_name = '{table_name}'"
                 ).fetchall()
                 for col_name, col_type in cols:
@@ -132,7 +132,7 @@ class AIContextBuilder:
         # Build template based on type
         if template_type == "ratio":
             logic = (
-                f"SELECT\n"
+                f"SELECT\n"  # nosec B608 — SQL template, not executed directly
                 f"    product_id,\n"
                 f"    account_id,\n"
                 f"    -- TODO: Replace with actual numerator/denominator\n"
@@ -142,7 +142,7 @@ class AIContextBuilder:
             )
         elif template_type == "aggregation":
             logic = (
-                f"SELECT\n"
+                f"SELECT\n"  # nosec B608 — SQL template, not executed directly
                 f"    product_id,\n"
                 f"    account_id,\n"
                 f"    business_date,\n"
@@ -154,7 +154,7 @@ class AIContextBuilder:
             )
         elif template_type == "time_window":
             logic = (
-                f"SELECT\n"
+                f"SELECT\n"  # nosec B608 — SQL template, not executed directly
                 f"    product_id,\n"
                 f"    account_id,\n"
                 f"    -- TODO: Define window boundaries\n"
@@ -166,7 +166,7 @@ class AIContextBuilder:
             )
         else:
             logic = (
-                f"SELECT\n"
+                f"SELECT\n"  # nosec B608 — SQL template, not executed directly
                 f"    product_id,\n"
                 f"    account_id,\n"
                 f"    -- TODO: Implement custom logic\n"

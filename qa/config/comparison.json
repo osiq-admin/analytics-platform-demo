@@ -1,0 +1,68 @@
+{
+  "scopes": {
+    "reference.product": {
+      "type": "tabular",
+      "description": "Product golden records",
+      "source": "workspace/reference/product_golden.json",
+      "query": {
+        "fields": ["golden_id", "natural_key", "confidence_score", "status"],
+        "filter": {"status": "active"},
+        "sort_by": "golden_id"
+      },
+      "key": "golden_id",
+      "tolerance": {
+        "confidence_score": {"absolute": 0.01}
+      },
+      "blast_radius_tag": "reference"
+    },
+    "reference.venue": {
+      "type": "tabular",
+      "description": "Venue golden records",
+      "source": "workspace/reference/venue_golden.json",
+      "query": {
+        "fields": ["golden_id", "natural_key", "confidence_score", "status"],
+        "sort_by": "golden_id"
+      },
+      "key": "golden_id",
+      "tolerance": {
+        "confidence_score": {"absolute": 0.01}
+      },
+      "blast_radius_tag": "reference"
+    },
+    "reference.account": {
+      "type": "tabular",
+      "description": "Account golden records",
+      "source": "workspace/reference/account_golden.json",
+      "query": {
+        "fields": ["golden_id", "natural_key", "confidence_score"],
+        "sort_by": "golden_id"
+      },
+      "key": "golden_id",
+      "tolerance": {
+        "confidence_score": {"absolute": 0.01}
+      },
+      "blast_radius_tag": "reference"
+    },
+    "reference.trader": {
+      "type": "tabular",
+      "description": "Trader golden records",
+      "source": "workspace/reference/trader_golden.json",
+      "query": {
+        "fields": ["golden_id", "natural_key", "confidence_score"],
+        "sort_by": "golden_id"
+      },
+      "key": "golden_id",
+      "tolerance": {
+        "confidence_score": {"absolute": 0.01}
+      },
+      "blast_radius_tag": "reference"
+    }
+  },
+  "blast_radius_groups": {
+    "reference": ["reference.product", "reference.venue", "reference.account", "reference.trader"]
+  },
+  "e2e_comparison": {
+    "default_mode": "assertion_only",
+    "per_view": {}
+  }
+}

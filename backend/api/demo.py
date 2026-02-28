@@ -31,15 +31,15 @@ def _reload_data(request: Request) -> list[str]:
             view_name = pq_file.stem  # e.g. calc_value, calc_wash_detection
             try:
                 try:
-                    cursor.execute(f'DROP VIEW IF EXISTS "{view_name}"')
-                except Exception:
+                    cursor.execute(f'DROP VIEW IF EXISTS "{view_name}"')  # nosec B608
+                except Exception:  # nosec B110 — DuckDB may not have this object; safe to ignore
                     pass
                 try:
-                    cursor.execute(f'DROP TABLE IF EXISTS "{view_name}"')
-                except Exception:
+                    cursor.execute(f'DROP TABLE IF EXISTS "{view_name}"')  # nosec B608
+                except Exception:  # nosec B110 — DuckDB may not have this object; safe to ignore
                     pass
                 cursor.execute(
-                    f"CREATE VIEW \"{view_name}\" AS SELECT * FROM read_parquet('{pq_file}')"
+                    f"CREATE VIEW \"{view_name}\" AS SELECT * FROM read_parquet('{pq_file}')"  # nosec B608
                 )
                 loaded.append(view_name)
             except Exception as e:
@@ -55,14 +55,14 @@ def _reload_data(request: Request) -> list[str]:
         try:
             try:
                 cursor.execute('DROP VIEW IF EXISTS "alerts_summary"')
-            except Exception:
+            except Exception:  # nosec B110 — DuckDB may not have this object; safe to ignore
                 pass
             try:
                 cursor.execute('DROP TABLE IF EXISTS "alerts_summary"')
-            except Exception:
+            except Exception:  # nosec B110 — DuckDB may not have this object; safe to ignore
                 pass
             cursor.execute(
-                f"CREATE VIEW \"alerts_summary\" AS SELECT * FROM read_parquet('{alerts_pq}')"
+                f"CREATE VIEW \"alerts_summary\" AS SELECT * FROM read_parquet('{alerts_pq}')"  # nosec B608
             )
             loaded.append("alerts_summary")
         except Exception as e:

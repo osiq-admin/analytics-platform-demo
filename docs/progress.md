@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M215 Phase 18 Complete; 862 total tests: 645 backend + 217 E2E, 19 views, 31 scenarios, 86 architecture sections, 970 modules)
+**Last Updated**: 2026-02-28 (M227 Phase 19 + QA Toolkit Complete; 1018 total tests: 794 backend + 224 E2E, 20 views, 32 scenarios, 94 architecture sections, 971 modules)
 
 ---
 
@@ -54,6 +54,7 @@
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 | Silver→Gold Pipeline Orchestration (Phase 17) | COMPLETE | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG edges + medallion stages progress bar), MedallionOverview execution status + Run Stage, S30 scenario — 800 total tests (590+210), 18 views, 30 scenarios, 82 architecture sections |
 | Data Quality, Quarantine & Profiling (Phase 18) | COMPLETE | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios — 862 total tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
+| Reference Data & MDM (Phase 19) | COMPLETE | M216-M227: Golden records for 4 entities (product/venue/account/trader), reconciliation engine with exact+fuzzy matching, field-level provenance, 9 API endpoints, ReferenceData view, 4 data contracts, S32 scenario — 929 total tests (705+224), 20 views, 32 scenarios, 94 architecture sections |
 
 ---
 
@@ -312,6 +313,23 @@
 | M213 | Tours, Scenarios, Operations, Architecture Registry | COMPLETE | 3 | 3 | data-quality tour (4 steps), S31 scenario (Governance), 7 operations, 4 architecture sections (86 total) |
 | M214 | Full Test Suite + Playwright Verification | COMPLETE | 3 | 3 | 645 backend + 217 E2E tests all passing, frontend builds (970 modules), visual verification |
 | M215 | Phase D Documentation Sweep + PR | COMPLETE | 2 | 2 | Update all docs, sync counts, create PR |
+
+### Phase 19: Reference Data & MDM (M216-M227)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M216 | Pydantic Models + Tests | COMPLETE | 3 | 3 | 9 models (GoldenRecord, MatchRule, MergeRule, ReferenceConfig, ReconciliationResult, etc.), 13 unit tests |
+| M217 | Reference Metadata Files | COMPLETE | 2 | 2 | 4 entity configs (product/venue/account/trader) with match/merge rules, 8 metadata loading tests |
+| M218 | MetadataService Methods | COMPLETE | 2 | 2 | 6 CRUD methods for reference configs and golden records, 6 tests |
+| M219 | Reference Service — Reconciliation Engine | COMPLETE | 4 | 4 | Exact+fuzzy matching, 5 merge strategies, field-level provenance, cross-references, 12 tests |
+| M220 | Silver-to-Reference Data Contracts | COMPLETE | 2 | 2 | 4 data contracts, silver_to_reference pipeline stage, 4 tests |
+| M221 | Reference API Router | COMPLETE | 3 | 3 | 9 REST endpoints, registered in main.py, 17 API tests |
+| M222 | Golden Record Generation Script | COMPLETE | 2 | 2 | 301 golden records (25 product, 6 venue, 220 account, 50 trader) |
+| M223 | ReferenceData Frontend View | COMPLETE | 4 | 4 | 20th view: entity tabs, golden list, detail+provenance, reconciliation dashboard |
+| M224 | Navigation, Route, Tour Mapping | COMPLETE | 1 | 1 | Lazy route, sidebar entry (Governance group), tour ID mapping |
+| M225 | Tours, Scenarios, Operations, Architecture | COMPLETE | 3 | 3 | reference-data tour (4 steps), S32 scenario, 6 operations, 4 architecture sections (94 total) |
+| M226 | Full Test Suite + Playwright Verification | COMPLETE | 2 | 2 | 705 backend + 224 E2E, 971 modules, light+dark mode verified |
+| M227 | E2E Tests + Documentation + PR | COMPLETE | 2 | 2 | 7 E2E tests, all docs updated, count sync, PR |
 
 ---
 

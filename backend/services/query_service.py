@@ -43,7 +43,7 @@ class QueryService:
             FROM information_schema.columns
             WHERE table_name = '{table_name}' AND table_schema = 'main'
             ORDER BY ordinal_position
-        """)
+        """)  # nosec B608
         cols = cursor.fetchall()
         cursor.close()
         return {

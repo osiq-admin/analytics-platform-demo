@@ -119,14 +119,14 @@ def get_context_summary(request: Request):
     try:
         fmt = metadata.load_format_rules()
         context_parts.append(f"Format registry: {len(fmt.get('rules', {}))} rules, {len(fmt.get('field_mappings', {}))} field mappings")
-    except Exception:
+    except Exception:  # nosec B110 — format rules may not be configured; non-critical context
         pass
 
     try:
         nav = metadata.load_navigation()
         view_count = sum(len(g.get("items", [])) for g in nav.get("groups", []))
         context_parts.append(f"Navigation: {len(nav.get('groups', []))} groups, {view_count} views")
-    except Exception:
+    except Exception:  # nosec B110 — navigation may not be configured; non-critical context
         pass
 
     return {"context": "\n".join(context_parts)}

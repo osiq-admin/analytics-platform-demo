@@ -30,8 +30,10 @@ git log origin/main..HEAD         # Nothing unpushed
 ### A3. Verify Test Suite
 
 ```bash
-uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests — ALL PASS
-cd frontend && npm run build                   # Frontend — 0 errors
+uv run python -m qa test backend          # Backend tests — ALL PASS
+uv run python -m qa quality --python       # Quality scan — ALL PASS
+uv run python -m qa gate                   # Quality gate — PASS
+cd frontend && npm run build               # Frontend — 0 errors (QA doesn't cover frontend build)
 ```
 
 If tests fail before you start, fix them first. Never start new work on a broken baseline.
@@ -79,11 +81,21 @@ Execute tasks in order (subagent-driven or manual).
 
 ### C2. Per-Milestone Checks
 
-After each milestone (M_n_), run **Tier 1** completion checks (see Phase D).
+After each milestone (M_n_), run **Tier 1** completion checks (see Phase D), plus regression checks:
+
+```bash
+uv run python -m qa test backend           # All tests pass
+uv run python -m qa report --regression     # No regressions
+```
 
 ### C3. Per-Stage Checks
 
-At each logical stage checkpoint, run **Tier 2** completion checks (see Phase D).
+At each logical stage checkpoint, run **Tier 2** completion checks (see Phase D), plus regression checks:
+
+```bash
+uv run python -m qa test backend           # All tests pass
+uv run python -m qa report --regression     # No regressions
+```
 
 ### C4. Commit at Checkpoints
 
@@ -109,6 +121,7 @@ Three tiers of checks, applied at different granularities.
 | Architecture audit | `docs/architecture-traceability.md` | Update maturity distribution + % if sections added/removed |
 | Demo guide | `docs/demo-guide.md` | Update scenario/tour/operation counts if changed |
 | Tour registry | `workspace/metadata/tours/registry.json` | Add tour entry, update scenario count + categories if changed |
+| QA report | — | Run `uv run python -m qa report` and verify no failures |
 | Commit | — | `git commit` with conventional message |
 
 ### Tier 2 — Per-Stage (after each stage checkpoint)
@@ -118,6 +131,7 @@ All of Tier 1, plus:
 | Check | File(s) | Action |
 |-------|---------|--------|
 | Test Count Sync | See [Test Count Sync Registry](#test-count-sync-registry) | Update ALL locations with actual counts |
+| Quality gate | — | Run `uv run python -m qa gate` — must PASS |
 | Progress header | `docs/progress.md` line 5 | Update milestone range and test counts |
 | CLAUDE.md counts | `CLAUDE.md` lines 4, 22 | Update test counts, metadata types, milestone range |
 | Feature checklist counts | `docs/feature-development-checklist.md` lines 5, 28, 61, 74 | Update test counts |
@@ -133,7 +147,7 @@ All of Tier 1 + Tier 2, plus:
 
 | Check | File(s) | Action |
 |-------|---------|--------|
-| Full test suite | — | Backend + E2E + frontend build all pass |
+| Full QA verification | — | See [Full QA Verification Suite](#full-qa-verification-suite) below |
 | Context MEMORY.md | `~/.claude/projects/.../memory/MEMORY.md` | Update current state, key files, design decisions |
 | In-repo MEMORY.md | `.claude/memory/MEMORY.md` | Rewrite to match current state |
 | README.md | `README.md` | Update test counts, module count, architecture diagram |
@@ -143,53 +157,65 @@ All of Tier 1 + Tier 2, plus:
 | Playwright verification | — | Visual verification of changed views |
 | Merge workflow | — | Commit, push, create PR, squash merge, push main |
 
+#### Full QA Verification Suite
+
+Run these as part of Tier 3 before merging:
+
+```bash
+# Full QA verification suite
+uv run python -m qa test backend           # Backend tests — ALL PASS
+uv run python -m qa quality --python       # Quality scan — ALL PASS
+uv run python -m qa gate                   # Quality gate — PASS
+uv run python -m qa baseline update        # Save new regression baseline
+cd frontend && npm run build               # Frontend — 0 errors
+uv run python -m qa test e2e              # E2E tests — ALL PASS
+```
+
 ---
 
 ## Test Count Sync Registry
 
-Every file and line containing hardcoded test counts. When test counts change, update **ALL** of these.
+Every file and line containing hardcoded test counts. When test counts change, update **ALL** of these. Current test counts are also available via `uv run python -m qa report`.
 
-### Backend Test Count (currently 645)
+### Backend Test Count (currently 794)
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 4 (Project Overview) | `862 tests (645 backend + 217 E2E)` |
-| `CLAUDE.md` | Line 9 (Quick Start comment) | `# Run backend tests (645)` |
-| `CLAUDE.md` | Line 22 (Architecture) | `645 backend tests + 217 E2E` |
-| `README.md` | Line 192 (Project Structure) | `# 862 tests (645 backend + 217 E2E Playwright)` |
-| `README.md` | Line 199 (Testing section comment) | `# Backend tests (645)` |
-| `README.md` | Line 209 (Testing section text) | `862 tests total: 645 backend...` |
-| `docs/progress.md` | Line 5 (header) | `862 total tests: 645 backend + 217 E2E` |
-| `docs/feature-development-checklist.md` | Line 5 (header) | `862 total tests: 645 backend + 217 E2E` |
-| `docs/feature-development-checklist.md` | Line 28 (Section 1) | `currently 645` |
-| `docs/feature-development-checklist.md` | Line 61 (Section 4) | `currently 645` |
-| `docs/feature-development-checklist.md` | Line 74 (Section 5) | `currently 217` |
-| `docs/feature-development-checklist.md` | Line 295 (Quick Reference) | `# Backend tests (645+)` |
-| `docs/feature-development-checklist.md` | Line 298 (Quick Reference) | `# E2E Playwright tests (217+)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 19 | `862 tests (645 backend + 217 E2E)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802-804 (Verification Plan) | `(645)`, `(217)`, `(970 modules)` |
+| `CLAUDE.md` | Line 4 (Project Overview) | `1018 tests (794 backend + 224 E2E)` |
+| `CLAUDE.md` | Quick Start comment | `# Run backend tests (794)` |
+| `CLAUDE.md` | Architecture section | `794 backend tests + 224 E2E` |
+| `README.md` | Project Structure | `# 1018 tests (794 backend + 224 E2E Playwright)` |
+| `README.md` | Testing section comment | `# Backend tests (794)` |
+| `README.md` | Testing section text | `1018 tests total: 794 backend...` |
+| `docs/progress.md` | Line 5 (header) | `1018 total tests: 794 backend + 224 E2E` |
+| `docs/feature-development-checklist.md` | Line 5 (header) | `1018 total tests: 794 backend + 224 E2E` |
+| `docs/feature-development-checklist.md` | Section 1 | `currently 794` |
+| `docs/feature-development-checklist.md` | Section 4 | `currently 794` |
+| `docs/feature-development-checklist.md` | Section 5 | `currently 224` |
+| `docs/feature-development-checklist.md` | Quick Reference | `# Backend tests (794+)` |
+| `docs/feature-development-checklist.md` | Quick Reference | `# E2E Playwright tests (224+)` |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Current State | `1018 tests (794 backend + 224 E2E)` |
 
-### E2E Test Count (currently 217)
+### E2E Test Count (currently 224)
 
 Same files as above — search for the E2E count alongside backend count.
 
-### Total Test Count (currently 862)
+### Total Test Count (currently 1018)
 
 Sum of backend + E2E. Same files as above.
 
-### Frontend Module Count (currently 970)
+### Frontend Module Count (currently 971)
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 11 | `# Build frontend (970 modules)` |
-| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (970 Vite modules)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Line 802 | `(970 modules)` |
+| `CLAUDE.md` | Line 11 | `# Build frontend (971 modules)` |
+| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (971 Vite modules)` |
 
 ---
 
 ## Other Count Registries
 
-### View Count (currently 19)
+### View Count (currently 20)
 
 | File | Location |
 |------|----------|
@@ -198,7 +224,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Scenario Count (currently 31)
+### Scenario Count (currently 32)
 
 | File | Location |
 |------|----------|
@@ -206,7 +232,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Architecture Section Count (currently 86, 83.7% metadata-driven)
+### Architecture Section Count (currently 94, 81.9% metadata-driven)
 
 | File | Location |
 |------|----------|
@@ -215,7 +241,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/architecture-traceability.md` | Header |
 | Context-level `MEMORY.md` | Current State section |
 
-### Operation Script Count (currently 116 across 19 views)
+### Operation Script Count (currently 122 across 20 views)
 
 | File | Location |
 |------|----------|
@@ -223,14 +249,14 @@ Sum of backend + E2E. Same files as above.
 | Context-level `MEMORY.md` | Current State section |
 | In-repo `.claude/memory/MEMORY.md` | Current State section |
 
-### Tour Count (currently 22 tours in registry)
+### Tour Count (currently 23 tours in registry)
 
 | File | Location |
 |------|----------|
 | `workspace/metadata/tours/registry.json` | `tours` array length |
 | `docs/demo-guide.md` | Tour registry section |
 
-### Milestone Range (currently M0-M215)
+### Milestone Range (currently M0-M227)
 
 | File | Location |
 |------|----------|
@@ -245,30 +271,70 @@ Sum of backend + E2E. Same files as above.
 Run these and confirm pass/fail before merging.
 
 ```bash
-# Backend tests — expect ALL PASS, count matches registry
-uv run pytest tests/ --ignore=tests/e2e -v 2>&1 | tail -1
-# Expected: "645 passed" (or current count)
+# Backend tests via QA automation — expect ALL PASS, count matches registry
+uv run python -m qa test backend
+# Expected: "794 passed" (or current count)
 
-# E2E tests — run in batches if >100 tests cause browser crashes
-uv run pytest tests/e2e/ -v 2>&1 | tail -1
-# Expected: "217 passed" (or current count; run in batches if needed)
+# E2E tests via QA automation — run in batches if >100 tests cause browser crashes
+uv run python -m qa test e2e
+# Expected: "224 passed" (or current count; run in batches if needed)
+
+# Quality scan — expect ALL PASS
+uv run python -m qa quality --python
+
+# Quality gate — expect PASS
+uv run python -m qa gate
+
+# View latest test report
+uv run python -m qa report
 
 # Frontend build — expect 0 errors, module count matches registry
 cd frontend && npm run build 2>&1 | grep "modules transformed"
-# Expected: "970 modules transformed" (or current count)
+# Expected: "971 modules transformed" (or current count)
 
 # Test count sync — verify all files agree
-grep -rn "645\|217\|862" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
+grep -rn "794\|224\|1018" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
 # Expected: all show same counts
 
 # Module count sync
-grep -rn "970" CLAUDE.md README.md | grep -i "module"
-# Expected: all show 970
+grep -rn "971" CLAUDE.md README.md | grep -i "module"
+# Expected: all show 971
 
 # Architecture audit — verify maturity % matches registry
 grep -c "metadataMaturity:" frontend/src/data/architectureRegistry.ts
-# Expected: 86 (or current section count)
+# Expected: 94 (or current section count)
 ```
+
+---
+
+## QA Automation Framework
+
+The project includes a built-in QA automation toolkit at `qa/`. Use it instead of direct tool invocations.
+
+### Commands
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `uv run python -m qa test backend` | Run backend tests with report | Every milestone |
+| `uv run python -m qa test e2e` | Run E2E tests with report | Pre-merge |
+| `uv run python -m qa quality --python` | Run all quality tools (ruff, bandit, radon, vulture, coverage) | Every stage |
+| `uv run python -m qa quality --security` | Run security tools only | Security review |
+| `uv run python -m qa quality --coverage` | Run coverage only | Coverage check |
+| `uv run python -m qa gate` | Evaluate quality gate (pass/fail) | Pre-merge |
+| `uv run python -m qa report` | Show latest test report | After test runs |
+| `uv run python -m qa baseline update` | Save regression baseline | After merge |
+| `uv run python -m qa report --regression` | Compare against baseline | Pre-merge |
+| `uv run python -m qa report --flaky` | Detect flaky tests | Investigation |
+| `uv run python -m qa watch` | Auto-run affected tests on file changes | During development |
+| `uv run python -m qa hooks install` | Install git pre-push hook | Project setup |
+| `uv run python -m qa hooks uninstall` | Remove git pre-push hook | Cleanup |
+
+### Reports
+
+- Test reports: `qa/reports/runs/<timestamp>/`
+- Quality reports: `qa/reports/quality/<timestamp>/`
+- Regression baselines: `qa/reports/baselines/`
+- Latest symlinks: `qa/reports/runs/LATEST`, `qa/reports/quality/LATEST`
 
 ---
 

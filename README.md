@@ -28,12 +28,12 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (970 Vite modules)             │
+│  React 19 SPA (971 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (12 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
 └──────────────────┬───────────────────────────┘
-                   │ /api/* (23 route modules)
+                   │ /api/* (24 route modules)
 ┌──────────────────┴───────────────────────────┐
 │  FastAPI Backend                             │
 │  Calculation Engine · Detection Engine       │
@@ -190,24 +190,38 @@ Toolbar toggle overlays info icons on every section across all 19 views:
 │   ├── use_cases/       # Use case definitions
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
-├── tests/               # 862 tests (645 backend + 217 E2E Playwright)
+├── qa/                  # QA automation toolkit (test/quality/regression)
+├── tests/               # 1018 tests (794 backend + 224 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
-## Testing
+## Testing & QA Automation
 
 ```bash
-# Backend tests (645)
-uv run pytest tests/ --ignore=tests/e2e -v
+# Backend tests (794) — via QA automation framework
+uv run python -m qa test backend
 
-# E2E Playwright tests (217)
-uv run pytest tests/e2e/ -v
+# E2E Playwright tests (224)
+uv run python -m qa test e2e
+
+# Quality scan (ruff, bandit, radon, vulture, coverage)
+uv run python -m qa quality --python
+
+# Quality gate evaluation
+uv run python -m qa gate
+
+# View latest test report
+uv run python -m qa report
+
+# Regression baseline management
+uv run python -m qa baseline update      # Save current as baseline
+uv run python -m qa report --regression  # Compare against baseline
 
 # Frontend build
 cd frontend && npm run build
 ```
 
-862 tests total: 645 backend unit/integration + 217 E2E Playwright. All 19 views have dedicated E2E coverage.
+1018 tests total: 794 backend unit/integration + 224 E2E Playwright. All 20 views have dedicated E2E coverage. QA automation toolkit provides regression detection, quality gates, and timestamped reports.
 
 ## Development
 

@@ -1,6 +1,7 @@
 # tests/test_medallion.py
 """Tests for medallion architecture metadata."""
 import json
+from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
@@ -297,3 +298,42 @@ class TestMedallionAPI:
         data = resp.json()
         contract_ids = [c["contract_id"] for c in data]
         assert "silver_to_gold_calc_results" in contract_ids
+
+
+# ---------------------------------------------------------------------------
+# Silver-to-Reference contract tests (M220)
+# ---------------------------------------------------------------------------
+
+class TestSilverToReferenceContracts:
+    """Tests for silver-to-reference data contracts."""
+
+    def test_silver_to_reference_contracts_exist(self):
+        """All 4 silver-to-reference contracts exist."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        for entity in ["product", "venue", "account", "trader"]:
+            path = contracts_dir / f"silver_to_reference_{entity}.json"
+            assert path.exists(), f"Missing contract: {path}"
+
+    def test_silver_to_reference_product_contract_fields(self):
+        """Product contract has correct field mappings."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        data = json.loads((contracts_dir / "silver_to_reference_product.json").read_text())
+        assert data["source_tier"] == "silver"
+        assert data["target_tier"] == "reference"
+        assert data["entity"] == "product"
+        target_fields = [m["target"] for m in data["field_mappings"]]
+        assert "isin" in target_fields
+        assert "name" in target_fields
+
+    def test_pipeline_stage_silver_to_reference(self):
+        """Pipeline stages include silver_to_reference."""
+        stages_path = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "pipeline_stages.json"
+        data = json.loads(stages_path.read_text())
+        stage_ids = [s["stage_id"] for s in data["stages"]]
+        assert "silver_to_reference" in stage_ids
+
+    def test_reference_tier_contracts_count(self):
+        """4 contracts exist for the reference tier."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        ref_contracts = list(contracts_dir.glob("silver_to_reference_*.json"))
+        assert len(ref_contracts) == 4
