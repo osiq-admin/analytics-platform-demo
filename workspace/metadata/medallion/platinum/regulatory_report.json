@@ -1,0 +1,14 @@
+{
+  "kpi_id": "regulatory_report",
+  "name": "Regulatory Report",
+  "description": "Alert coverage mapped to regulatory frameworks (MAR, MiFID II, Dodd-Frank, FINRA)",
+  "category": "regulatory_report",
+  "sql_template": "SELECT regulation, model_id, COUNT(*) as alert_count FROM alerts JOIN detection_model_regulations USING (model_id) GROUP BY regulation, model_id",
+  "dimensions": [
+    {"field": "regulation", "label": "Regulation"},
+    {"field": "model_id", "label": "Detection Model"}
+  ],
+  "schedule": "weekly",
+  "source_tier": "gold",
+  "output_format": "json"
+}

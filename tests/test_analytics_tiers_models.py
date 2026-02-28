@@ -1,5 +1,8 @@
 # tests/test_analytics_tiers_models.py
 """Tests for Extended Analytical Tiers Pydantic models (Platinum, Sandbox, Archive)."""
+import json
+from pathlib import Path
+
 import pytest
 from pydantic import ValidationError
 
@@ -241,3 +244,41 @@ class TestArchiveConfig:
         cfg = ArchiveConfig(policies=policies)
         assert len(cfg.policies) == 2
         assert cfg.policies[1].retention_years == 7
+
+
+# ---------------------------------------------------------------------------
+# Platinum KPI Metadata file loading tests
+# ---------------------------------------------------------------------------
+
+PLATINUM_DIR = Path("workspace/metadata/medallion/platinum")
+
+
+class TestPlatinumKPIMetadata:
+    def test_alert_summary_kpi_loads(self):
+        data = json.loads((PLATINUM_DIR / "alert_summary.json").read_text())
+        kpi = KPIDefinition(**data)
+        assert kpi.kpi_id == "alert_summary"
+        assert kpi.name == "Alert Summary"
+        assert kpi.schedule == "daily"
+
+    def test_model_effectiveness_kpi_loads(self):
+        data = json.loads((PLATINUM_DIR / "model_effectiveness.json").read_text())
+        kpi = KPIDefinition(**data)
+        assert kpi.kpi_id == "model_effectiveness"
+        assert kpi.name == "Model Effectiveness"
+        assert kpi.schedule == "daily"
+
+    def test_all_platinum_kpis_have_dimensions(self):
+        for path in sorted(PLATINUM_DIR.glob("*.json")):
+            data = json.loads(path.read_text())
+            kpi = KPIDefinition(**data)
+            assert len(kpi.dimensions) > 0, f"{path.name} has no dimensions"
+
+    def test_platinum_kpi_categories(self):
+        for path in sorted(PLATINUM_DIR.glob("*.json")):
+            data = json.loads(path.read_text())
+            kpi = KPIDefinition(**data)
+            expected_category = path.stem  # filename without .json
+            assert kpi.category == expected_category, (
+                f"{path.name}: expected category '{expected_category}', got '{kpi.category}'"
+            )
