@@ -148,7 +148,8 @@ def run_tests(args) -> int:
     start = time.monotonic()
 
     try:
-        result = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=600)  # nosec B603
+        timeout = 1200 if args.suite == "e2e" else 600
+        result = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=timeout)  # nosec B603
     except subprocess.TimeoutExpired:
         print("[qa] TIMEOUT: Tests exceeded 600s")
         return 124

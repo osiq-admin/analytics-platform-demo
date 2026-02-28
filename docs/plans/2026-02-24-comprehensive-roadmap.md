@@ -16,7 +16,8 @@
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 20 frontend views, 929 tests (705 backend + 224 E2E), Playwright verified
+- 20 frontend views, 1018 tests (794 backend + 224 E2E), Playwright verified
+- QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
 - 81.9% metadata-driven (94 sections across 20 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages

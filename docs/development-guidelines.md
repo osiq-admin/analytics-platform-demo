@@ -376,3 +376,60 @@ Sidebar navigation is loaded from `workspace/metadata/navigation/main.json` via 
 **Fallback:** If the API fails, `Sidebar.tsx` falls back to `FALLBACK_NAVIGATION`.
 
 **Reference:** `frontend/src/layouts/Sidebar.tsx`, `frontend/src/stores/navigationStore.ts`, `workspace/metadata/navigation/main.json`
+
+---
+
+## 20. QA Automation Framework
+
+The project includes a built-in QA automation toolkit at `qa/`. **Always use QA automation commands instead of direct tool invocations** (pytest, ruff, bandit, etc.).
+
+### Commands
+
+| Command | Purpose |
+|---------|---------|
+| `uv run python -m qa test backend` | Run all backend tests, save timestamped report |
+| `uv run python -m qa test e2e` | Run E2E Playwright tests |
+| `uv run python -m qa quality --python` | Run ruff, bandit, radon, vulture, coverage |
+| `uv run python -m qa quality --security` | Run security tools only (bandit) |
+| `uv run python -m qa gate` | Evaluate quality gate (pass/fail) |
+| `uv run python -m qa report` | Show latest test report |
+| `uv run python -m qa baseline update` | Save current results as regression baseline |
+| `uv run python -m qa report --regression` | Compare against saved baseline |
+| `uv run python -m qa report --flaky` | Detect flaky tests via repeated runs |
+| `uv run python -m qa watch` | Watch files and auto-run affected tests |
+| `uv run python -m qa hooks install` | Install git pre-push hook |
+
+### Reports & Baselines
+
+- Test reports: `qa/reports/runs/<timestamp>/summary.json`
+- Quality reports: `qa/reports/quality/<timestamp>/`
+- Regression baselines: `qa/reports/baselines/`
+- Latest symlinks: `qa/reports/runs/LATEST`, `qa/reports/quality/LATEST`
+
+### Configuration
+
+- `qa/config/suites.json` — test suite definitions (paths, markers, patterns)
+- `qa/config/tools.json` — quality tool commands and targets
+- `qa/config/gate.json` — quality gate thresholds
+
+### Standard Development Loop
+
+```bash
+# During development — auto-run affected tests on file save
+uv run python -m qa watch
+
+# At milestones — full test + quality check
+uv run python -m qa test backend
+uv run python -m qa quality --python
+uv run python -m qa gate
+
+# Before merge — save regression baseline
+uv run python -m qa baseline update
+```
+
+### Why Not Direct Commands?
+
+- Reports are timestamped and archived automatically
+- Regression detection compares against saved baselines
+- Quality gate enforces thresholds consistently
+- All results are in `qa/reports/` for audit trail
