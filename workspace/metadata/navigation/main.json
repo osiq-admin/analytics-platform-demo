@@ -58,7 +58,8 @@
             "items": [
                 {"view_id": "regulatory", "label": "Regulatory Map", "path": "/regulatory", "icon": "Shield", "order": 0},
                 {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 1},
-                {"view_id": "quality", "label": "Data Quality", "path": "/quality", "icon": "ShieldCheck", "order": 2}
+                {"view_id": "quality", "label": "Data Quality", "path": "/quality", "icon": "ShieldCheck", "order": 2},
+                {"view_id": "reference", "label": "Reference Data", "path": "/reference", "icon": "BookOpen", "order": 3}
             ]
         },
         {
