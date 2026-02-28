@@ -16,7 +16,7 @@ class TestDataQualityView:
         self.page.wait_for_load_state("networkidle")
 
     def test_view_loads(self):
-        expect(self.page.locator("text=Data Quality")).to_be_visible()
+        expect(self.page.get_by_role("heading", name="Data Quality")).to_be_visible()
 
     def test_quality_scores_panel(self):
         expect(self.page.locator("[data-tour='quality-scores']")).to_be_visible()
@@ -35,4 +35,4 @@ class TestDataQualityView:
         expect(select).to_be_visible()
 
     def test_dimensions_badge(self):
-        expect(self.page.locator("text=dimensions")).to_be_visible()
+        expect(self.page.get_by_text("7 dimensions")).to_be_visible()
