@@ -75,6 +75,17 @@ def run_tool(name: str, cmd: list[str], timeout: int = 120) -> dict:
             "stderr": f"Timed out after {timeout}s",
             "duration_seconds": timeout,
             "timed_out": True,
+            "not_found": False,
+        }
+    except FileNotFoundError:
+        return {
+            "name": name,
+            "return_code": -1,
+            "stdout": "",
+            "stderr": f"Tool not found: {cmd[0]}. Install with: uv add {cmd[0]}",
+            "duration_seconds": 0,
+            "timed_out": False,
+            "not_found": True,
         }
 
 
@@ -132,7 +143,7 @@ def run_quality(args) -> int:
     # Print summary
     print(f"\n[qa] Quality results saved to: {quality_dir}")
     for r in results:
-        status = "PASS" if r["return_code"] == 0 else ("TIMEOUT" if r["timed_out"] else "ISSUES")
+        status = "PASS" if r["return_code"] == 0 else ("NOT_FOUND" if r.get("not_found") else ("TIMEOUT" if r["timed_out"] else "ISSUES"))
         print(f"  [{status}] {r['name']} ({r['duration_seconds']}s)")
 
     return 0
