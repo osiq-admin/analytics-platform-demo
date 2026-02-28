@@ -57,6 +57,8 @@ interface EntityDetail {
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
+const TIER_OPTIONS = ["landing", "bronze", "silver", "gold", "platinum"];
+
 const TRANSFORM_OPTIONS = [
   "direct",
   "rename",
@@ -112,6 +114,10 @@ export default function MappingStudio() {
   const [entities, setEntities] = useState<EntitySummary[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /* ---------- tier selectors ---------- */
+  const [sourceTier, setSourceTier] = useState("bronze");
+  const [targetTier, setTargetTier] = useState("silver");
+
   /* ---------- editor state ---------- */
   const [selected, setSelected] = useState<MappingDefinition | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -125,6 +131,11 @@ export default function MappingStudio() {
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  /* ---------- filtered mappings by tier pair ---------- */
+  const filteredMappings = mappings.filter(
+    (m) => m.source_tier === sourceTier && m.target_tier === targetTier
+  );
 
   /* -------------------------------------------------------- */
   /*  Data loading                                             */
@@ -189,7 +200,7 @@ export default function MappingStudio() {
   };
 
   const startNew = () => {
-    setSelected(emptyMapping());
+    setSelected({ ...emptyMapping(), source_tier: sourceTier, target_tier: targetTier });
     setIsNew(true);
     setDirty(true);
     setValidation(null);
@@ -312,6 +323,40 @@ export default function MappingStudio() {
         }
       >
         <div className="flex items-center gap-3 flex-wrap">
+          {/* Tier selectors */}
+          <label className="flex items-center gap-1 text-xs text-muted">
+            Source Tier
+            <select
+              data-tour="mapping-tier-source"
+              className="rounded border border-border bg-surface px-2 py-1 text-xs text-foreground"
+              value={sourceTier}
+              onChange={(e) => {
+                setSourceTier(e.target.value);
+                setSelected(null);
+              }}
+            >
+              {TIER_OPTIONS.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1 text-xs text-muted">
+            Target Tier
+            <select
+              data-tour="mapping-tier-target"
+              className="rounded border border-border bg-surface px-2 py-1 text-xs text-foreground"
+              value={targetTier}
+              onChange={(e) => {
+                setTargetTier(e.target.value);
+                setSelected(null);
+              }}
+            >
+              {TIER_OPTIONS.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </label>
+
           {/* Mapping dropdown */}
           <label className="flex items-center gap-1.5 text-xs text-muted">
             Mapping
@@ -319,12 +364,12 @@ export default function MappingStudio() {
               className="bg-background border border-border rounded px-2 py-1 text-xs text-foreground min-w-[200px]"
               value={selected && !isNew ? selected.mapping_id : ""}
               onChange={(e) => {
-                const m = mappings.find((x) => x.mapping_id === e.target.value);
+                const m = filteredMappings.find((x) => x.mapping_id === e.target.value);
                 if (m) selectMapping(m);
               }}
             >
               <option value="">-- select --</option>
-              {mappings.map((m) => (
+              {filteredMappings.map((m) => (
                 <option key={m.mapping_id} value={m.mapping_id}>
                   {m.mapping_id} ({m.status})
                 </option>
