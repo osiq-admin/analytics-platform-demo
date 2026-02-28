@@ -3330,6 +3330,73 @@ const S30_PIPELINE_ORCHESTRATION: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// S31: Data Quality Investigation
+// ==========================================================================
+
+const S31_DATA_QUALITY_INVESTIGATION: ScenarioDefinition = {
+  id: "s31_data_quality_investigation",
+  name: "Data Quality Investigation",
+  description:
+    "Explore quality scores, investigate dimension breakdowns, review quarantine queue, and profile entity data",
+  category: "governance",
+  difficulty: "intermediate",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='quality-dashboard']",
+      title: "Data Quality Dashboard",
+      content:
+        "The Data Quality view provides ISO 8000/25012-aligned quality scoring across all entities.",
+      action: "navigate",
+      route: "/quality",
+      placement: "center",
+      hint: "Navigate to Data Quality",
+      delay: 500,
+    },
+    {
+      target: "[data-tour='quality-scores']",
+      title: "Quality Scorecards",
+      content:
+        "Each card shows the weighted quality score for a data contract. Click one to see the dimension breakdown.",
+      action: "wait",
+      placement: "bottom",
+      hint: "Click a scorecard to drill in",
+      delay: 1500,
+    },
+    {
+      target: "[data-tour='quality-spider']",
+      title: "Spider Chart",
+      content:
+        "The radar chart shows how quality distributes across 7 ISO dimensions. Look for dimensions below the warning threshold.",
+      action: "wait",
+      placement: "right",
+      hint: "Examine the dimension balance",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='quality-quarantine']",
+      title: "Quarantine Queue",
+      content:
+        "Records that failed quality gates appear here. You can retry processing or override with justification.",
+      action: "wait",
+      placement: "top",
+      hint: "Review quarantined records",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='quality-profiling']",
+      title: "Data Profiling",
+      content:
+        "Select an entity to see per-field statistics. High null rates or low distinct counts indicate data quality issues.",
+      action: "wait",
+      placement: "top",
+      hint: "Profile an entity",
+      delay: 2000,
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3363,4 +3430,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s28_data_onboarding: S28_DATA_ONBOARDING,
   s29_mapping_studio: S29_MAPPING_STUDIO,
   s30_pipeline_orchestration: S30_PIPELINE_ORCHESTRATION,
+  s31_data_quality_investigation: S31_DATA_QUALITY_INVESTIGATION,
 };
