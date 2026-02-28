@@ -251,3 +251,49 @@ class TestMedallionAPI:
         assert resp.status_code == 200
         data = resp.json()
         assert data["nodes"] == []
+
+    def test_get_calc_results_contract(self, workspace, client):
+        """GET a Silver-to-Gold calc results contract by ID."""
+        contract = {
+            "contract_id": "silver_to_gold_calc_results",
+            "source_tier": "silver",
+            "target_tier": "gold",
+            "entity": "calculation_result",
+            "description": "Calc results contract",
+            "field_mappings": [],
+            "quality_rules": [
+                {"rule": "not_null", "fields": ["execution_id", "product_id"]},
+                {"rule": "range_check", "field": "calculated_value", "min": 0}
+            ],
+            "sla": {"freshness_minutes": 30, "completeness_pct": 99.5},
+            "owner": "surveillance-ops",
+            "classification": "internal"
+        }
+        (workspace / "metadata" / "medallion" / "contracts" / "silver_to_gold_calc_results.json").write_text(
+            json.dumps(contract)
+        )
+        resp = client.get("/api/medallion/contracts/silver_to_gold_calc_results")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["entity"] == "calculation_result"
+        assert data["source_tier"] == "silver"
+        assert data["target_tier"] == "gold"
+        assert len(data["quality_rules"]) == 2
+
+    def test_list_contracts_includes_calc_results(self, workspace, client):
+        """List contracts endpoint includes the calc results contract."""
+        contract = {
+            "contract_id": "silver_to_gold_calc_results",
+            "source_tier": "silver",
+            "target_tier": "gold",
+            "entity": "calculation_result",
+            "description": "Calc results contract",
+        }
+        (workspace / "metadata" / "medallion" / "contracts" / "silver_to_gold_calc_results.json").write_text(
+            json.dumps(contract)
+        )
+        resp = client.get("/api/medallion/contracts")
+        assert resp.status_code == 200
+        data = resp.json()
+        contract_ids = [c["contract_id"] for c in data]
+        assert "silver_to_gold_calc_results" in contract_ids

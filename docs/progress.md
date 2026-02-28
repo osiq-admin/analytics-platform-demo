@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M196 Phase 16 Complete; 772 total tests: 562 backend + 210 E2E, 18 views, 29 scenarios, 80 architecture sections, 969 modules)
+**Last Updated**: 2026-02-28 (M204 Phase 17 Complete; 800 total tests: 590 backend + 210 E2E, 18 views, 30 scenarios, 82 architecture sections, 969 modules)
 
 ---
 
@@ -52,6 +52,7 @@
 | Data Onboarding & Connector Abstraction (Phase 15) | COMPLETE | M176-M183: Pydantic onboarding models, 6 connector metadata files, BaseConnector + LocalFileConnector + stubs, schema detector + data profiler, onboarding service + API endpoints, 5-step DataOnboarding wizard, tours/scenarios/operations/architecture — 759 total tests (549+210), 18 views |
 | Tour/Scenario Quality Fixes + Bronze→Silver Mapping (Phase 15.5 + 16) | COMPLETE | M184-M196: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts, Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 total tests (562+210), 18 views, 29 scenarios |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
+| Silver→Gold Pipeline Orchestration (Phase 17) | COMPLETE | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG edges + medallion stages progress bar), MedallionOverview execution status + Run Stage, S30 scenario — 800 total tests (590+210), 18 views, 30 scenarios, 82 architecture sections |
 
 ---
 
@@ -281,6 +282,19 @@
 | M181 | DataOnboarding Wizard View | COMPLETE | 5 | 5 | Navigation + route, 5-step wizard (Source → Schema → Profile → Mapping → Review) |
 | M182 | Tours, Scenarios, Operations, Architecture | COMPLETE | 4 | 4 | Onboarding tour, S28 scenario, 6 operation scripts, 3 architecture registry entries (80 total sections) |
 | M183 | Test Suite + Build Verification | COMPLETE | 3 | 3 | 549 backend tests, 210 E2E tests, 971 frontend modules — all passing |
+
+### Phase 17: Silver→Gold Pipeline Orchestration (M197-M204)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M197 | Contract Validator + Pipeline Orchestrator | COMPLETE | 4 | 4 | ContractValidator service (schema + null + type + range validation), PipelineOrchestrator service (stage execution, contract validation, dependency resolution), 20 new backend tests |
+| M198 | Pipeline API Fix + Stage Execution Endpoints | COMPLETE | 3 | 3 | Fix SettingsResolver import in pipeline API, stage execution endpoints (/api/pipeline/stages/{id}/execute, /api/pipeline/validate-contract), 8 new backend tests |
+| M199 | Silver-to-Gold Mapping Metadata | COMPLETE | 3 | 3 | 16 field mappings across execution, order, product entities (silver→gold tier) |
+| M200 | Silver-to-Gold Data Contract + Transformation | COMPLETE | 2 | 2 | silver_to_gold data contract metadata, silver_to_gold_enrichment transformation update |
+| M201 | MappingStudio Tier Selectors | COMPLETE | 3 | 3 | Source/target tier dropdown selectors, tier-filtered mapping display |
+| M202 | PipelineMonitor Overhaul | COMPLETE | 4 | 4 | True DAG edges from depends_on metadata (replaced linear chaining), medallion stages progress bar, contract validation panel |
+| M203 | MedallionOverview Execution Status + Run Stage | COMPLETE | 3 | 3 | Tier node execution status badges, Run Stage action button, stage execution results display |
+| M204 | Tours, Scenarios, Operations, Architecture Registry | COMPLETE | 3 | 3 | S30 scenario (Silver→Gold Pipeline), 4 new operations, 2 new architecture registry entries (82 total sections), tour updates |
 
 ---
 

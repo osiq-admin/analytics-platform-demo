@@ -210,6 +210,12 @@ export const TOURS: Record<string, TourDefinition> = {
         content: "Execute the full calculation and detection pipeline. Progress updates in real-time.",
         placement: "left",
       },
+      {
+        target: "[data-tour='pipeline-stages']",
+        title: "Medallion Pipeline Stages",
+        content: "The pipeline stages progress bar shows all medallion tier-to-tier stages loaded from metadata. Click any stage button to execute it individually.",
+        placement: "bottom",
+      },
     ],
   },
 
@@ -250,6 +256,18 @@ export const TOURS: Record<string, TourDefinition> = {
         target: "[data-tour='mapping-canvas']",
         title: "Field Mapping Canvas",
         content: "Edit source-to-target field mappings in the table. Each row maps a source field to a target field with a transform type (direct, rename, cast, uppercase, expression). Use 'Add Row' for new mappings.",
+        placement: "bottom",
+      },
+      {
+        target: "[data-tour='mapping-tier-source']",
+        title: "Source Tier Selector",
+        content: "Filter mappings by source tier. The default is Bronze — change to Silver to see Silver-to-Gold mappings for calculation inputs.",
+        placement: "bottom",
+      },
+      {
+        target: "[data-tour='mapping-tier-target']",
+        title: "Target Tier Selector",
+        content: "Filter by target tier. Set Source to Silver and Target to Gold to view the calculation input mappings.",
         placement: "bottom",
       },
       {
@@ -628,6 +646,12 @@ export const TOURS: Record<string, TourDefinition> = {
         content: "Click any tier node to see its properties: data state, storage format, retention policy, quality gate, and access level. Related data contracts and pipeline stages are shown below.",
         placement: "left",
         route: "/medallion",
+      },
+      {
+        target: "[data-tour='medallion-run-stage']",
+        title: "Run Pipeline Stage",
+        content: "Execute a pipeline stage directly from the tier detail panel. The orchestrator reads stage metadata to dispatch the correct transformation.",
+        placement: "left",
       },
     ],
   },

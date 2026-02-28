@@ -52,6 +52,10 @@ const CATEGORY_META: Record<
     label: "Administration",
     description: "System settings, pipeline, and metadata",
   },
+  pipeline: {
+    label: "Pipeline & Orchestration",
+    description: "Run and monitor medallion pipeline stages",
+  },
 };
 
 const CATEGORY_ORDER: ScenarioCategory[] = [
@@ -62,6 +66,7 @@ const CATEGORY_ORDER: ScenarioCategory[] = [
   "use_cases",
   "investigation",
   "admin",
+  "pipeline",
 ];
 
 const DIFFICULTY_LABELS: Record<ScenarioDifficulty, { label: string; color: string }> = {

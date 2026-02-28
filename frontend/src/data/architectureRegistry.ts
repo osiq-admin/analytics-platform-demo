@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 80 sections across 18 views + 3 cross-cutting components.
+// 82 sections across 18 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -828,7 +828,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Mapping Selector",
         viewId: "mappings",
         description:
-          "Dropdown to select or create a mapping definition. Lists all mapping files from metadata. Choose source and target entities.",
+          "Dropdown to select or create a mapping definition. Lists all mapping files from metadata. Choose source and target entities. Source Tier and Target Tier selectors filter mappings by medallion tier pair (e.g., Bronze-to-Silver, Silver-to-Gold).",
         files: [
           { path: "frontend/src/views/MappingStudio/index.tsx", role: "Main view with mapping selector and CRUD controls" },
         ],
@@ -951,7 +951,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Execution DAG",
         viewId: "pipeline",
         description:
-          "React Flow graph visualizing pipeline execution flow. Nodes represent calculation steps with execution status (pending/running/complete/error). Layout derived from calculation dependency metadata.",
+          "React Flow graph visualizing pipeline execution flow with true dependency edges from the depends_on field in calculation metadata. Nodes represent calculation steps with execution status (pending/running/complete/error). Edges reflect actual upstream/downstream relationships, not a linear chain.",
         files: [
           {
             path: "frontend/src/views/PipelineMonitor/PipelineDAG.tsx",
@@ -986,9 +986,9 @@ export const VIEW_TRACES: ViewTrace[] = [
           { name: "React Flow", role: "Interactive pipeline DAG rendering" },
           { name: "Dagre", role: "Automatic hierarchical DAG layout" },
         ],
-        metadataMaturity: "mostly-metadata-driven",
+        metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "DAG structure derives from calculation dependency metadata; execution status and runtime rendering are code-driven.",
+          "DAG structure and edges derive from calculation depends_on metadata. Adding or changing calculation dependencies automatically updates the graph topology.",
       },
       {
         id: "pipeline.steps-table",
@@ -1066,6 +1066,87 @@ export const VIEW_TRACES: ViewTrace[] = [
         metadataMaturity: "infrastructure",
         maturityExplanation:
           "Pipeline trigger is an infrastructure operation. The pipeline itself executes metadata-driven calculations, but the button is a fixed UI element.",
+      },
+      {
+        id: "pipeline.medallion-stages",
+        displayName: "Medallion Stage Progress",
+        viewId: "pipeline",
+        description:
+          "Horizontal progress bar showing all medallion pipeline stages loaded from pipeline_stages.json metadata. Each stage button triggers the Pipeline Orchestrator.",
+        files: [
+          { path: "frontend/src/views/PipelineMonitor/index.tsx", role: "Renders stage progress bar" },
+          { path: "backend/services/pipeline_orchestrator.py", role: "Metadata-driven stage dispatcher" },
+          { path: "backend/api/pipeline.py", role: "Stage execution API endpoints" },
+        ],
+        stores: [
+          {
+            name: "pipelineStore",
+            path: "frontend/src/stores/pipelineStore.ts",
+            role: "Fetches stages and runs stage execution",
+          },
+        ],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/pipeline/stages",
+            role: "List pipeline stages",
+            routerFile: "backend/api/pipeline.py",
+          },
+          {
+            method: "POST",
+            path: "/api/pipeline/stages/{stage_id}/run",
+            role: "Execute pipeline stage",
+            routerFile: "backend/api/pipeline.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/medallion/pipeline_stages.json",
+            category: "metadata",
+            role: "Pipeline stage definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Pipeline stages, transformations, and dispatch all driven by metadata JSON. Adding a stage to pipeline_stages.json automatically makes it appear.",
+      },
+      {
+        id: "pipeline.contract-validation",
+        displayName: "Contract Validation Status",
+        viewId: "pipeline",
+        description:
+          "Shows data contract validation results after running a pipeline stage. Quality rules from contract metadata evaluated against DuckDB tables.",
+        files: [
+          { path: "frontend/src/views/PipelineMonitor/index.tsx", role: "Renders contract validation table" },
+          { path: "backend/services/contract_validator.py", role: "Evaluates quality rules against DuckDB" },
+        ],
+        stores: [
+          {
+            name: "pipelineStore",
+            path: "frontend/src/stores/pipelineStore.ts",
+            role: "Stores stage run result",
+          },
+        ],
+        apis: [
+          {
+            method: "POST",
+            path: "/api/pipeline/stages/{stage_id}/run",
+            role: "Returns contract validation",
+            routerFile: "backend/api/pipeline.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/medallion/contracts",
+            category: "metadata",
+            role: "Data contract definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Contract rules, field mappings, and SLA thresholds all from metadata JSON. Validation logic is generic — driven entirely by contract definitions.",
       },
     ],
   },
@@ -3247,7 +3328,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Tier Detail Panel",
         viewId: "medallion",
         description:
-          "Detail panel showing properties of the selected tier: data state, storage format, retention policy, quality gate, access level, mutability. Related data contracts and pipeline stages are displayed below.",
+          "Detail panel showing properties of the selected tier: data state, storage format, retention policy, quality gate, access level, mutability. Related data contracts and pipeline stages are displayed below, with a Run Stage action button to execute pipeline stages directly from the tier detail.",
         files: [
           { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders tier detail panel with contracts and pipeline stages" },
         ],
