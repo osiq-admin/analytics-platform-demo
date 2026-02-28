@@ -25,6 +25,7 @@ const MedallionOverview = lazy(() => import("./views/MedallionOverview/index.tsx
 const DataOnboarding = lazy(() => import("./views/DataOnboarding/index.tsx"));
 const DataQuality = lazy(() => import("./views/DataQuality/index.tsx"));
 const ReferenceData = lazy(() => import("./views/ReferenceData/index.tsx"));
+const AnalyticsTiers = lazy(() => import("./views/AnalyticsTiers/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +46,7 @@ export const routes: RouteObject[] = [
       { path: "mappings", element: <MappingStudio /> },
       { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
+      { path: "analytics-tiers", element: <Suspense fallback={null}><AnalyticsTiers /></Suspense> },
 
       // Detect — models, use cases, pipeline, dashboard
       { path: "models", element: <ModelComposer /> },
