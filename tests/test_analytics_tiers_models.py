@@ -282,3 +282,36 @@ class TestPlatinumKPIMetadata:
             assert kpi.category == expected_category, (
                 f"{path.name}: expected category '{expected_category}', got '{kpi.category}'"
             )
+
+
+# ---------------------------------------------------------------------------
+# Sandbox + Archive Metadata file loading tests
+# ---------------------------------------------------------------------------
+
+SANDBOX_DIR = Path("workspace/metadata/medallion/sandbox")
+ARCHIVE_DIR = Path("workspace/metadata/medallion/archive")
+
+
+class TestSandboxArchiveMetadata:
+    def test_sandbox_template_loads(self):
+        data = json.loads((SANDBOX_DIR / "template.json").read_text())
+        assert data["tier_id"] == "sandbox"
+        assert len(data["available_overrides"]) == 4
+
+    def test_archive_policies_load(self):
+        data = json.loads((ARCHIVE_DIR / "policies.json").read_text())
+        cfg = ArchiveConfig(**data)
+        assert cfg.tier_id == "archive"
+
+    def test_archive_policies_count(self):
+        data = json.loads((ARCHIVE_DIR / "policies.json").read_text())
+        cfg = ArchiveConfig(**data)
+        assert len(cfg.policies) == 5
+
+    def test_gdpr_policy_has_crypto_shred(self):
+        data = json.loads((ARCHIVE_DIR / "policies.json").read_text())
+        cfg = ArchiveConfig(**data)
+        gdpr = [p for p in cfg.policies if p.policy_id == "gdpr"]
+        assert len(gdpr) == 1
+        assert gdpr[0].gdpr_relevant is True
+        assert gdpr[0].crypto_shred is True
