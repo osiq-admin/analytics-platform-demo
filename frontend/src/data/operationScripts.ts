@@ -4,7 +4,7 @@ import type { ViewOperations } from "../components/TourEngine/OperationScripts.t
 // Operation Scripts — Per-view help metadata (M119)
 // ==========================================================================
 // Each view defines 3-6 operations and 2-4 tips that appear in the (?) panel.
-// Operations may link to guided scenarios (S1-S31) via scenarioId.
+// Operations may link to guided scenarios (S1-S33) via scenarioId.
 // ==========================================================================
 
 export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
@@ -1031,6 +1031,59 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Field-level provenance tracks where each value came from — source file, confidence score, and timestamp",
       "Reconciliation re-runs match/merge against source data and reports new, updated, and conflict counts",
       "Use POST /api/reference/{entity}/{golden_id}/override to manually correct a golden record field with justification",
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // 22. Analytics Tiers
+  // --------------------------------------------------------------------------
+  "analytics-tiers": {
+    viewId: "analytics-tiers",
+    label: "Analytics Tiers",
+    operations: [
+      {
+        id: "browse_platinum_kpis",
+        name: "Browse Platinum KPIs",
+        description:
+          "View pre-built KPI datasets aggregated from Gold tier detection results, including record counts, freshness, and aggregation type.",
+      },
+      {
+        id: "view_kpi_dataset",
+        name: "View KPI Dataset Details",
+        description:
+          "Select a Platinum KPI dataset to see its columns, aggregation logic, source tier, and last refresh timestamp.",
+      },
+      {
+        id: "create_sandbox",
+        name: "Create Sandbox",
+        description:
+          "Provision an isolated sandbox environment cloned from production data to test threshold or model changes safely.",
+        scenarioId: "s33_analytics_tiers",
+      },
+      {
+        id: "run_sandbox_comparison",
+        name: "Run Sandbox Comparison",
+        description:
+          "Execute a sandbox run and compare results side-by-side with production — alert counts, score distributions, and threshold impact.",
+      },
+      {
+        id: "view_retention_policies",
+        name: "View Retention Policies",
+        description:
+          "Review archive retention policies per tier — hot, warm, and cold storage durations, compression, and regulatory hold flags.",
+      },
+      {
+        id: "export_archive",
+        name: "Export Archive Dataset",
+        description:
+          "Export an archived dataset in Parquet format for external analysis or regulatory submission.",
+      },
+    ],
+    tips: [
+      "Platinum KPIs are pre-aggregated from Gold tier detection results — they refresh automatically after pipeline runs.",
+      "Sandboxes clone production data so you can test threshold changes without affecting live alerts.",
+      "Archive retention policies ensure regulatory compliance — datasets in regulatory hold cannot be deleted.",
+      "Use the comparison view to see how sandbox threshold changes would affect alert volumes before deploying.",
     ],
   },
 

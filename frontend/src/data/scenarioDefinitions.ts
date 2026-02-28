@@ -3479,6 +3479,95 @@ const S32_REFERENCE_DATA_RECONCILIATION: ScenarioDefinition = {
   ],
 };
 
+// --------------------------------------------------------------------------
+// S33: Analytics Tiers — Platinum KPIs, Sandbox Testing, Archive (5 min)
+// --------------------------------------------------------------------------
+const S33_ANALYTICS_TIERS: ScenarioDefinition = {
+  id: "s33_analytics_tiers",
+  name: "Analytics Tiers — Platinum, Sandbox & Archive",
+  description:
+    "Browse Platinum KPI datasets, create a sandbox environment, run a comparison, and review archive retention policies",
+  category: "pipeline",
+  difficulty: "intermediate",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='analytics-tier-tabs']",
+      title: "Navigate to Analytics Tiers",
+      content:
+        "Open the Analytics Tiers view from the Ingest sidebar group.",
+      action: "navigate",
+      route: "/analytics-tiers",
+      placement: "bottom",
+      hint: "Navigate to Analytics Tiers using the sidebar.",
+      delay: 500,
+    },
+    {
+      target: "[data-tour='analytics-platinum']",
+      title: "Browse Platinum KPIs",
+      content:
+        "View pre-built KPI datasets aggregated from Gold tier detection results. Each dataset shows record count, freshness, and aggregation type.",
+      action: "wait",
+      placement: "bottom",
+      hint: "Browse the Platinum KPI dataset list",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='analytics-tier-tabs'] button:nth-child(2)",
+      title: "Switch to Sandbox Tab",
+      content:
+        "Click the Sandbox tab to manage isolated testing environments.",
+      action: "click",
+      actionTarget: "[data-tour='analytics-tier-tabs'] button:nth-child(2)",
+      placement: "bottom",
+      hint: "Click the Sandbox tab",
+      delay: 1500,
+    },
+    {
+      target: "[data-tour='analytics-sandbox'] button",
+      title: "Create a Sandbox",
+      content:
+        "Click Create Sandbox to provision an isolated environment for testing threshold changes without affecting production data.",
+      action: "click",
+      actionTarget: "[data-tour='analytics-sandbox'] button",
+      placement: "bottom",
+      hint: "Click the Create Sandbox button",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='analytics-sandbox']",
+      title: "View Sandbox Comparison",
+      content:
+        "After running the sandbox, compare results side-by-side with production — see how threshold changes affect alert volumes and scores.",
+      action: "wait",
+      placement: "bottom",
+      hint: "Review the sandbox comparison results",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='analytics-tier-tabs'] button:nth-child(3)",
+      title: "Switch to Archive Tab",
+      content:
+        "Click the Archive tab to view retention policies and archived datasets.",
+      action: "click",
+      actionTarget: "[data-tour='analytics-tier-tabs'] button:nth-child(3)",
+      placement: "bottom",
+      hint: "Click the Archive tab",
+      delay: 1500,
+    },
+    {
+      target: "[data-tour='analytics-archive']",
+      title: "Review Retention Policies",
+      content:
+        "View retention policies for each tier — hot, warm, and cold storage durations, compression settings, and regulatory hold requirements.",
+      action: "wait",
+      placement: "bottom",
+      hint: "Review the archive retention policies",
+      delay: 2000,
+    },
+  ],
+};
+
 // ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
@@ -3515,4 +3604,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s30_pipeline_orchestration: S30_PIPELINE_ORCHESTRATION,
   s31_data_quality_investigation: S31_DATA_QUALITY_INVESTIGATION,
   s32_reference_data_reconciliation: S32_REFERENCE_DATA_RECONCILIATION,
+  s33_analytics_tiers: S33_ANALYTICS_TIERS,
 };
