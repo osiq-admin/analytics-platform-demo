@@ -1,0 +1,26 @@
+{
+  "entity": "product",
+  "golden_key": "isin",
+  "display_name": "Product Master",
+  "description": "Golden records for financial products — deduplicated by ISIN with cross-source reconciliation",
+  "match_rules": [
+    {"strategy": "exact", "fields": ["isin"], "threshold": 1.0, "weight": 1.0},
+    {"strategy": "exact", "fields": ["product_id"], "threshold": 1.0, "weight": 0.8},
+    {"strategy": "fuzzy", "fields": ["name"], "threshold": 0.85, "weight": 0.6}
+  ],
+  "merge_rules": [
+    {"field": "name", "strategy": "longest", "source_priority": []},
+    {"field": "asset_class", "strategy": "most_frequent", "source_priority": []},
+    {"field": "cfi_code", "strategy": "source_priority", "source_priority": ["iso_10962", "csv"]},
+    {"field": "instrument_type", "strategy": "most_frequent", "source_priority": []},
+    {"field": "exchange_mic", "strategy": "source_priority", "source_priority": ["iso_10383", "csv"]},
+    {"field": "currency", "strategy": "source_priority", "source_priority": ["iso_4217", "csv"]}
+  ],
+  "external_sources": [
+    {"source_id": "iso_6166", "field": "isin", "validation_type": "format", "description": "ISIN format validation (ISO 6166)"},
+    {"source_id": "iso_10962", "field": "cfi_code", "validation_type": "lookup", "description": "CFI code validation (ISO 10962)"},
+    {"source_id": "iso_10383", "field": "exchange_mic", "validation_type": "lookup", "description": "MIC code validation (ISO 10383)"}
+  ],
+  "auto_reconcile": true,
+  "reconciliation_schedule": "on_demand"
+}

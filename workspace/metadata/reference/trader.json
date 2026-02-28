@@ -1,0 +1,19 @@
+{
+  "entity": "trader",
+  "golden_key": "trader_id",
+  "display_name": "Trader Master",
+  "description": "Golden records for traders — deduplicated by trader_id with desk and status reconciliation",
+  "match_rules": [
+    {"strategy": "exact", "fields": ["trader_id"], "threshold": 1.0, "weight": 1.0},
+    {"strategy": "fuzzy", "fields": ["trader_name"], "threshold": 0.9, "weight": 0.7}
+  ],
+  "merge_rules": [
+    {"field": "trader_name", "strategy": "longest", "source_priority": []},
+    {"field": "desk", "strategy": "most_recent", "source_priority": []},
+    {"field": "trader_type", "strategy": "most_frequent", "source_priority": []},
+    {"field": "status", "strategy": "most_recent", "source_priority": []}
+  ],
+  "external_sources": [],
+  "auto_reconcile": true,
+  "reconciliation_schedule": "on_demand"
+}

@@ -1,0 +1,20 @@
+{
+  "entity": "venue",
+  "golden_key": "mic",
+  "display_name": "Venue Master",
+  "description": "Golden records for trading venues — deduplicated by MIC code with ISO 10383 validation",
+  "match_rules": [
+    {"strategy": "exact", "fields": ["mic"], "threshold": 1.0, "weight": 1.0}
+  ],
+  "merge_rules": [
+    {"field": "name", "strategy": "longest", "source_priority": []},
+    {"field": "country", "strategy": "source_priority", "source_priority": ["iso_3166", "csv"]},
+    {"field": "timezone", "strategy": "most_recent", "source_priority": []}
+  ],
+  "external_sources": [
+    {"source_id": "iso_10383", "field": "mic", "validation_type": "lookup", "description": "MIC code validation (ISO 10383)"},
+    {"source_id": "iso_3166", "field": "country", "validation_type": "lookup", "description": "Country code validation (ISO 3166)"}
+  ],
+  "auto_reconcile": true,
+  "reconciliation_schedule": "on_demand"
+}
