@@ -1,12 +1,16 @@
 """Tests for the PipelineOrchestrator service."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from starlette.testclient import TestClient
 
+from backend import config
 from backend.db import DuckDBManager
+from backend.main import app
 from backend.models.medallion import PipelineConfig, PipelineStage
 from backend.services.pipeline_orchestrator import PipelineOrchestrator
 
@@ -204,3 +208,117 @@ def test_run_stage_no_transformation(mock_db, mock_metadata):
     skip_steps = [s for s in result.steps if s["type"] == "skip"]
     assert len(skip_steps) == 1
     assert "no transformation_id" in skip_steps[0]["detail"]
+
+
+# ---------------------------------------------------------------------------
+# API integration tests
+# ---------------------------------------------------------------------------
+
+class TestPipelineStageAPI:
+    """Integration tests for /api/pipeline/stages endpoints."""
+
+    @pytest.fixture
+    def workspace(self, tmp_path):
+        """Minimal workspace with medallion pipeline stage metadata."""
+        ws = tmp_path / "workspace"
+        # Required base dirs for app startup
+        for d in [
+            "entities", "calculations/transaction", "calculations/time_windows",
+            "calculations/derived", "calculations/aggregations",
+            "settings/thresholds", "settings/score_steps", "settings/score_thresholds",
+            "detection_models", "navigation", "widgets", "format_rules",
+            "query_presets", "grids", "view_config", "theme", "workflows",
+            "demo", "tours", "standards/iso", "standards/fix", "standards/compliance",
+            "mappings", "regulations", "match_patterns", "score_templates",
+            "connectors",
+        ]:
+            (ws / "metadata" / d).mkdir(parents=True, exist_ok=True)
+
+        # Navigation (required by app)
+        (ws / "metadata" / "navigation" / "main.json").write_text(json.dumps({
+            "navigation_id": "main", "groups": []
+        }))
+
+        # Medallion dirs
+        (ws / "metadata" / "medallion").mkdir(parents=True, exist_ok=True)
+        (ws / "metadata" / "medallion" / "transformations").mkdir(parents=True, exist_ok=True)
+        (ws / "metadata" / "medallion" / "contracts").mkdir(parents=True, exist_ok=True)
+
+        # Pipeline stages with a silver_to_gold stage
+        (ws / "metadata" / "medallion" / "pipeline_stages.json").write_text(json.dumps({
+            "stages": [
+                {
+                    "stage_id": "silver_to_gold",
+                    "name": "Silver to Gold",
+                    "tier_from": "silver",
+                    "tier_to": "gold",
+                    "order": 4,
+                    "depends_on": ["bronze_to_silver"],
+                    "entities": ["alert", "calculation_result"],
+                    "parallel": False,
+                    "transformation_id": "silver_to_gold_alerts",
+                    "contract_id": "silver_to_gold_alerts",
+                }
+            ]
+        }))
+
+        # Transformation with comment-only SQL (triggers programmatic path)
+        (ws / "metadata" / "medallion" / "transformations" / "silver_to_gold_alerts.json").write_text(json.dumps({
+            "transformation_id": "silver_to_gold_alerts",
+            "source_tier": "silver",
+            "target_tier": "gold",
+            "entity": "alert",
+            "description": "Programmatic: run calc + detection engines",
+            "sql_template": "-- programmatic: handled by calc + detection engines",
+            "parameters": {},
+            "quality_checks": [],
+            "error_handling": "fail",
+        }))
+
+        # Required data dirs
+        (ws / "data" / "csv").mkdir(parents=True, exist_ok=True)
+        (ws / "data" / "parquet").mkdir(parents=True, exist_ok=True)
+        (ws / "results").mkdir(parents=True, exist_ok=True)
+        (ws / "alerts" / "traces").mkdir(parents=True, exist_ok=True)
+
+        return ws
+
+    @pytest.fixture
+    def client(self, workspace, monkeypatch):
+        """Create a test client with the pipeline workspace."""
+        monkeypatch.setattr(config.settings, "workspace_dir", workspace)
+        with TestClient(app, raise_server_exceptions=False) as tc:
+            yield tc
+
+    def test_list_stages(self, client):
+        """GET /api/pipeline/stages returns 200 with at least 1 stage."""
+        resp = client.get("/api/pipeline/stages")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data, list)
+        assert len(data) >= 1
+        assert data[0]["stage_id"] == "silver_to_gold"
+
+    def test_run_stage_completes(self, client):
+        """POST /api/pipeline/stages/silver_to_gold/run returns 200 with valid status."""
+        resp = client.post("/api/pipeline/stages/silver_to_gold/run")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] in ("completed", "failed")
+
+    def test_run_stage_not_found(self, client):
+        """POST /api/pipeline/stages/nonexistent/run returns 200 with failed status."""
+        resp = client.post("/api/pipeline/stages/nonexistent/run")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "failed"
+        assert "not found" in data["error"].lower()
+
+    def test_run_stage_returns_timing(self, client):
+        """Response includes duration_ms, started_at, completed_at keys."""
+        resp = client.post("/api/pipeline/stages/silver_to_gold/run")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "duration_ms" in data
+        assert "started_at" in data
+        assert "completed_at" in data
