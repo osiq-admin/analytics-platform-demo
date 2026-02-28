@@ -4,6 +4,7 @@ import {
   offset,
   flip,
   shift,
+  size,
   FloatingPortal,
   type Placement,
 } from "@floating-ui/react";
@@ -61,7 +62,21 @@ export default function StepOverlay({
 
   const { refs, floatingStyles } = useFloating({
     placement,
-    middleware: [offset(14), flip(), shift({ padding: 12 })],
+    middleware: [
+      offset(14),
+      flip(),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ availableWidth, availableHeight, elements }) {
+          Object.assign(elements.floating.style, {
+            maxWidth: `${Math.min(availableWidth, 340)}px`,
+            maxHeight: `${Math.min(availableHeight, 500)}px`,
+            overflow: "auto",
+          });
+        },
+      }),
+    ],
   });
 
   // Navigate + find target element

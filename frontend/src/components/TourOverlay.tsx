@@ -4,6 +4,7 @@ import {
   offset,
   flip,
   shift,
+  size,
   FloatingPortal,
   type Placement,
 } from "@floating-ui/react";
@@ -23,7 +24,21 @@ export default function TourOverlay() {
 
   const { refs, floatingStyles } = useFloating({
     placement,
-    middleware: [offset(12), flip(), shift({ padding: 12 })],
+    middleware: [
+      offset(12),
+      flip(),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ availableWidth, availableHeight, elements }) {
+          Object.assign(elements.floating.style, {
+            maxWidth: `${Math.min(availableWidth, 320)}px`,
+            maxHeight: `${Math.min(availableHeight, 400)}px`,
+            overflow: "auto",
+          });
+        },
+      }),
+    ],
   });
 
   // Navigate to step route if needed, then find and highlight target element
