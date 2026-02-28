@@ -617,7 +617,7 @@ export const TOURS: Record<string, TourDefinition> = {
         route: "/medallion",
       },
       {
-        target: "[data-trace='medallion.tier-detail']",
+        target: "[data-tour='medallion-tier-detail']",
         title: "Tier Detail Panel",
         content: "Click any tier node to see its properties: data state, storage format, retention policy, quality gate, and access level. Related data contracts and pipeline stages are shown below.",
         placement: "left",
