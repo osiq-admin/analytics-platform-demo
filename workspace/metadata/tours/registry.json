@@ -34,10 +34,7 @@
       {"category": "Use Cases", "count": 4},
       {"category": "Entities", "count": 2},
       {"category": "Investigation", "count": 3},
-      {"category": "Administration", "count": 3},
-      {"category": "Architecture", "count": 1},
-      {"category": "Data Onboarding", "count": 1},
-      {"category": "Mapping", "count": 1},
+      {"category": "Administration", "count": 6},
       {"category": "Pipeline", "count": 1},
       {"category": "Governance", "count": 1}
     ]

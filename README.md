@@ -30,10 +30,10 @@ uv run python -m scripts.generate_snapshots
 ┌──────────────────────────────────────────────┐
 │  React 19 SPA (970 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
-│  React Flow · Recharts · Zustand (11 stores) │
+│  React Flow · Recharts · Zustand (12 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
 └──────────────────┬───────────────────────────┘
-                   │ /api/* (20 route modules)
+                   │ /api/* (23 route modules)
 ┌──────────────────┴───────────────────────────┐
 │  FastAPI Backend                             │
 │  Calculation Engine · Detection Engine       │
@@ -89,7 +89,7 @@ uv run python -m scripts.generate_snapshots
 - Alert fires when: all gates pass AND (all checks pass OR score >= threshold)
 - Settings resolve per entity context: product-specific → hierarchy/multi-dim → default fallback
 
-## 18 Views
+## 19 Views
 
 | Area | View | What It Does |
 |------|------|-------------|
@@ -109,6 +109,7 @@ uv run python -m scripts.generate_snapshots
 | | AI Assistant | Claude-powered chat (live or mock) with Run Query integration |
 | **Governance** | Regulatory Map | Traceability graph + regulation details (MAR, MiFID II, Dodd-Frank, FINRA) |
 | | Submissions | Review queue with auto-recommendations, approve/reject workflow |
+| | Data Quality | Quality dimension scores, spider charts, quarantine queue, entity profiling |
 | **Architecture** | Medallion Overview | 11-tier medallion data architecture with React Flow, data contracts, pipeline stages |
 | | Data Onboarding | 5-step wizard: Source → Schema → Profile → Mapping → Review, 6 connector types |
 
@@ -170,15 +171,15 @@ Toolbar toggle overlays info icons on every section across all 19 views:
 
 ```
 ├── backend/             # Python FastAPI backend
-│   ├── api/             # 20 API route modules
+│   ├── api/             # 23 API route modules
 │   ├── engine/          # Calculation, detection, data loading
 │   ├── models/          # Pydantic data models
 │   └── services/        # Business logic services
 ├── frontend/            # React 19 TypeScript SPA
 │   └── src/
-│       ├── views/       # 18 view components
+│       ├── views/       # 19 view components
 │       ├── components/  # Shared UI components
-│       ├── stores/      # 11 Zustand state stores
+│       ├── stores/      # 12 Zustand state stores
 │       ├── data/        # Tours, scenarios, operations, traceability
 │       └── api/         # API client + WebSocket
 ├── workspace/           # Runtime data directory
@@ -232,7 +233,7 @@ uv run python -m scripts.generate_snapshots
 | Charts | TradingView Lightweight Charts, Recharts |
 | DAG & Graphs | React Flow + dagre |
 | Editor | Monaco Editor |
-| State | Zustand (11 stores) |
+| State | Zustand (12 stores) |
 | Layout | react-resizable-panels |
 | AI | Claude API (live) or mock mode |
 | Package Manager | uv (Python), npm (Node) |

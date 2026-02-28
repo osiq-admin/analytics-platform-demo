@@ -14,7 +14,7 @@ uv run python -m scripts.generate_snapshots   # Regenerate snapshots
 ```
 
 ## Architecture
-- **Backend**: `backend/` — FastAPI + DuckDB, 9 API routers, calculation/detection engines
+- **Backend**: `backend/` — FastAPI + DuckDB, 23 API route modules, calculation/detection engines
 - **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 19 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
 - **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality

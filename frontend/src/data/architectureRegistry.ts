@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 82 sections across 18 views + 3 cross-cutting components.
+// 86 sections across 19 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
