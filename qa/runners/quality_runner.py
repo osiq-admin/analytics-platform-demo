@@ -127,7 +127,8 @@ def _run_standard_tool(tool: dict, quality_dir: Path) -> dict:
     cmd_str = tool["command"].replace("{targets}", targets)
     if tool.get("report_flag"):
         cmd_str = cmd_str + " " + tool["report_flag"]
-    result = run_tool(name, cmd_str.split())
+    timeout = tool.get("timeout", 120)
+    result = run_tool(name, cmd_str.split(), timeout=timeout)
     output = result["stdout"] or result["stderr"] or ""
     (quality_dir / f"{name}.json").write_text(output)
     return result

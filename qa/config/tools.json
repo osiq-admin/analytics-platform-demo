@@ -10,24 +10,25 @@
     "bandit": {
       "enabled": true,
       "command": "bandit -r {targets} -f json",
-      "targets": ["backend/"]
+      "targets": ["backend/", "scripts/", "qa/"]
     },
     "radon": {
       "enabled": true,
       "command_cc": "radon cc {targets} -j -n C",
       "command_mi": "radon mi {targets} -j",
-      "targets": ["backend/"]
+      "targets": ["backend/", "scripts/", "qa/"]
     },
     "vulture": {
       "enabled": true,
-      "command": "vulture {targets} --min-confidence 80",
-      "targets": ["backend/"]
+      "command": "vulture {targets} --min-confidence 90",
+      "targets": ["backend/", "scripts/", "qa/"]
     },
     "coverage": {
       "enabled": true,
-      "command": "coverage run -m pytest tests/ --ignore=tests/e2e -q",
-      "report_command": "coverage json -o {output_file}",
-      "fail_under": 80
+      "command": "uv run python -m coverage run -m pytest tests/ --ignore=tests/e2e -q",
+      "report_command": "uv run python -m coverage json -o {output_file}",
+      "fail_under": 80,
+      "timeout": 300
     }
   },
   "typescript": {
