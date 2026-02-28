@@ -31,42 +31,38 @@ export const routes: RouteObject[] = [
     path: "/",
     element: <AppLayout />,
     children: [
-      // Overview
+      // Default route
       { index: true, element: <Dashboard /> },
-      { path: "dashboard", element: <Dashboard /> },
 
-      // Define
+      // Define — entity schemas, calculations, settings, reference data
       { path: "entities", element: <EntityDesigner /> },
       { path: "metadata", element: <MetadataExplorer /> },
-
-      // Configure
       { path: "settings", element: <SettingsManager /> },
-      { path: "mappings", element: <MappingStudio /> },
-      { path: "editor", element: <MetadataEditor /> },
-
-      // Operate
-      { path: "pipeline", element: <PipelineMonitor /> },
-      { path: "schema", element: <SchemaExplorer /> },
-      { path: "sql", element: <SQLConsole /> },
-      { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
-      { path: "onboarding", element: <Suspense fallback={null}><DataOnboarding /></Suspense> },
-
-      // Compose
-      { path: "models", element: <ModelComposer /> },
-      { path: "use-cases", element: <UseCaseStudio /> },
-      { path: "data", element: <DataManager /> },
-
-      // Investigate
-      { path: "alerts", element: <RiskCaseManager /> },
-      { path: "alerts/:alertId", element: <RiskCaseManager /> },
-
-      // Governance
-      { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
-      { path: "submissions", element: <Submissions /> },
-      { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
       { path: "reference", element: <Suspense fallback={null}><ReferenceData /></Suspense> },
 
-      // AI
+      // Ingest — onboarding, mappings, quality, medallion tiers
+      { path: "onboarding", element: <Suspense fallback={null}><DataOnboarding /></Suspense> },
+      { path: "mappings", element: <MappingStudio /> },
+      { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
+      { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
+
+      // Detect — models, use cases, pipeline, dashboard
+      { path: "models", element: <ModelComposer /> },
+      { path: "use-cases", element: <UseCaseStudio /> },
+      { path: "pipeline", element: <PipelineMonitor /> },
+      { path: "dashboard", element: <Dashboard /> },
+
+      // Investigate — risk cases, submissions, regulatory
+      { path: "alerts", element: <RiskCaseManager /> },
+      { path: "alerts/:alertId", element: <RiskCaseManager /> },
+      { path: "submissions", element: <Submissions /> },
+      { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
+
+      // Advanced — schema, SQL, data, editor, AI assistant
+      { path: "schema", element: <SchemaExplorer /> },
+      { path: "sql", element: <SQLConsole /> },
+      { path: "data", element: <DataManager /> },
+      { path: "editor", element: <MetadataEditor /> },
       { path: "assistant", element: <AIAssistant /> },
     ],
   },

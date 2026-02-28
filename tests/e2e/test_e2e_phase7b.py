@@ -1189,17 +1189,17 @@ class TestSidebarNavigation:
         submissions_link = sidebar.locator("a:has-text('Submissions')")
         expect(submissions_link.first).to_be_visible()
 
-    def test_sidebar_governance_section(self, loaded_page: Page):
-        """Sidebar has a 'Governance' section with Regulatory Map and Submissions."""
+    def test_sidebar_investigate_section(self, loaded_page: Page):
+        """Sidebar has an 'Investigate' section with Risk Cases, Submissions, Regulatory Map."""
         sidebar = loaded_page.locator("aside")
-        governance_heading = sidebar.locator("text=Governance")
-        expect(governance_heading.first).to_be_visible()
+        investigate_heading = sidebar.locator("text=Investigate")
+        expect(investigate_heading.first).to_be_visible()
 
-    def test_sidebar_compose_section(self, loaded_page: Page):
-        """Sidebar has a 'Compose' section with Models, Use Cases, Data."""
+    def test_sidebar_detect_section(self, loaded_page: Page):
+        """Sidebar has a 'Detect' section with Models, Use Cases, Pipeline, Dashboard."""
         sidebar = loaded_page.locator("aside")
-        compose_heading = sidebar.locator("text=Compose")
-        expect(compose_heading.first).to_be_visible()
+        detect_heading = sidebar.locator("text=Detect")
+        expect(detect_heading.first).to_be_visible()
 
 
 # ============================================================================
