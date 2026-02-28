@@ -119,32 +119,50 @@ export default function StepOverlay({
 
   return (
     <FloatingPortal>
-      {/* Backdrop with spotlight cutout */}
-      <div className="fixed inset-0 z-[9998]" onClick={onSkip}>
-        <svg className="w-full h-full">
-          <defs>
-            <mask id="scenario-mask">
-              <rect width="100%" height="100%" fill="white" />
-              {targetRect && (
-                <rect
-                  x={targetRect.left - pad}
-                  y={targetRect.top - pad}
-                  width={targetRect.width + pad * 2}
-                  height={targetRect.height + pad * 2}
-                  rx={6}
-                  fill="black"
-                />
-              )}
-            </mask>
-          </defs>
-          <rect
-            width="100%"
-            height="100%"
-            fill="rgba(0,0,0,0.55)"
-            mask="url(#scenario-mask)"
+      {/* Backdrop — 4 edge overlays around spotlight cutout */}
+      {targetRect ? (
+        <>
+          {/* Top */}
+          <div
+            className="fixed left-0 top-0 z-[9998] bg-black/50"
+            style={{ width: "100%", height: Math.max(0, targetRect.top - pad) }}
+            onClick={onSkip}
           />
-        </svg>
-      </div>
+          {/* Bottom */}
+          <div
+            className="fixed left-0 z-[9998] bg-black/50"
+            style={{
+              width: "100%",
+              top: targetRect.bottom + pad,
+              bottom: 0,
+            }}
+            onClick={onSkip}
+          />
+          {/* Left */}
+          <div
+            className="fixed left-0 z-[9998] bg-black/50"
+            style={{
+              top: targetRect.top - pad,
+              width: Math.max(0, targetRect.left - pad),
+              height: targetRect.height + pad * 2,
+            }}
+            onClick={onSkip}
+          />
+          {/* Right */}
+          <div
+            className="fixed z-[9998] bg-black/50"
+            style={{
+              top: targetRect.top - pad,
+              left: targetRect.right + pad,
+              right: 0,
+              height: targetRect.height + pad * 2,
+            }}
+            onClick={onSkip}
+          />
+        </>
+      ) : (
+        <div className="fixed inset-0 z-[9998] bg-black/50" onClick={onSkip} />
+      )}
 
       {/* Spotlight ring */}
       {targetRect && (
@@ -164,7 +182,6 @@ export default function StepOverlay({
         ref={refs.setFloating}
         style={floatingStyles}
         className="z-[10000] w-[340px] bg-surface border border-border rounded-lg shadow-xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
       >
         {/* Progress bar */}
         <div className="h-1 bg-border/40">
