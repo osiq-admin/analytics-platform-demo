@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (28 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (29 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 28 guided scenarios in 9 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 29 guided scenarios in 10 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 21 tours and 28 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 21 tours and 29 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -375,18 +375,25 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 ### 3.1 Mapping Studio (Configure → Mappings)
 
 **Key Points:**
-- Shows how source data maps to canonical entity fields
-- "New data sources just need a mapping definition"
+- Metadata-driven bronze→silver field mapping for 3 entities (execution, order, product)
+- Each mapping defines source (bronze) → target (silver) field transformations with validation rules
+- CRUD operations: create, edit, delete field mappings via 7 API endpoints
+- Validation status indicators (valid/warning/error) per mapping and per field
+- Integrated with Data Onboarding wizard (Step 4 auto-suggests mappings from detected schema)
 
-**Interactive: Drag-and-Drop Mapping**
-1. Select a calculation (e.g. "Value Calculation")
-2. Source Columns appear on the left, Required Fields on the right
-3. **Drag** "symbol" from Source → **drop** on "product_id" → green badge appears
-4. Drag "account" → "account_id", "price" → "price", "qty" → "quantity"
-5. Click **x** on any mapping to remove it
-6. Click **Save Mappings** → a confirmation dialog shows the field count and calculation name
-7. Confirm to save → green "Saved" badge appears
-8. Key takeaway: "Map any data format to canonical fields with drag-and-drop"
+**Interactive: Explore Field Mappings**
+1. Navigate to **Configure → Mappings**
+2. See the 3 entity mapping cards: execution, order, product — each showing field count and validation status
+3. Click an entity card (e.g., "execution") to see its field mapping table
+4. Review source→target field pairs, data types, transformation rules, and validation status
+5. Click **+ Add Field** to add a new field mapping — select source field, target field, and transformation
+6. Click the edit icon on any row to modify an existing mapping
+7. Click the delete icon to remove a mapping (with confirmation)
+8. Note the validation indicators: green checkmark (valid), amber warning, red error
+9. Key takeaway: "Bronze→silver field mappings are metadata-driven — define transformations in JSON, no code changes needed"
+
+**Guided Scenario**
+**S29: Mapping Studio Walkthrough** (Mapping category, beginner difficulty) — available in the Scenarios browser. Walks through exploring entity mappings, field-level transformations, and validation status.
 
 ### 3.2 Skip to End
 
@@ -401,7 +408,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **28 guided scenarios**: Watch Demo or Try It Yourself mode across 9 categories
+- **29 guided scenarios**: Watch Demo or Try It Yourself mode across 10 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -530,14 +537,14 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 28 guided scenarios organized in 9 categories
+- 29 guided scenarios organized in 10 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -553,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 104 operations defined across 18 views
+- 105 operations defined across 18 views
 
 ### 7.3 Scenario Categories
 
@@ -568,6 +575,7 @@ Click **Skip to End** to show the final state.
 | Admin | S24-S26 | Intermediate → Advanced |
 | Architecture | S27 | Beginner |
 | Data Onboarding | S28 | Beginner |
+| Mapping | S29 | Beginner |
 
 ## Act 8: Metadata Configuration
 

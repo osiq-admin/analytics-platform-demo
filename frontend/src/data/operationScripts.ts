@@ -4,7 +4,7 @@ import type { ViewOperations } from "../components/TourEngine/OperationScripts.t
 // Operation Scripts — Per-view help metadata (M119)
 // ==========================================================================
 // Each view defines 3-6 operations and 2-4 tips that appear in the (?) panel.
-// Operations may link to guided scenarios (S1-S26) via scenarioId.
+// Operations may link to guided scenarios (S1-S29) via scenarioId.
 // ==========================================================================
 
 export const VIEW_OPERATIONS: Record<string, ViewOperations> = {

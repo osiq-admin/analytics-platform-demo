@@ -8,7 +8,7 @@ from typing import Literal
 class FieldMapping(BaseModel):
     source_field: str
     target_field: str
-    transform: Literal["direct", "rename", "cast", "lookup", "expression"] = "direct"
+    transform: str = "direct"
     expression: str = ""
     default_value: str = ""
     description: str = ""
