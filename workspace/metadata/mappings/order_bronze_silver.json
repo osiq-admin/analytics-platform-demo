@@ -98,7 +98,7 @@
       "description": "Normalize MIC code — nullable, validate against ISO 10383 when present"
     },
     {
-      "source_field": null,
+      "source_field": "",
       "target_field": "order_timestamp",
       "transform": "concat",
       "transform_args": {
@@ -108,7 +108,7 @@
       "description": "Derived field — combine date and time into ISO 8601 timestamp"
     },
     {
-      "source_field": null,
+      "source_field": "",
       "target_field": "fill_ratio",
       "transform": "divide",
       "transform_args": {

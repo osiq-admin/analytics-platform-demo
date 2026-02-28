@@ -86,7 +86,7 @@
       "description": "Normalize capacity (AGENCY/PRINCIPAL)"
     },
     {
-      "source_field": null,
+      "source_field": "",
       "target_field": "execution_timestamp",
       "transform": "concat",
       "transform_args": {
@@ -96,7 +96,7 @@
       "description": "Derived field — combine date and time into ISO 8601 timestamp"
     },
     {
-      "source_field": null,
+      "source_field": "",
       "target_field": "notional_value",
       "transform": "multiply",
       "transform_args": {

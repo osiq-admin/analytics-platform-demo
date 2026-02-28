@@ -116,7 +116,7 @@
       "description": "Normalize regulatory jurisdiction (EU/US/UK/APAC/MULTI)"
     },
     {
-      "source_field": null,
+      "source_field": "",
       "target_field": "is_derivative",
       "transform": "conditional",
       "transform_args": {
