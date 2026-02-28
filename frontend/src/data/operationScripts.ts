@@ -4,7 +4,7 @@ import type { ViewOperations } from "../components/TourEngine/OperationScripts.t
 // Operation Scripts — Per-view help metadata (M119)
 // ==========================================================================
 // Each view defines 3-6 operations and 2-4 tips that appear in the (?) panel.
-// Operations may link to guided scenarios (S1-S29) via scenarioId.
+// Operations may link to guided scenarios (S1-S30) via scenarioId.
 // ==========================================================================
 
 export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
@@ -276,6 +276,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Click 'Save' to persist the mapping definition to disk. Changes the status from draft to saved.",
       },
       {
+        id: "select_tier_pair",
+        name: "Select Tier Pair",
+        description:
+          "Use the Source Tier and Target Tier dropdowns to filter mappings by medallion tier pair.",
+      },
+      {
         id: "architecture_trace",
         name: "Explore Architecture Trace",
         description:
@@ -287,6 +293,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Validate after saving to check for unmapped fields",
       "The onboarding wizard auto-creates mappings when uploading data",
       "Transform types include: direct, rename, cast, uppercase, concat, expression",
+      "Use tier pair selectors to filter Bronze-to-Silver or Silver-to-Gold mappings",
     ],
   },
 
@@ -375,6 +382,19 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
           "Browse past pipeline runs to compare timing, identify bottlenecks, and track changes in detection results over time.",
       },
       {
+        id: "run_medallion_stage",
+        name: "Run Medallion Stage",
+        description:
+          "Execute a specific pipeline stage (e.g., Silver-to-Gold) using the metadata-driven orchestrator.",
+        scenarioId: "s30_pipeline_orchestration",
+      },
+      {
+        id: "view_contract_validation",
+        name: "View Contract Validation",
+        description:
+          "After running a pipeline stage, review the contract validation results showing quality rule pass/fail status and quality score.",
+      },
+      {
         id: "architecture_trace",
         name: "Explore Architecture Trace",
         description:
@@ -385,6 +405,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Green nodes are completed, yellow are running, red indicate failures",
       "Click any pipeline node to see its execution log and row counts",
       "The pipeline DAG updates in real-time during execution",
+      "Pipeline stages are loaded from metadata — edit pipeline_stages.json to add or modify stages",
     ],
   },
 
@@ -934,6 +955,12 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "View Pipeline Stages",
         description:
           "Select a tier to see related pipeline stages — the ordered execution steps that move data between tiers, including dependency chains and parallel execution flags.",
+      },
+      {
+        id: "run_stage_from_tier",
+        name: "Run Stage from Tier Detail",
+        description:
+          "Execute a pipeline stage directly from the Medallion Overview tier detail panel.",
       },
       {
         id: "architecture_trace",
