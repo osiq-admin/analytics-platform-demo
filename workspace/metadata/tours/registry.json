@@ -23,10 +23,11 @@
     {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3},
     {"tour_id": "medallion", "view_path": "/medallion", "title": "Medallion Architecture Tour", "step_count": 3},
     {"tour_id": "onboarding", "view_path": "/onboarding", "title": "Data Onboarding Tour", "step_count": 3},
-    {"tour_id": "data-quality", "view_path": "/quality", "title": "Data Quality Dashboard Tour", "step_count": 4}
+    {"tour_id": "data-quality", "view_path": "/quality", "title": "Data Quality Dashboard Tour", "step_count": 4},
+    {"tour_id": "reference-data", "view_path": "/reference", "title": "Reference Data Tour", "step_count": 4}
   ],
   "scenarios": {
-    "total_count": 31,
+    "total_count": 32,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -36,7 +37,7 @@
       {"category": "Investigation", "count": 3},
       {"category": "Administration", "count": 6},
       {"category": "Pipeline", "count": 1},
-      {"category": "Governance", "count": 1}
+      {"category": "Governance", "count": 2}
     ]
   }
 }

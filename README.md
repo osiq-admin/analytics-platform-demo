@@ -28,12 +28,12 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (970 Vite modules)             │
+│  React 19 SPA (971 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (12 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
 └──────────────────┬───────────────────────────┘
-                   │ /api/* (23 route modules)
+                   │ /api/* (24 route modules)
 ┌──────────────────┴───────────────────────────┐
 │  FastAPI Backend                             │
 │  Calculation Engine · Detection Engine       │
@@ -190,24 +190,24 @@ Toolbar toggle overlays info icons on every section across all 19 views:
 │   ├── use_cases/       # Use case definitions
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
-├── tests/               # 862 tests (645 backend + 217 E2E Playwright)
+├── tests/               # 929 tests (705 backend + 224 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing
 
 ```bash
-# Backend tests (645)
+# Backend tests (705)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (217)
+# E2E Playwright tests (224)
 uv run pytest tests/e2e/ -v
 
 # Frontend build
 cd frontend && npm run build
 ```
 
-862 tests total: 645 backend unit/integration + 217 E2E Playwright. All 19 views have dedicated E2E coverage.
+929 tests total: 705 backend unit/integration + 224 E2E Playwright. All 20 views have dedicated E2E coverage.
 
 ## Development
 

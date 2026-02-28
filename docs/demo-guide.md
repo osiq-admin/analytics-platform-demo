@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 31 guided scenarios in 12 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 32 guided scenarios in 12 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 22 tours and 31 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 23 tours and 32 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -577,7 +577,7 @@ Click **Skip to End** to show the final state.
 | Data Onboarding | S28 | Beginner |
 | Mapping | S29 | Beginner |
 | Medallion Pipeline | S30 | Intermediate |
-| Governance | S31 | Intermediate |
+| Governance | S31-S32 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -672,6 +672,32 @@ Navigate to **Governance → Quality** to access the data quality monitoring das
 
 ### Guided Scenario
 **S31: Data Quality Investigation** (Governance category, intermediate difficulty) — available in the Scenarios browser. Walks through quality scores, dimension analysis, quarantine review, and data profiling.
+
+## Reference Data / Master Data Management (ReferenceData)
+
+Navigate to **Governance → Reference Data** to browse golden records for the 4 master data entities.
+
+### Key Points
+- **Entity tabs**: Product Master (25 golden records), Venue Master (6), Account Master (220), Trader Master (50) — 301 total golden records
+- **Golden record list**: Deduplicated, reconciled master records with golden ID, natural key, confidence score, and status badge
+- **Detail panel**: Field-value table with provenance showing source, confidence, and last update for each field
+- **Cross-references**: Downstream records that reference each golden record (FK relationships)
+- **Reconciliation dashboard**: Trigger reconciliation, view stats (total, new, updated, conflicts), confidence distribution
+- **Match rules**: Exact matching on golden key (ISIN, MIC, account_id, trader_id) + fuzzy matching on name fields
+- **Merge strategies**: longest, most_frequent, most_recent, source_priority — configurable per field
+- **Field-level provenance**: Every field tracks its value source, confidence score, and last update timestamp
+
+### Interactive: Explore Golden Records
+1. Navigate to **Governance → Reference Data**
+2. See entity tabs with record count badges
+3. Click **Product Master** tab — 25 golden records appear (50 CSV rows deduplicated by ISIN)
+4. Click a golden record (e.g., GR-PRO-0001) — detail panel shows field values with provenance
+5. View source records that contributed to this golden record
+6. Check cross-references showing downstream execution/order records
+7. Click **Reconcile** to trigger reconciliation — see results with new/updated/conflict counts
+8. Key takeaway: "Every master data field is traceable to its source with configurable match/merge rules"
+
+**S32: Reference Data — Golden Record Reconciliation** (Governance category, intermediate difficulty) — available in the Scenarios browser. Walks through entity selection, golden record browsing, provenance inspection, and reconciliation.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-28 (M215 — 862 total tests: 645 backend + 217 E2E, 31 scenarios, 19 views, 86 architecture sections, 83.7% metadata-driven)
+**Last Updated**: 2026-02-28 (M227 — 929 total tests: 705 backend + 224 E2E, 32 scenarios, 20 views, 94 architecture sections, 81.9% metadata-driven)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 645)
+- [ ] **Run all backend tests**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 705)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 645)
+- [ ] **Run full suite**: `uv run pytest tests/ --ignore=tests/e2e -v` — ALL PASSING (currently 705)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -71,7 +71,7 @@
 - [ ] **UI interaction tests**: Click, type, navigate — verify expected state changes
 - [ ] **AG Grid tests**: Verify grid renders with expected columns and row count
 - [ ] **Viewport tests**: Test at both 1440px and 1024px if layout-sensitive
-- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 217)
+- [ ] **Run E2E suite**: `uv run pytest tests/e2e/ -v` — ALL PASSING (currently 224)
 - [ ] **Architecture audit**: If sections changed, recalculate maturity % and update `docs/architecture-traceability.md`
 - [ ] **Visual verification**: MANDATORY — Run with Playwright MCP browser to screenshot and verify every UI change visually. Do NOT skip this step.
 
@@ -332,10 +332,10 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (645+)
+# Backend tests (705+)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (217+)
+# E2E Playwright tests (224+)
 uv run pytest tests/e2e/ -v
 
 # Single E2E test class
@@ -367,3 +367,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-28 | Updated for M196 (Phase 15.5 + 16 Tour Quality Fixes + Bronze→Silver Mapping) — updated test counts to 772 (562+210), 29 scenarios, added mapping triggers | Claude Opus 4.6 |
 | 2026-02-28 | Updated for M204 (Phase 17 Silver→Gold Pipeline Orchestration) — updated test counts to 800 (590+210), 30 scenarios, 82 architecture sections | Claude Opus 4.6 |
 | 2026-02-28 | Updated for M215 (Phase 18 Data Quality, Quarantine & Profiling) — updated test counts to 862 (645+217), 31 scenarios, 19 views, 86 architecture sections, 83.7% metadata-driven | Claude Opus 4.6 |
+| 2026-02-28 | Updated for M227 (Phase 19 Reference Data & MDM) — updated test counts to 929 (705+224), 32 scenarios, 20 views, 94 architecture sections, 81.9% metadata-driven | Claude Opus 4.6 |
