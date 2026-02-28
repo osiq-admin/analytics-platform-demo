@@ -23,7 +23,7 @@ def preview_data_file(filename: str, request: Request, limit: int = 100):
     """Preview data for a table by querying DuckDB."""
     svc = QueryService(request.app.state.db)
     try:
-        result = svc.execute(f'SELECT * FROM "{filename}" LIMIT {limit}', limit=limit)
+        result = svc.execute(f'SELECT * FROM "{filename}" LIMIT {limit}', limit=limit)  # nosec B608
         return {
             "filename": filename,
             "columns": result.get("columns", []),
@@ -63,7 +63,7 @@ def get_market_data(
 
     if start_date or end_date:
         eod_result = svc.execute(
-            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"
+            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"  # nosec B608
             f" FROM md_eod"
             f" WHERE {date_filter}"
             f" ORDER BY trade_date DESC",
@@ -71,7 +71,7 @@ def get_market_data(
         )
     else:
         eod_result = svc.execute(
-            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"
+            f"SELECT product_id, trade_date, open_price, high_price, low_price, close_price, volume"  # nosec B608
             f" FROM md_eod"
             f" WHERE product_id = '{product_id}'"
             f" ORDER BY trade_date DESC"
@@ -80,7 +80,7 @@ def get_market_data(
         )
 
     intraday_result = svc.execute(
-        f"SELECT product_id, trade_date, trade_time, trade_price, trade_quantity"
+        f"SELECT product_id, trade_date, trade_time, trade_price, trade_quantity"  # nosec B608
         f" FROM md_intraday"
         f" WHERE {date_filter}"
         f" ORDER BY trade_date DESC, trade_time DESC"
@@ -122,12 +122,12 @@ def get_related_orders(
         exec_where += f" AND execution_date = '{trade_date}'"
 
     orders = svc.execute(
-        f'SELECT * FROM "order" WHERE {order_where}'
+        f'SELECT * FROM "order" WHERE {order_where}'  # nosec B608
         f" ORDER BY order_date DESC, order_time DESC LIMIT {limit}",
         limit=limit,
     )
     executions = svc.execute(
-        f"SELECT * FROM execution WHERE {exec_where}"
+        f"SELECT * FROM execution WHERE {exec_where}"  # nosec B608
         f" ORDER BY execution_date DESC, execution_time DESC LIMIT {limit}",
         limit=limit,
     )

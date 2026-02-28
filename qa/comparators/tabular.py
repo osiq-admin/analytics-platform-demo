@@ -3,6 +3,34 @@ from __future__ import annotations
 
 
 
+def _compute_field_diffs(prev_rec: dict, curr_rec: dict, key: str) -> dict:
+    """Compute field-level diffs between two records, excluding the join key."""
+    diffs = {}
+    for field in prev_rec:
+        if field == key:
+            continue
+        old_val = prev_rec.get(field)
+        new_val = curr_rec.get(field)
+        if old_val != new_val:
+            diffs[field] = {"old": old_val, "new": new_val}
+    return diffs
+
+
+def _classify_diffs(diffs: dict, tolerance: dict) -> tuple[bool, dict]:
+    """Apply tolerance checks to diffs, return (all_within_tolerance, significant_diffs)."""
+    all_within = True
+    for field, diff in diffs.items():
+        tol = tolerance.get(field, {})
+        if tol and _within_tolerance(diff["old"], diff["new"], tol):
+            diff["within_tolerance"] = True
+        else:
+            all_within = False
+            diff["within_tolerance"] = False
+
+    significant = {f: d for f, d in diffs.items() if not d.get("within_tolerance")}
+    return all_within, significant
+
+
 def compare_tabular(
     previous: list[dict],
     current: list[dict],
@@ -42,35 +70,15 @@ def compare_tabular(
     within_tolerance_count = 0
 
     for k in sorted(prev_keys & curr_keys):
-        prev_rec = prev_map[k]
-        curr_rec = curr_map[k]
-        diffs = {}
+        diffs = _compute_field_diffs(prev_map[k], curr_map[k], key)
+        if not diffs:
+            continue
 
-        for field in prev_rec:
-            if field == key:
-                continue
-            old_val = prev_rec.get(field)
-            new_val = curr_rec.get(field)
-            if old_val != new_val:
-                diffs[field] = {"old": old_val, "new": new_val}
-
-        if diffs:
-            # Check tolerance
-            all_within = True
-            for field, diff in diffs.items():
-                tol = tolerance.get(field, {})
-                if tol and _within_tolerance(diff["old"], diff["new"], tol):
-                    diff["within_tolerance"] = True
-                else:
-                    all_within = False
-                    diff["within_tolerance"] = False
-
-            if all_within:
-                within_tolerance_count += 1
-            else:
-                changed.append({"key": k, "diffs": {
-                    f: d for f, d in diffs.items() if not d.get("within_tolerance")
-                }})
+        all_within, significant = _classify_diffs(diffs, tolerance)
+        if all_within:
+            within_tolerance_count += 1
+        else:
+            changed.append({"key": k, "diffs": significant})
 
     return {
         "total_previous": len(previous),

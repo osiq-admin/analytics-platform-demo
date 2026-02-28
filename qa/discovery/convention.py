@@ -23,6 +23,15 @@ _EXPLICIT_MAP: dict[str, list[str]] = {
 }
 
 
+# Convention: backend subdirectory → list of test file name patterns (using {stem} placeholder)
+_SUBDIR_PATTERNS: dict[str, list[str]] = {
+    "services": ["tests/test_{stem}.py"],
+    "api": ["tests/test_{stem}_api.py", "tests/test_{stem}.py"],
+    "models": ["tests/test_{stem}.py", "tests/test_{stem}_models.py"],
+    "engine": ["tests/test_{stem}.py"],
+}
+
+
 def convention_map(source_path: str) -> list[str]:
     """Map a source file path to its test file paths by naming convention.
 
@@ -35,40 +44,19 @@ def convention_map(source_path: str) -> list[str]:
 
     # If it's already a test file, return it (if it exists)
     if parts[0] == "tests" and p.name.startswith("test_"):
-        if (root / source_path).exists():
-            return [source_path]
-        return []
+        return [source_path] if (root / source_path).exists() else []
 
     # Check explicit map first
     for prefix, tests in _EXPLICIT_MAP.items():
         if source_path.endswith(prefix) or source_path == prefix:
             return [t for t in tests if (root / t).exists()]
 
-    if not parts[0] == "backend":
+    if parts[0] != "backend":
         return []
 
-    candidates: list[str] = []
-
-    # backend/services/X.py → tests/test_X.py
-    if len(parts) >= 3 and parts[1] == "services":
-        candidates.append(f"tests/test_{stem}.py")
-
-    # backend/api/X.py → tests/test_X_api.py, tests/test_X.py
-    elif len(parts) >= 3 and parts[1] == "api":
-        candidates.append(f"tests/test_{stem}_api.py")
-        candidates.append(f"tests/test_{stem}.py")
-
-    # backend/models/X.py → tests/test_X.py, tests/test_X_models.py
-    elif len(parts) >= 3 and parts[1] == "models":
-        candidates.append(f"tests/test_{stem}.py")
-        candidates.append(f"tests/test_{stem}_models.py")
-
-    # backend/engine/X.py → tests/test_X.py
-    elif len(parts) >= 3 and parts[1] == "engine":
-        candidates.append(f"tests/test_{stem}.py")
-
-    # Fallback: try tests/test_{stem}.py
-    else:
-        candidates.append(f"tests/test_{stem}.py")
+    # Look up patterns by backend subdirectory, fallback to generic pattern
+    subdir = parts[1] if len(parts) >= 3 else None
+    patterns = _SUBDIR_PATTERNS.get(subdir, ["tests/test_{stem}.py"])
+    candidates = [pat.format(stem=stem) for pat in patterns]
 
     return [c for c in candidates if (root / c).exists()]

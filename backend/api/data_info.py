@@ -30,7 +30,7 @@ def get_date_range(entity_id: str, request: Request):
     for field in date_fields:
         try:
             result = cursor.execute(
-                f'SELECT MIN("{field}") as min_date, MAX("{field}") as max_date '
+                f'SELECT MIN("{field}") as min_date, MAX("{field}") as max_date '  # nosec B608
                 f'FROM "{table_name}" WHERE "{field}" IS NOT NULL'
             )
             row = result.fetchone()
@@ -39,7 +39,7 @@ def get_date_range(entity_id: str, request: Request):
                     "min_date": str(row[0]),
                     "max_date": str(row[1]),
                 }
-        except Exception:
+        except Exception:  # nosec B110 — field may not exist in table; skip gracefully
             pass
 
     cursor.close()

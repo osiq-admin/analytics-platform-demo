@@ -46,66 +46,85 @@ def format_summary_text(summary: dict) -> str:
     return "\n".join(lines)
 
 
-def show_report(args) -> int:
-    """Show reports based on CLI args."""
-    if args.latest:
-        summary = load_latest_summary()
-        if summary is None:
-            print("[qa] No test runs found.")
-            return 1
-        print(format_summary_text(summary))
+def _show_latest() -> int:
+    """Show latest test run summary."""
+    summary = load_latest_summary()
+    if summary is None:
+        print("[qa] No test runs found.")
+        return 1
+    print(format_summary_text(summary))
+    return 0
+
+
+def _show_regression() -> int:
+    """Show regression analysis report."""
+    regression = load_latest_regression()
+    if regression is None:
+        print("[qa] No regression data found.")
+        return 1
+    new_f = regression.get("new_failures", [])
+    new_p = regression.get("new_passes", [])
+    unchanged_f = regression.get("unchanged_failures", [])
+    print(f"[qa] Regression analysis (vs {regression.get('compared_to', '?')}):")
+    print(f"  New failures: {len(new_f)}")
+    for f in new_f:
+        print(f"    FAIL: {f}")
+    print(f"  New passes: {len(new_p)}")
+    print(f"  Unchanged failures: {len(unchanged_f)}")
+    return 1 if new_f else 0
+
+
+def _show_flaky() -> int:
+    """Show flaky test suspects."""
+    from qa.reporters.flaky import detect_flaky_tests
+    history_file = get_reports_dir() / "flaky_history.json"
+    cfg = load_config("qa")
+    suspects = detect_flaky_tests(
+        history_file,
+        flip_threshold=cfg["flaky_detection"]["flip_rate_threshold"],
+        entropy_threshold=cfg["flaky_detection"]["entropy_threshold"],
+    )
+    if not suspects:
+        print("[qa] No flaky test suspects.")
         return 0
+    print(f"[qa] {len(suspects)} flaky test suspect(s):")
+    for s in suspects:
+        print(f"  {s['test']} — flip_rate={s['flip_rate']}, entropy={s['entropy']}, "
+              f"history={s['history']}")
+    return 0
 
-    if args.regression:
-        regression = load_latest_regression()
-        if regression is None:
-            print("[qa] No regression data found.")
-            return 1
-        new_f = regression.get("new_failures", [])
-        new_p = regression.get("new_passes", [])
-        unchanged_f = regression.get("unchanged_failures", [])
-        print(f"[qa] Regression analysis (vs {regression.get('compared_to', '?')}):")
-        print(f"  New failures: {len(new_f)}")
-        for f in new_f:
-            print(f"    FAIL: {f}")
-        print(f"  New passes: {len(new_p)}")
-        print(f"  Unchanged failures: {len(unchanged_f)}")
-        return 1 if new_f else 0
 
-    if args.flaky:
-        from qa.reporters.flaky import detect_flaky_tests
-        history_file = get_reports_dir() / "flaky_history.json"
-        cfg = load_config("qa")
-        suspects = detect_flaky_tests(
-            history_file,
-            flip_threshold=cfg["flaky_detection"]["flip_rate_threshold"],
-            entropy_threshold=cfg["flaky_detection"]["entropy_threshold"],
-        )
-        if not suspects:
-            print("[qa] No flaky test suspects.")
-            return 0
-        print(f"[qa] {len(suspects)} flaky test suspect(s):")
-        for s in suspects:
-            print(f"  {s['test']} — flip_rate={s['flip_rate']}, entropy={s['entropy']}, "
-                  f"history={s['history']}")
-        return 0
-
-    if args.quality:
-        quality_dir = get_reports_dir() / "quality"
-        latest = quality_dir / "LATEST"
-        if not latest.exists():
-            print("[qa] No quality reports found.")
-            return 1
-        gate_file = quality_dir / latest.resolve().name / "gate.json"
-        if gate_file.exists():
-            gate = json.loads(gate_file.read_text())
-            print(f"[qa] Quality gate: {gate['gate_result']}")
-            for check in gate.get("checks", []):
-                status = "PASS" if check["status"] == "PASS" else "FAIL"
-                print(f"  [{status}] {check['check']}: {check['detail']}")
-            return 0 if gate["gate_result"] == "PASS" else 1
+def _show_quality() -> int:
+    """Show quality gate results."""
+    quality_dir = get_reports_dir() / "quality"
+    latest = quality_dir / "LATEST"
+    if not latest.exists():
+        print("[qa] No quality reports found.")
+        return 1
+    gate_file = quality_dir / latest.resolve().name / "gate.json"
+    if not gate_file.exists():
         print("[qa] No quality gate results found.")
         return 1
+    gate = json.loads(gate_file.read_text())
+    print(f"[qa] Quality gate: {gate['gate_result']}")
+    for check in gate.get("checks", []):
+        status = "PASS" if check["status"] == "PASS" else "FAIL"
+        print(f"  [{status}] {check['check']}: {check['detail']}")
+    return 0 if gate["gate_result"] == "PASS" else 1
+
+
+def show_report(args) -> int:
+    """Show reports based on CLI args."""
+    _REPORT_HANDLERS = {
+        "latest": _show_latest,
+        "regression": _show_regression,
+        "flaky": _show_flaky,
+        "quality": _show_quality,
+    }
+
+    for flag, handler in _REPORT_HANDLERS.items():
+        if getattr(args, flag, False):
+            return handler()
 
     print("[qa] Specify --latest, --regression, --flaky, or --quality")
     return 0

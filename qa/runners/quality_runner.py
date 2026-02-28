@@ -1,7 +1,7 @@
 """Quality runner: orchestrate linting, security, and complexity tools."""
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404 — subprocess needed for running quality tools
 import time
 from datetime import datetime
 from pathlib import Path
@@ -53,7 +53,7 @@ def run_tool(name: str, cmd: list[str], timeout: int = 120) -> dict:
     start = time.monotonic()
 
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603
             cmd, capture_output=True, text=True,
             cwd=root, timeout=timeout,
         )
@@ -88,22 +88,66 @@ def run_tool(name: str, cmd: list[str], timeout: int = 120) -> dict:
         }
 
 
+def _select_tools(args) -> list[dict]:
+    """Select quality tools based on CLI flags."""
+    if args.python:
+        return get_enabled_tools("python")
+    if args.typescript:
+        return get_enabled_tools("typescript")
+    if args.security:
+        return [t for t in get_enabled_tools() if t["name"] in ("bandit", "semgrep")]
+    if args.coverage:
+        return [t for t in get_enabled_tools("python") if t["name"] == "coverage"]
+    return get_enabled_tools()
+
+
+def _run_radon_tool(tool: dict, quality_dir: Path) -> list[dict]:
+    """Run radon tool (has two commands: cc and mi)."""
+    name = tool["name"]
+    targets = " ".join(tool.get("targets", []))
+    results = []
+
+    cmd_str = tool["command_cc"].replace("{targets}", targets)
+    result_cc = run_tool(f"{name}_cc", cmd_str.split())
+    (quality_dir / f"{name}_cc.json").write_text(result_cc["stdout"] or "{}")
+    results.append(result_cc)
+
+    cmd_str = tool["command_mi"].replace("{targets}", targets)
+    result_mi = run_tool(f"{name}_mi", cmd_str.split())
+    (quality_dir / f"{name}_mi.json").write_text(result_mi["stdout"] or "{}")
+    results.append(result_mi)
+
+    return results
+
+
+def _run_standard_tool(tool: dict, quality_dir: Path) -> dict:
+    """Run a standard quality tool (single command)."""
+    name = tool["name"]
+    targets = " ".join(tool.get("targets", []))
+    cmd_str = tool["command"].replace("{targets}", targets)
+    if tool.get("report_flag"):
+        cmd_str = cmd_str + " " + tool["report_flag"]
+    result = run_tool(name, cmd_str.split())
+    output = result["stdout"] or result["stderr"] or ""
+    (quality_dir / f"{name}.json").write_text(output)
+    return result
+
+
+def _result_status(r: dict) -> str:
+    """Determine display status for a tool result."""
+    if r["return_code"] == 0:
+        return "PASS"
+    if r.get("not_found"):
+        return "NOT_FOUND"
+    if r["timed_out"]:
+        return "TIMEOUT"
+    return "ISSUES"
+
+
 def run_quality(args) -> int:
     """Main quality runner entry point."""
     quality_dir = create_quality_dir()
-    tools = []
-
-    # Determine which tools to run based on flags
-    if args.python:
-        tools = get_enabled_tools("python")
-    elif args.typescript:
-        tools = get_enabled_tools("typescript")
-    elif args.security:
-        tools = [t for t in get_enabled_tools() if t["name"] in ("bandit", "semgrep")]
-    elif args.coverage:
-        tools = [t for t in get_enabled_tools("python") if t["name"] == "coverage"]
-    else:
-        tools = get_enabled_tools()
+    tools = _select_tools(args)
 
     if not tools:
         print("[qa] No enabled quality tools found.")
@@ -113,36 +157,14 @@ def run_quality(args) -> int:
     results = []
 
     for tool in tools:
-        name = tool["name"]
-        print(f"  Running {name}...")
-
-        # Build command
-        targets = " ".join(tool.get("targets", []))
+        print(f"  Running {tool['name']}...")
         if "command_cc" in tool:
-            # Radon has two commands
-            cmd_str = tool["command_cc"].replace("{targets}", targets)
-            result_cc = run_tool(f"{name}_cc", cmd_str.split())
-            (quality_dir / f"{name}_cc.json").write_text(result_cc["stdout"] or "{}")
-            results.append(result_cc)
-
-            cmd_str = tool["command_mi"].replace("{targets}", targets)
-            result_mi = run_tool(f"{name}_mi", cmd_str.split())
-            (quality_dir / f"{name}_mi.json").write_text(result_mi["stdout"] or "{}")
-            results.append(result_mi)
+            results.extend(_run_radon_tool(tool, quality_dir))
         else:
-            cmd_str = tool["command"].replace("{targets}", targets)
-            if tool.get("report_flag"):
-                cmd_str = cmd_str + " " + tool["report_flag"]
-            result = run_tool(name, cmd_str.split())
-            # Save output
-            output = result["stdout"] or result["stderr"] or ""
-            (quality_dir / f"{name}.json").write_text(output)
-            results.append(result)
+            results.append(_run_standard_tool(tool, quality_dir))
 
-    # Print summary
     print(f"\n[qa] Quality results saved to: {quality_dir}")
     for r in results:
-        status = "PASS" if r["return_code"] == 0 else ("NOT_FOUND" if r.get("not_found") else ("TIMEOUT" if r["timed_out"] else "ISSUES"))
-        print(f"  [{status}] {r['name']} ({r['duration_seconds']}s)")
+        print(f"  [{_result_status(r)}] {r['name']} ({r['duration_seconds']}s)")
 
     return 0

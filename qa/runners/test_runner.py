@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
+import subprocess  # nosec B404 — subprocess needed for running pytest and git commands
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,7 +34,7 @@ def create_run_dir(base_dir: Path | None = None) -> Path:
     return run_dir
 
 
-def parse_pytest_output(output: str, return_code: int) -> dict:
+def parse_pytest_output(output: str, _return_code: int) -> dict:
     """Parse pytest summary line into structured results."""
     result = {"passed": 0, "failed": 0, "skipped": 0, "errors": 0, "total": 0}
 
@@ -49,7 +49,7 @@ def parse_pytest_output(output: str, return_code: int) -> dict:
 
 def _get_git_sha() -> str:
     root = get_project_root()
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "rev-parse", "--short", "HEAD"],
         capture_output=True, text=True, cwd=root,
     )
@@ -58,7 +58,7 @@ def _get_git_sha() -> str:
 
 def _get_git_branch() -> str:
     root = get_project_root()
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "rev-parse", "--abbrev-ref", "HEAD"],
         capture_output=True, text=True, cwd=root,
     )
@@ -83,46 +83,72 @@ def write_summary(run_dir: Path, suite: str, results: dict, duration: float) -> 
     (run_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 
 
-def run_tests(args) -> int:
-    """Main test runner entry point."""
-    cfg = load_config("qa")
-    root = get_project_root()
-    test_cmd = cfg["project"]["test_command"].split()
-
-    cmd = list(test_cmd)
-
+def _build_suite_args(args, cfg: dict) -> list[str]:
+    """Build pytest arguments for the selected test suite."""
     if args.suite == "backend":
-        cmd += [cfg["project"]["test_dir"], "--ignore=" + cfg["project"]["e2e_dir"]]
-    elif args.suite == "e2e":
-        cmd += [cfg["project"]["e2e_dir"]]
-    elif args.suite == "affected":
+        return [cfg["project"]["test_dir"], "--ignore=" + cfg["project"]["e2e_dir"]]
+    if args.suite == "e2e":
+        return [cfg["project"]["e2e_dir"]]
+    if args.suite == "affected":
         from qa.discovery.affected import resolve_affected_tests
         affected = resolve_affected_tests(args.since)
         if not affected:
             print("[qa] No affected tests found. Running full backend suite.")
-            cmd += [cfg["project"]["test_dir"], "--ignore=" + cfg["project"]["e2e_dir"]]
-        else:
-            print(f"[qa] Running {len(affected)} affected test files:")
-            for f in affected:
-                print(f"  {f}")
-            cmd += affected
-    else:
-        cmd += [cfg["project"]["test_dir"]]
+            return [cfg["project"]["test_dir"], "--ignore=" + cfg["project"]["e2e_dir"]]
+        print(f"[qa] Running {len(affected)} affected test files:")
+        for f in affected:
+            print(f"  {f}")
+        return affected
+    return [cfg["project"]["test_dir"]]
 
+
+def _build_flag_args(args) -> list[str]:
+    """Build pytest flag arguments from CLI options."""
+    flags: list[str] = []
     if args.failfast:
-        cmd.append("-x")
+        flags.append("-x")
     if args.keyword:
-        cmd += ["-k", args.keyword]
-    if args.quiet:
-        cmd.append("-q")
-    else:
-        cmd.append("-v")
+        flags += ["-k", args.keyword]
+    flags.append("-q" if args.quiet else "-v")
+    return flags
+
+
+def _run_regression_analysis(run_dir: Path) -> None:
+    """Trigger regression analysis against the previous run if available."""
+    runs_dir = run_dir.parent
+    all_runs = sorted([d for d in runs_dir.iterdir() if d.is_dir() and d.name != "LATEST"])
+    if len(all_runs) < 2:
+        return
+    prev_run = all_runs[-2]
+    try:
+        from qa.reporters.regression import analyze_regression
+        diffs_dir = run_dir / "diffs"
+        diffs_dir.mkdir(exist_ok=True)
+        analysis = analyze_regression(run_dir, prev_run)
+        (diffs_dir / "regression.json").write_text(json.dumps(analysis, indent=2))
+        new_failures = analysis.get("new_failures", [])
+        if new_failures:
+            print(f"\n[qa] REGRESSION: {len(new_failures)} new failure(s):")
+            for f in new_failures[:10]:
+                print(f"  FAIL: {f}")
+    except ImportError:
+        pass
+
+
+def run_tests(args) -> int:
+    """Main test runner entry point."""
+    cfg = load_config("qa")
+    root = get_project_root()
+
+    cmd = cfg["project"]["test_command"].split()
+    cmd += _build_suite_args(args, cfg)
+    cmd += _build_flag_args(args)
 
     print(f"[qa] Running: {' '.join(cmd)}")
     start = time.monotonic()
 
     try:
-        result = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=600)
+        result = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=600)  # nosec B603
     except subprocess.TimeoutExpired:
         print("[qa] TIMEOUT: Tests exceeded 600s")
         return 124
@@ -149,23 +175,6 @@ def run_tests(args) -> int:
           f"{parsed['skipped']} skipped, {parsed['errors']} errors "
           f"in {duration:.1f}s")
 
-    # Trigger regression analysis if previous run exists
-    runs_dir = run_dir.parent
-    all_runs = sorted([d for d in runs_dir.iterdir() if d.is_dir() and d.name != "LATEST"])
-    if len(all_runs) >= 2:
-        prev_run = all_runs[-2]
-        try:
-            from qa.reporters.regression import analyze_regression
-            diffs_dir = run_dir / "diffs"
-            diffs_dir.mkdir(exist_ok=True)
-            analysis = analyze_regression(run_dir, prev_run)
-            (diffs_dir / "regression.json").write_text(json.dumps(analysis, indent=2))
-            new_failures = analysis.get("new_failures", [])
-            if new_failures:
-                print(f"\n[qa] REGRESSION: {len(new_failures)} new failure(s):")
-                for f in new_failures[:10]:
-                    print(f"  FAIL: {f}")
-        except ImportError:
-            pass
+    _run_regression_analysis(run_dir)
 
     return result.returncode

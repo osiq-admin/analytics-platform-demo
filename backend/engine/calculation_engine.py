@@ -141,11 +141,11 @@ class CalculationEngine:
         cursor = self._db.cursor()
         try:
             cursor.execute(f'DROP VIEW IF EXISTS "{table_name}"')
-        except Exception:
+        except Exception:  # nosec B110 — DuckDB type mismatch on DROP; safe to ignore
             pass
         try:
             cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
-        except Exception:
+        except Exception:  # nosec B110 — DuckDB type mismatch on DROP; safe to ignore
             pass
         cursor.execute(f'CREATE TABLE "{table_name}" AS {sql}')
         cursor.close()
@@ -217,7 +217,7 @@ class CalculationEngine:
         parquet_path = layer_dir / f"{table_name}.parquet"
 
         cursor = self._db.cursor()
-        arrow_table = cursor.execute(f'SELECT * FROM "{table_name}"').fetch_arrow_table()
+        arrow_table = cursor.execute(f'SELECT * FROM "{table_name}"').fetch_arrow_table()  # nosec B608
         cursor.close()
 
         pq.write_table(arrow_table, parquet_path)

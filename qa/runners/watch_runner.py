@@ -1,7 +1,7 @@
 """File watcher: auto-run affected tests on file changes."""
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404 — subprocess needed for running pytest on file changes
 from pathlib import Path
 
 from qa.config import get_project_root, load_config
@@ -79,7 +79,7 @@ def run_watch() -> int:
                 print(f"  {f}")
             cmd = cfg["project"]["test_command"].split() + test_files + ["-x", "-q"]
 
-        subprocess.run(cmd, cwd=root)
+        subprocess.run(cmd, cwd=root)  # nosec B603
         print("\n[qa] Waiting for changes...\n")
 
     print("\n[qa] Watch stopped.")

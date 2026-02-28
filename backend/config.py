@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     workspace_dir: Path = Path("workspace")
-    host: str = "0.0.0.0"
+    host: str = "0.0.0.0"  # nosec B104 — dev server, intentional bind to all interfaces
     port: int = 8000
     reload: bool = True
     llm_api_key: str = ""

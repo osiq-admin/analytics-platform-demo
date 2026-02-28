@@ -109,6 +109,6 @@ class AlertService:
         cursor = self._db.cursor()
         cursor.execute('DROP TABLE IF EXISTS "alerts_summary"')
         cursor.execute(
-            f"CREATE TABLE alerts_summary AS SELECT * FROM read_parquet('{self._summary_path}')"
+            f"CREATE TABLE alerts_summary AS SELECT * FROM read_parquet('{self._summary_path}')"  # nosec B608
         )
         cursor.close()

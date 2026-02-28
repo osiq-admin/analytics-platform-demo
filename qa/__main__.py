@@ -61,57 +61,43 @@ def main() -> int:
         parser.print_help()
         return 0
 
-    if args.command == "test":
-        try:
-            from qa.runners.test_runner import run_tests
-            return run_tests(args)
-        except ImportError:
-            print("[qa] Test runner not yet implemented.")
-            return 1
-    elif args.command == "quality":
-        try:
-            from qa.runners.quality_runner import run_quality
-            return run_quality(args)
-        except ImportError:
-            print("[qa] Quality runner not yet implemented.")
-            return 1
-    elif args.command == "watch":
-        try:
-            from qa.runners.watch_runner import run_watch
-            return run_watch()
-        except ImportError:
-            print("[qa] Watch runner not yet implemented.")
-            return 1
-    elif args.command == "report":
-        try:
-            from qa.reporters.summary import show_report
-            return show_report(args)
-        except ImportError:
-            print("[qa] Reporter not yet implemented.")
-            return 1
-    elif args.command == "gate":
-        try:
-            from qa.reporters.summary import evaluate_gate
-            return evaluate_gate()
-        except ImportError:
-            print("[qa] Gate evaluator not yet implemented.")
-            return 1
-    elif args.command == "hooks":
+    return _dispatch_command(args)
+
+
+def _dispatch_command(args) -> int:
+    """Dispatch CLI command to its handler."""
+    # Each entry: (import_path, callable_name, not_found_label, needs_args)
+    _COMMANDS: dict[str, tuple[str, str, str, bool]] = {
+        "test":     ("qa.runners.test_runner",    "run_tests",      "Test runner",       True),
+        "quality":  ("qa.runners.quality_runner",  "run_quality",    "Quality runner",    True),
+        "watch":    ("qa.runners.watch_runner",    "run_watch",      "Watch runner",      False),
+        "report":   ("qa.reporters.summary",       "show_report",    "Reporter",          True),
+        "gate":     ("qa.reporters.summary",       "evaluate_gate",  "Gate evaluator",    False),
+        "baseline": ("qa.reporters.summary",       "update_baseline","Baseline manager",  False),
+    }
+
+    # Special case for hooks (needs args.action, not args)
+    if args.command == "hooks":
         try:
             from qa.hooks import manage_hooks
             return manage_hooks(args.action)
         except ImportError:
             print("[qa] Hook manager not yet implemented.")
             return 1
-    elif args.command == "baseline":
-        try:
-            from qa.reporters.summary import update_baseline
-            return update_baseline()
-        except ImportError:
-            print("[qa] Baseline manager not yet implemented.")
-            return 1
 
-    return 0
+    entry = _COMMANDS.get(args.command)
+    if not entry:
+        return 0
+
+    module_path, func_name, label, needs_args = entry
+    try:
+        import importlib
+        mod = importlib.import_module(module_path)
+        handler = getattr(mod, func_name)
+        return handler(args) if needs_args else handler()
+    except ImportError:
+        print(f"[qa] {label} not yet implemented.")
+        return 1
 
 
 if __name__ == "__main__":

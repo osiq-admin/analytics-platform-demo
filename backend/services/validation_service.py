@@ -301,7 +301,7 @@ class ValidationService:
                     data = json.loads(f.read_text())
                     if data.get("model_id") == model_id:
                         model_alerts.append(data)
-                except Exception:
+                except Exception:  # nosec B110 — corrupt alert JSON files are skipped
                     pass
 
             if model_alerts:

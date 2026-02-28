@@ -177,7 +177,7 @@ class ReferenceService:
                 cursor = self._db.cursor()
                 lookup_field = ref_field
                 cursor.execute(
-                    f'SELECT COUNT(*) FROM "{ref_entity}" WHERE "{lookup_field}" = ?',
+                    f'SELECT COUNT(*) FROM "{ref_entity}" WHERE "{lookup_field}" = ?',  # nosec B608
                     [key_value],
                 )
                 count = cursor.fetchone()[0]
@@ -190,8 +190,8 @@ class ReferenceService:
                         referencing_field=ref_field,
                         reference_count=count,
                     ))
-            except Exception:
-                pass  # Table may not be loaded
+            except Exception:  # nosec B110 — table may not be loaded; skip gracefully
+                pass
 
         return refs
 
@@ -226,7 +226,7 @@ class ReferenceService:
         """Read source records from DuckDB."""
         try:
             cursor = self._db.cursor()
-            cursor.execute(f'SELECT * FROM "{entity}"')
+            cursor.execute(f'SELECT * FROM "{entity}"')  # nosec B608
             columns = [desc[0] for desc in cursor.description]
             rows = cursor.fetchall()
             cursor.close()

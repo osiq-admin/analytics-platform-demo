@@ -1,7 +1,7 @@
 """Affected test discovery: git changes → convention + AST → test files."""
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404 — subprocess needed for git commands in test discovery
 
 from qa.config import get_project_root
 from qa.discovery.convention import convention_map
@@ -17,7 +17,7 @@ def get_changed_files(since: str = "HEAD") -> list[str]:
     files: set[str] = set()
 
     # Unstaged changes
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "diff", "--name-only", since],
         capture_output=True, text=True, cwd=root,
     )
@@ -25,7 +25,7 @@ def get_changed_files(since: str = "HEAD") -> list[str]:
         files.update(result.stdout.strip().split("\n"))
 
     # Staged changes
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "diff", "--name-only", "--cached"],
         capture_output=True, text=True, cwd=root,
     )
@@ -33,7 +33,7 @@ def get_changed_files(since: str = "HEAD") -> list[str]:
         files.update(result.stdout.strip().split("\n"))
 
     # Untracked files
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "ls-files", "--others", "--exclude-standard"],
         capture_output=True, text=True, cwd=root,
     )
@@ -46,12 +46,12 @@ def get_changed_files(since: str = "HEAD") -> list[str]:
 def get_changed_files_for_push() -> list[str]:
     """Get files changed in commits about to be pushed."""
     root = get_project_root()
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 B607
         ["git", "diff", "--name-only", "@{push}..HEAD"],
         capture_output=True, text=True, cwd=root,
     )
     if result.returncode != 0:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 B607
             ["git", "diff", "--name-only", "origin/main..HEAD"],
             capture_output=True, text=True, cwd=root,
         )

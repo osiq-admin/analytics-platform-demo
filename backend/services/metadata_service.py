@@ -563,60 +563,69 @@ class MetadataService:
 
     # -- Domain Values --
 
-    def get_domain_values(self, entity_id: str, field_name: str, db=None,
-                          search: str | None = None, limit: int = 50) -> dict:
-        """Get domain values for an entity field from metadata and live data."""
+    @staticmethod
+    def _cardinality_tier(count: int) -> str:
+        """Classify count into small/medium/large cardinality tier."""
+        if count <= 50:
+            return "small"
+        if count <= 500:
+            return "medium"
+        return "large"
+
+    def _get_metadata_values(self, entity_id: str, field_name: str) -> list:
+        """Extract domain values from entity field metadata definition."""
         entity = self.load_entity(entity_id)
+        if not entity:
+            return []
+        field_def = next(
+            (f for f in (entity.fields or []) if f.name == field_name), None
+        )
+        if field_def and field_def.domain_values:
+            return list(field_def.domain_values)
+        return []
 
-        # Metadata values from entity definition domain_values
-        metadata_values = []
-        if entity:
-            field_def = next(
-                (f for f in (entity.fields or []) if f.name == field_name), None
-            )
-            if field_def and field_def.domain_values:
-                metadata_values = list(field_def.domain_values)
-
-        # Data values from DuckDB
-        data_values = []
-        total_count = 0
-        if db:
-            data_values, total_count = self._query_distinct_values(
-                db, entity_id, field_name, search, limit
-            )
-
-        # Combined: metadata first, then data-only values
+    @staticmethod
+    def _merge_values(metadata_values: list, data_values: list) -> list:
+        """Merge metadata and data values, preserving metadata order, deduplicating."""
         seen = set(metadata_values)
         combined = list(metadata_values)
         for v in data_values:
             if v not in seen:
                 combined.append(v)
                 seen.add(v)
+        return combined
 
-        # Apply search filter to metadata values too
-        if search:
-            search_lower = search.lower()
-            combined = [v for v in combined if search_lower in str(v).lower()]
+    @staticmethod
+    def _filter_by_search(values: list, search: str | None) -> list:
+        """Filter values by case-insensitive search term."""
+        if not search:
+            return values
+        search_lower = search.lower()
+        return [v for v in values if search_lower in str(v).lower()]
 
-        # Cardinality tier
+    def get_domain_values(self, entity_id: str, field_name: str, db=None,
+                          search: str | None = None, limit: int = 50) -> dict:
+        """Get domain values for an entity field from metadata and live data."""
+        metadata_values = self._get_metadata_values(entity_id, field_name)
+
+        data_values, total_count = (
+            self._query_distinct_values(db, entity_id, field_name, search, limit)
+            if db else ([], 0)
+        )
+
+        combined = self._merge_values(metadata_values, data_values)
+        combined = self._filter_by_search(combined, search)
+
         effective_count = total_count or len(combined)
-        if effective_count <= 50:
-            cardinality = "small"
-        elif effective_count <= 500:
-            cardinality = "medium"
-        else:
-            cardinality = "large"
 
         return {
             "entity_id": entity_id,
             "field_name": field_name,
-            "metadata_values": metadata_values if not search else [
-                v for v in metadata_values if search.lower() in str(v).lower()
-            ],
+            "metadata_values": self._filter_by_search(metadata_values, search),
             "data_values": data_values,
             "combined": combined[:limit],
             "total_count": effective_count,
-            "cardinality": cardinality,
+            "cardinality": self._cardinality_tier(effective_count),
         }
 
     def _query_distinct_values(self, db, table: str, field: str,
@@ -626,11 +635,11 @@ class MetadataService:
             cursor = db.cursor()
 
             # Count total distinct
-            count_sql = f'SELECT COUNT(DISTINCT "{field}") FROM "{table}" WHERE "{field}" IS NOT NULL'
+            count_sql = f'SELECT COUNT(DISTINCT "{field}") FROM "{table}" WHERE "{field}" IS NOT NULL'  # nosec B608
             total = cursor.execute(count_sql).fetchone()[0]
 
             # Fetch values with optional search
-            sql = f'SELECT DISTINCT "{field}" FROM "{table}" WHERE "{field}" IS NOT NULL'
+            sql = f'SELECT DISTINCT "{field}" FROM "{table}" WHERE "{field}" IS NOT NULL'  # nosec B608
             if search:
                 sql += f" AND CAST(\"{field}\" AS VARCHAR) ILIKE '%{search}%'"
             sql += f' ORDER BY "{field}" LIMIT {limit}'
@@ -694,36 +703,22 @@ class MetadataService:
             return {"regulations": []}
         return json.loads(path.read_text())
 
-    def get_regulatory_coverage_map(self) -> dict:
-        """Build a comprehensive regulatory coverage map.
-
-        Returns a structure with:
-        - regulations: the full registry
-        - models_by_article: reverse index of "RegName Article" → [model_ids]
-        - calcs_by_model: model_id → [calc_ids]
-        - entities_by_calc: calc_id → [entity_ids] (from calc inputs)
-        - coverage_summary: total/covered/uncovered articles and coverage percentage
-        """
-        registry = self.load_regulation_registry()
-        models = self.list_detection_models()
-        calcs = self.list_calculations()
-
-        # Build models_by_article: "MAR Art. 12(1)(a)" → [model_ids]
-        models_by_article: dict[str, list[str]] = {}
+    @staticmethod
+    def _build_models_by_article(models) -> dict[str, list[str]]:
+        """Build reverse index of 'RegName Article' to model IDs."""
+        result: dict[str, list[str]] = {}
         for model in models:
             for rc in model.regulatory_coverage:
                 key = f"{rc.regulation} {rc.article}"
-                models_by_article.setdefault(key, [])
-                if model.model_id not in models_by_article[key]:
-                    models_by_article[key].append(model.model_id)
+                result.setdefault(key, [])
+                if model.model_id not in result[key]:
+                    result[key].append(model.model_id)
+        return result
 
-        # Build calcs_by_model: model_id → [calc_ids]
-        calcs_by_model: dict[str, list[str]] = {}
-        for model in models:
-            calcs_by_model[model.model_id] = [mc.calc_id for mc in model.calculations]
-
-        # Build entities_by_calc: calc_id → [entity_ids] (from inputs)
-        entities_by_calc: dict[str, list[str]] = {}
+    @staticmethod
+    def _build_entities_by_calc(calcs) -> dict[str, list[str]]:
+        """Build calc_id to entity_ids mapping from calculation inputs."""
+        result: dict[str, list[str]] = {}
         for calc in calcs:
             entity_ids: list[str] = []
             for inp in calc.inputs:
@@ -731,20 +726,37 @@ class MetadataService:
                     eid = inp["entity_id"]
                     if eid not in entity_ids:
                         entity_ids.append(eid)
-            entities_by_calc[calc.calc_id] = entity_ids
+            result[calc.calc_id] = entity_ids
+        return result
 
-        # Analyze coverage against registry articles
-        covered_articles: list[str] = []
-        uncovered_articles: list[str] = []
-        for reg in registry.get("regulations", []):
-            for article in reg.get("articles", []):
-                article_key = f"{reg['name']} {article['article']}"
-                if article_key in models_by_article:
-                    covered_articles.append(article_key)
-                else:
-                    uncovered_articles.append(article_key)
+    def get_regulatory_coverage_map(self) -> dict:
+        """Build a comprehensive regulatory coverage map.
 
-        total = len(covered_articles) + len(uncovered_articles)
+        Returns a structure with:
+        - regulations: the full registry
+        - models_by_article: reverse index of "RegName Article" -> [model_ids]
+        - calcs_by_model: model_id -> [calc_ids]
+        - entities_by_calc: calc_id -> [entity_ids] (from calc inputs)
+        - coverage_summary: total/covered/uncovered articles and coverage percentage
+        """
+        registry = self.load_regulation_registry()
+        models = self.list_detection_models()
+        calcs = self.list_calculations()
+
+        models_by_article = self._build_models_by_article(models)
+        calcs_by_model = {m.model_id: [mc.calc_id for mc in m.calculations] for m in models}
+        entities_by_calc = self._build_entities_by_calc(calcs)
+
+        # Classify registry articles as covered or uncovered
+        all_article_keys = [
+            f"{reg['name']} {article['article']}"
+            for reg in registry.get("regulations", [])
+            for article in reg.get("articles", [])
+        ]
+        covered_articles = [k for k in all_article_keys if k in models_by_article]
+        uncovered_articles = [k for k in all_article_keys if k not in models_by_article]
+
+        total = len(all_article_keys)
         coverage_pct = round((len(covered_articles) / total * 100), 1) if total > 0 else 0.0
 
         return {
@@ -845,30 +857,39 @@ class MetadataService:
             return True
         return False
 
+    @staticmethod
+    def _normalize_step(step) -> tuple:
+        """Normalize a score step to a comparable tuple of (min_value, max_value, score)."""
+        if isinstance(step, dict):
+            d = step
+        elif hasattr(step, "model_dump"):
+            d = step.model_dump()
+        else:
+            d = {}
+        return (d.get("min_value"), d.get("max_value"), d.get("score"))
+
+    def _steps_match(self, setting_steps: list, template_steps: list[dict]) -> bool:
+        """Check if a setting's score steps match template steps."""
+        if len(setting_steps) != len(template_steps):
+            return False
+        template_tuples = [(t["min_value"], t["max_value"], t["score"]) for t in template_steps]
+        return all(
+            self._normalize_step(s) == t
+            for s, t in zip(setting_steps, template_tuples)
+        )
+
     def get_score_template_usage_count(self, template_id: str) -> int:
         """Count how many score_steps settings reference this template's steps."""
         template = self.load_score_template(template_id)
         if not template:
             return 0
-        # Serialize template steps for comparison
         template_steps = [s.model_dump() for s in template.steps]
-        count = 0
-        for setting in self.list_settings():
-            if setting.value_type == "score_steps" and setting.default:
-                if isinstance(setting.default, list) and len(setting.default) == len(template_steps):
-                    match = True
-                    for s_step, t_step in zip(setting.default, template_steps):
-                        s_dict = s_step if isinstance(s_step, dict) else (
-                            s_step.model_dump() if hasattr(s_step, "model_dump") else {}
-                        )
-                        if (s_dict.get("min_value") != t_step["min_value"]
-                                or s_dict.get("max_value") != t_step["max_value"]
-                                or s_dict.get("score") != t_step["score"]):
-                            match = False
-                            break
-                    if match:
-                        count += 1
-        return count
+        return sum(
+            1 for setting in self.list_settings()
+            if setting.value_type == "score_steps"
+            and isinstance(setting.default, list)
+            and self._steps_match(setting.default, template_steps)
+        )
 
     # -- Format Rules --
 
