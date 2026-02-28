@@ -16,7 +16,7 @@ class TestReferenceDataView:
         self.page.wait_for_load_state("networkidle")
 
     def test_view_loads(self):
-        expect(self.page.locator("text=Reference Data")).to_be_visible()
+        expect(self.page.locator("h1", has_text="Reference Data")).to_be_visible()
 
     def test_entity_tabs_visible(self):
         expect(self.page.locator("[data-tour='reference-entity-tabs']")).to_be_visible()
