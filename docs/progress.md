@@ -52,6 +52,7 @@
 | Data Onboarding & Connector Abstraction (Phase 15) | COMPLETE | M176-M183: Pydantic onboarding models, 6 connector metadata files, BaseConnector + LocalFileConnector + stubs, schema detector + data profiler, onboarding service + API endpoints, 5-step DataOnboarding wizard, tours/scenarios/operations/architecture — 759 total tests (549+210), 18 views |
 | Tour/Scenario Quality Fixes + Bronze→Silver Mapping (Phase 15.5 + 16) | COMPLETE | M184-M196: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts, Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 total tests (562+210), 18 views, 29 scenarios |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
+| Silver→Gold Pipeline Orchestration (Phase 17) | IN PROGRESS | M197-M204: Contract validator, pipeline orchestrator, calc input registry, Silver→Gold mapping, PipelineMonitor overhaul, MedallionOverview execution status |
 
 ---
 

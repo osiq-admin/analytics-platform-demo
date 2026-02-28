@@ -1332,7 +1332,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P1 — Next** | Phase 15 (Data Onboarding) | **COMPLETE** | M176-M183: 6 connectors, BaseConnector + LocalFileConnector, schema detector, data profiler, DataOnboarding wizard, S28 — 759 tests (549+210), 18 views |
 | **P1 — Next** | Phase 15.5 (Tour Quality Fixes) | **COMPLETE** | M184-M190: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts |
 | **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | **COMPLETE** | M191-M196: Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 tests (562+210) |
-| **P1 — Next** | Phase 17 (Silver→Gold Mapping) | PLANNED | MappingStudio overhaul Part 2 — canonical to analytics |
+| **P1 — Next** | Phase 17 (Silver→Gold Pipeline) | **IN PROGRESS** | M197-M204: Contract validator, pipeline orchestrator, calc input registry, Silver→Gold mapping, PipelineMonitor overhaul, MedallionOverview execution — plan: `docs/plans/2026-02-28-phase17-silver-to-gold-pipeline.md` |
 | **P2 — Important** | Phase 18 (Data Quality) | PLANNED | Quality gates, quarantine, ISO 8000/25012 |
 | **P2 — Important** | Phase 19 (Reference Data/MDM) | PLANNED | Golden records, cross-source reconciliation |
 | **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | PLANNED | KPIs, testing isolation, regulatory retention |
