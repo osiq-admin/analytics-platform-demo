@@ -3189,6 +3189,66 @@ const S28_DATA_ONBOARDING: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// S29: Mapping Studio — Create & Validate Mapping
+// ==========================================================================
+
+const S29_MAPPING_STUDIO: ScenarioDefinition = {
+  id: "s29_mapping_studio",
+  name: "S29: Create & Validate a Mapping",
+  description:
+    "Walk through the Mapping Studio to select a mapping, view field mappings, and validate completeness against entity definitions.",
+  category: "admin",
+  difficulty: "beginner",
+  estimatedMinutes: 4,
+  steps: [
+    {
+      target: "[data-tour='mapping-selector']",
+      title: "Open Mapping Studio",
+      content: "Navigate to the Mapping Studio under the Configure section. Select an existing mapping from the dropdown to view its field mappings.",
+      route: "/mappings",
+      action: "navigate",
+      actionTarget: "[data-tour='mapping-selector']",
+      hint: "Click 'Mapping Studio' in the sidebar under Configure.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='mapping-selector']",
+      title: "Select a Mapping",
+      content: "Choose a mapping from the dropdown list. Each mapping defines source-to-target field relationships between two entities.",
+      action: "click",
+      actionTarget: "[data-tour='mapping-selector']",
+      hint: "Click the mapping dropdown and select an existing mapping.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='mapping-canvas']",
+      title: "Review Field Mappings",
+      content: "The field mapping table shows each source field, its transform type, and the target field. Transform types include direct, rename, cast, uppercase, and expression.",
+      action: "wait",
+      hint: "Review the mapping rows in the table.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='mapping-validation']",
+      title: "Validate Mapping",
+      content: "Click 'Validate' to check the mapping against entity definitions. The validation panel shows errors, warnings, and any unmapped fields.",
+      action: "click",
+      actionTarget: "[data-tour='mapping-validation']",
+      hint: "Click the Validate button and review the results.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='mapping-validation']",
+      title: "Review Validation Results",
+      content: "The validation panel shows coverage percentage, unmapped fields, and any type mismatches. Address warnings before saving.",
+      action: "wait",
+      hint: "Review errors and warnings in the validation results.",
+      delay: 2500,
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3220,4 +3280,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s26_architecture_trace: S26_ARCHITECTURE_TRACE,
   s27_medallion_architecture: S27_MEDALLION_ARCHITECTURE,
   s28_data_onboarding: S28_DATA_ONBOARDING,
+  s29_mapping_studio: S29_MAPPING_STUDIO,
 };

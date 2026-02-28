@@ -246,28 +246,34 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
     label: "Mapping Studio",
     operations: [
       {
-        id: "select_calc",
-        name: "Select a Calculation",
+        id: "select_mapping",
+        name: "Select or create a mapping",
         description:
-          "Choose a calculation from the list to view and edit its input mappings — which entity fields feed into which calculation parameters.",
+          "Choose an existing mapping from the dropdown or click 'New Mapping' to create one. Select source and target entities.",
       },
       {
-        id: "map_inputs",
-        name: "Map Input Fields",
+        id: "map_fields",
+        name: "Map source to target fields",
         description:
-          "Connect entity fields to calculation parameters by selecting source entities and columns for each input.",
+          "For each row, select a source field, set the transform type, and choose the target field. Use 'Add Row' for new mappings.",
       },
       {
-        id: "drag_drop_mapping",
-        name: "Drag-and-Drop Mapping",
+        id: "set_transform",
+        name: "Set field transform type",
         description:
-          "Use the visual drag-and-drop interface to create or modify field mappings between entities and calculations.",
+          "Change the transform type for a field mapping: direct (copy as-is), rename, cast (type conversion), uppercase, expression, etc.",
       },
       {
-        id: "save_mappings",
-        name: "Save Mappings",
+        id: "validate_mapping",
+        name: "Validate mapping completeness",
         description:
-          "Save your mapping configuration. Mappings are persisted as metadata and used during pipeline execution.",
+          "Click 'Validate' to check the mapping against entity definitions. Shows errors, warnings, and unmapped fields.",
+      },
+      {
+        id: "save_mapping",
+        name: "Save mapping definition",
+        description:
+          "Click 'Save' to persist the mapping definition to disk. Changes the status from draft to saved.",
       },
       {
         id: "architecture_trace",
@@ -277,9 +283,10 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       },
     ],
     tips: [
-      "Drag fields from the entity panel to the calculation input slots to create mappings",
-      "Invalid type mappings are highlighted in red — types must be compatible",
-      "Each calculation parameter shows its expected data type for guidance",
+      "Mappings are persisted as JSON metadata in workspace/metadata/mappings/",
+      "Validate after saving to check for unmapped fields",
+      "The onboarding wizard auto-creates mappings when uploading data",
+      "Transform types include: direct, rename, cast, uppercase, concat, expression",
     ],
   },
 
