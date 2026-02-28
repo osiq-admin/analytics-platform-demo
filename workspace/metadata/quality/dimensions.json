@@ -1,0 +1,74 @@
+{
+  "dimensions": [
+    {
+      "id": "completeness",
+      "name": "Completeness",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.1",
+      "description": "Ratio of non-null required values to total expected values",
+      "weight": 0.20,
+      "rule_types": ["not_null"],
+      "score_method": "ratio",
+      "thresholds": { "good": 99, "warning": 95, "critical": 90 }
+    },
+    {
+      "id": "accuracy",
+      "name": "Accuracy",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.2",
+      "description": "Values match real-world truth within defined bounds",
+      "weight": 0.20,
+      "rule_types": ["range_check", "enum_check", "regex_match"],
+      "score_method": "ratio",
+      "thresholds": { "good": 99, "warning": 95, "critical": 90 }
+    },
+    {
+      "id": "consistency",
+      "name": "Consistency",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.3",
+      "description": "No contradictions within or across datasets",
+      "weight": 0.15,
+      "rule_types": ["referential_integrity", "custom_sql"],
+      "score_method": "ratio",
+      "thresholds": { "good": 99, "warning": 95, "critical": 90 }
+    },
+    {
+      "id": "timeliness",
+      "name": "Timeliness",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.4",
+      "description": "Data available within agreed SLA timeframe",
+      "weight": 0.15,
+      "rule_types": ["freshness"],
+      "score_method": "binary",
+      "thresholds": { "good": 100, "warning": 50, "critical": 0 }
+    },
+    {
+      "id": "uniqueness",
+      "name": "Uniqueness",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.5",
+      "description": "No duplicate records for the same real-world entity",
+      "weight": 0.10,
+      "rule_types": ["unique"],
+      "score_method": "ratio",
+      "thresholds": { "good": 100, "warning": 99, "critical": 95 }
+    },
+    {
+      "id": "validity",
+      "name": "Validity",
+      "iso_ref": "ISO/IEC 25012:2008 §4.2.6",
+      "description": "Values conform to defined domain rules and formats",
+      "weight": 0.10,
+      "rule_types": ["enum_check", "regex_match", "range_check"],
+      "score_method": "ratio",
+      "thresholds": { "good": 99, "warning": 95, "critical": 90 }
+    },
+    {
+      "id": "currentness",
+      "name": "Currentness",
+      "iso_ref": "ISO 8000-61",
+      "description": "Data reflects the current state of real-world objects",
+      "weight": 0.10,
+      "rule_types": ["freshness"],
+      "score_method": "binary",
+      "thresholds": { "good": 100, "warning": 50, "critical": 0 }
+    }
+  ]
+}

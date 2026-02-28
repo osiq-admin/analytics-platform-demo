@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (30 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (31 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 30 guided scenarios in 11 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 31 guided scenarios in 12 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 21 tours and 30 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 22 tours and 31 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -408,7 +408,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **30 guided scenarios**: Watch Demo or Try It Yourself mode across 11 categories
+- **31 guided scenarios**: Watch Demo or Try It Yourself mode across 12 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -537,14 +537,14 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 30 guided scenarios organized in 11 categories
+- 31 guided scenarios organized in 12 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 109 operations defined across 18 views
+- 116 operations defined across 19 views
 
 ### 7.3 Scenario Categories
 
@@ -577,6 +577,7 @@ Click **Skip to End** to show the final state.
 | Data Onboarding | S28 | Beginner |
 | Mapping | S29 | Beginner |
 | Medallion Pipeline | S30 | Intermediate |
+| Governance | S31 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -647,6 +648,33 @@ Navigate to **Architecture → Onboarding** to access the 5-step data onboarding
 
 ---
 
+## Data Quality Dashboard (DataQuality)
+
+Navigate to **Governance → Quality** to access the data quality monitoring dashboard.
+
+### Key Points
+- **Path**: `/quality`
+- **Purpose**: Monitor data quality across all entities using ISO 8000/25012-aligned quality dimensions
+- **Features**:
+  - Entity quality score cards with weighted ISO dimension scoring (7 dimensions: completeness, accuracy, consistency, timeliness, uniqueness, validity, currentness)
+  - Spider chart (Recharts radar) showing per-dimension quality scores
+  - Quarantine queue (AG Grid) displaying records that failed quality validation with error details
+  - Data profiling panel with column-level statistics (null counts, cardinality, distribution)
+
+### Interactive: Investigate Data Quality
+1. Navigate to **Governance → Quality**
+2. See the entity score cards showing overall quality scores per entity
+3. Click an entity card to see its dimension breakdown
+4. Review the spider chart showing strengths and weaknesses across ISO 25012 dimensions
+5. Check the quarantine queue for records that failed quality gates
+6. Open the data profiling panel to inspect column-level statistics
+7. Key takeaway: "Data quality is measured against ISO standards — every dimension is scored, weighted, and tracked"
+
+### Guided Scenario
+**S31: Data Quality Investigation** (Governance category, intermediate difficulty) — available in the Scenarios browser. Walks through quality scores, dimension analysis, quarantine review, and data profiling.
+
+---
+
 ## Architecture Traceability Mode — M128
 
 Architecture Traceability Mode lets you inspect the technical architecture of every section in the platform. It reveals which source files, Zustand stores, API endpoints, metadata files, and technologies power each UI component — and rates how metadata-driven each section is.
@@ -680,7 +708,7 @@ Each section is rated on a 5-level metadata maturity scale:
 
 ### Coverage
 
-- **82 traced sections** across all 18 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
+- **86 traced sections** across all 19 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
 - Every view has 3-6 traced sections covering its major panels and features
 - Cross-cutting sections cover: sidebar navigation, demo toolbar, theme switcher, tour system, scenario system, help system
 

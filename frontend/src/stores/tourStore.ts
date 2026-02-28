@@ -35,7 +35,8 @@ export type ScenarioCategory =
   | "entities"
   | "investigation"
   | "admin"
-  | "pipeline";
+  | "pipeline"
+  | "governance";
 
 export type ScenarioDifficulty = "beginner" | "intermediate" | "advanced";
 

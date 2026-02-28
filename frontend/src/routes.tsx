@@ -23,6 +23,7 @@ import Submissions from "./views/Submissions/index.tsx";
 const RegulatoryMap = lazy(() => import("./views/RegulatoryMap/index.tsx"));
 const MedallionOverview = lazy(() => import("./views/MedallionOverview/index.tsx"));
 const DataOnboarding = lazy(() => import("./views/DataOnboarding/index.tsx"));
+const DataQuality = lazy(() => import("./views/DataQuality/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -61,6 +62,7 @@ export const routes: RouteObject[] = [
       // Governance
       { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
       { path: "submissions", element: <Submissions /> },
+      { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
 
       // AI
       { path: "assistant", element: <AIAssistant /> },

@@ -35,6 +35,10 @@ class QualityRule(BaseModel):
     min: float | None = None
     max: float | None = None
     values: list[str] = Field(default_factory=list)
+    pattern: str | None = None  # regex pattern for regex_match
+    sql: str | None = None  # custom SQL expression for custom_sql
+    freshness_minutes: int | None = None  # max age for freshness check
+    timestamp_field: str | None = None  # field to check for freshness
 
 
 class SLA(BaseModel):

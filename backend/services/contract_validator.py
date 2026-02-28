@@ -32,7 +32,8 @@ class ContractValidationResult:
 class ContractValidator:
     """Evaluates data quality rules from data contract metadata against DuckDB tables.
 
-    Supports rule types: not_null, range_check, enum_check, unique.
+    Supports rule types: not_null, range_check, enum_check, unique,
+    regex_match, referential_integrity, freshness, custom_sql.
     Unsupported rule types pass by default for forward-compatibility.
     """
 
@@ -208,4 +209,140 @@ class ContractValidator:
                 field=field_name,
                 passed=False,
                 details=f"error: {exc}",
+            )
+
+    def _check_regex_match(self, rule: QualityRule, table_name: str) -> RuleResult:
+        """Check that a field matches a regex pattern."""
+        field_name = rule.field or ""
+        pattern = rule.pattern or ".*"
+        try:
+            cursor = self._db.cursor()
+            sql = (
+                f'SELECT COUNT(*) AS total, '
+                f"SUM(CASE WHEN NOT regexp_matches(\"{field_name}\", '{pattern}') THEN 1 ELSE 0 END) AS violations "
+                f'FROM "{table_name}" WHERE "{field_name}" IS NOT NULL'
+            )
+            result = cursor.execute(sql)
+            cols = [desc[0] for desc in result.description]
+            row = dict(zip(cols, result.fetchone()))
+            cursor.close()
+
+            total = int(row["total"])
+            violations = int(row["violations"])
+            return RuleResult(
+                rule="regex_match",
+                field=field_name,
+                passed=violations == 0,
+                violation_count=violations,
+                total_count=total,
+                details=f"{violations} pattern mismatch(es) in {total} rows",
+            )
+        except Exception as exc:
+            return RuleResult(
+                rule="regex_match", field=field_name, passed=False, details=f"error: {exc}"
+            )
+
+    def _check_referential_integrity(self, rule: QualityRule, table_name: str) -> RuleResult:
+        """Check that a field's values exist in a referenced table.field."""
+        field_name = rule.field or ""
+        reference = rule.reference or ""  # format: "table.field"
+        try:
+            ref_parts = reference.split(".")
+            if len(ref_parts) != 2:
+                return RuleResult(
+                    rule="referential_integrity", field=field_name, passed=False,
+                    details=f"invalid reference format: '{reference}' (expected 'table.field')",
+                )
+            ref_table, ref_field = ref_parts
+            cursor = self._db.cursor()
+            sql = (
+                f'SELECT COUNT(*) AS total, '
+                f'SUM(CASE WHEN "{field_name}" NOT IN (SELECT DISTINCT "{ref_field}" FROM "{ref_table}") '
+                f'THEN 1 ELSE 0 END) AS violations '
+                f'FROM "{table_name}" WHERE "{field_name}" IS NOT NULL'
+            )
+            result = cursor.execute(sql)
+            cols = [desc[0] for desc in result.description]
+            row = dict(zip(cols, result.fetchone()))
+            cursor.close()
+
+            total = int(row["total"])
+            violations = int(row["violations"])
+            return RuleResult(
+                rule="referential_integrity",
+                field=field_name,
+                passed=violations == 0,
+                violation_count=violations,
+                total_count=total,
+                details=f"{violations} orphan(s) in {total} rows (ref: {reference})",
+            )
+        except Exception as exc:
+            return RuleResult(
+                rule="referential_integrity", field=field_name, passed=False,
+                details=f"error: {exc}",
+            )
+
+    def _check_freshness(self, rule: QualityRule, table_name: str) -> RuleResult:
+        """Check that data is not older than allowed freshness window."""
+        ts_field = rule.timestamp_field or rule.field or ""
+        freshness_min = rule.freshness_minutes or 60
+        try:
+            cursor = self._db.cursor()
+            sql = (
+                f'SELECT COUNT(*) AS total, '
+                f"SUM(CASE WHEN \"{ts_field}\"::TIMESTAMP < NOW() - INTERVAL '{freshness_min} minutes' "
+                f'THEN 1 ELSE 0 END) AS stale '
+                f'FROM "{table_name}" WHERE "{ts_field}" IS NOT NULL'
+            )
+            result = cursor.execute(sql)
+            cols = [desc[0] for desc in result.description]
+            row = dict(zip(cols, result.fetchone()))
+            cursor.close()
+
+            total = int(row["total"])
+            stale = int(row["stale"])
+            return RuleResult(
+                rule="freshness",
+                field=ts_field,
+                passed=stale == 0,
+                violation_count=stale,
+                total_count=total,
+                details=f"{stale} stale record(s) in {total} rows (>{freshness_min}min)",
+            )
+        except Exception as exc:
+            return RuleResult(
+                rule="freshness", field=ts_field, passed=False, details=f"error: {exc}"
+            )
+
+    def _check_custom_sql(self, rule: QualityRule, table_name: str) -> RuleResult:
+        """Execute a custom SQL expression that returns violation_count and total_count."""
+        field_name = rule.field or "custom"
+        sql_expr = rule.sql or ""
+        if not sql_expr:
+            return RuleResult(
+                rule="custom_sql", field=field_name, passed=False,
+                details="no SQL expression provided",
+            )
+        try:
+            cursor = self._db.cursor()
+            # Custom SQL must return columns: total, violations
+            final_sql = sql_expr.replace("{table}", f'"{table_name}"')
+            result = cursor.execute(final_sql)
+            cols = [desc[0] for desc in result.description]
+            row = dict(zip(cols, result.fetchone()))
+            cursor.close()
+
+            total = int(row.get("total", 0))
+            violations = int(row.get("violations", 0))
+            return RuleResult(
+                rule="custom_sql",
+                field=field_name,
+                passed=violations == 0,
+                violation_count=violations,
+                total_count=total,
+                details=f"{violations} violation(s) in {total} rows",
+            )
+        except Exception as exc:
+            return RuleResult(
+                rule="custom_sql", field=field_name, passed=False, details=f"error: {exc}"
             )

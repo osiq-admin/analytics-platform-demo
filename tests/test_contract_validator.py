@@ -139,8 +139,8 @@ def test_validate_empty_rules(db, contract):
 
 
 def test_unsupported_rule_type_passes(db, contract):
-    """Unsupported rule type 'custom_sql' should pass by default."""
-    contract.quality_rules = [QualityRule(rule="custom_sql", field="alert_id")]
+    """Unsupported rule type 'future_check' should pass by default."""
+    contract.quality_rules = [QualityRule(rule="future_check", field="alert_id")]
     result = ContractValidator(db).validate(contract, "test_alerts")
     assert result.passed is True
     assert result.rule_results[0].passed is True
@@ -163,3 +163,101 @@ def test_missing_table_fails(db, contract):
     assert result.passed is False
     assert result.rule_results[0].passed is False
     assert "error" in result.rule_results[0].details.lower()
+
+
+class TestRegexMatch:
+    def test_regex_passes(self, db, contract):
+        """ISIN-like pattern passes when all values match."""
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE test_products (isin VARCHAR)")
+        cursor.execute("INSERT INTO test_products VALUES ('US0378331005'), ('GB0002634946')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="regex_match", field="isin", pattern="^[A-Z]{2}[A-Z0-9]{10}$")]
+        result = ContractValidator(db).validate(contract, "test_products")
+        assert result.rule_results[0].passed is True
+
+    def test_regex_fails(self, db, contract):
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE test_products2 (isin VARCHAR)")
+        cursor.execute("INSERT INTO test_products2 VALUES ('US0378331005'), ('invalid')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="regex_match", field="isin", pattern="^[A-Z]{2}[A-Z0-9]{10}$")]
+        result = ContractValidator(db).validate(contract, "test_products2")
+        assert result.rule_results[0].passed is False
+        assert result.rule_results[0].violation_count == 1
+
+
+class TestReferentialIntegrity:
+    def test_referential_integrity_passes(self, db, contract):
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE ref_orders (order_id VARCHAR)")
+        cursor.execute("INSERT INTO ref_orders VALUES ('O1'), ('O2')")
+        cursor.execute("CREATE TABLE ref_exec (order_id VARCHAR)")
+        cursor.execute("INSERT INTO ref_exec VALUES ('O1'), ('O2')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="referential_integrity", field="order_id", reference="ref_orders.order_id")]
+        result = ContractValidator(db).validate(contract, "ref_exec")
+        assert result.rule_results[0].passed is True
+
+    def test_referential_integrity_fails(self, db, contract):
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE ref_orders2 (order_id VARCHAR)")
+        cursor.execute("INSERT INTO ref_orders2 VALUES ('O1')")
+        cursor.execute("CREATE TABLE ref_exec2 (order_id VARCHAR)")
+        cursor.execute("INSERT INTO ref_exec2 VALUES ('O1'), ('O999')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="referential_integrity", field="order_id", reference="ref_orders2.order_id")]
+        result = ContractValidator(db).validate(contract, "ref_exec2")
+        assert result.rule_results[0].passed is False
+        assert result.rule_results[0].violation_count == 1
+
+    def test_invalid_reference_format(self, db, contract):
+        contract.quality_rules = [QualityRule(rule="referential_integrity", field="x", reference="bad_format")]
+        result = ContractValidator(db).validate(contract, "test_alerts")
+        assert result.rule_results[0].passed is False
+        assert "invalid reference format" in result.rule_results[0].details
+
+
+class TestFreshness:
+    def test_freshness_passes(self, db, contract):
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE fresh_data (ts TIMESTAMP)")
+        cursor.execute("INSERT INTO fresh_data VALUES (NOW()), (NOW() - INTERVAL '5 minutes')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="freshness", field="ts", freshness_minutes=60)]
+        result = ContractValidator(db).validate(contract, "fresh_data")
+        assert result.rule_results[0].passed is True
+
+    def test_freshness_fails(self, db, contract):
+        cursor = db.cursor()
+        cursor.execute("CREATE TABLE stale_data (ts TIMESTAMP)")
+        cursor.execute("INSERT INTO stale_data VALUES (NOW() - INTERVAL '2 hours')")
+        cursor.close()
+        contract.quality_rules = [QualityRule(rule="freshness", field="ts", freshness_minutes=60)]
+        result = ContractValidator(db).validate(contract, "stale_data")
+        assert result.rule_results[0].passed is False
+        assert result.rule_results[0].violation_count == 1
+
+
+class TestCustomSQL:
+    def test_custom_sql_passes(self, db, contract):
+        contract.quality_rules = [QualityRule(
+            rule="custom_sql", field="score",
+            sql="SELECT COUNT(*) AS total, SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) AS violations FROM {table}",
+        )]
+        result = ContractValidator(db).validate(contract, "test_alerts")
+        assert result.rule_results[0].passed is True
+
+    def test_custom_sql_fails(self, db, contract):
+        contract.quality_rules = [QualityRule(
+            rule="custom_sql", field="score",
+            sql="SELECT COUNT(*) AS total, SUM(CASE WHEN score > 50 THEN 1 ELSE 0 END) AS violations FROM {table}",
+        )]
+        result = ContractValidator(db).validate(contract, "test_alerts")
+        assert result.rule_results[0].passed is False
+
+    def test_custom_sql_no_expression(self, db, contract):
+        contract.quality_rules = [QualityRule(rule="custom_sql", field="x")]
+        result = ContractValidator(db).validate(contract, "test_alerts")
+        assert result.rule_results[0].passed is False
+        assert "no SQL expression" in result.rule_results[0].details

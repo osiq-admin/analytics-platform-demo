@@ -22,10 +22,11 @@
     {"tour_id": "ux_features", "view_path": "/entities", "title": "Grid & Layout Features", "step_count": 5},
     {"tour_id": "act3_guide", "view_path": "/alerts", "title": "Act 3: Investigation & Analysis", "step_count": 3},
     {"tour_id": "medallion", "view_path": "/medallion", "title": "Medallion Architecture Tour", "step_count": 3},
-    {"tour_id": "onboarding", "view_path": "/onboarding", "title": "Data Onboarding Tour", "step_count": 3}
+    {"tour_id": "onboarding", "view_path": "/onboarding", "title": "Data Onboarding Tour", "step_count": 3},
+    {"tour_id": "data-quality", "view_path": "/quality", "title": "Data Quality Dashboard Tour", "step_count": 4}
   ],
   "scenarios": {
-    "total_count": 30,
+    "total_count": 31,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -33,11 +34,9 @@
       {"category": "Use Cases", "count": 4},
       {"category": "Entities", "count": 2},
       {"category": "Investigation", "count": 3},
-      {"category": "Administration", "count": 3},
-      {"category": "Architecture", "count": 1},
-      {"category": "Data Onboarding", "count": 1},
-      {"category": "Mapping", "count": 1},
-      {"category": "Pipeline", "count": 1}
+      {"category": "Administration", "count": 6},
+      {"category": "Pipeline", "count": 1},
+      {"category": "Governance", "count": 1}
     ]
   }
 }

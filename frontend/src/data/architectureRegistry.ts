@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 82 sections across 18 views + 3 cross-cutting components.
+// 90 sections across 19 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -28,7 +28,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Summary Metrics",
         viewId: "dashboard",
         description:
-          "Four KPI cards displaying total alerts, score-triggered percentage, average score, and active model count. Card layout and labels are hardcoded in JSX; data comes from SQL aggregation over alert results.",
+          "Four KPI cards displaying total alerts, score-triggered percentage, average score, and active model count. Card layout and labels are metadata-driven (loaded from widget API at /api/metadata/widgets/dashboard) with hardcoded fallback; data comes from SQL aggregation over alert results.",
         files: [
           { path: "frontend/src/views/Dashboard/index.tsx", role: "Renders KPI card grid" },
           { path: "frontend/src/stores/dashboardStore.ts", role: "Fetches and caches dashboard stats" },
@@ -70,7 +70,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Alerts by Model",
         viewId: "dashboard",
         description:
-          "Chart showing alert count per detection model. Supports bar and pie chart toggle via widget store. Data sourced from dashboard stats by_model breakdown.",
+          "Chart showing alert count per detection model. Supports 5 chart types (bar, horizontal_bar, line, pie, table) via widget store. Data sourced from dashboard stats by_model breakdown.",
         files: [
           { path: "frontend/src/views/Dashboard/index.tsx", role: "Renders chart widget" },
           { path: "frontend/src/components/WidgetContainer.tsx", role: "Provides chart-type toggle container" },
@@ -86,7 +86,7 @@ export const VIEW_TRACES: ViewTrace[] = [
           {
             name: "widgetStore",
             path: "frontend/src/stores/widgetStore.ts",
-            role: "Manages chart type toggle state (bar/pie)",
+            role: "Manages chart type toggle state (bar/horizontal_bar/line/pie/table)",
           },
         ],
         apis: [
@@ -104,7 +104,7 @@ export const VIEW_TRACES: ViewTrace[] = [
             role: "Source data for model-level alert aggregation",
           },
         ],
-        technologies: [{ name: "Recharts", role: "Renders BarChart and PieChart visualizations" }],
+        technologies: [{ name: "Recharts", role: "Renders BarChart, LineChart, and PieChart visualizations" }],
         metadataMaturity: "mostly-metadata-driven",
         maturityExplanation:
           "Chart widget defined in metadata (workspace/metadata/widgets/dashboard.json) with default chart type, available types, color palette, and grid position. Dashboard loads config from /api/metadata/widgets/dashboard. Color palette loaded from /api/metadata/theme/palettes/default. Data from metadata-driven detection models.",
@@ -117,7 +117,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Score Distribution",
         viewId: "dashboard",
         description:
-          "Histogram of alert scores bucketed into ranges (0-20, 20-40, etc.). Visualizes the distribution of detection confidence across all alerts.",
+          "Histogram of alert scores bucketed into 10-wide ranges (0-10, 10-20, etc.). Visualizes the distribution of detection confidence across all alerts.",
         files: [
           { path: "frontend/src/views/Dashboard/index.tsx", role: "Renders score distribution chart" },
           { path: "frontend/src/components/WidgetContainer.tsx", role: "Provides chart container" },
@@ -263,7 +263,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Entity List",
         viewId: "entities",
         description:
-          "AG Grid table of all entity definitions with layer badges (OOB/custom). Displays entity name, description, field count, and layer. Fully sourced from entity JSON metadata files.",
+          "AG Grid table of all entity definitions with layer badges (OOB/custom). Displays ID, name, field count, and layer columns. Fully sourced from entity JSON metadata files.",
         files: [
           { path: "frontend/src/views/EntityDesigner/index.tsx", role: "Main view layout and entity selection" },
           { path: "frontend/src/views/EntityDesigner/EntityList.tsx", role: "AG Grid entity list component" },
@@ -492,7 +492,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Calculation List",
         viewId: "metadata",
         description:
-          "AG Grid table of all calculation definitions with layer filter (OOB/custom). Shows calculation name, type, entity, layer, and dependency count.",
+          "AG Grid table of all calculation definitions with calculation type filter (transaction, time_window, aggregation, derived). Shows ID, name, layer, dependency count, and OOB badge.",
         files: [
           { path: "frontend/src/views/MetadataExplorer/index.tsx", role: "Main view layout" },
           {
@@ -864,7 +864,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Field Mapping Canvas",
         viewId: "mappings",
         description:
-          "Editable table for source-to-target field mappings with transform types (direct, rename, cast, uppercase, expression). Each row maps a source field to a target field.",
+          "Editable table for source-to-target field mappings with 11 transform types (direct, rename, cast, cast_decimal, cast_date, cast_time, uppercase, lowercase, concat, expression, multiply). Each row maps a source field to a target field.",
         files: [
           { path: "frontend/src/views/MappingStudio/index.tsx", role: "Field mapping table with inline editing" },
         ],
@@ -912,7 +912,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         stores: [],
         apis: [
           {
-            method: "GET",
+            method: "POST",
             path: "/api/mappings/{id}/validate",
             role: "Validates mapping against entity definitions",
             routerFile: "backend/api/mappings.py",
@@ -1072,9 +1072,9 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Medallion Stage Progress",
         viewId: "pipeline",
         description:
-          "Horizontal progress bar showing all medallion pipeline stages loaded from pipeline_stages.json metadata. Each stage button triggers the Pipeline Orchestrator.",
+          "Horizontal row of stage buttons showing all medallion pipeline stages loaded from pipeline_stages.json metadata. Each stage button triggers the Pipeline Orchestrator with arrow separators between stages.",
         files: [
-          { path: "frontend/src/views/PipelineMonitor/index.tsx", role: "Renders stage progress bar" },
+          { path: "frontend/src/views/PipelineMonitor/index.tsx", role: "Renders stage buttons with arrow separators" },
           { path: "backend/services/pipeline_orchestrator.py", role: "Metadata-driven stage dispatcher" },
           { path: "backend/api/pipeline.py", role: "Stage execution API endpoints" },
         ],
@@ -1164,7 +1164,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Tables List",
         viewId: "schema",
         description:
-          "AG Grid table listing all DuckDB tables with row counts. Provides runtime introspection of the database schema independent of metadata definitions.",
+          "AG Grid table listing all DuckDB tables with name and type columns. Provides runtime introspection of the database schema independent of metadata definitions.",
         files: [
           { path: "frontend/src/views/SchemaExplorer/index.tsx", role: "Main view with tables list" },
           { path: "backend/api/query.py", role: "Introspects DuckDB for table information" },
@@ -1189,7 +1189,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Columns Grid",
         viewId: "schema",
         description:
-          "Column details for selected table including column name, data type, nullable flag, and sample values. Runtime schema introspection via DuckDB.",
+          "Column details for selected table including column name, data type, and nullable flag. Runtime schema introspection via DuckDB.",
         files: [
           { path: "frontend/src/views/SchemaExplorer/index.tsx", role: "Renders column details grid" },
           { path: "backend/api/query.py", role: "Returns column schema for selected table" },
@@ -1346,7 +1346,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Model List",
         viewId: "models",
         description:
-          "Detection model list with layer badges (OOB/custom). Shows model name, description, asset classes, calculation count, and status.",
+          "Custom button list of detection models with layer badges (OOB/custom). Shows model name, layer badge, and calculation count for each model.",
         files: [
           { path: "frontend/src/views/ModelComposer/index.tsx", role: "Main view layout with model list" },
           { path: "frontend/src/stores/metadataStore.ts", role: "Fetches detection model metadata" },
@@ -1385,7 +1385,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Model Detail",
         viewId: "models",
         description:
-          "Detailed view of selected detection model configuration including scoring rules, calculation references, asset class scope, and BDD scenarios.",
+          "Detailed view of selected detection model showing name, description, and a calculations-and-scoring panel listing each referenced calculation with its strictness badge.",
         files: [
           { path: "frontend/src/views/ModelComposer/index.tsx", role: "Renders model detail panels" },
           { path: "frontend/src/stores/metadataStore.ts", role: "Provides selected model data" },
@@ -1680,7 +1680,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Data Preview",
         viewId: "data",
         description:
-          "Preview rows from selected data table. Executes a simple SELECT query and renders results in AG Grid. Column definitions can be metadata-driven via grid config API.",
+          "Preview rows from selected data table. Executes a SELECT * LIMIT 50 query and renders results in AG Grid. Column definitions are generated dynamically from the SQL result set schema.",
         files: [
           { path: "frontend/src/views/DataManager/index.tsx", role: "Data preview with SQL execution" },
           { path: "frontend/src/hooks/useGridColumns.ts", role: "Hook for metadata-driven grid columns" },
@@ -1722,7 +1722,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Use Case List",
         viewId: "use-cases",
         description:
-          "List of all use cases with name, model, status, and test results. Loaded from use case JSON metadata files.",
+          "Custom button list of use cases showing name, status badge, component count, and tags. Loaded from use case JSON metadata files.",
         files: [
           { path: "frontend/src/views/UseCaseStudio/index.tsx", role: "Main view with use case list" },
           { path: "frontend/src/stores/useCaseStore.ts", role: "Fetches and manages use case data" },
@@ -2650,7 +2650,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Coverage Summary",
         viewId: "regulatory",
         description:
-          "Four KPI cards showing regulation coverage metrics: total regulations, covered articles, detection model mappings, and coverage gaps. All derived from regulatory metadata.",
+          "Four KPI cards showing regulation coverage metrics: Total Requirements, Covered, Uncovered, and Coverage %. All derived from regulatory metadata.",
         files: [
           { path: "frontend/src/views/RegulatoryMap/index.tsx", role: "Summary cards rendering" },
           { path: "frontend/src/stores/regulatoryStore.ts", role: "Fetches regulatory coverage data" },
@@ -2805,7 +2805,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Coverage Grid",
         viewId: "regulatory",
         description:
-          "AG Grid showing regulation details including name, jurisdiction, articles, mapped models, and coverage status. Tabular view of regulatory compliance.",
+          "AG Grid showing regulation details with columns: Regulation, Jurisdiction, Article, Title, and Coverage status badge. Tabular view of regulatory compliance.",
         files: [
           { path: "frontend/src/views/RegulatoryMap/index.tsx", role: "Coverage grid rendering" },
           { path: "frontend/src/stores/regulatoryStore.ts", role: "Provides regulation registry data" },
@@ -2963,7 +2963,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Submissions Grid",
         viewId: "submissions",
         description:
-          "AG Grid listing all metadata change submissions with title, status, author, type, and timestamp. Submissions represent proposed metadata changes for review.",
+          "AG Grid listing all metadata change submissions with ID, name, author, status, components count, and created date. Submissions represent proposed metadata changes for review.",
         files: [
           { path: "frontend/src/views/Submissions/index.tsx", role: "Main view with submissions grid" },
           { path: "frontend/src/stores/submissionStore.ts", role: "Fetches and manages submissions" },
@@ -3101,7 +3101,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         displayName: "Navigation Sidebar",
         viewId: "app",
         description:
-          "Main navigation sidebar with 8 groups containing 16 view links. Groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, AI. Navigation structure loaded from metadata API with fallback.",
+          "Main navigation sidebar with 8 groups containing 19 view links. Groups: Overview, Define, Configure, Operate, Compose, Investigate, Governance, AI. Navigation structure loaded from metadata API with fallback.",
         files: [
           { path: "frontend/src/layouts/Sidebar.tsx", role: "Sidebar navigation component (loads from metadata)" },
           { path: "frontend/src/stores/navigationStore.ts", role: "Fetches navigation config from API" },
@@ -3226,7 +3226,7 @@ export const VIEW_TRACES: ViewTrace[] = [
           {
             path: "frontend/src/data/tourDefinitions.ts",
             category: "config",
-            role: "Tour step definitions for 25 guided scenarios",
+            role: "Tour step definitions for 31 guided scenarios",
           },
           {
             path: "frontend/src/data/scenarioDefinitions.ts",
@@ -3236,7 +3236,7 @@ export const VIEW_TRACES: ViewTrace[] = [
           {
             path: "frontend/src/data/operationScripts.ts",
             category: "config",
-            role: "Operation scripts for 73 operations across 16 views",
+            role: "Operation scripts for 116 operations across 19 views",
           },
         ],
         technologies: [],
@@ -3388,7 +3388,7 @@ export const VIEW_TRACES: ViewTrace[] = [
     route: "/onboarding",
     sections: [
       {
-        id: "onboarding.wizard-steps",
+        id: "onboarding.steps",
         displayName: "Onboarding Wizard Steps",
         viewId: "onboarding",
         description:
@@ -3418,7 +3418,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         ],
       },
       {
-        id: "onboarding.schema-detection",
+        id: "onboarding.schema",
         displayName: "Schema Detection",
         viewId: "onboarding",
         description:
@@ -3452,7 +3452,7 @@ export const VIEW_TRACES: ViewTrace[] = [
         metadataOpportunities: [],
       },
       {
-        id: "onboarding.data-profile",
+        id: "onboarding.profile",
         displayName: "Data Quality Profile",
         viewId: "onboarding",
         description:
@@ -3478,6 +3478,254 @@ export const VIEW_TRACES: ViewTrace[] = [
         maturityExplanation:
           "Quality profiling output is computed entirely from the uploaded data using PyArrow compute functions. Statistics and quality scores are derived from data — no hardcoded quality rules.",
         metadataOpportunities: [],
+      },
+      {
+        id: "onboarding.title",
+        displayName: "View Header",
+        viewId: "onboarding",
+        description:
+          "Static header displaying 'Data Onboarding' title with a step counter badge showing current progress through the 5-step wizard.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders view header with step badge" },
+        ],
+        stores: [],
+        apis: [],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "code-driven",
+        maturityExplanation:
+          "Header text and step counter are hardcoded in the component.",
+        metadataOpportunities: [
+          "Load view title from view_config metadata",
+        ],
+      },
+      {
+        id: "onboarding.select-source",
+        displayName: "Select Source",
+        viewId: "onboarding",
+        description:
+          "Step 1 panel for file upload and connector selection. Shows available connectors loaded from the onboarding API and a file input for CSV/Parquet/JSON upload.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders file upload and connector cards" },
+          { path: "backend/api/onboarding.py", role: "Lists available connectors and handles file upload" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/onboarding/connectors",
+            role: "Returns available data connectors",
+            routerFile: "backend/api/onboarding.py",
+          },
+          {
+            method: "POST",
+            path: "/api/onboarding/upload",
+            role: "Accepts file upload and returns detected schema",
+            routerFile: "backend/api/onboarding.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "mixed",
+        maturityExplanation:
+          "Connector list is loaded from the API (metadata-driven), but the upload UI and step flow are code-driven.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "onboarding.map-entity",
+        displayName: "Map to Entity",
+        viewId: "onboarding",
+        description:
+          "Step 4 panel for mapping uploaded columns to a target entity. Entity selector loads available entities from metadata API; auto-suggests field mappings by matching column names.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders entity selector and field mapping table" },
+          { path: "backend/api/metadata.py", role: "Returns entity list and field definitions" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/metadata/entities",
+            role: "Returns available entities for mapping target",
+            routerFile: "backend/api/metadata.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/entities/{id}",
+            role: "Returns entity fields for mapping suggestions",
+            routerFile: "backend/api/metadata.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/entities/*.json",
+            category: "metadata",
+            role: "Entity definitions used as mapping targets",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Entity list and field definitions are loaded from metadata. Auto-mapping uses entity field names for suggestions. Mapping creates a draft mapping definition in the mappings API.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "onboarding.confirm",
+        displayName: "Confirmation",
+        viewId: "onboarding",
+        description:
+          "Step 5 panel showing onboarding summary after confirmation: filename, format, row count, column count, quality score, and target entity. Includes a reset button to start a new upload.",
+        files: [
+          { path: "frontend/src/views/DataOnboarding/index.tsx", role: "Renders confirmation summary with job details" },
+          { path: "backend/api/onboarding.py", role: "Confirms onboarding job and sets target entity" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "POST",
+            path: "/api/onboarding/jobs/{job_id}/confirm",
+            role: "Confirms the onboarding job with target entity",
+            routerFile: "backend/api/onboarding.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "mixed",
+        maturityExplanation:
+          "Confirmation summary data comes from the onboarding job result. Layout is code-driven.",
+        metadataOpportunities: [],
+      },
+    ],
+  },
+  // =========================================================================
+  // VIEW: Data Quality
+  // =========================================================================
+  {
+    viewId: "quality",
+    viewName: "Data Quality",
+    route: "/quality",
+    sections: [
+      {
+        id: "quality.entity-scores",
+        displayName: "Quality Scores",
+        viewId: "quality",
+        description:
+          "Weighted quality scores per entity and data contract using ISO 8000/25012 dimensions",
+        files: [
+          { path: "frontend/src/views/DataQuality/index.tsx", role: "Renders quality scorecards with per-contract weighted scores" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/quality/scores",
+            role: "Returns quality scores for all entities and data contracts",
+            routerFile: "backend/api/quality.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/quality/dimensions.json",
+            category: "metadata",
+            role: "Quality dimension definitions and weights for ISO 25012 scoring",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Quality dimensions and rule-to-dimension mapping both loaded from metadata",
+        metadataOpportunities: [],
+      },
+      {
+        id: "quality.spider-chart",
+        displayName: "Quality Spider Chart",
+        viewId: "quality",
+        description:
+          "Radar chart showing per-dimension quality scores for selected entity",
+        files: [
+          { path: "frontend/src/views/DataQuality/index.tsx", role: "Renders Recharts radar chart for quality dimension breakdown" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/quality/scores/{contract_id}",
+            role: "Returns per-dimension quality scores for a specific data contract",
+            routerFile: "backend/api/quality.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/quality/dimensions.json",
+            category: "metadata",
+            role: "Dimension definitions, thresholds, and weight configuration",
+          },
+        ],
+        technologies: [
+          { name: "Recharts", role: "RadarChart component for spider/radar visualization" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Dimension definitions, thresholds, and scores all from metadata/API",
+        metadataOpportunities: [],
+      },
+      {
+        id: "quality.quarantine-queue",
+        displayName: "Quarantine Queue",
+        viewId: "quality",
+        description:
+          "Queue of records that failed quality validation with retry and override actions",
+        files: [
+          { path: "frontend/src/views/DataQuality/index.tsx", role: "Renders quarantine table with retry/override action buttons" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/quality/quarantine",
+            role: "Returns quarantined records with failure details",
+            routerFile: "backend/api/quality.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/quarantine/*.json",
+            category: "data",
+            role: "Quarantined record files with failure reasons and metadata",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "All quarantine records and actions managed through JSON files and API",
+        metadataOpportunities: [],
+      },
+      {
+        id: "quality.data-profiling",
+        displayName: "Data Profiling",
+        viewId: "quality",
+        description:
+          "Per-field data profiling statistics with entity and tier selection",
+        files: [
+          { path: "frontend/src/views/DataQuality/index.tsx", role: "Renders per-field profiling table with null counts, distinct values, min/max" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/quality/profile/{entity}",
+            role: "Returns per-field profiling statistics for an entity",
+            routerFile: "backend/api/quality.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "mostly-metadata-driven",
+        maturityExplanation:
+          "Profiling computed from DuckDB tables, entity list is hardcoded",
+        metadataOpportunities: [
+          "Entity list could be loaded from metadata instead of hardcoded",
+        ],
       },
     ],
   },

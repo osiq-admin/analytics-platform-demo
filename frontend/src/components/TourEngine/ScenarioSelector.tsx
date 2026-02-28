@@ -56,6 +56,10 @@ const CATEGORY_META: Record<
     label: "Pipeline & Orchestration",
     description: "Run and monitor medallion pipeline stages",
   },
+  governance: {
+    label: "Data Governance",
+    description: "Data quality scoring, quarantine, and profiling",
+  },
 };
 
 const CATEGORY_ORDER: ScenarioCategory[] = [
@@ -67,6 +71,7 @@ const CATEGORY_ORDER: ScenarioCategory[] = [
   "investigation",
   "admin",
   "pipeline",
+  "governance",
 ];
 
 const DIFFICULTY_LABELS: Record<ScenarioDifficulty, { label: string; color: string }> = {

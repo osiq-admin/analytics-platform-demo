@@ -4,19 +4,19 @@
 Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. Pitching to product team — E2E concept demo, not production.
 
 ## Current State (2026-02-28)
-- **Branch**: `feature/pipeline/silver-to-gold-orchestration` — Phase 17 complete (M0-M204), ready for PR
+- **Branch**: `feature/quality/data-quality-quarantine-profiling` — Phase 18 complete (M0-M215), ready for PR
 - **GitHub**: `analytics-platform-demo` repo
-- **Tests**: 800 total (590 backend + 210 E2E Playwright) — ALL PASSING
-- **Frontend**: builds clean — 969 modules (`cd frontend && npm run build`)
-- **Views**: 18 (Dashboard, EntityDesigner, MetadataExplorer, SettingsManager, MappingStudio, PipelineMonitor, SchemaExplorer, SQLConsole, ModelComposer, DataManager, UseCaseStudio, RiskCaseManager, AIAssistant, MetadataEditor, RegulatoryMap, Submissions, MedallionOverview, DataOnboarding)
+- **Tests**: 862 total (645 backend + 217 E2E Playwright) — ALL PASSING
+- **Frontend**: builds clean — 970 modules (`cd frontend && npm run build`)
+- **Views**: 19 (Dashboard, EntityDesigner, MetadataExplorer, SettingsManager, MappingStudio, PipelineMonitor, SchemaExplorer, SQLConsole, ModelComposer, DataManager, UseCaseStudio, RiskCaseManager, AIAssistant, MetadataEditor, RegulatoryMap, Submissions, MedallionOverview, DataOnboarding, DataQuality)
 - **Entities**: 8 (product, execution, order, md_intraday, md_eod, venue, account, trader)
 - **Detection Models**: 5 (wash trading x2, market price ramping, insider dealing, spoofing/layering)
 - **Alerts**: 82 across 5 models and 5 asset classes (MPR 68%, wash 17%, insider 9%, spoofing 6%)
-- **Architecture**: 82 sections, 82.9% metadata-driven
-- **Tour scenarios**: 30 guided scenarios (S1-S30) in 10 categories
-- **Operation scripts**: 109 operations across 18 views
+- **Architecture**: 86 sections, 83.7% metadata-driven
+- **Tour scenarios**: 31 guided scenarios (S1-S31) in 12 categories
+- **Operation scripts**: 116 operations across 19 views
 - **Roadmap**: Restructured to 33 phases across 7 tiers — medallion architecture (11 tiers), data governance, business glossary, migration readiness
-- **Latest**: Phase 17 Silver-to-Gold Pipeline Orchestration complete (M197-M204). Contract validator, pipeline orchestrator, Silver-to-Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG edges + medallion stages progress bar), MedallionOverview execution status + Run Stage, S30 scenario. Next: Phase 18 (Data Quality)
+- **Latest**: Phase 18 Data Quality, Quarantine & Profiling complete (M205-M215). Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios. Next: Phase 19 (Reference Data/MDM)
 
 ## Key Files
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
@@ -27,6 +27,12 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 - Demo guide: `docs/demo-guide.md`
 - Data gen: `scripts/generate_data.py`
 - Snapshot gen: `scripts/generate_snapshots.py`
+- Quality dimensions: `workspace/metadata/quality/dimensions.json`
+- Quality models: `backend/models/quality.py`
+- Quality engine: `backend/engine/quality_engine.py`
+- Quarantine service: `backend/services/quarantine_service.py`
+- Quality API: `backend/api/quality.py`
+- DataQuality view: `frontend/src/views/DataQuality/index.tsx`
 - Medallion tiers: `workspace/metadata/medallion/tiers.json`
 - Medallion contracts: `workspace/metadata/medallion/contracts.json`
 - Medallion transformations: `workspace/metadata/medallion/transformations.json`
@@ -38,9 +44,9 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 ## Commands
 ```bash
 ./start.sh                                    # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (590)
-uv run pytest tests/e2e/ -v                   # E2E Playwright tests (210)
-cd frontend && npm run build                  # Build frontend (969 modules)
+uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (645)
+uv run pytest tests/e2e/ -v                   # E2E Playwright tests (217)
+cd frontend && npm run build                  # Build frontend (970 modules)
 ```
 
 ## Workflow Preferences
