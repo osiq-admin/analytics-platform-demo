@@ -4,19 +4,19 @@
 Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. Pitching to product team — E2E concept demo, not production.
 
 ## Current State (2026-02-28)
-- **Branch**: `main` — Phase 15.5 + 16 complete (M0-M196), merged to main
+- **Branch**: `feature/pipeline/silver-to-gold-orchestration` — Phase 17 complete (M0-M204), ready for PR
 - **GitHub**: `analytics-platform-demo` repo
-- **Tests**: 772 total (562 backend + 210 E2E Playwright) — ALL PASSING
+- **Tests**: 800 total (590 backend + 210 E2E Playwright) — ALL PASSING
 - **Frontend**: builds clean — 969 modules (`cd frontend && npm run build`)
 - **Views**: 18 (Dashboard, EntityDesigner, MetadataExplorer, SettingsManager, MappingStudio, PipelineMonitor, SchemaExplorer, SQLConsole, ModelComposer, DataManager, UseCaseStudio, RiskCaseManager, AIAssistant, MetadataEditor, RegulatoryMap, Submissions, MedallionOverview, DataOnboarding)
 - **Entities**: 8 (product, execution, order, md_intraday, md_eod, venue, account, trader)
 - **Detection Models**: 5 (wash trading x2, market price ramping, insider dealing, spoofing/layering)
 - **Alerts**: 82 across 5 models and 5 asset classes (MPR 68%, wash 17%, insider 9%, spoofing 6%)
-- **Architecture**: 80 sections, 82.5% metadata-driven
-- **Tour scenarios**: 29 guided scenarios (S1-S29) in 9 categories
-- **Operation scripts**: 105 operations across 18 views
+- **Architecture**: 82 sections, 82.9% metadata-driven
+- **Tour scenarios**: 30 guided scenarios (S1-S30) in 10 categories
+- **Operation scripts**: 109 operations across 18 views
 - **Roadmap**: Restructured to 33 phases across 7 tiers — medallion architecture (11 tiers), data governance, business glossary, migration readiness
-- **Latest**: Phase 15.5 + 16 Tour Quality Fixes + Bronze→Silver Mapping complete (M184-M196). Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts, Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario
+- **Latest**: Phase 17 Silver-to-Gold Pipeline Orchestration complete (M197-M204). Contract validator, pipeline orchestrator, Silver-to-Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG edges + medallion stages progress bar), MedallionOverview execution status + Run Stage, S30 scenario. Next: Phase 18 (Data Quality)
 
 ## Key Files
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
@@ -38,7 +38,7 @@ Metadata-driven trade surveillance platform demo (Risk Case Manager). Python Fas
 ## Commands
 ```bash
 ./start.sh                                    # Start app on port 8000
-uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (562)
+uv run pytest tests/ --ignore=tests/e2e -v    # Backend tests (590)
 uv run pytest tests/e2e/ -v                   # E2E Playwright tests (210)
 cd frontend && npm run build                  # Build frontend (969 modules)
 ```

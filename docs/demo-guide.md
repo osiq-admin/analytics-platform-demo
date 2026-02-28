@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (29 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (30 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 29 guided scenarios in 10 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 30 guided scenarios in 11 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 21 tours and 29 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 21 tours and 30 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -408,7 +408,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **29 guided scenarios**: Watch Demo or Try It Yourself mode across 10 categories
+- **30 guided scenarios**: Watch Demo or Try It Yourself mode across 11 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -537,7 +537,7 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 29 guided scenarios organized in 10 categories
+- 30 guided scenarios organized in 11 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 105 operations defined across 18 views
+- 109 operations defined across 18 views
 
 ### 7.3 Scenario Categories
 
@@ -576,6 +576,7 @@ Click **Skip to End** to show the final state.
 | Architecture | S27 | Beginner |
 | Data Onboarding | S28 | Beginner |
 | Mapping | S29 | Beginner |
+| Medallion Pipeline | S30 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -679,7 +680,7 @@ Each section is rated on a 5-level metadata maturity scale:
 
 ### Coverage
 
-- **80 traced sections** across all 18 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
+- **82 traced sections** across all 18 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
 - Every view has 3-6 traced sections covering its major panels and features
 - Cross-cutting sections cover: sidebar navigation, demo toolbar, theme switcher, tour system, scenario system, help system
 

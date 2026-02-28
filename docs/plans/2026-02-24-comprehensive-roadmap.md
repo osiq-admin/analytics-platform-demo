@@ -12,16 +12,16 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-16 + 7B + Overhauls, M0-M196):**
+**What's built (Phases 1-17 + 7B + Overhauls, M0-M204):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 18 frontend views, 772 tests (562 backend + 210 E2E), Playwright verified
+- 18 frontend views, 800 tests (590 backend + 210 E2E), Playwright verified
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 82.5% metadata-driven (80 sections across 18 views)
+- 82.9% metadata-driven (82 sections across 18 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
-- 29 guided scenarios, 105 operation scripts, 8 demo checkpoints
+- 30 guided scenarios, 109 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -1332,7 +1332,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P1 — Next** | Phase 15 (Data Onboarding) | **COMPLETE** | M176-M183: 6 connectors, BaseConnector + LocalFileConnector, schema detector, data profiler, DataOnboarding wizard, S28 — 759 tests (549+210), 18 views |
 | **P1 — Next** | Phase 15.5 (Tour Quality Fixes) | **COMPLETE** | M184-M190: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts |
 | **P1 — Next** | Phase 16 (Bronze→Silver Mapping) | **COMPLETE** | M191-M196: Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 tests (562+210) |
-| **P1 — Next** | Phase 17 (Silver→Gold Pipeline) | **IN PROGRESS** | M197-M204: Contract validator, pipeline orchestrator, calc input registry, Silver→Gold mapping, PipelineMonitor overhaul, MedallionOverview execution — plan: `docs/plans/2026-02-28-phase17-silver-to-gold-pipeline.md` |
+| **P1 — Next** | Phase 17 (Silver→Gold Pipeline) | **COMPLETE** | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG + medallion stages), MedallionOverview execution status — 800 tests (590+210), 30 scenarios, 82 sections |
 | **P2 — Important** | Phase 18 (Data Quality) | PLANNED | Quality gates, quarantine, ISO 8000/25012 |
 | **P2 — Important** | Phase 19 (Reference Data/MDM) | PLANNED | Golden records, cross-source reconciliation |
 | **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | PLANNED | KPIs, testing isolation, regulatory retention |
@@ -1353,7 +1353,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 
 After each phase:
 1. `cd frontend && npm run build` — no TypeScript errors (969+ modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (562+)
+2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (590+)
 3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (210+) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
