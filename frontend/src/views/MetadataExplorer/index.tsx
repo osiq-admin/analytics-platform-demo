@@ -122,6 +122,7 @@ export default function MetadataExplorer() {
             <button
               key={l.label}
               onClick={() => setLayerFilter(l.value)}
+              data-action={`filter-${l.label.toLowerCase().replace(/\s+/g, "-")}`}
               className={`px-2 py-1 text-xs rounded border transition-colors ${
                 layerFilter === l.value
                   ? "border-accent text-accent bg-accent/10"
@@ -147,6 +148,7 @@ export default function MetadataExplorer() {
                 setSelected(null);
                 setMode("create");
               }}
+              data-action="new-calculation"
               className="px-2 py-0.5 text-xs rounded font-medium text-accent border border-dashed border-accent/30 hover:bg-accent/10 transition-colors"
             >
               + New Calculation

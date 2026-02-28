@@ -174,6 +174,7 @@ export default function MatchPatternPicker({
         ref={refs.setReference}
         {...getReferenceProps()}
         type="button"
+        data-action="pick-pattern"
         className="px-2 py-1 text-xs border border-border rounded hover:bg-accent/10 text-foreground transition-colors"
       >
         {currentMatchCount > 0
@@ -207,6 +208,7 @@ export default function MatchPatternPicker({
                 <button
                   type="button"
                   onClick={() => setActiveTab("create")}
+                  data-action="create-new-match"
                   className={clsx(
                     "px-3 py-1.5 text-xs font-medium border-b-2 transition-colors",
                     activeTab === "create"
@@ -422,6 +424,7 @@ export default function MatchPatternPicker({
                   <button
                     type="button"
                     onClick={handleApply}
+                    data-action="apply-pattern"
                     disabled={Object.keys(buildMatch()).length === 0}
                     className={clsx(
                       "w-full py-1.5 text-xs font-medium rounded transition-colors",

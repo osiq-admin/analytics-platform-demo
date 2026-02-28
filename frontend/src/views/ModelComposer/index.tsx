@@ -143,6 +143,7 @@ export default function ModelComposer() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setExamplesOpen(!examplesOpen)}
+            data-action={examplesOpen ? "close-examples" : "examples"}
             className={`px-2 py-1 text-xs rounded border transition-colors ${
               examplesOpen
                 ? "border-accent bg-accent/15 text-accent"
@@ -255,12 +256,14 @@ export default function ModelComposer() {
                 )}
                 <button
                   onClick={() => setMode("edit")}
+                  data-action="edit"
                   className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => setConfirmDelete(true)}
+                  data-action="delete"
                   className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                 >
                   Delete
@@ -313,6 +316,7 @@ export default function ModelComposer() {
                 <button
                   key={tab.key}
                   onClick={() => setRightTab(tab.key)}
+                  data-action={`tab-${tab.key}`}
                   className={`flex-1 h-full text-[10px] font-semibold uppercase tracking-wide transition-colors ${
                     rightTab === tab.key
                       ? "text-accent border-b-2 border-accent"

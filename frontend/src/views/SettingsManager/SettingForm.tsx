@@ -223,7 +223,7 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
         <Panel
           title={<Tooltip content="Context-specific value overrides">{`Overrides (${overrides.length})`}</Tooltip>}
           actions={
-            <button className={btnCls} onClick={addOverride}>
+            <button className={btnCls} onClick={addOverride} data-action="add-override">
               + Add Override
             </button>
           }
@@ -326,6 +326,7 @@ export default function SettingForm({ setting, isNew, onSave, onCancel }: Settin
         <button
           onClick={handleSave}
           disabled={saving || !settingId || !name}
+          data-action="save-changes"
           className="px-4 py-2 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50 w-full"
         >
           {saving ? "Saving..." : isNew ? "Create Setting" : "Save Changes"}

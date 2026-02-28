@@ -339,6 +339,7 @@ export default function ScoreStepBuilder({
           <button
             type="button"
             onClick={addStep}
+            data-action="add-tier"
             className="text-xs px-2 py-1 border border-dashed border-border rounded hover:border-accent text-muted hover:text-accent transition-colors"
           >
             + Add Tier

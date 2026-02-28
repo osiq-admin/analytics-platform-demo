@@ -163,6 +163,7 @@ export default function CalculationForm({ calc, isNew, onSave, onCancel }: Calcu
         <button
           onClick={handleSave}
           disabled={saving || !calcId || !name}
+          data-action="create-calculation"
           className="px-4 py-2 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50 w-full"
         >
           {saving ? "Saving..." : isNew ? "Create Calculation" : "Save Changes"}

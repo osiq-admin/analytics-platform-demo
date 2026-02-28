@@ -186,6 +186,7 @@ export default function ScoreTemplatePicker({
         ref={refs.setReference}
         {...getReferenceProps()}
         type="button"
+        data-action="apply-template"
         className="text-xs px-2 py-1 border border-border rounded hover:border-accent text-muted hover:text-accent transition-colors"
       >
         Templates

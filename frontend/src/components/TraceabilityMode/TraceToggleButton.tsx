@@ -8,6 +8,7 @@ export default function TraceToggleButton() {
   return (
     <button
       onClick={toggle}
+      data-action="trace"
       className={clsx(
         "px-2 py-0.5 rounded border transition-colors",
         isActive
