@@ -28,7 +28,7 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (969 Vite modules)             │
+│  React 19 SPA (970 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (11 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
@@ -145,8 +145,8 @@ Clean separation between out-of-box (vendor-shipped) and user customizations:
 
 ### Architecture Traceability Mode
 
-Toolbar toggle overlays info icons on every section across all 18 views:
-- 82 traced sections showing source files, Zustand stores, API endpoints, metadata sources
+Toolbar toggle overlays info icons on every section across all 19 views:
+- 86 traced sections showing source files, Zustand stores, API endpoints, metadata sources
 - 5-level metadata maturity rating per section (Fully Metadata-Driven → Infrastructure)
 - Improvement opportunities for each section
 
@@ -159,10 +159,10 @@ Toolbar toggle overlays info icons on every section across all 18 views:
 
 ### Guided Experience
 
-- **30 scenarios** in 9 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
+- **31 scenarios** in 12 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
 - **Per-view tours** with spotlight overlay and step-by-step popovers
 - **3 demo workflow guides** (Act 1: data discovery, Act 2: model composition, Act 3: investigation)
-- **109 operation scripts** across 18 views via per-view help panels
+- **116 operation scripts** across 19 views via per-view help panels
 - **Onboarding modal** for first-time visitors
 - **8 demo checkpoints**: Pristine → Data Loaded → Pipeline Run → Alerts → Acts 1-3 → Final
 
@@ -189,24 +189,24 @@ Toolbar toggle overlays info icons on every section across all 18 views:
 │   ├── use_cases/       # Use case definitions
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
-├── tests/               # 800 tests (590 backend + 210 E2E Playwright)
+├── tests/               # 862 tests (645 backend + 217 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing
 
 ```bash
-# Backend tests (590)
+# Backend tests (645)
 uv run pytest tests/ --ignore=tests/e2e -v
 
-# E2E Playwright tests (210)
+# E2E Playwright tests (217)
 uv run pytest tests/e2e/ -v
 
 # Frontend build
 cd frontend && npm run build
 ```
 
-800 tests total: 590 backend unit/integration + 210 E2E Playwright. All 18 views have dedicated E2E coverage.
+862 tests total: 645 backend unit/integration + 217 E2E Playwright. All 19 views have dedicated E2E coverage.
 
 ## Development
 

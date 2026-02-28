@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M204 Phase 17 Complete; 800 total tests: 590 backend + 210 E2E, 18 views, 30 scenarios, 82 architecture sections, 969 modules)
+**Last Updated**: 2026-02-28 (M215 Phase 18 Complete; 862 total tests: 645 backend + 217 E2E, 19 views, 31 scenarios, 86 architecture sections, 970 modules)
 
 ---
 
@@ -53,7 +53,7 @@
 | Tour/Scenario Quality Fixes + Bronze→Silver Mapping (Phase 15.5 + 16) | COMPLETE | M184-M196: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts, Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 total tests (562+210), 18 views, 29 scenarios |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 | Silver→Gold Pipeline Orchestration (Phase 17) | COMPLETE | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG edges + medallion stages progress bar), MedallionOverview execution status + Run Stage, S30 scenario — 800 total tests (590+210), 18 views, 30 scenarios, 82 architecture sections |
-| Data Quality, Quarantine & Profiling (Phase 18) | IN PROGRESS | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios |
+| Data Quality, Quarantine & Profiling (Phase 18) | COMPLETE | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios — 862 total tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 
 ---
 
@@ -296,6 +296,22 @@
 | M202 | PipelineMonitor Overhaul | COMPLETE | 4 | 4 | True DAG edges from depends_on metadata (replaced linear chaining), medallion stages progress bar, contract validation panel |
 | M203 | MedallionOverview Execution Status + Run Stage | COMPLETE | 3 | 3 | Tier node execution status badges, Run Stage action button, stage execution results display |
 | M204 | Tours, Scenarios, Operations, Architecture Registry | COMPLETE | 3 | 3 | S30 scenario (Silver→Gold Pipeline), 4 new operations, 2 new architecture registry entries (82 total sections), tour updates |
+
+### Phase 18: Data Quality, Quarantine & Profiling (M205-M215)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M205 | Quality Dimension Metadata + Pydantic Models | COMPLETE | 3 | 3 | 7 ISO 8000/25012 quality dimensions in workspace/metadata/quality/dimensions.json, 8 Pydantic models in backend/models/quality.py |
+| M206 | Extend ContractValidator with 4 New Rule Types | COMPLETE | 3 | 3 | regex_match, referential_integrity, freshness, custom_sql rules added to contract_validator.py, 4 new QualityRule fields on medallion models |
+| M207 | Quality Engine — Per-Dimension Weighted Scoring | COMPLETE | 3 | 3 | backend/engine/quality_engine.py with ISO-weighted scoring across 7 dimensions |
+| M208 | Quarantine Service | COMPLETE | 3 | 3 | backend/services/quarantine_service.py with quarantine/release/audit workflow |
+| M209 | Quality + Quarantine API Endpoints | COMPLETE | 3 | 3 | backend/api/quality.py with 11 endpoints (/api/quality/*) |
+| M210 | DataQuality View — Scaffold + Scores Panel | COMPLETE | 3 | 3 | frontend/src/views/DataQuality/index.tsx with entity score cards and weighted scoring breakdown |
+| M211 | DataQuality View — Data Profiling Panel | COMPLETE | 3 | 3 | Spider chart (Recharts radar), quarantine queue (AG Grid), data profiling panel |
+| M212 | E2E Tests for DataQuality View | COMPLETE | 3 | 3 | tests/e2e/test_data_quality_view.py with 7 E2E tests |
+| M213 | Tours, Scenarios, Operations, Architecture Registry | COMPLETE | 3 | 3 | data-quality tour (4 steps), S31 scenario (Governance), 7 operations, 4 architecture sections (86 total) |
+| M214 | Full Test Suite + Playwright Verification | COMPLETE | 3 | 3 | 645 backend + 217 E2E tests all passing, frontend builds (970 modules), visual verification |
+| M215 | Phase D Documentation Sweep + PR | COMPLETE | 2 | 2 | Update all docs, sync counts, create PR |
 
 ---
 
