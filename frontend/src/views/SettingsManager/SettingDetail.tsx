@@ -43,6 +43,7 @@ export default function SettingDetail({ setting, onEdit, onDelete }: SettingDeta
               {onEdit && (
                 <button
                   onClick={onEdit}
+                  data-action="edit"
                   className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
                 >
                   Edit

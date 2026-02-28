@@ -1,0 +1,130 @@
+{
+  "mapping_id": "product_bronze_silver",
+  "source_entity": "product",
+  "target_entity": "product",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "description": "Bronze to Silver mapping for products — validates ISO standard codes, normalizes identifiers, and standardizes derivative fields",
+  "status": "active",
+  "field_mappings": [
+    {
+      "source_field": "product_id",
+      "target_field": "product_id",
+      "transform": "direct",
+      "description": "Primary key — pass through"
+    },
+    {
+      "source_field": "isin",
+      "target_field": "isin",
+      "transform": "validate_isin",
+      "description": "Validate ISO 6166 ISIN format and check digit — nullable"
+    },
+    {
+      "source_field": "sedol",
+      "target_field": "sedol",
+      "transform": "uppercase_nullable",
+      "description": "Normalize SEDOL to uppercase — nullable"
+    },
+    {
+      "source_field": "ticker",
+      "target_field": "ticker",
+      "transform": "uppercase",
+      "description": "Normalize ticker symbol to uppercase"
+    },
+    {
+      "source_field": "name",
+      "target_field": "name",
+      "transform": "trim",
+      "description": "Trim whitespace from product display name"
+    },
+    {
+      "source_field": "asset_class",
+      "target_field": "asset_class",
+      "transform": "lowercase",
+      "description": "Normalize asset class to lowercase (equity/fx/commodity/index/fixed_income)"
+    },
+    {
+      "source_field": "instrument_type",
+      "target_field": "instrument_type",
+      "transform": "lowercase",
+      "description": "Normalize ISO 10962 instrument type to lowercase"
+    },
+    {
+      "source_field": "cfi_code",
+      "target_field": "cfi_code",
+      "transform": "validate_cfi",
+      "description": "Validate ISO 10962 CFI code format (6 characters)"
+    },
+    {
+      "source_field": "underlying_product_id",
+      "target_field": "underlying_product_id",
+      "transform": "direct",
+      "description": "FK to product entity (self-referential) — nullable, derivatives only"
+    },
+    {
+      "source_field": "contract_size",
+      "target_field": "contract_size",
+      "transform": "cast_decimal_nullable",
+      "description": "Cast contract multiplier to decimal — nullable, options/futures only"
+    },
+    {
+      "source_field": "strike_price",
+      "target_field": "strike_price",
+      "transform": "cast_decimal_nullable",
+      "description": "Cast option strike price to decimal — nullable"
+    },
+    {
+      "source_field": "expiry_date",
+      "target_field": "expiry_date",
+      "transform": "cast_date_nullable",
+      "description": "Cast contract expiry to ISO 8601 date — nullable"
+    },
+    {
+      "source_field": "exchange_mic",
+      "target_field": "exchange_mic",
+      "transform": "uppercase",
+      "description": "Normalize ISO 10383 MIC code to uppercase"
+    },
+    {
+      "source_field": "currency",
+      "target_field": "currency",
+      "transform": "validate_iso4217",
+      "description": "Validate ISO 4217 currency code (3 uppercase letters)"
+    },
+    {
+      "source_field": "tick_size",
+      "target_field": "tick_size",
+      "transform": "cast_decimal",
+      "description": "Cast minimum price increment to decimal"
+    },
+    {
+      "source_field": "lot_size",
+      "target_field": "lot_size",
+      "transform": "cast_integer",
+      "description": "Cast standard lot size to integer"
+    },
+    {
+      "source_field": "base_price",
+      "target_field": "base_price",
+      "transform": "cast_decimal",
+      "description": "Cast reference base price to decimal"
+    },
+    {
+      "source_field": "regulatory_scope",
+      "target_field": "regulatory_scope",
+      "transform": "uppercase",
+      "description": "Normalize regulatory jurisdiction (EU/US/UK/APAC/MULTI)"
+    },
+    {
+      "source_field": "",
+      "target_field": "is_derivative",
+      "transform": "conditional",
+      "transform_args": {
+        "condition": "instrument_type IN ('call_option', 'put_option', 'future')",
+        "true_value": true,
+        "false_value": false
+      },
+      "description": "Derived field — boolean flag indicating whether the product is a derivative"
+    }
+  ]
+}

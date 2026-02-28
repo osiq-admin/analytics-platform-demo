@@ -43,10 +43,16 @@ export default function ScenarioRunner() {
     setStepValidated(false);
     if (mode !== "try" || !step?.validation) return;
 
+    const VALIDATION_TIMEOUT = 10_000;
+    const startTime = Date.now();
     const poll = setInterval(() => {
       if (document.querySelector(step.validation!)) {
         setStepValidated(true);
         clearInterval(poll);
+      } else if (Date.now() - startTime > VALIDATION_TIMEOUT) {
+        clearInterval(poll);
+        setStepValidated(true); // Allow progression
+        console.warn(`[ScenarioRunner] Validation timeout for step: ${step.title}`);
       }
     }, 500);
 
@@ -73,6 +79,8 @@ export default function ScenarioRunner() {
             nativeSet.call(el, value);
             el.dispatchEvent(new Event("input", { bubbles: true }));
           }
+        } else {
+          console.warn(`[ScenarioRunner] AutoFill target not found: ${selector}`);
         }
       }
     }
@@ -82,7 +90,11 @@ export default function ScenarioRunner() {
       case "click": {
         const target = step.actionTarget ?? step.target;
         const el = document.querySelector(target) as HTMLElement | null;
-        el?.click();
+        if (el) {
+          el.click();
+        } else {
+          console.warn(`[ScenarioRunner] Click target not found: ${target}`);
+        }
         break;
       }
       case "type": {
@@ -97,6 +109,8 @@ export default function ScenarioRunner() {
             nativeSet.call(el, step.actionValue);
             el.dispatchEvent(new Event("input", { bubbles: true }));
           }
+        } else if (!el) {
+          console.warn(`[ScenarioRunner] Type target not found: ${target}`);
         }
         break;
       }
@@ -106,6 +120,8 @@ export default function ScenarioRunner() {
         if (el && step.actionValue) {
           el.value = step.actionValue;
           el.dispatchEvent(new Event("change", { bubbles: true }));
+        } else if (!el) {
+          console.warn(`[ScenarioRunner] Select target not found: ${target}`);
         }
         break;
       }

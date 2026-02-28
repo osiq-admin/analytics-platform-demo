@@ -19,8 +19,8 @@ export default function TraceIcon({ sectionId, rect }: TraceIconProps) {
                  hover:bg-info hover:scale-110 transition-all cursor-pointer
                  ring-2 ring-info/30"
       style={{
-        left: rect.right - 24,
-        top: rect.top + 4,
+        left: Math.max(4, Math.min(rect.right - 24, window.innerWidth - 28)),
+        top: Math.max(4, rect.top + 4),
       }}
       title={`Architecture trace: ${sectionId}`}
     >

@@ -1,0 +1,121 @@
+{
+  "mapping_id": "order_bronze_silver",
+  "source_entity": "order",
+  "target_entity": "order",
+  "source_tier": "bronze",
+  "target_tier": "silver",
+  "description": "Bronze to Silver mapping for orders — standardizes FIX Protocol fields, casts timestamps, and computes fill ratios",
+  "status": "active",
+  "field_mappings": [
+    {
+      "source_field": "order_id",
+      "target_field": "order_id",
+      "transform": "direct",
+      "description": "Primary key — pass through"
+    },
+    {
+      "source_field": "product_id",
+      "target_field": "product_id",
+      "transform": "direct",
+      "description": "FK to product entity — validated against product table"
+    },
+    {
+      "source_field": "account_id",
+      "target_field": "account_id",
+      "transform": "direct",
+      "description": "FK to account entity — validated against account table"
+    },
+    {
+      "source_field": "trader_id",
+      "target_field": "trader_id",
+      "transform": "direct",
+      "description": "FK to trader entity — validated against trader table"
+    },
+    {
+      "source_field": "side",
+      "target_field": "side",
+      "transform": "uppercase",
+      "description": "Normalize to uppercase (BUY/SELL)"
+    },
+    {
+      "source_field": "order_type",
+      "target_field": "order_type",
+      "transform": "uppercase",
+      "description": "Normalize FIX OrdType to uppercase (MARKET/LIMIT)"
+    },
+    {
+      "source_field": "limit_price",
+      "target_field": "limit_price",
+      "transform": "cast_decimal_nullable",
+      "description": "Cast to decimal — null for MARKET orders"
+    },
+    {
+      "source_field": "quantity",
+      "target_field": "quantity",
+      "transform": "cast_decimal",
+      "description": "Cast original order quantity to decimal"
+    },
+    {
+      "source_field": "filled_quantity",
+      "target_field": "filled_quantity",
+      "transform": "cast_decimal",
+      "description": "Cast filled quantity to decimal"
+    },
+    {
+      "source_field": "order_date",
+      "target_field": "order_date",
+      "transform": "cast_date",
+      "description": "Cast to ISO 8601 date (YYYY-MM-DD)"
+    },
+    {
+      "source_field": "order_time",
+      "target_field": "order_time",
+      "transform": "cast_time",
+      "description": "Cast to HH:MM:SS.fff format with millisecond precision"
+    },
+    {
+      "source_field": "status",
+      "target_field": "status",
+      "transform": "uppercase",
+      "description": "Normalize FIX OrdStatus (NEW/FILLED/PARTIALLY_FILLED/CANCELLED/REJECTED)"
+    },
+    {
+      "source_field": "time_in_force",
+      "target_field": "time_in_force",
+      "transform": "uppercase",
+      "description": "Normalize FIX TimeInForce (DAY/GTC/IOC/FOK)"
+    },
+    {
+      "source_field": "execution_id",
+      "target_field": "execution_id",
+      "transform": "direct",
+      "description": "FK to execution entity — nullable, validated when present"
+    },
+    {
+      "source_field": "venue_mic",
+      "target_field": "venue_mic",
+      "transform": "uppercase_nullable",
+      "description": "Normalize MIC code — nullable, validate against ISO 10383 when present"
+    },
+    {
+      "source_field": "",
+      "target_field": "order_timestamp",
+      "transform": "concat",
+      "transform_args": {
+        "fields": ["order_date", "order_time"],
+        "separator": "T"
+      },
+      "description": "Derived field — combine date and time into ISO 8601 timestamp"
+    },
+    {
+      "source_field": "",
+      "target_field": "fill_ratio",
+      "transform": "divide",
+      "transform_args": {
+        "numerator": "filled_quantity",
+        "denominator": "quantity"
+      },
+      "description": "Derived field — filled_quantity / quantity for fill completion percentage"
+    }
+  ]
+}

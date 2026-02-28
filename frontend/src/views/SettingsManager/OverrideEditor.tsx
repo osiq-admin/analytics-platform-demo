@@ -89,6 +89,7 @@ export default function OverrideEditor({ settingId, valueType }: OverrideEditorP
         <button
           onClick={handleResolve}
           disabled={loading}
+          data-action="resolve"
           className="px-3 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
         >
           {loading ? "Resolving..." : "Resolve"}

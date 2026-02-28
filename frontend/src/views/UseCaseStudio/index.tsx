@@ -180,12 +180,14 @@ export default function UseCaseStudio() {
                 )}
                 <button
                   onClick={() => setMode("edit")}
+                  data-action="edit"
                   className="px-3 py-1.5 text-xs rounded font-medium border border-accent/30 text-accent hover:bg-accent/10 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => setConfirmDelete(true)}
+                  data-action="delete"
                   className="px-3 py-1.5 text-xs rounded font-medium border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                 >
                   Delete
@@ -193,6 +195,7 @@ export default function UseCaseStudio() {
                 <button
                   onClick={handleRun}
                   disabled={running}
+                  data-action="run"
                   className="px-3 py-1.5 rounded bg-accent text-white text-xs font-medium hover:bg-accent/80 disabled:opacity-50"
                 >
                   {running ? "Running..." : "Run"}

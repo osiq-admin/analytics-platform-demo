@@ -244,6 +244,7 @@ export default function MedallionOverview() {
         <Panel
           title={selectedTier ? selectedTier.name : "Select a tier"}
           className="w-80 shrink-0 overflow-y-auto"
+          dataTour="medallion-tier-detail"
           dataTrace="medallion.tier-detail"
         >
           {selectedTier ? (

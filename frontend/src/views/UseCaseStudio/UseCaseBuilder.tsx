@@ -154,6 +154,7 @@ export default function UseCaseBuilder({
           <div className="flex items-center gap-1">
             <button
               onClick={onCancel}
+              data-action="cancel"
               className="px-2 py-0.5 text-xs rounded border border-border text-muted hover:text-foreground transition-colors"
             >
               Cancel
@@ -161,6 +162,7 @@ export default function UseCaseBuilder({
             {step > 0 && (
               <button
                 onClick={() => setStep(step - 1)}
+                data-action="back"
                 className="px-2 py-0.5 text-xs rounded border border-border text-muted hover:text-foreground transition-colors"
               >
                 Back
@@ -170,6 +172,7 @@ export default function UseCaseBuilder({
               <button
                 onClick={() => setStep(step + 1)}
                 disabled={!canProceed()}
+                data-action="next"
                 className="px-2 py-0.5 text-xs rounded bg-accent text-white hover:bg-accent/80 disabled:opacity-50 transition-colors"
               >
                 Next
@@ -178,6 +181,7 @@ export default function UseCaseBuilder({
               <button
                 onClick={handleSave}
                 disabled={!canProceed()}
+                data-action="save-use-case"
                 className="px-2 py-0.5 text-xs rounded bg-accent text-white hover:bg-accent/80 disabled:opacity-50 transition-colors"
               >
                 Save Use Case

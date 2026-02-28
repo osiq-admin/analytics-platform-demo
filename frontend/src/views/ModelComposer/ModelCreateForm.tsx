@@ -269,13 +269,14 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
 
       {/* Navigation */}
       <div className="flex items-center justify-between pt-2 border-t border-border">
-        <button onClick={onCancel} className="text-xs text-muted hover:text-foreground">
+        <button onClick={onCancel} data-action="cancel" className="text-xs text-muted hover:text-foreground">
           Cancel
         </button>
         <div className="flex gap-2">
           {step > 1 && (
             <button
               onClick={() => setStep(step - 1)}
+              data-action="back"
               className="px-3 py-1.5 text-xs border border-border rounded hover:bg-accent/10 transition-colors"
             >
               Back
@@ -284,6 +285,7 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
           {step < 7 && (
             <button
               onClick={() => setStep(step + 1)}
+              data-action="next"
               className="px-3 py-1.5 text-xs bg-accent text-white rounded hover:bg-accent/80 disabled:opacity-50 transition-colors"
               disabled={!canProceed}
             >
@@ -293,6 +295,7 @@ export default function ModelCreateForm({ calculations, onSaved, onCancel, exist
           {step === 7 && (
             <button
               onClick={handleSave}
+              data-action="save-model"
               className="px-4 py-2 bg-accent text-white rounded text-xs font-medium hover:bg-accent/80 disabled:opacity-50 transition-colors"
               disabled={saving}
             >

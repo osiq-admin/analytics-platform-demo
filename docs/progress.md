@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-27 (M183 Phase 15 Complete; 759 total tests: 549 backend + 210 E2E, 18 views, 28 scenarios, 80 architecture sections, 971 modules)
+**Last Updated**: 2026-02-28 (M196 Phase 16 Complete; 772 total tests: 562 backend + 210 E2E, 18 views, 29 scenarios, 80 architecture sections, 969 modules)
 
 ---
 
@@ -50,6 +50,7 @@
 | Roadmap Restructuring — Medallion Architecture | COMPLETE | Restructured roadmap from 20 phases to 33 phases across 7 tiers: medallion architecture (11 tiers), data governance, PII/masking/encryption, business glossary (ISO 11179), standards (ISO 8000/25012/27001, BCBS 239), migration readiness (SQLMesh, Arrow) |
 | Medallion Architecture Core (Phase 14) | COMPLETE | M175: 11-tier medallion architecture metadata, 6 data contracts, 5 transformations, 5 pipeline stages, MedallionOverview view with React Flow, 7 API endpoints, S27 scenario — 732 total tests (522+210), 17 views |
 | Data Onboarding & Connector Abstraction (Phase 15) | COMPLETE | M176-M183: Pydantic onboarding models, 6 connector metadata files, BaseConnector + LocalFileConnector + stubs, schema detector + data profiler, onboarding service + API endpoints, 5-step DataOnboarding wizard, tours/scenarios/operations/architecture — 759 total tests (549+210), 18 views |
+| Tour/Scenario Quality Fixes + Bronze→Silver Mapping (Phase 15.5 + 16) | COMPLETE | M184-M196: Tour backdrop click-through fix (4-edge overlay), viewport clipping fix (floating-ui size()), :has-text selector replacement (86→data-action), ScenarioRunner timeouts, Pydantic mapping models, 3 mapping metadata files, CRUD API (7 endpoints), MappingStudio overhaul (metadata-driven), onboarding Step 4 mapping integration, S29 scenario — 772 total tests (562+210), 18 views, 29 scenarios |
 | Data Calibration (Phase 13) | COMPLETE | M174: Fixed F-001 (MPR 96%→68%) and F-010 (all 5 asset classes have alerts). Cross-asset trading, 9 new patterns, threshold calibration, SettingsResolver pipeline fix. 82 alerts across 5 models and 5 asset classes |
 
 ---

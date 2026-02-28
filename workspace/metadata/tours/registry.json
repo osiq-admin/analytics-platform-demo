@@ -25,7 +25,7 @@
     {"tour_id": "onboarding", "view_path": "/onboarding", "title": "Data Onboarding Tour", "step_count": 3}
   ],
   "scenarios": {
-    "total_count": 28,
+    "total_count": 29,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -35,7 +35,8 @@
       {"category": "Investigation", "count": 3},
       {"category": "Administration", "count": 3},
       {"category": "Architecture", "count": 1},
-      {"category": "Data Onboarding", "count": 1}
+      {"category": "Data Onboarding", "count": 1},
+      {"category": "Mapping", "count": 1}
     ]
   }
 }

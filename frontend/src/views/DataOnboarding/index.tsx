@@ -62,6 +62,8 @@ export default function DataOnboarding() {
   const [selectedEntity, setSelectedEntity] = useState("");
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [entityFields, setEntityFields] = useState<{name: string; type: string}[]>([]);
+  const [fieldMappings, setFieldMappings] = useState<Record<string, string>>({});
 
   useEffect(() => {
     api
@@ -78,6 +80,33 @@ export default function DataOnboarding() {
         .catch(() => {});
     }
   }, [step]);
+
+  useEffect(() => {
+    if (!selectedEntity) {
+      setEntityFields([]);
+      setFieldMappings({});
+      return;
+    }
+    api.get(`/metadata/entities/${selectedEntity}`).then((entity: any) => {
+      const fields = entity.fields || [];
+      setEntityFields(fields);
+      // Auto-suggest mappings by matching field names
+      if (job?.detected_schema?.columns) {
+        const suggested: Record<string, string> = {};
+        for (const col of job.detected_schema.columns) {
+          const match = fields.find((f: any) =>
+            f.name === col.name ||
+            f.name.toLowerCase() === col.name.toLowerCase() ||
+            f.name.replace(/_/g, "") === col.name.replace(/_/g, "")
+          );
+          if (match) {
+            suggested[col.name] = match.name;
+          }
+        }
+        setFieldMappings(suggested);
+      }
+    }).catch(() => {});
+  }, [selectedEntity, job]);
 
   async function handleUpload() {
     if (!file) return;
@@ -115,9 +144,28 @@ export default function DataOnboarding() {
   }
 
   async function handleConfirmMapping() {
-    if (!job) return;
+    if (!job || !selectedEntity) return;
     setLoading(true);
     try {
+      // Save field mappings if any were configured
+      if (Object.keys(fieldMappings).length > 0) {
+        const mappingPayload = {
+          mapping_id: `onboarding_${job.job_id}_${selectedEntity}`,
+          source_entity: job.filename.replace(/\.[^/.]+$/, ""),
+          target_entity: selectedEntity,
+          source_tier: "landing",
+          target_tier: "bronze",
+          field_mappings: Object.entries(fieldMappings).map(([src, tgt]) => ({
+            source_field: src,
+            target_field: tgt,
+            transform: "direct",
+          })),
+          status: "draft",
+          description: `Auto-generated mapping from ${job.filename} to ${selectedEntity}`,
+        };
+        await api.post("/mappings/", mappingPayload);
+      }
+      // Confirm the onboarding job
       const data = await api.post<OnboardingJob>(`/onboarding/jobs/${job.job_id}/confirm`, {
         target_entity: selectedEntity,
       });
@@ -135,6 +183,8 @@ export default function DataOnboarding() {
     setJob(null);
     setFile(null);
     setSelectedEntity("");
+    setEntityFields([]);
+    setFieldMappings({});
   }
 
   return (
@@ -360,15 +410,12 @@ export default function DataOnboarding() {
             {step === 4 && job && (
               <Panel title="Map to Entity" dataTrace="onboarding.map-entity" dataTour="onboarding-map">
                 <div className="space-y-4">
+                  {/* File info */}
                   <div className="text-sm text-[var(--text-primary)]">
-                    <p>
-                      <span className="text-muted">File:</span> {job.filename}
-                    </p>
-                    <p>
-                      <span className="text-muted">Rows:</span> {job.row_count.toLocaleString()}
-                    </p>
+                    <p><span className="text-muted">File:</span> {job.filename} — {job.row_count.toLocaleString()} rows</p>
                   </div>
 
+                  {/* Entity selector */}
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                       Target Entity
@@ -386,6 +433,59 @@ export default function DataOnboarding() {
                       ))}
                     </select>
                   </div>
+
+                  {/* Field mapping table */}
+                  {selectedEntity && job.detected_schema && entityFields.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-[var(--text-primary)] mb-2">
+                        Field Mappings
+                        <span className="text-muted ml-2 font-normal">
+                          ({Object.keys(fieldMappings).length} of {job.detected_schema.columns.length} mapped)
+                        </span>
+                      </h3>
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-[var(--border-primary)] text-left text-muted">
+                            <th className="py-1.5 pr-3 font-medium">Source Column</th>
+                            <th className="py-1.5 pr-3 font-medium">Type</th>
+                            <th className="py-1.5 pr-3 font-medium">&rarr;</th>
+                            <th className="py-1.5 font-medium">Target Field</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {job.detected_schema.columns.map((col) => (
+                            <tr key={col.name} className="border-b border-[var(--border-primary)] text-[var(--text-primary)]">
+                              <td className="py-1.5 pr-3 font-medium">{col.name}</td>
+                              <td className="py-1.5 pr-3 text-muted">{col.inferred_type}</td>
+                              <td className="py-1.5 pr-3 text-muted">&rarr;</td>
+                              <td className="py-1.5">
+                                <select
+                                  value={fieldMappings[col.name] || ""}
+                                  onChange={(e) => {
+                                    setFieldMappings(prev => {
+                                      const next = { ...prev };
+                                      if (e.target.value) {
+                                        next[col.name] = e.target.value;
+                                      } else {
+                                        delete next[col.name];
+                                      }
+                                      return next;
+                                    });
+                                  }}
+                                  className="w-full border border-[var(--border-primary)] rounded px-2 py-1 text-xs bg-[var(--bg-primary)] text-[var(--text-primary)]"
+                                >
+                                  <option value="">— unmapped —</option>
+                                  {entityFields.map((f) => (
+                                    <option key={f.name} value={f.name}>{f.name} ({f.type})</option>
+                                  ))}
+                                </select>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
 
                   <button
                     onClick={handleConfirmMapping}

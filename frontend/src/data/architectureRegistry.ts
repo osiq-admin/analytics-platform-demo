@@ -824,114 +824,116 @@ export const VIEW_TRACES: ViewTrace[] = [
     route: "/mappings",
     sections: [
       {
-        id: "mappings.calculation-selector",
-        displayName: "Calculation Selector",
+        id: "mapping-studio.mapping-selector",
+        displayName: "Mapping Selector",
         viewId: "mappings",
         description:
-          "Dropdown to choose which calculation to create a mapping for. Populated from calculation metadata.",
+          "Dropdown to select or create a mapping definition. Lists all mapping files from metadata. Choose source and target entities.",
         files: [
-          { path: "frontend/src/views/MappingStudio/index.tsx", role: "Main view with calculation selector" },
-          { path: "frontend/src/stores/metadataStore.ts", role: "Provides calculation list" },
+          { path: "frontend/src/views/MappingStudio/index.tsx", role: "Main view with mapping selector and CRUD controls" },
         ],
-        stores: [
-          {
-            name: "metadataStore",
-            path: "frontend/src/stores/metadataStore.ts",
-            role: "Provides calculations for selector dropdown",
-          },
-        ],
+        stores: [],
         apis: [
           {
             method: "GET",
-            path: "/api/metadata/calculations",
-            role: "Returns calculations for selection",
+            path: "/api/mappings/",
+            role: "Returns list of mapping definitions",
+            routerFile: "backend/api/mappings.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/entities",
+            role: "Returns entity list for source/target selection",
             routerFile: "backend/api/metadata.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/calculations/**/*.json",
+            path: "workspace/metadata/mappings/*.json",
             category: "metadata",
-            role: "Calculation definitions for selector",
+            role: "Mapping definition files",
           },
         ],
         technologies: [],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Selector options come entirely from calculation metadata.",
+          "Mapping list and entity options come entirely from metadata. Add mapping templates for common patterns.",
       },
       {
-        id: "mappings.source-preview",
-        displayName: "Source Preview",
+        id: "mapping-studio.field-canvas",
+        displayName: "Field Mapping Canvas",
         viewId: "mappings",
         description:
-          "Shows source data columns available for mapping. Columns derived from the selected calculation's input schema defined in metadata.",
+          "Editable table for source-to-target field mappings with transform types (direct, rename, cast, uppercase, expression). Each row maps a source field to a target field.",
         files: [
-          {
-            path: "frontend/src/views/MappingStudio/SourcePreview.tsx",
-            role: "Displays source columns for drag-and-drop mapping",
-          },
-          { path: "frontend/src/stores/metadataStore.ts", role: "Provides calculation schema data" },
+          { path: "frontend/src/views/MappingStudio/index.tsx", role: "Field mapping table with inline editing" },
         ],
-        stores: [
-          {
-            name: "metadataStore",
-            path: "frontend/src/stores/metadataStore.ts",
-            role: "Provides calculation input schema",
-          },
-        ],
-        apis: [],
-        dataSources: [
-          {
-            path: "workspace/metadata/calculations/**/*.json",
-            category: "metadata",
-            role: "Calculation input schema defining available source columns",
-          },
-        ],
-        technologies: [],
-        metadataMaturity: "mostly-metadata-driven",
-        maturityExplanation:
-          "Columns come from calculation schema metadata, but the drag-and-drop UI behavior is code-driven.",
-      },
-      {
-        id: "mappings.canonical-fields",
-        displayName: "Canonical Fields",
-        viewId: "mappings",
-        description:
-          "Target fields to map source columns to. Fields derived from the calculation's output schema. Mapping definitions saved as metadata.",
-        files: [
-          {
-            path: "frontend/src/views/MappingStudio/CanonicalFields.tsx",
-            role: "Displays target canonical fields for mapping",
-          },
-          { path: "backend/api/metadata.py", role: "Saves mapping definitions" },
-        ],
-        stores: [
-          {
-            name: "metadataStore",
-            path: "frontend/src/stores/metadataStore.ts",
-            role: "Provides calculation output schema",
-          },
-        ],
+        stores: [],
         apis: [
           {
-            method: "POST",
-            path: "/api/metadata/mappings",
-            role: "Saves field mapping configuration",
+            method: "GET",
+            path: "/api/mappings/{id}",
+            role: "Returns a single mapping definition with field rows",
+            routerFile: "backend/api/mappings.py",
+          },
+          {
+            method: "GET",
+            path: "/api/metadata/entities/{id}",
+            role: "Returns entity fields for source/target dropdowns",
             routerFile: "backend/api/metadata.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/calculations/**/*.json",
+            path: "workspace/metadata/mappings/*.json",
             category: "metadata",
-            role: "Calculation output schema defining canonical fields",
+            role: "Mapping field definitions with transform types",
+          },
+          {
+            path: "workspace/metadata/entities/*.json",
+            category: "metadata",
+            role: "Entity field schemas for source/target columns",
           },
         ],
         technologies: [],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Canonical fields are defined by calculation output schema in metadata. Mappings themselves are stored as metadata.",
+          "Field mappings and entity schemas are fully metadata-driven. Add drag-and-drop between source and target columns.",
+      },
+      {
+        id: "mapping-studio.validation",
+        displayName: "Validation Results",
+        viewId: "mappings",
+        description:
+          "Validates mapping completeness against entity definitions. Shows errors, warnings, unmapped fields, and coverage percentage.",
+        files: [
+          { path: "frontend/src/views/MappingStudio/index.tsx", role: "Validation panel with error/warning display" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/mappings/{id}/validate",
+            role: "Validates mapping against entity definitions",
+            routerFile: "backend/api/mappings.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/mappings/*.json",
+            category: "metadata",
+            role: "Mapping definitions to validate",
+          },
+          {
+            path: "workspace/metadata/entities/*.json",
+            category: "metadata",
+            role: "Entity schemas for validation rules",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Validation rules derived from entity metadata and mapping definitions. Add auto-fix suggestions for validation errors.",
       },
     ],
   },

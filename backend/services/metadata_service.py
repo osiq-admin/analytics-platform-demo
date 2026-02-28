@@ -1111,3 +1111,37 @@ class MetadataService:
         if not p.exists():
             return None
         return ConnectorConfig.model_validate_json(p.read_text())
+
+    # --- Mappings ---
+
+    def list_mappings(self) -> list:
+        from backend.models.mapping import MappingDefinition
+        d = self._base / "mappings"
+        if not d.exists():
+            return []
+        results = []
+        for f in sorted(d.glob("*.json")):
+            if f.name == ".gitkeep":
+                continue
+            results.append(MappingDefinition.model_validate_json(f.read_text()))
+        return results
+
+    def load_mapping(self, mapping_id: str):
+        from backend.models.mapping import MappingDefinition
+        p = self._base / "mappings" / f"{mapping_id}.json"
+        if not p.exists():
+            return None
+        return MappingDefinition.model_validate_json(p.read_text())
+
+    def save_mapping(self, mapping) -> None:
+        d = self._base / "mappings"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / f"{mapping.mapping_id}.json"
+        p.write_text(mapping.model_dump_json(indent=2))
+
+    def delete_mapping(self, mapping_id: str) -> bool:
+        p = self._base / "mappings" / f"{mapping_id}.json"
+        if not p.exists():
+            return False
+        p.unlink()
+        return True
