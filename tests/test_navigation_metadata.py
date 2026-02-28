@@ -67,8 +67,8 @@ class TestNavigationMetadata:
                 assert "label" in item
                 assert "path" in item
 
-    def test_all_16_views_present_in_production_nav(self):
-        """Verify production navigation.json covers all 16 views."""
+    def test_all_20_views_present_in_production_nav(self):
+        """Verify production navigation.json covers all 20 views."""
         nav_path = pathlib.Path("workspace/metadata/navigation/main.json")
         if not nav_path.exists():
             pytest.skip("Not in project root")
@@ -77,4 +77,4 @@ class TestNavigationMetadata:
         for group in data["groups"]:
             for item in group["items"]:
                 all_paths.append(item["path"])
-        assert len(all_paths) >= 16, f"Expected 16 views, got {len(all_paths)}"
+        assert len(all_paths) >= 20, f"Expected 20 views, got {len(all_paths)}"

@@ -152,9 +152,9 @@ class TestNavigationMetadata:
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
         sidebar = loaded_page.locator("[data-tour='sidebar'], [data-trace='app.sidebar']")
         expect(sidebar).to_be_visible(timeout=10000)
-        # Check that nav links exist (should be at least 16)
+        # Check that nav links exist (should be at least 20)
         links = sidebar.locator("a")
-        assert links.count() >= 16
+        assert links.count() >= 20
 
 
 # ============================================================================

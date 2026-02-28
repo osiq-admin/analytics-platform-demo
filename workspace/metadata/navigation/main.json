@@ -2,71 +2,53 @@
     "navigation_id": "main",
     "groups": [
         {
-            "title": "Overview",
+            "title": "Define",
             "order": 1,
             "items": [
-                {"view_id": "dashboard", "label": "Dashboard", "path": "/dashboard", "icon": "LayoutDashboard", "order": 0}
-            ]
-        },
-        {
-            "title": "Define",
-            "order": 2,
-            "items": [
                 {"view_id": "entities", "label": "Entities", "path": "/entities", "icon": "Database", "order": 0},
-                {"view_id": "metadata", "label": "Calculations", "path": "/metadata", "icon": "Calculator", "order": 1}
-            ]
-        },
-        {
-            "title": "Configure",
-            "order": 3,
-            "items": [
-                {"view_id": "settings", "label": "Settings", "path": "/settings", "icon": "Settings", "order": 0},
-                {"view_id": "mappings", "label": "Mappings", "path": "/mappings", "icon": "GitBranch", "order": 1},
-                {"view_id": "editor", "label": "Editor", "path": "/editor", "icon": "Code", "order": 2}
-            ]
-        },
-        {
-            "title": "Operate",
-            "order": 4,
-            "items": [
-                {"view_id": "pipeline", "label": "Pipeline", "path": "/pipeline", "icon": "Workflow", "order": 0},
-                {"view_id": "schema", "label": "Schema", "path": "/schema", "icon": "Table", "order": 1},
-                {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 2},
-                {"view_id": "medallion", "label": "Medallion", "path": "/medallion", "icon": "Layers", "order": 3},
-                {"view_id": "onboarding", "label": "Onboarding", "path": "/onboarding", "icon": "Upload", "order": 4}
-            ]
-        },
-        {
-            "title": "Compose",
-            "order": 5,
-            "items": [
-                {"view_id": "models", "label": "Models", "path": "/models", "icon": "Brain", "order": 0},
-                {"view_id": "use-cases", "label": "Use Cases", "path": "/use-cases", "icon": "Briefcase", "order": 1},
-                {"view_id": "data", "label": "Data", "path": "/data", "icon": "HardDrive", "order": 2}
-            ]
-        },
-        {
-            "title": "Investigate",
-            "order": 6,
-            "items": [
-                {"view_id": "alerts", "label": "Risk Cases", "path": "/alerts", "icon": "AlertTriangle", "order": 0}
-            ]
-        },
-        {
-            "title": "Governance",
-            "order": 7,
-            "items": [
-                {"view_id": "regulatory", "label": "Regulatory Map", "path": "/regulatory", "icon": "Shield", "order": 0},
-                {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 1},
-                {"view_id": "quality", "label": "Data Quality", "path": "/quality", "icon": "ShieldCheck", "order": 2},
+                {"view_id": "metadata", "label": "Calculations", "path": "/metadata", "icon": "Calculator", "order": 1},
+                {"view_id": "settings", "label": "Settings", "path": "/settings", "icon": "Settings", "order": 2},
                 {"view_id": "reference", "label": "Reference Data", "path": "/reference", "icon": "BookOpen", "order": 3}
             ]
         },
         {
-            "title": "AI",
-            "order": 8,
+            "title": "Ingest",
+            "order": 2,
             "items": [
-                {"view_id": "assistant", "label": "Assistant", "path": "/assistant", "icon": "Bot", "order": 0}
+                {"view_id": "onboarding", "label": "Onboarding", "path": "/onboarding", "icon": "Upload", "order": 0},
+                {"view_id": "mappings", "label": "Mappings", "path": "/mappings", "icon": "GitBranch", "order": 1},
+                {"view_id": "quality", "label": "Data Quality", "path": "/quality", "icon": "ShieldCheck", "order": 2},
+                {"view_id": "medallion", "label": "Medallion", "path": "/medallion", "icon": "Layers", "order": 3}
+            ]
+        },
+        {
+            "title": "Detect",
+            "order": 3,
+            "items": [
+                {"view_id": "models", "label": "Models", "path": "/models", "icon": "Brain", "order": 0},
+                {"view_id": "use-cases", "label": "Use Cases", "path": "/use-cases", "icon": "Briefcase", "order": 1},
+                {"view_id": "pipeline", "label": "Pipeline", "path": "/pipeline", "icon": "Workflow", "order": 2},
+                {"view_id": "dashboard", "label": "Dashboard", "path": "/dashboard", "icon": "LayoutDashboard", "order": 3}
+            ]
+        },
+        {
+            "title": "Investigate",
+            "order": 4,
+            "items": [
+                {"view_id": "alerts", "label": "Risk Cases", "path": "/alerts", "icon": "AlertTriangle", "order": 0},
+                {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 1},
+                {"view_id": "regulatory", "label": "Regulatory Map", "path": "/regulatory", "icon": "Shield", "order": 2}
+            ]
+        },
+        {
+            "title": "Advanced",
+            "order": 5,
+            "items": [
+                {"view_id": "schema", "label": "Schema", "path": "/schema", "icon": "Table", "order": 0},
+                {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 1},
+                {"view_id": "data", "label": "Data", "path": "/data", "icon": "HardDrive", "order": 2},
+                {"view_id": "editor", "label": "Editor", "path": "/editor", "icon": "Code", "order": 3},
+                {"view_id": "assistant", "label": "Assistant", "path": "/assistant", "icon": "Bot", "order": 4}
             ]
         }
     ]
