@@ -1,6 +1,5 @@
 """Tests for the calculation DAG executor."""
 import json
-from pathlib import Path
 
 import pytest
 

@@ -1,8 +1,6 @@
 """Tests for test discovery (convention, AST import, affected)."""
-from pathlib import Path
 from unittest.mock import patch
 
-import pytest
 
 from qa.discovery.convention import convention_map
 from qa.discovery.imports import find_tests_by_import, path_to_module

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
 
 from qa.config import get_project_root
 from qa.discovery.convention import convention_map

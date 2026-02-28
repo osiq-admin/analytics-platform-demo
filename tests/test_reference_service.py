@@ -1,6 +1,5 @@
 """Tests for ReferenceService reconciliation engine."""
 import json
-from pathlib import Path
 
 import pytest
 
@@ -215,7 +214,7 @@ class TestOverrideAndCrossRef:
     def test_cross_references_product(self, service, db):
         service.generate_golden_records("product")
         meta = service._metadata
-        record_set = meta.load_golden_records("product")
+        meta.load_golden_records("product")
         # Find AAPL record — natural_key is the ISIN, but cross-refs use product_id
         # The cross-reference queries execution.product_id = natural_key (ISIN)
         # Since our test CSV uses product_id="AAPL" and natural_key is the ISIN,

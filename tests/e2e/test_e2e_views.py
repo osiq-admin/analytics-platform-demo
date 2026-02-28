@@ -1103,7 +1103,7 @@ class TestUxUsability:
         wide_page.wait_for_timeout(500)
 
         # AG Grid tooltips use ag-tooltip or [role="tooltip"]
-        tooltip = wide_page.locator(".ag-tooltip, [role='tooltip']")
+        _tooltip = wide_page.locator(".ag-tooltip, [role='tooltip']")
         # Tooltip may or may not appear depending on whether content is truncated
         # Just verify no error occurs during hover — the tooltip infrastructure is in place
         assert first_cell.is_visible(), "Cell should remain visible after hover"

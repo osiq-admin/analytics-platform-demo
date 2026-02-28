@@ -1,7 +1,6 @@
 """Quality runner: orchestrate linting, security, and complexity tools."""
 from __future__ import annotations
 
-import json
 import subprocess
 import time
 from datetime import datetime

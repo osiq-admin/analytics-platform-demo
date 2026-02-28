@@ -1,5 +1,4 @@
 """Tests for domain comparators."""
-import pytest
 
 from qa.comparators.tabular import compare_tabular
 from qa.comparators.calculation import compare_calculations

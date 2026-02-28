@@ -1,12 +1,9 @@
 """Tests for summary reporter and quality gate."""
 import json
-from pathlib import Path
 
-import pytest
 
 from qa.reporters.summary import (
     load_latest_summary,
-    load_latest_regression,
     format_summary_text,
 )
 

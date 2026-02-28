@@ -1,5 +1,4 @@
 """Tests for QA toolkit configuration."""
-from pathlib import Path
 
 import pytest
 

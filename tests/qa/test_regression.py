@@ -1,8 +1,6 @@
 """Tests for regression detection."""
 import json
-from pathlib import Path
 
-import pytest
 
 from qa.reporters.regression import analyze_regression, extract_test_names
 

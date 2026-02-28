@@ -2,11 +2,9 @@
 from __future__ import annotations
 
 import logging
-import re
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
-import pyarrow as pa
 import pyarrow.parquet as pq
 
 from backend.db import DuckDBManager
@@ -135,7 +133,6 @@ class CalculationEngine:
 
         # Execute SQL and fetch results
         result = cursor.execute(sql)
-        columns = [desc[0] for desc in result.description]
         rows = result.fetchall()
         cursor.close()
 

@@ -1,6 +1,5 @@
 """Tests for Alert Generation & Trace — persistence, Parquet summary, DuckDB registration."""
 import json
-from pathlib import Path
 
 import pyarrow.parquet as pq
 import pytest
@@ -8,7 +7,6 @@ import pytest
 from backend.db import DuckDBManager
 from backend.engine.detection_engine import DetectionEngine
 from backend.engine.settings_resolver import SettingsResolver
-from backend.models.alerts import AlertTrace
 from backend.services.alert_service import AlertService
 from backend.services.metadata_service import MetadataService
 

@@ -1,9 +1,5 @@
 """Tests for quality runner."""
-import json
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 
-import pytest
 
 from qa.runners.quality_runner import (
     run_tool,

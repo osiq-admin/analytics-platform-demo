@@ -2,7 +2,6 @@
 import logging
 from pathlib import Path
 
-import pyarrow as pa
 import pyarrow.csv as pcsv
 import pyarrow.parquet as pq
 

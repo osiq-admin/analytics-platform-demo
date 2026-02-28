@@ -1,7 +1,6 @@
 """Tabular comparator: key-based join with per-field tolerance."""
 from __future__ import annotations
 
-import math
 
 
 def compare_tabular(

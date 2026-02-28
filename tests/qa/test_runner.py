@@ -1,8 +1,6 @@
 """Tests for the test runner."""
 import json
-from pathlib import Path
 
-import pytest
 
 from qa.runners.test_runner import (
     create_run_dir,
@@ -25,7 +23,7 @@ class TestRunDir:
         assert latest.resolve() == run_dir.resolve()
 
     def test_multiple_runs_update_latest(self, tmp_path):
-        run_dir_1 = create_run_dir(tmp_path)
+        create_run_dir(tmp_path)
         run_dir_2 = create_run_dir(tmp_path)
         latest = tmp_path / "LATEST"
         assert latest.resolve() == run_dir_2.resolve()

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from starlette.responses import FileResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.types import Receive, Scope, Send
 
 from backend.db import lifespan
 from backend.api import metadata, query, pipeline, alerts, demo, data, ws, ai, dashboard, trace, data_info, domain_values, match_patterns, score_templates, detection_dry_run, validation, use_cases, submissions, versions, medallion, onboarding, mappings, quality, reference
@@ -55,8 +55,6 @@ class SPAStaticFiles:
         if scope["type"] != "http":
             await self._static(scope, receive, send)
             return
-
-        path = scope.get("path", "/")
 
         # Try serving the static file first
         try:

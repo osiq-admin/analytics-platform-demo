@@ -1,5 +1,4 @@
 """Alert generation service — persists alert traces as JSON and summary as Parquet."""
-import json
 import logging
 from pathlib import Path
 

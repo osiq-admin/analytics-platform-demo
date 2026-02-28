@@ -1,5 +1,4 @@
 """Tests for dashboard widget configuration metadata."""
-import json
 import shutil
 from pathlib import Path
 

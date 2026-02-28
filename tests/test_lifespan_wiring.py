@@ -1,5 +1,4 @@
 """Verify that SettingsResolver, DetectionEngine, and AlertService are wired to app.state."""
-from fastapi.testclient import TestClient
 from backend.main import app
 from backend.db import DuckDBManager
 from backend.services.metadata_service import MetadataService

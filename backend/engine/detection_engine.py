@@ -4,10 +4,10 @@ import uuid
 from pathlib import Path
 
 from backend.db import DuckDBManager
-from backend.engine.settings_resolver import ResolutionResult, SettingsResolver
+from backend.engine.settings_resolver import SettingsResolver
 from backend.models.alerts import AlertTrace, CalculationScore, CalculationTraceEntry, SettingsTraceEntry
 from backend.models.detection import DetectionModelDefinition, ModelCalculation, Strictness
-from backend.models.settings import ScoreStep, SettingDefinition
+from backend.models.settings import ScoreStep
 from backend.services.metadata_service import MetadataService
 
 log = logging.getLogger(__name__)

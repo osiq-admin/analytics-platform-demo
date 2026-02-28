@@ -39,7 +39,7 @@ def main():
               f"{result.duration_ms}ms)")
 
     print(f"\nTotal: {total} golden records across {len(configs)} entities")
-    print(f"Output: workspace/reference/")
+    print("Output: workspace/reference/")
 
     db.close()
 

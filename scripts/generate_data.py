@@ -16,9 +16,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import math
 import random
-from datetime import date, datetime, time, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -1736,7 +1735,7 @@ class SyntheticDataGenerator:
 
 def _get_trading_days(start: date, end: date) -> list[date]:
     """Return weekdays (Mon-Fri) in the date range, excluding US market holidays."""
-    holidays = {
+    _holidays = {
         date(2024, 1, 1),   # New Year's Day
         date(2024, 1, 15),  # MLK Day — note: we keep this as trading day for wash pattern
         date(2024, 2, 19),  # Presidents' Day

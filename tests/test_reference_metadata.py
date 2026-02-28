@@ -1,6 +1,5 @@
 """Tests for MetadataService reference data methods."""
 import json
-from pathlib import Path
 import pytest
 from backend.services.metadata_service import MetadataService
 

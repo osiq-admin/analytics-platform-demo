@@ -1,6 +1,6 @@
 import pytest
 from backend.models.calculations import CalculationDefinition, CalculationLayer
-from backend.models.settings import SettingDefinition, ScoreStep
+from backend.models.settings import SettingDefinition
 from backend.models.entities import EntityDefinition, FieldDefinition
 from backend.models.detection import DetectionModelDefinition, ModelCalculation, Strictness
 from backend.models.alerts import AlertTrace, CalculationScore

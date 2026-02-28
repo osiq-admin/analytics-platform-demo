@@ -1,5 +1,4 @@
 """Tests for watch runner components."""
-import pytest
 
 from qa.runners.watch_runner import resolve_test_files_from_changes
 

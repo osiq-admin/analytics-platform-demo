@@ -1,6 +1,5 @@
 """Tests for Trace API — explainability drill-down endpoints."""
 import json
-from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient

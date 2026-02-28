@@ -1,7 +1,9 @@
 """JSON metadata CRUD service for all metadata types."""
+from __future__ import annotations
+
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from backend.models.calculations import CalculationDefinition
 from backend.models.detection import DetectionModelDefinition
@@ -14,11 +16,17 @@ from backend.models.view_config import ThemePalette, ViewConfig
 from backend.models.widgets import ViewWidgetConfig
 from backend.models.workflow import DemoConfig, TourRegistry, WorkflowConfig
 
+if TYPE_CHECKING:
+    from backend.models.medallion import DataContract, MedallionConfig, PipelineConfig, TransformationStep
+    from backend.models.onboarding import ConnectorConfig
+    from backend.models.quality import QualityDimensionsConfig
+    from backend.services.audit_service import AuditService
+
 
 class MetadataService:
     def __init__(self, workspace_dir: Path):
         self._base = workspace_dir / "metadata"
-        self._audit: "AuditService | None" = None
+        self._audit: AuditService | None = None
 
     def set_audit(self, audit) -> None:
         self._audit = audit
@@ -1050,21 +1058,21 @@ class MetadataService:
 
     # --- Medallion Architecture ---
 
-    def load_medallion_tiers(self) -> "MedallionConfig":
+    def load_medallion_tiers(self) -> MedallionConfig:
         from backend.models.medallion import MedallionConfig
         path = self._base / "medallion" / "tiers.json"
         if not path.exists():
             return MedallionConfig()
         return MedallionConfig.model_validate_json(path.read_text())
 
-    def load_data_contract(self, contract_id: str) -> "DataContract | None":
+    def load_data_contract(self, contract_id: str) -> DataContract | None:
         from backend.models.medallion import DataContract
         path = self._base / "medallion" / "contracts" / f"{contract_id}.json"
         if not path.exists():
             return None
         return DataContract.model_validate_json(path.read_text())
 
-    def list_data_contracts(self) -> "list[DataContract]":
+    def list_data_contracts(self) -> list[DataContract]:
         from backend.models.medallion import DataContract
         folder = self._base / "medallion" / "contracts"
         items: list[DataContract] = []
@@ -1073,21 +1081,21 @@ class MetadataService:
                 items.append(DataContract.model_validate_json(f.read_text()))
         return items
 
-    def load_quality_dimensions(self) -> "QualityDimensionsConfig":
+    def load_quality_dimensions(self) -> QualityDimensionsConfig:
         from backend.models.quality import QualityDimensionsConfig
         path = self._base / "quality" / "dimensions.json"
         if not path.exists():
             return QualityDimensionsConfig()
         return QualityDimensionsConfig.model_validate_json(path.read_text())
 
-    def load_transformation(self, transformation_id: str) -> "TransformationStep | None":
+    def load_transformation(self, transformation_id: str) -> TransformationStep | None:
         from backend.models.medallion import TransformationStep
         path = self._base / "medallion" / "transformations" / f"{transformation_id}.json"
         if not path.exists():
             return None
         return TransformationStep.model_validate_json(path.read_text())
 
-    def list_transformations(self) -> "list[TransformationStep]":
+    def list_transformations(self) -> list[TransformationStep]:
         from backend.models.medallion import TransformationStep
         folder = self._base / "medallion" / "transformations"
         items: list[TransformationStep] = []
@@ -1096,7 +1104,7 @@ class MetadataService:
                 items.append(TransformationStep.model_validate_json(f.read_text()))
         return items
 
-    def load_pipeline_stages(self) -> "PipelineConfig":
+    def load_pipeline_stages(self) -> PipelineConfig:
         from backend.models.medallion import PipelineConfig
         path = self._base / "medallion" / "pipeline_stages.json"
         if not path.exists():
@@ -1105,14 +1113,14 @@ class MetadataService:
 
     # --- Connectors ---
 
-    def list_connectors(self) -> "list[ConnectorConfig]":
+    def list_connectors(self) -> list[ConnectorConfig]:
         from backend.models.onboarding import ConnectorConfig
         d = self._base / "connectors"
         if not d.exists():
             return []
         return [ConnectorConfig.model_validate_json(f.read_text()) for f in sorted(d.glob("*.json"))]
 
-    def load_connector(self, connector_id: str) -> "ConnectorConfig | None":
+    def load_connector(self, connector_id: str) -> ConnectorConfig | None:
         from backend.models.onboarding import ConnectorConfig
         p = self._base / "connectors" / f"{connector_id}.json"
         if not p.exists():

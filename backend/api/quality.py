@@ -2,7 +2,6 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from backend.models.quality import QuarantineRecord
 
 router = APIRouter(prefix="/api/quality", tags=["quality"])
 

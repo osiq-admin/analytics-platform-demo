@@ -1,8 +1,5 @@
 """Tests for git hook management."""
-from pathlib import Path
-from unittest.mock import patch
 
-import pytest
 
 from qa.hooks import get_hook_source, get_hook_target
 

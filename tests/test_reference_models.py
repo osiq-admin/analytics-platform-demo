@@ -2,13 +2,11 @@
 from backend.models.reference import (
     FieldProvenance,
     GoldenRecord,
-    GoldenRecordSet,
     MatchRule,
     MergeRule,
     ExternalSource,
     ReferenceConfig,
     ReconciliationResult,
-    CrossReference,
 )
 
 
