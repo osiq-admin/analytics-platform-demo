@@ -1073,6 +1073,13 @@ class MetadataService:
                 items.append(DataContract.model_validate_json(f.read_text()))
         return items
 
+    def load_quality_dimensions(self) -> "QualityDimensionsConfig":
+        from backend.models.quality import QualityDimensionsConfig
+        path = self._base / "quality" / "dimensions.json"
+        if not path.exists():
+            return QualityDimensionsConfig()
+        return QualityDimensionsConfig.model_validate_json(path.read_text())
+
     def load_transformation(self, transformation_id: str) -> "TransformationStep | None":
         from backend.models.medallion import TransformationStep
         path = self._base / "medallion" / "transformations" / f"{transformation_id}.json"
