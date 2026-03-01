@@ -148,6 +148,10 @@ class CalcResultService:
     def get_result_log(self) -> list[CalcResultLog]:
         return list(self._result_log)
 
+    def get_lineage_chain(self, run_id: str) -> list[CalcResultLog]:
+        """Return all calc executions for a given run, ordered by execution time."""
+        return [e for e in self._result_log if e.run_id == run_id]
+
     def _load_log(self) -> None:
         if self._log_path.exists():
             with open(self._log_path) as f:

@@ -347,6 +347,7 @@
 | M250 | Run Versioning Service | COMPLETE | 2 | 2 | RunVersioningService: daily/backfill/rerun/correction runs, Iceberg branch lifecycle, tagging, rollback, persistence, 12 tests |
 | M251 | Materialized View Manager | COMPLETE | 2 | 2 | MaterializedViewService: metadata-driven MV config, refresh (single/all/by-strategy), DuckDB OLAP layer, 4 MV definitions, 11 tests |
 | M252 | Reference Iceberg + Metadata Replicator | COMPLETE | 3 | 3 | MetadataReplicator: syncs entity defs, calculations, detection models, settings to Iceberg. ReferenceService Iceberg dual-write for golden records. 20 tests |
+| M253 | Lakehouse API Endpoints | COMPLETE | 2 | 2 | 14 REST endpoints: config, tables (list/info/snapshots/schema-history), governance (PII/classification), calc audit (log/stats/lineage), pipeline runs, materialized views (status/refresh). 20 tests |
 
 ---
 
