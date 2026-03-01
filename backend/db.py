@@ -86,6 +86,13 @@ async def lifespan(app: FastAPI):
     app.state.masking_service = MaskingService(settings.workspace_dir)
     app.state.rbac_service = RBACService(settings.workspace_dir)
 
+    # Glossary + semantic layer
+    from backend.services.glossary_service import GlossaryService
+    from backend.services.semantic_service import SemanticLayerService
+
+    app.state.glossary_service = GlossaryService(settings.workspace_dir)
+    app.state.semantic_service = SemanticLayerService(settings.workspace_dir)
+
     # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
     _init_lakehouse_services(app)
 
