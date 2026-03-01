@@ -12,20 +12,20 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-21 + 7B + Overhauls, M0-M256):**
+**What's built (Phases 1-22 + 7B + Overhauls, M0-M268):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 21 frontend views, 1186 tests (962 backend + 224 E2E), Playwright verified
+- 22 frontend views, 1287 tests (1057 backend + 230 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 81% metadata-driven (100 sections across 21 views)
+- 82% metadata-driven (104 sections across 22 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
 - Reference Data/MDM tier with 301 golden records, reconciliation engine, field-level provenance
 - Apache Iceberg lakehouse with schema evolution, PII governance, run versioning, calculate-once engine
-- 33 guided scenarios, 123 operation scripts, 8 demo checkpoints
+- 34 guided scenarios, 128 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~81%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -43,7 +43,7 @@
 - ~~No canonical-to-calculation attribute mapping (entity fields → calc inputs)~~ — RESOLVED (Phase 17: Silver→Gold Pipeline)
 - ~~No data quality gates or quarantine tier~~ — RESOLVED (Phase 18: Data Quality)
 - ~~No data classification, PII detection, or sensitivity marking~~ — RESOLVED (Phase 21: Iceberg Lakehouse, PII governance)
-- No masking or encryption of sensitive fields
+- ~~No masking or encryption of sensitive fields~~ — RESOLVED (Phase 22: Masking/RBAC, dynamic role-based masking)
 - No business glossary or semantic layer
 - No data lineage tracking (OpenLineage)
 - ~~No connector abstraction (hardcoded CSV file reader)~~ — RESOLVED (Phase 15: Data Onboarding)
@@ -1368,9 +1368,9 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 ## Verification Plan
 
 After each phase:
-1. `cd frontend && npm run build` — no TypeScript errors (971+ modules)
-2. `uv run python -m qa test backend` — all backend tests pass (962+)
-3. `uv run python -m qa test e2e` — all E2E tests pass (224+) — stop port 8000 first
+1. `cd frontend && npm run build` — no TypeScript errors (973+ modules)
+2. `uv run python -m qa test backend` — all backend tests pass (1057+)
+3. `uv run python -m qa test e2e` — all E2E tests pass (230+) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
 6. Follow `docs/development-workflow-protocol.md` for milestone completion

@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (33 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (34 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 33 guided scenarios in 13 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 34 guided scenarios in 14 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 24 tours and 33 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 25 tours and 34 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 116 operations defined across 19 views
+- 128 operations defined across 22 views
 
 ### 7.3 Scenario Categories
 
