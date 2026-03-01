@@ -1,0 +1,27 @@
+{
+  "iceberg_tiers": ["bronze", "silver", "gold", "platinum", "reference", "logging", "archive"],
+  "non_iceberg_tiers": ["landing", "quarantine", "sandbox", "metrics"],
+  "default_namespace": "default",
+  "shared_namespace": "shared",
+  "platform_namespace": "platform",
+  "default_properties": {
+    "write.format.default": "parquet",
+    "write.parquet.compression-codec": "zstd"
+  },
+  "dual_write_enabled": true,
+  "namespace_template": {
+    "single_tenant": "{namespace}.{tier}",
+    "multi_tenant": "tenant_{tenant_id}.{tier}",
+    "shared": "shared.{tier}",
+    "platform": "platform.{tier}"
+  },
+  "tier_namespace_mapping": {
+    "bronze": "default",
+    "silver": "default",
+    "gold": "default",
+    "platinum": "default",
+    "reference": "shared",
+    "logging": "platform",
+    "archive": "default"
+  }
+}

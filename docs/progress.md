@@ -333,6 +333,13 @@
 | M226 | Full Test Suite + Playwright Verification | COMPLETE | 2 | 2 | 705 backend + 224 E2E, 971 modules, light+dark mode verified |
 | M227 | E2E Tests + Documentation + PR | COMPLETE | 2 | 2 | 7 E2E tests, all docs updated, count sync, PR |
 
+### Phase 21: Apache Iceberg Lakehouse Architecture (M243-M256)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M243 | Lakehouse Config + Pydantic Models | COMPLETE | 2 | 2 | LakehouseConfig, IcebergTierConfig, 8 models, lakehouse.yaml (5 profiles), iceberg_config.json, 21 model tests |
+| M244 | LakehouseService + SQLite Catalog | COMPLETE | 3 | 3 | PyIceberg SQLite catalog, table CRUD, append/overwrite, schema evolution, snapshots, branches, tags, properties, DuckDB integration, 26 service tests |
+
 ---
 
 ## Key Decisions Made

@@ -1,4 +1,5 @@
 """DuckDB connection management with thread-safe cursor creation."""
+import logging
 from contextlib import asynccontextmanager
 from threading import Lock
 
@@ -6,6 +7,8 @@ import duckdb
 from fastapi import FastAPI
 
 from backend.config import settings
+
+log = logging.getLogger(__name__)
 
 
 class DuckDBManager:
@@ -17,6 +20,16 @@ class DuckDBManager:
         self._conn = duckdb.connect(db_path, read_only=False)
         self._conn.execute("SET threads TO 4")
         self._conn.execute("SET memory_limit = '2GB'")
+        self._install_iceberg_extension()
+
+    def _install_iceberg_extension(self) -> None:
+        if self._conn is None:
+            return
+        try:
+            self._conn.execute("INSTALL iceberg")
+            self._conn.execute("LOAD iceberg")
+        except Exception:
+            log.warning("DuckDB Iceberg extension not available — Iceberg scan disabled")
 
     def cursor(self) -> duckdb.DuckDBPyConnection:
         if self._conn is None:
