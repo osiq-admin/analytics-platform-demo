@@ -342,6 +342,8 @@
 | M245 | Silver Iceberg Dual-Write | COMPLETE | 2 | 2 | DataLoader dual-write (Parquet + Iceberg), backward-compatible when no lakehouse, overwrite on reload, 5 tests |
 | M246 | Schema Evolution Service | COMPLETE | 2 | 2 | Entity→PyArrow schema derivation, drift detection, evolution application, history persistence, sync all, 12 tests |
 | M247 | PII/IPP Governance Service | COMPLETE | 2 | 2 | PII registry (4 entities, 5 fields), GovernanceService, Iceberg table tagging, GDPR classification, crypto-shred tracking, 13 tests |
+| M248 | Calculation Optimization Models | COMPLETE | 1 | 1 | CalcFingerprint, CalcResultLog Pydantic models |
+| M249 | CalcResultService + Gold Iceberg | COMPLETE | 3 | 3 | SHA-256 fingerprinting, skip detection (immutable+param-dependent), audit logging, Gold Iceberg writes, 20 tests |
 
 ---
 
