@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-01 (M268 Phase 22 Masking & RBAC; 1152 total tests: 1057 backend + 230 E2E, 22 views, 34 scenarios, 104 architecture sections, 973 modules)
+**Last Updated**: 2026-03-01 (M280 Phase 23 Business Glossary; 1343 total tests: 1105 backend + 238 E2E, 23 views, 35 scenarios, 112 architecture sections, 975 modules)
 
 ---
 
@@ -58,6 +58,7 @@
 | QA Automation Toolkit | COMPLETE | `qa/` package: test runner, quality scanner (ruff/bandit/radon/vulture/coverage), regression detection, flaky test detection, quality gate, file watcher, git pre-push hooks. All 6 quality tools PASS. All guidelines updated |
 | Apache Iceberg Lakehouse Architecture (Phase 21) | COMPLETE | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab — 1186 total tests (962+224), 21 views |
 | Masking, Encryption & Access Control (Phase 22) | COMPLETE | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1152 total tests (1057+230), 22 views, 34 scenarios, 104 architecture sections |
+| Business Glossary & Semantic Layer (Phase 23) | COMPLETE | M269-M280: ISO 11179 glossary, semantic metrics, DAMA-DMBOK, standards compliance, entity gaps — 1105 backend + 238 E2E |
 
 ---
 
@@ -367,6 +368,23 @@
 | M266 | Architecture Registry + BDD | COMPLETE | 2 | 2 | 4 architecture sections (104 total), 5 BDD scenarios (Category 14: Masking & RBAC), traceability update |
 | M267 | E2E Playwright Tests | COMPLETE | 1 | 1 | 6 E2E tests: view render, masking policies API, role switching, role comparison, audit log, roles list |
 | M268 | Demo Guide + Progress | COMPLETE | 1 | 1 | Demo guide section with 3 walkthroughs + guided scenario reference. Progress tracker entries |
+
+### Phase 23: Business Glossary & Semantic Layer (M269-M280)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M269 | Glossary Metadata + Pydantic Models | COMPLETE | 2 | 2 | workspace/metadata/glossary/terms.json (18 ISO 11179 terms), GlossaryTerm/SemanticMetric Pydantic models |
+| M270 | Semantic Layer Metadata + Models | COMPLETE | 2 | 2 | workspace/metadata/semantic/metrics.json (12 metrics), workspace/metadata/semantic/dimensions.json (8 dimensions) |
+| M271 | GlossaryService with TDD | COMPLETE | 2 | 2 | GlossaryService: term search, field-to-term lookup, category filtering, ownership matrix |
+| M272 | SemanticLayerService with TDD | COMPLETE | 2 | 2 | SemanticLayerService: metric composition, dimension drill-down, formula validation |
+| M273 | Glossary API Router + Wiring | COMPLETE | 2 | 2 | backend/api/glossary.py + backend/api/semantic.py, 10 endpoints, app wiring |
+| M274 | DAMA-DMBOK, Standards Registry, Entity Gaps | COMPLETE | 2 | 2 | workspace/metadata/dmbok/knowledge_areas.json, standards compliance registry, entity gap analysis |
+| M275 | BusinessGlossary View | COMPLETE | 2 | 2 | frontend/src/views/BusinessGlossary/index.tsx: term browser, semantic metrics, DMBOK coverage, standards compliance |
+| M276 | GlossaryTooltip Component | COMPLETE | 1 | 1 | Cross-view glossary tooltip on entity fields with business definitions |
+| M277 | Tours, S35 Scenario, Operations | COMPLETE | 2 | 2 | BusinessGlossary tour, S35 scenario (8 steps), 8 operations + 4 tips, tour registry updated |
+| M278 | Architecture Registry + BDD Scenarios | COMPLETE | 2 | 2 | 8 architecture sections (112 total), BDD scenarios (Category 15: Business Glossary), traceability update |
+| M279 | E2E Playwright Tests | COMPLETE | 1 | 1 | 8 E2E tests: view render, glossary API, semantic API, term search, DMBOK coverage, standards compliance |
+| M280 | Phase D Completion | COMPLETE | 1 | 1 | Full documentation sweep, count sync, demo guide, progress tracker entries |
 
 ---
 
