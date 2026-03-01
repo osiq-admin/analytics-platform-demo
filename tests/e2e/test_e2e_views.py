@@ -1338,3 +1338,65 @@ class TestDataGovernance:
         assert result["status"] == 200
         assert result["count"] >= 4
         assert result["currentRole"] == "analyst"
+
+
+class TestBusinessGlossary:
+    """Business Glossary view E2E tests (Phase 23)."""
+
+    def test_view_loads(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("text=Business Glossary").first.is_visible(timeout=5000) or \
+               loaded_page.locator("text=Business Terms").first.is_visible(timeout=5000)
+
+    def test_sidebar_entry_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        nav_link = loaded_page.locator("a[href='/glossary'], [data-path='/glossary']").first
+        assert nav_link.is_visible(timeout=5000)
+
+    def test_category_list_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-categories'], text=Market Abuse").first.is_visible(timeout=5000)
+
+    def test_term_list_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-term-list'], text=Wash Trade").first.is_visible(timeout=5000)
+
+    def test_search_box_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-search'], input[placeholder*='earch']").first.is_visible(timeout=5000)
+
+    def test_tab_navigation_to_metrics(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        metrics_tab = loaded_page.locator("text=Semantic Metrics").first
+        if metrics_tab.is_visible(timeout=3000):
+            metrics_tab.click()
+            loaded_page.wait_for_timeout(500)
+            assert loaded_page.locator("text=daily_alert_rate, text=Metric").first.is_visible(timeout=3000) or \
+                   loaded_page.locator("[data-tour='glossary-metrics-list']").first.is_visible(timeout=3000)
+
+    def test_tab_navigation_to_dmbok(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        dmbok_tab = loaded_page.locator("text=DAMA-DMBOK").first
+        if dmbok_tab.is_visible(timeout=3000):
+            dmbok_tab.click()
+            loaded_page.wait_for_timeout(500)
+            assert loaded_page.locator("text=Data Governance, text=Data Architecture").first.is_visible(timeout=3000) or \
+                   loaded_page.locator("[data-tour='glossary-dmbok-grid']").first.is_visible(timeout=3000)
+
+    def test_glossary_api_returns_terms(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/glossary/terms');
+                const data = await resp.json();
+                return { status: resp.status, count: data.count || 0 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 30
