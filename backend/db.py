@@ -1,4 +1,5 @@
 """DuckDB connection management with thread-safe cursor creation."""
+import logging
 from contextlib import asynccontextmanager
 from threading import Lock
 
@@ -6,6 +7,8 @@ import duckdb
 from fastapi import FastAPI
 
 from backend.config import settings
+
+log = logging.getLogger(__name__)
 
 
 class DuckDBManager:
@@ -17,6 +20,16 @@ class DuckDBManager:
         self._conn = duckdb.connect(db_path, read_only=False)
         self._conn.execute("SET threads TO 4")
         self._conn.execute("SET memory_limit = '2GB'")
+        self._install_iceberg_extension()
+
+    def _install_iceberg_extension(self) -> None:
+        if self._conn is None:
+            return
+        try:
+            self._conn.execute("INSTALL iceberg")
+            self._conn.execute("LOAD iceberg")
+        except Exception:
+            log.warning("DuckDB Iceberg extension not available — Iceberg scan disabled")
 
     def cursor(self) -> duckdb.DuckDBPyConnection:
         if self._conn is None:
@@ -66,5 +79,37 @@ async def lifespan(app: FastAPI):
     )
     app.state.versions = VersionService(settings.workspace_dir, app.state.metadata)
 
+    # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
+    _init_lakehouse_services(app)
+
     yield
     db_manager.close()
+
+
+def _init_lakehouse_services(app: FastAPI) -> None:
+    """Initialize lakehouse services. Non-fatal — app works without Iceberg."""
+    from backend.services.lakehouse_service import load_lakehouse_config
+    from backend.services.governance_service import GovernanceService
+    from backend.services.calc_result_service import CalcResultService
+    from backend.services.run_versioning_service import RunVersioningService
+    from backend.services.materialized_view_service import MaterializedViewService
+    from backend.services.schema_evolution_service import SchemaEvolutionService
+    from backend.services.metadata_replicator import MetadataReplicator
+
+    ws = settings.workspace_dir
+    try:
+        lakehouse_config, tier_config = load_lakehouse_config(ws, settings.lakehouse_env)
+        from backend.services.lakehouse_service import LakehouseService
+        lakehouse = LakehouseService(ws, lakehouse_config, tier_config)
+        app.state.lakehouse = lakehouse
+        log.info("Lakehouse services initialized (env=%s)", settings.lakehouse_env)
+    except Exception:
+        log.info("Lakehouse services not available — running in Parquet-only mode")
+        lakehouse = None
+
+    app.state.governance = GovernanceService(ws, lakehouse=lakehouse)
+    app.state.calc_results = CalcResultService(ws, lakehouse=lakehouse)
+    app.state.run_versioning = RunVersioningService(ws, lakehouse=lakehouse)
+    app.state.mvs = MaterializedViewService(ws, db=db_manager, lakehouse=lakehouse)
+    app.state.schema_evolution = SchemaEvolutionService(ws, lakehouse=lakehouse)
+    app.state.metadata_replicator = MetadataReplicator(ws, lakehouse=lakehouse)

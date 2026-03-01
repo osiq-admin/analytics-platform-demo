@@ -1,0 +1,77 @@
+{
+  "registry_version": "1.0",
+  "entities": {
+    "trader": {
+      "pii_fields": [
+        {
+          "field": "trader_name",
+          "classification": "HIGH",
+          "regulation": ["GDPR", "MiFID II"],
+          "crypto_shred": true,
+          "retention_years": 1,
+          "masking_strategy": "hash"
+        },
+        {
+          "field": "trader_id",
+          "classification": "MEDIUM",
+          "regulation": ["MiFID II"],
+          "crypto_shred": false,
+          "retention_years": 7,
+          "masking_strategy": "pseudonymize"
+        }
+      ]
+    },
+    "account": {
+      "pii_fields": [
+        {
+          "field": "account_name",
+          "classification": "HIGH",
+          "regulation": ["GDPR"],
+          "crypto_shred": true,
+          "retention_years": 1,
+          "masking_strategy": "hash"
+        },
+        {
+          "field": "registration_country",
+          "classification": "LOW",
+          "regulation": ["GDPR"],
+          "crypto_shred": false,
+          "retention_years": 7,
+          "masking_strategy": "generalize"
+        }
+      ]
+    },
+    "execution": {
+      "pii_fields": [
+        {
+          "field": "trader_id",
+          "classification": "MEDIUM",
+          "regulation": ["MiFID II"],
+          "crypto_shred": false,
+          "retention_years": 7,
+          "masking_strategy": "pseudonymize"
+        },
+        {
+          "field": "account_id",
+          "classification": "MEDIUM",
+          "regulation": ["MiFID II"],
+          "crypto_shred": false,
+          "retention_years": 7,
+          "masking_strategy": "pseudonymize"
+        }
+      ]
+    },
+    "order": {
+      "pii_fields": [
+        {
+          "field": "trader_id",
+          "classification": "MEDIUM",
+          "regulation": ["MiFID II"],
+          "crypto_shred": false,
+          "retention_years": 7,
+          "masking_strategy": "pseudonymize"
+        }
+      ]
+    }
+  }
+}

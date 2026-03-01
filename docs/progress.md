@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M227 Phase 19 + QA Toolkit Complete; 1018 total tests: 794 backend + 224 E2E, 20 views, 32 scenarios, 94 architecture sections, 971 modules)
+**Last Updated**: 2026-03-01 (M256 Phase 21 Iceberg Lakehouse; 1186 total tests: 962 backend + 224 E2E, 21 views, 33 scenarios, 100 architecture sections, 971 modules)
 
 ---
 
@@ -56,6 +56,7 @@
 | Data Quality, Quarantine & Profiling (Phase 18) | COMPLETE | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios — 862 total tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 | Reference Data & MDM (Phase 19) | COMPLETE | M216-M227: Golden records for 4 entities (product/venue/account/trader), reconciliation engine with exact+fuzzy matching, field-level provenance, 9 API endpoints, ReferenceData view, 4 data contracts, S32 scenario — 1018 total tests (794+224), 20 views, 32 scenarios, 94 architecture sections |
 | QA Automation Toolkit | COMPLETE | `qa/` package: test runner, quality scanner (ruff/bandit/radon/vulture/coverage), regression detection, flaky test detection, quality gate, file watcher, git pre-push hooks. All 6 quality tools PASS. All guidelines updated |
+| Apache Iceberg Lakehouse Architecture (Phase 21) | IN PROGRESS | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab |
 
 ---
 
@@ -331,6 +332,24 @@
 | M225 | Tours, Scenarios, Operations, Architecture | COMPLETE | 3 | 3 | reference-data tour (4 steps), S32 scenario, 6 operations, 4 architecture sections (94 total) |
 | M226 | Full Test Suite + Playwright Verification | COMPLETE | 2 | 2 | 705 backend + 224 E2E, 971 modules, light+dark mode verified |
 | M227 | E2E Tests + Documentation + PR | COMPLETE | 2 | 2 | 7 E2E tests, all docs updated, count sync, PR |
+
+### Phase 21: Apache Iceberg Lakehouse Architecture (M243-M256)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M243 | Lakehouse Config + Pydantic Models | COMPLETE | 2 | 2 | LakehouseConfig, IcebergTierConfig, 8 models, lakehouse.yaml (5 profiles), iceberg_config.json, 21 model tests |
+| M244 | LakehouseService + SQLite Catalog | COMPLETE | 3 | 3 | PyIceberg SQLite catalog, table CRUD, append/overwrite, schema evolution, snapshots, branches, tags, properties, DuckDB integration, 26 service tests |
+| M245 | Silver Iceberg Dual-Write | COMPLETE | 2 | 2 | DataLoader dual-write (Parquet + Iceberg), backward-compatible when no lakehouse, overwrite on reload, 5 tests |
+| M246 | Schema Evolution Service | COMPLETE | 2 | 2 | Entity→PyArrow schema derivation, drift detection, evolution application, history persistence, sync all, 12 tests |
+| M247 | PII/IPP Governance Service | COMPLETE | 2 | 2 | PII registry (4 entities, 5 fields), GovernanceService, Iceberg table tagging, GDPR classification, crypto-shred tracking, 13 tests |
+| M248 | Calculation Optimization Models | COMPLETE | 1 | 1 | CalcFingerprint, CalcResultLog Pydantic models |
+| M249 | CalcResultService + Gold Iceberg | COMPLETE | 3 | 3 | SHA-256 fingerprinting, skip detection (immutable+param-dependent), audit logging, Gold Iceberg writes, 20 tests |
+| M250 | Run Versioning Service | COMPLETE | 2 | 2 | RunVersioningService: daily/backfill/rerun/correction runs, Iceberg branch lifecycle, tagging, rollback, persistence, 12 tests |
+| M251 | Materialized View Manager | COMPLETE | 2 | 2 | MaterializedViewService: metadata-driven MV config, refresh (single/all/by-strategy), DuckDB OLAP layer, 4 MV definitions, 11 tests |
+| M252 | Reference Iceberg + Metadata Replicator | COMPLETE | 3 | 3 | MetadataReplicator: syncs entity defs, calculations, detection models, settings to Iceberg. ReferenceService Iceberg dual-write for golden records. 20 tests |
+| M253 | Lakehouse API Endpoints | COMPLETE | 2 | 2 | 14 REST endpoints: config, tables (list/info/snapshots/schema-history), governance (PII/classification), calc audit (log/stats/lineage), pipeline runs, materialized views (status/refresh). 20 tests |
+| M254 | Pipeline Integration | COMPLETE | 4 | 4 | Lifespan wiring for all lakehouse services (graceful Parquet-only fallback). GovernanceService/SchemaEvolutionService made optional-lakehouse. Integration tests. 8 tests |
+| M255 | Lakehouse Explorer Frontend | COMPLETE | 3 | 3 | Lakehouse tab in MedallionOverview with 6 panels (Iceberg tables, schema evolution, PII governance, calc audit, pipeline runs, MVs). Tour, scenario S33, 6 architecture sections (100 total), lakehouse category. |
 
 ---
 

@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (31 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (33 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 32 guided scenarios in 12 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 33 guided scenarios in 13 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 23 tours and 32 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 24 tours and 33 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -408,7 +408,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **31 guided scenarios**: Watch Demo or Try It Yourself mode across 12 categories
+- **33 guided scenarios**: Watch Demo or Try It Yourself mode across 13 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -537,7 +537,7 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 31 guided scenarios organized in 12 categories
+- 33 guided scenarios organized in 13 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
@@ -616,8 +616,20 @@ Navigate to **Architecture → Medallion** to see the 11-tier data architecture.
 6. Review the pipeline stages that involve the selected tier
 7. Key takeaway: "The entire data architecture is metadata-driven — tiers, contracts, transformations, and pipeline stages are all JSON definitions"
 
-### Guided Scenario
-**S27: Medallion Architecture Exploration** (Architecture category, beginner difficulty) — available in the Scenarios browser. Walks through the 11-tier architecture, data contracts, and pipeline stages.
+### Lakehouse Explorer Tab
+
+Click the **Lakehouse** tab in the MedallionOverview header to see the Apache Iceberg infrastructure:
+
+- **Iceberg Tables** — Tables grouped by tier (Bronze, Silver, Gold, Platinum, Reference, Logging, Archive)
+- **Schema Evolution** — Timeline of schema changes across Iceberg tables
+- **PII Governance** — Classified PII fields, GDPR-regulated tables, crypto-shred tracking
+- **Calculation Audit** — Execution log with skip rates, fingerprinting stats, lineage
+- **Pipeline Runs** — Run history with branch/tag status for versioning (daily, backfill, correction)
+- **Materialized Views** — MV status and refresh controls for DuckDB OLAP layer
+
+### Guided Scenarios
+- **S27: Medallion Architecture Exploration** (Architecture category, beginner difficulty) — walks through the 11-tier architecture, data contracts, and pipeline stages
+- **S33: Lakehouse Data Governance** (Lakehouse category, intermediate difficulty) — reviews Iceberg tables, PII governance, and schema evolution
 
 ## Data Onboarding (DataOnboarding)
 

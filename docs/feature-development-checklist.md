@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-02-28 (M227 — 1018 total tests: 794 backend + 224 E2E, 32 scenarios, 20 views, 94 architecture sections, 81.9% metadata-driven)
+**Last Updated**: 2026-03-01 (M256 — 1186 total tests: 962 backend + 224 E2E, 33 scenarios, 21 views, 100 architecture sections)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 794)
+- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 962)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 794)
+- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 962)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -341,7 +341,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (794+)
+# Backend tests (962+)
 uv run python -m qa test backend
 
 # E2E Playwright tests (224+)
@@ -386,3 +386,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-02-28 | Updated for M204 (Phase 17 Silver→Gold Pipeline Orchestration) — updated test counts to 800 (590+210), 30 scenarios, 82 architecture sections | Claude Opus 4.6 |
 | 2026-02-28 | Updated for M215 (Phase 18 Data Quality, Quarantine & Profiling) — updated test counts to 862 (645+217), 31 scenarios, 19 views, 86 architecture sections, 83.7% metadata-driven | Claude Opus 4.6 |
 | 2026-02-28 | Updated for M227 (Phase 19 Reference Data & MDM) — updated test counts to 1018 (794+224), 32 scenarios, 20 views, 94 architecture sections, 81.9% metadata-driven | Claude Opus 4.6 |
+| 2026-03-01 | Updated for M256 (Phase 21 Apache Iceberg Lakehouse) — updated test counts to 1186 (962+224), 33 scenarios, 21 views, 100 architecture sections | Claude Opus 4.6 |

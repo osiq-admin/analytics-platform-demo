@@ -12,19 +12,20 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-19 + 7B + Overhauls, M0-M227):**
+**What's built (Phases 1-21 + 7B + Overhauls, M0-M256):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 20 frontend views, 1018 tests (794 backend + 224 E2E), Playwright verified
+- 21 frontend views, 1186 tests (962 backend + 224 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 81.9% metadata-driven (94 sections across 20 views)
+- 81% metadata-driven (100 sections across 21 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
 - Reference Data/MDM tier with 301 golden records, reconciliation engine, field-level provenance
-- 32 guided scenarios, 122 operation scripts, 8 demo checkpoints
+- Apache Iceberg lakehouse with schema evolution, PII governance, run versioning, calculate-once engine
+- 33 guided scenarios, 123 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -623,48 +624,58 @@ Every entity field carries governance metadata:
 
 ### Tier 3 — Governance & Compliance
 
-### Phase 21: Data Governance & Classification
+### Phase 21: Apache Iceberg Lakehouse Architecture — **COMPLETE**
 
-*Implement data classification taxonomy, column-level sensitivity marking, and governance metadata across all entities.*
+*Introduce Apache Iceberg as the lakehouse storage layer with schema evolution, PII/IPP governance, run versioning, multi-tenant-ready namespace design, DuckDB OLAP layer, and config-driven deployment abstraction.*
 
-**Goal:** Every field in every entity carries classification metadata. Data governance rules are metadata-driven. Sensitivity is marked at the column level, not just the table level.
+**Goal:** Replace flat Parquet storage with Iceberg table format for 7 medallion tiers (Bronze, Silver, Gold, Platinum, Reference, Logging, Archive). LakehouseService abstracts catalog/storage/compute — config-swappable from SQLite to Polaris/Nessie/Glue. Namespace-per-tenant layout. Iceberg branches for run versioning. Calculate-once fingerprinting engine. PII governance with dual-layer tagging.
+
+**Plan:** `docs/plans/2026-03-01-iceberg-lakehouse-architecture.md`
+**Research:** `docs/plans/2026-03-01-iceberg-lakehouse-research.md`
+**Milestones:** M243-M256
 
 **Tasks:**
 
-#### Task 21.1: Classification metadata schema
-- **Create:** `workspace/metadata/governance/classification.json` — taxonomy definition (L0-L5)
-- **Modify:** All entity JSONs in `workspace/metadata/entities/` — add per-field classification:
-  ```json
-  {
-    "field_name": "trader_id",
-    "classification": "L4_PII",
-    "pii_category": "direct_identifier",
-    "pii_type": "employee_id",
-    "gdpr_relevant": true,
-    "retention_policy": "regulatory_7yr"
-  }
-  ```
+#### Task 21.1: Lakehouse Foundation (M243-M244)
+- Config YAML, Pydantic models, LakehouseService with SQLite SQL catalog
+- PyIceberg dependency, DuckDB Iceberg extension, config integration
 
-#### Task 21.2: PII detection service
-- **Create:** `backend/services/pii_detector.py` — auto-detect PII in data:
-  - Pattern matching: email, phone, SSN/NIN, names, addresses
-  - Statistical detection: high-cardinality string columns that look like identifiers
-  - Configurable patterns via metadata (`workspace/metadata/governance/pii_patterns.json`)
-  - Runs during data onboarding (Phase 15) and on-demand
+#### Task 21.2: Silver Iceberg Migration + Schema Evolution (M245-M246)
+- SchemaEvolutionService: entity→schema derivation, drift detection, evolution
+- DataLoader dual-write (Parquet + Iceberg), DuckDB view registration from Iceberg
 
-#### Task 21.3: Governance policy engine
-- **Create:** `backend/services/governance_engine.py` — enforce governance rules:
-  - Access control: who can see which classification levels
-  - Retention: auto-archive/delete based on retention policy
-  - Lineage: track which fields flow through which transformations
-  - Compliance check: validate that PII handling meets GDPR/CCPA requirements
+#### Task 21.3: PII/IPP Governance (M247)
+- PII registry metadata, GovernanceService, Iceberg table property tagging
+- GDPR classification, crypto-shred field tracking
 
-#### Task 21.4: Data classification view (frontend)
-- **Create:** `frontend/src/views/DataGovernance/index.tsx` — governance dashboard:
-  - Entity × field classification matrix (color-coded by sensitivity level)
-  - PII inventory: all PII fields across all entities
-  - Retention policy overview (Gantt-style timeline per regulation)
-  - Compliance scorecard (GDPR, CCPA, MiFID II data handling)
+#### Task 21.4: Gold Tier Iceberg + Calculate-Once (M248-M249)
+- CalcResultService with SHA-256 fingerprinting, skip detection
+- CalculationEngine Iceberg writes, calc result log (append-only audit)
+
+#### Task 21.5: Run Versioning (M250)
+- RunVersioningService: daily/backfill/rerun/correction pipeline runs
+- Iceberg branches (Write-Audit-Publish), snapshot tagging
+
+#### Task 21.6: Materialized View Manager (M251)
+- Metadata-driven MV config, MaterializedViewService
+- DuckDB OLAP views from Iceberg scans, refresh strategy
+
+#### Task 21.7: Reference/Platinum/Archive Iceberg + Metadata Replicator (M252)
+- MetadataReplicator: JSON seed → Iceberg metadata tables (time-travel queryable)
+- Iceberg writes for Reference, Platinum, Archive tiers
+
+#### Task 21.8: Lakehouse API Endpoints (M253)
+- 14 API endpoints: tables, snapshots, schema history, governance, calc audit, runs, MVs
+
+#### Task 21.9: Pipeline Integration (M254)
+- Full pipeline Iceberg integration, service wiring, data generation script
+
+#### Task 21.10: Lakehouse Explorer Frontend (M255)
+- Lakehouse tab in MedallionOverview: 6 panels (tables, schema evolution, PII, calc audit, runs, MVs)
+- Tours, scenarios, operations, architecture registry entries
+
+#### Task 21.11: Phase D Completion (M256)
+- Full QA verification, test count sync, documentation sweep, baseline update
 
 ---
 

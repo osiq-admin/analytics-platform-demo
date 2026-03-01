@@ -1551,3 +1551,58 @@ And the coverage spans both EU and US jurisdictions:
   | spoofing_layering    | MAR, MiFID II, Dodd-Frank    |
 And the Regulatory Map graph shows these coverage relationships
 ```
+
+---
+
+## Category 13: Lakehouse Architecture
+
+### Scenario: Silver Tier Dual-Write (Iceberg + Parquet)
+```gherkin
+Given the medallion pipeline is configured with dual-write enabled
+When a Bronze-to-Silver transformation completes for the "execution" entity
+Then data is written to both Parquet and Iceberg table formats
+And the Iceberg table metadata records the new snapshot version
+And the Parquet file path follows the workspace/silver/ convention
+And the Lakehouse Explorer "Iceberg Tables" panel shows the updated table entry
+```
+
+### Scenario: Schema Evolution Detection
+```gherkin
+Given the Iceberg table "execution_silver" exists with schema version 1
+When a new column "venue_country" is added to the silver entity definition
+Then the schema evolution detector identifies the change as an ADD_COLUMN operation
+And the evolution history records the old and new schema versions
+And the Lakehouse Explorer "Schema Evolution" panel displays the evolution timeline
+And no data rewrite is required for the additive change
+```
+
+### Scenario: PII Governance Tagging
+```gherkin
+Given the governance metadata defines PII classification rules
+When the "trader" entity is scanned for PII fields
+Then "trader_name" is tagged as PII with classification "personal_identifier"
+And "trader_id" is tagged as PII with classification "internal_identifier"
+And "desk" is tagged as non-PII
+And the Lakehouse Explorer "PII Governance" panel shows tagged fields with masking policies
+And the governance audit trail records the tagging timestamp and rule applied
+```
+
+### Scenario: Calculate-Once Skip Logic
+```gherkin
+Given the silver-to-gold pipeline includes a "vwap_enrichment" calculation step
+And the calculation was previously run for partition "2024-01-15"
+When the pipeline orchestrator evaluates the partition
+Then the calculate-once logic detects the existing result
+And the calculation step is skipped with status "SKIPPED_CACHED"
+And the Lakehouse Explorer "Calc Audit" panel shows the skip reason and prior run timestamp
+```
+
+### Scenario: Pipeline Run Versioning
+```gherkin
+Given a medallion pipeline run completes for "bronze_to_silver_execution"
+When the run result is persisted
+Then a new pipeline version entry is created with incremented run_id
+And the version metadata includes start_time, end_time, record_count, and status
+And the Lakehouse Explorer "Pipeline Runs" panel shows the run in the version history
+And previous run versions remain accessible for comparison
+```

@@ -1,20 +1,25 @@
-"""CSV → Parquet → DuckDB data loader with change detection."""
+"""CSV → Parquet → DuckDB data loader with change detection and optional Iceberg dual-write."""
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pyarrow.csv as pcsv
 import pyarrow.parquet as pq
 
 from backend.db import DuckDBManager
 
+if TYPE_CHECKING:
+    from backend.services.lakehouse_service import LakehouseService
+
 log = logging.getLogger(__name__)
 
 
 class DataLoader:
-    def __init__(self, workspace_dir: Path, db: DuckDBManager):
+    def __init__(self, workspace_dir: Path, db: DuckDBManager, lakehouse: "LakehouseService | None" = None):
         self._csv_dir = workspace_dir / "data" / "csv"
         self._parquet_dir = workspace_dir / "data" / "parquet"
         self._db = db
+        self._lakehouse = lakehouse
         self._csv_mtimes: dict[str, float] = {}
 
     def load_all(self) -> list[str]:
@@ -60,5 +65,15 @@ class DataLoader:
             f'CREATE VIEW "{table_name}" AS SELECT * FROM read_parquet(\'{parquet_path}\')'  # nosec B608
         )
         cursor.close()
+
+        # Dual-write to Iceberg Silver tier if lakehouse is available
+        if self._lakehouse and self._lakehouse.is_iceberg_tier("silver"):
+            try:
+                if not self._lakehouse.table_exists("silver", table_name):
+                    self._lakehouse.create_table("silver", table_name, arrow_table.schema)
+                self._lakehouse.overwrite("silver", table_name, arrow_table)
+                log.info("Dual-wrote %s to Silver Iceberg (%d rows)", table_name, arrow_table.num_rows)
+            except Exception:
+                log.warning("Iceberg dual-write failed for %s — Parquet-only", table_name, exc_info=True)
 
         log.info("Loaded %s: %d rows, %d columns", table_name, arrow_table.num_rows, arrow_table.num_columns)

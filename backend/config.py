@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     reload: bool = True
     llm_api_key: str = ""
     llm_model: str = "claude-sonnet-4-6"
+    lakehouse_env: str = "local"
 
 
 settings = Settings()

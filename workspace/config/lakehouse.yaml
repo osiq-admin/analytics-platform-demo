@@ -1,0 +1,57 @@
+# Lakehouse deployment profiles
+# Switch profiles via LAKEHOUSE_ENV environment variable (default: local)
+# All profiles use the same LakehouseService abstraction — zero code changes to switch.
+
+local:
+  catalog:
+    type: sql
+    uri: "sqlite:///workspace/iceberg/catalog.db"
+    warehouse: "workspace/iceberg/warehouse"
+  storage:
+    type: local
+  compute:
+    engine: duckdb
+    memory_limit: "4GB"
+
+onprem:
+  catalog:
+    type: rest
+    uri: "http://polaris:8181/api/catalog"
+    warehouse: "s3://surveillance-lake/warehouse"
+    credential: "${CATALOG_CLIENT_ID}:${CATALOG_CLIENT_SECRET}"
+  storage:
+    type: s3
+    endpoint: "http://minio:9000"
+  compute:
+    engine: duckdb
+
+aws:
+  catalog:
+    type: glue
+    properties:
+      glue.region: "us-east-1"
+  storage:
+    type: s3
+    region: "us-east-1"
+  compute:
+    engine: duckdb
+
+azure:
+  catalog:
+    type: rest
+    uri: "https://unity-catalog.azurewebsites.net/api/2.1/unity-catalog"
+    warehouse: "abfss://lakehouse@account.dfs.core.windows.net/warehouse"
+  storage:
+    type: adls
+  compute:
+    engine: duckdb
+
+gcp:
+  catalog:
+    type: rest
+    uri: "https://biglake.googleapis.com/v1"
+    warehouse: "gs://surveillance-lake/warehouse"
+  storage:
+    type: gcs
+  compute:
+    engine: duckdb
