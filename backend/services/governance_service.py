@@ -6,7 +6,6 @@ from pathlib import Path
 
 from backend.models.governance import (
     DataClassification,
-    EntityGovernance,
     PIIField,
     PIIRegistry,
 )

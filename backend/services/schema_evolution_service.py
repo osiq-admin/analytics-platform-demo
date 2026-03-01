@@ -2,14 +2,13 @@
 
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
 
 import pyarrow as pa
 
 from typing import TYPE_CHECKING
 
-from backend.models.lakehouse import SchemaEvolution, SchemaField
+from backend.models.lakehouse import SchemaEvolution
 
 if TYPE_CHECKING:
     from backend.services.lakehouse_service import LakehouseService
