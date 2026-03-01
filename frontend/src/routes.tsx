@@ -26,6 +26,7 @@ const DataOnboarding = lazy(() => import("./views/DataOnboarding/index.tsx"));
 const DataQuality = lazy(() => import("./views/DataQuality/index.tsx"));
 const ReferenceData = lazy(() => import("./views/ReferenceData/index.tsx"));
 const DataGovernance = lazy(() => import("./views/DataGovernance/index.tsx"));
+const BusinessGlossary = lazy(() => import("./views/BusinessGlossary/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -47,8 +48,9 @@ export const routes: RouteObject[] = [
       { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
 
-      // Govern — data governance
+      // Govern — data governance, business glossary
       { path: "governance", element: <Suspense fallback={null}><DataGovernance /></Suspense> },
+      { path: "glossary", element: <Suspense fallback={null}><BusinessGlossary /></Suspense> },
 
       // Detect — models, use cases, pipeline, dashboard
       { path: "models", element: <ModelComposer /> },
