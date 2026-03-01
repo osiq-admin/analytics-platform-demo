@@ -27,7 +27,7 @@
 - Apache Iceberg lakehouse with schema evolution, PII governance, run versioning, calculate-once engine
 - 33 guided scenarios, 123 operation scripts, 8 demo checkpoints
 
-**What's already metadata-driven (~83.1%):**
+**What's already metadata-driven (~81%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
 - Detection models: JSON with query, scoring, alert templates
 - Settings: JSON with hierarchical overrides, priority system, context-aware resolution
@@ -37,16 +37,16 @@
 - OOB vs user-defined metadata layers
 
 **Critical gaps for medallion architecture:**
-- No tiered data processing (all data goes CSV → Parquet → DuckDB in one step)
-- MappingStudio is UI-only prototype — mappings not persisted or used in pipeline
-- No raw-to-canonical entity mapping (source format → standard entity)
-- No canonical-to-calculation attribute mapping (entity fields → calc inputs)
-- No data quality gates or quarantine tier
-- No data classification, PII detection, or sensitivity marking
+- ~~No tiered data processing (all data goes CSV → Parquet → DuckDB in one step)~~ — RESOLVED (Phase 14: Medallion Core)
+- ~~MappingStudio is UI-only prototype — mappings not persisted or used in pipeline~~ — RESOLVED (Phase 16: Bronze→Silver Mapping)
+- ~~No raw-to-canonical entity mapping (source format → standard entity)~~ — RESOLVED (Phase 16: Bronze→Silver Mapping)
+- ~~No canonical-to-calculation attribute mapping (entity fields → calc inputs)~~ — RESOLVED (Phase 17: Silver→Gold Pipeline)
+- ~~No data quality gates or quarantine tier~~ — RESOLVED (Phase 18: Data Quality)
+- ~~No data classification, PII detection, or sensitivity marking~~ — RESOLVED (Phase 21: Iceberg Lakehouse, PII governance)
 - No masking or encryption of sensitive fields
 - No business glossary or semantic layer
 - No data lineage tracking (OpenLineage)
-- No connector abstraction (hardcoded CSV file reader)
+- ~~No connector abstraction (hardcoded CSV file reader)~~ — RESOLVED (Phase 15: Data Onboarding)
 - No platform migration support (DuckDB-specific SQL throughout)
 
 ---
@@ -585,9 +585,11 @@ Every entity field carries governance metadata:
 
 ---
 
-### Phase 20: Extended Analytical Tiers (Platinum, Sandbox, Archive)
+### Phase 20: Extended Analytical Tiers (Platinum, Sandbox, Archive) — **COMPLETE**
 
 *Implement the Platinum (pre-built KPIs), Sandbox (what-if testing), and Archive (regulatory retention) tiers.*
+
+**Milestones:** M228-M242. PlatinumService (KPI generation), SandboxService (lifecycle management), ArchiveService (export/retention). AnalyticsTiers view with 3-tab layout. 3 data contracts, 2 pipeline stages. 16 new API endpoints (platinum 4, sandbox 7, archive 5). S33 scenario. — 1116 tests (885 backend + 231 E2E), 21 views, 33 scenarios, 100 architecture sections.
 
 **Tasks:**
 
@@ -1305,9 +1307,9 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | ~~P2~~ | ~~Scenario Library~~ | ~~Multiple pre-built scenarios~~ — DONE (Phase 7B + M128: 26 scenarios) |
 | P3 | Live Data Simulation | Streaming real-time alert generation via connector framework |
 | P4 | Comparison Mode | Before/after detection effectiveness via Sandbox tier |
-| P5 | Performance Metrics | Detection rates, false positive rates via Platinum tier |
-| P6 | Medallion Architecture Demo | Interactive walkthrough of data flowing through all 11 tiers |
-| P7 | Data Governance Demo | PII detection → classification → masking → audit trail |
+| ~~P5~~ | ~~Performance Metrics~~ | ~~Detection rates, false positive rates via Platinum tier~~ — DONE (Phase 20: Platinum KPIs) |
+| ~~P6~~ | ~~Medallion Architecture Demo~~ | ~~Interactive walkthrough of data flowing through all 11 tiers~~ — DONE (Phase 14-21: MedallionOverview + Lakehouse Explorer) |
+| P7 | Data Governance Demo | PII detection → classification → masking → audit trail (partially done: Phase 21 has PII + classification; Phase 22 adds masking) |
 | P8 | Migration Demo | Export metadata → show compatibility with Snowflake/Databricks |
 
 ---
@@ -1328,8 +1330,8 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | ~~T10~~ | ~~No domain value suggestions~~ | | ~~RESOLVED (M95-M100)~~ |
 | ~~T11~~ | ~~No visual score step builder~~ | | ~~RESOLVED (M99)~~ |
 | ~~T12~~ | ~~MappingStudio is UI-only prototype~~ | | ~~RESOLVED (M191-M196, Phase 16)~~ |
-| T13 | No data quality validation gates | `backend/engine/data_loader.py` | Phase 18 |
-| T14 | No PII detection or classification | All entity data | Phase 21 |
+| ~~T13~~ | ~~No data quality validation gates~~ | | ~~RESOLVED (M205-M215, Phase 18)~~ |
+| ~~T14~~ | ~~No PII detection or classification~~ | | ~~RESOLVED (M247, Phase 21)~~ |
 | T15 | No data lineage tracking | Pipeline execution | Phase 24 |
 | ~~T16~~ | ~~Hardcoded CSV reader (no connector abstraction)~~ | | ~~RESOLVED (M176-M183, Phase 15)~~ |
 | T17 | Platform-specific DuckDB SQL throughout | `backend/engine/*.py` | Phase 26 |
@@ -1349,8 +1351,8 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P1 — Next** | Phase 17 (Silver→Gold Pipeline) | **COMPLETE** | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG + medallion stages), MedallionOverview execution status — 800 tests (590+210), 30 scenarios, 82 sections |
 | **P2 — Important** | Phase 18 (Data Quality) | **COMPLETE** | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling — 862 tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 | **P2 — Important** | Phase 19 (Reference Data/MDM) | **COMPLETE** | M216-M227: Golden records (301 across 4 entities), reconciliation engine, 9 API endpoints, ReferenceData view, S32 scenario — 1018 tests (794+224), 20 views |
-| **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | PLANNED | KPIs, testing isolation, regulatory retention |
-| **P2 — Important** | Phase 21 (Data Governance) | PLANNED | Classification, PII detection, compliance |
+| **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | **COMPLETE** | M228-M242: PlatinumService, SandboxService, ArchiveService, AnalyticsTiers view — 1116 tests (885+231), 21 views |
+| **P2 — Important** | Phase 21 (Iceberg Lakehouse) | **COMPLETE** | M243-M256: LakehouseService, schema evolution, PII governance, calc-once engine, run versioning — 1186 tests (962+224) |
 | **P2 — Important** | Phase 22 (Masking/Encryption/RBAC) | PLANNED | Dynamic masking, column encryption, role-based access |
 | **P3 — Enhance** | Phase 23 (Business Glossary) | PLANNED | ISO 11179, semantic layer, DAMA-DMBOK |
 | **P3 — Enhance** | Phase 24 (Observability/Lineage) | PLANNED | OpenLineage, pipeline metrics, audit trail |
@@ -1366,9 +1368,9 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 ## Verification Plan
 
 After each phase:
-1. `cd frontend && npm run build` — no TypeScript errors (970+ modules)
-2. `uv run pytest tests/ --ignore=tests/e2e -v` — all backend tests pass (645+)
-3. `uv run pytest tests/e2e/ -v` — all E2E tests pass (217+) — stop port 8000 first
+1. `cd frontend && npm run build` — no TypeScript errors (971+ modules)
+2. `uv run python -m qa test backend` — all backend tests pass (962+)
+3. `uv run python -m qa test e2e` — all E2E tests pass (224+) — stop port 8000 first
 4. Playwright MCP visual walkthrough at 1440px and 1024px
 5. Reference `docs/feature-development-checklist.md` for all new features
 6. Follow `docs/development-workflow-protocol.md` for milestone completion
