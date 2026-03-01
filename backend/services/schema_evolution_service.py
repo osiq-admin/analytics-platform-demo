@@ -7,8 +7,12 @@ from pathlib import Path
 
 import pyarrow as pa
 
+from typing import TYPE_CHECKING
+
 from backend.models.lakehouse import SchemaEvolution, SchemaField
-from backend.services.lakehouse_service import LakehouseService
+
+if TYPE_CHECKING:
+    from backend.services.lakehouse_service import LakehouseService
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +36,7 @@ TYPE_MAP: dict[str, pa.DataType] = {
 class SchemaEvolutionService:
     """Derives Iceberg schemas from entity JSON definitions and manages schema drift."""
 
-    def __init__(self, workspace: Path, lakehouse: LakehouseService):
+    def __init__(self, workspace: Path, lakehouse: "LakehouseService | None" = None):
         self._workspace = workspace
         self._entities_dir = workspace / "metadata" / "entities"
         self._history_path = workspace / "metadata" / "governance" / "schema_history.json"
@@ -59,7 +63,7 @@ class SchemaEvolutionService:
 
     def detect_schema_drift(self, tier: str, table_name: str, entity_id: str) -> list[SchemaEvolution]:
         """Compare Iceberg table schema with entity definition. Return needed evolutions."""
-        if not self._lakehouse.table_exists(tier, table_name):
+        if not self._lakehouse or not self._lakehouse.table_exists(tier, table_name):
             return []
 
         entity_schema = self.derive_schema_from_entity(entity_id)
@@ -101,6 +105,10 @@ class SchemaEvolutionService:
     def apply_evolutions(self, tier: str, table_name: str, evolutions: list[SchemaEvolution]) -> None:
         """Apply schema evolutions to an Iceberg table and record history."""
         if not evolutions:
+            return
+
+        if not self._lakehouse:
+            log.warning("No lakehouse — cannot apply schema evolutions for %s.%s", tier, table_name)
             return
 
         self._lakehouse.evolve_schema(tier, table_name, evolutions)

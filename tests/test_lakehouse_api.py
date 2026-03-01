@@ -53,8 +53,15 @@ class TestConfigEndpoint:
 class TestTablesEndpoints:
     def test_tables_without_lakehouse(self, client):
         """Without lakehouse initialized, returns 503."""
-        resp = client.get("/api/lakehouse/tables")
-        assert resp.status_code == 503
+        saved = getattr(app.state, "lakehouse", None)
+        if hasattr(app.state, "lakehouse"):
+            del app.state.lakehouse
+        try:
+            resp = client.get("/api/lakehouse/tables")
+            assert resp.status_code == 503
+        finally:
+            if saved is not None:
+                app.state.lakehouse = saved
 
     def test_tables_with_lakehouse(self, client):
         """With mock lakehouse, returns tier-grouped tables."""
@@ -128,8 +135,15 @@ class TestTablesEndpoints:
 
 class TestGovernanceEndpoints:
     def test_pii_registry_without_service(self, client):
-        resp = client.get("/api/lakehouse/governance/pii-registry")
-        assert resp.status_code == 503
+        saved = getattr(app.state, "governance", None)
+        if hasattr(app.state, "governance"):
+            del app.state.governance
+        try:
+            resp = client.get("/api/lakehouse/governance/pii-registry")
+            assert resp.status_code == 503
+        finally:
+            if saved is not None:
+                app.state.governance = saved
 
     def test_pii_registry_with_service(self, client):
         mock_gov = MagicMock()
@@ -156,8 +170,15 @@ class TestGovernanceEndpoints:
 
 class TestCalcEndpoints:
     def test_calc_stats_without_service(self, client):
-        resp = client.get("/api/lakehouse/calc/stats")
-        assert resp.status_code == 503
+        saved = getattr(app.state, "calc_results", None)
+        if hasattr(app.state, "calc_results"):
+            del app.state.calc_results
+        try:
+            resp = client.get("/api/lakehouse/calc/stats")
+            assert resp.status_code == 503
+        finally:
+            if saved is not None:
+                app.state.calc_results = saved
 
     def test_calc_stats_with_service(self, client):
         mock_svc = MagicMock()
@@ -204,8 +225,15 @@ class TestCalcEndpoints:
 
 class TestRunEndpoints:
     def test_runs_without_service(self, client):
-        resp = client.get("/api/lakehouse/runs")
-        assert resp.status_code == 503
+        saved = getattr(app.state, "run_versioning", None)
+        if hasattr(app.state, "run_versioning"):
+            del app.state.run_versioning
+        try:
+            resp = client.get("/api/lakehouse/runs")
+            assert resp.status_code == 503
+        finally:
+            if saved is not None:
+                app.state.run_versioning = saved
 
     def test_runs_with_service(self, client):
         mock_svc = MagicMock()
@@ -235,8 +263,15 @@ class TestRunEndpoints:
 
 class TestMVEndpoints:
     def test_mv_status_without_service(self, client):
-        resp = client.get("/api/lakehouse/materialized-views")
-        assert resp.status_code == 503
+        saved = getattr(app.state, "mvs", None)
+        if hasattr(app.state, "mvs"):
+            del app.state.mvs
+        try:
+            resp = client.get("/api/lakehouse/materialized-views")
+            assert resp.status_code == 503
+        finally:
+            if saved is not None:
+                app.state.mvs = saved
 
     def test_mv_status_with_service(self, client):
         mock_svc = MagicMock()

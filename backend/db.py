@@ -79,5 +79,37 @@ async def lifespan(app: FastAPI):
     )
     app.state.versions = VersionService(settings.workspace_dir, app.state.metadata)
 
+    # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
+    _init_lakehouse_services(app)
+
     yield
     db_manager.close()
+
+
+def _init_lakehouse_services(app: FastAPI) -> None:
+    """Initialize lakehouse services. Non-fatal — app works without Iceberg."""
+    from backend.services.lakehouse_service import load_lakehouse_config
+    from backend.services.governance_service import GovernanceService
+    from backend.services.calc_result_service import CalcResultService
+    from backend.services.run_versioning_service import RunVersioningService
+    from backend.services.materialized_view_service import MaterializedViewService
+    from backend.services.schema_evolution_service import SchemaEvolutionService
+    from backend.services.metadata_replicator import MetadataReplicator
+
+    ws = settings.workspace_dir
+    try:
+        lakehouse_config, tier_config = load_lakehouse_config(ws, settings.lakehouse_env)
+        from backend.services.lakehouse_service import LakehouseService
+        lakehouse = LakehouseService(ws, lakehouse_config, tier_config)
+        app.state.lakehouse = lakehouse
+        log.info("Lakehouse services initialized (env=%s)", settings.lakehouse_env)
+    except Exception:
+        log.info("Lakehouse services not available — running in Parquet-only mode")
+        lakehouse = None
+
+    app.state.governance = GovernanceService(ws, lakehouse=lakehouse)
+    app.state.calc_results = CalcResultService(ws, lakehouse=lakehouse)
+    app.state.run_versioning = RunVersioningService(ws, lakehouse=lakehouse)
+    app.state.mvs = MaterializedViewService(ws, db=db_manager, lakehouse=lakehouse)
+    app.state.schema_evolution = SchemaEvolutionService(ws, lakehouse=lakehouse)
+    app.state.metadata_replicator = MetadataReplicator(ws, lakehouse=lakehouse)

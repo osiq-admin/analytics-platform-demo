@@ -10,7 +10,10 @@ from backend.models.governance import (
     PIIField,
     PIIRegistry,
 )
-from backend.services.lakehouse_service import LakehouseService
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from backend.services.lakehouse_service import LakehouseService
 
 log = logging.getLogger(__name__)
 
@@ -18,7 +21,7 @@ log = logging.getLogger(__name__)
 class GovernanceService:
     """Manages PII classification, Iceberg table tagging, and GDPR compliance metadata."""
 
-    def __init__(self, workspace: Path, lakehouse: LakehouseService):
+    def __init__(self, workspace: Path, lakehouse: "LakehouseService | None" = None):
         self._workspace = workspace
         self._registry_path = workspace / "metadata" / "governance" / "pii_registry.json"
         self._lakehouse = lakehouse
@@ -48,7 +51,7 @@ class GovernanceService:
         if not pii_fields:
             return
 
-        if not self._lakehouse.table_exists(tier, table_name):
+        if not self._lakehouse or not self._lakehouse.table_exists(tier, table_name):
             return
 
         props: dict[str, str] = {}
