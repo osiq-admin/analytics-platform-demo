@@ -1255,3 +1255,86 @@ class TestAIContextE2E:
         """)
         assert result["status"] == 200
         assert result["hasContext"] is True
+
+
+# ============================================================================
+# Scenario 20: Data Governance
+# ============================================================================
+
+class TestDataGovernance:
+    """Data Governance view E2E tests."""
+
+    def test_governance_view_renders(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/governance")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("text=Data Governance").first.is_visible(timeout=5000) or \
+               loaded_page.locator("text=Masking Policies").first.is_visible(timeout=5000)
+
+    def test_masking_policies_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/masking-policies');
+                const data = await resp.json();
+                return { status: resp.status, count: data.policies?.length || 0 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] == 7
+
+    def test_role_switching_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                await fetch('/api/governance/switch-role', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({role_id: 'compliance_officer'})
+                });
+                const resp = await fetch('/api/governance/current-role');
+                const data = await resp.json();
+                // Switch back to analyst for other tests
+                await fetch('/api/governance/switch-role', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({role_id: 'analyst'})
+                });
+                return data.role_id;
+            }
+        """)
+        assert result == "compliance_officer"
+
+    def test_role_comparison_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/role-comparison/trader');
+                const data = await resp.json();
+                return {
+                    status: resp.status,
+                    entity: data.entity || '',
+                    roleCount: Object.keys(data.roles || {}).length
+                };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["entity"] == "trader"
+        assert result["roleCount"] >= 4
+
+    def test_audit_log_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/audit-log');
+                const data = await resp.json();
+                return { status: resp.status, hasEntries: 'entries' in data };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["hasEntries"] is True
+
+    def test_roles_list_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/roles');
+                const data = await resp.json();
+                return { status: resp.status, count: data.roles?.length || 0, currentRole: data.current_role || '' };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 4
+        assert result["currentRole"] == "analyst"

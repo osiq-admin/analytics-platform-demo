@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "default_role": "analyst",
+  "roles": [
+    {
+      "role_id": "analyst",
+      "display_name": "Surveillance Analyst",
+      "description": "Front-office surveillance analyst — sees masked PII",
+      "icon": "Eye",
+      "tier_access": ["gold", "platinum"],
+      "classification_access": ["LOW"],
+      "can_export": false,
+      "can_view_audit": false
+    },
+    {
+      "role_id": "compliance_officer",
+      "display_name": "Compliance Officer",
+      "description": "Full PII access for regulatory investigations",
+      "icon": "Shield",
+      "tier_access": ["silver", "gold", "platinum", "quarantine", "reference", "archive"],
+      "classification_access": ["LOW", "MEDIUM", "HIGH"],
+      "can_export": true,
+      "can_view_audit": true
+    },
+    {
+      "role_id": "data_engineer",
+      "display_name": "Data Engineer",
+      "description": "Pipeline access with masked PII",
+      "icon": "Wrench",
+      "tier_access": ["landing", "bronze", "silver", "gold", "quarantine", "logging", "metrics"],
+      "classification_access": ["LOW"],
+      "can_export": false,
+      "can_view_audit": false
+    },
+    {
+      "role_id": "admin",
+      "display_name": "Administrator",
+      "description": "Full access — all tiers, all data, audit logs",
+      "icon": "Crown",
+      "tier_access": ["landing", "bronze", "silver", "gold", "platinum", "quarantine", "reference", "sandbox", "logging", "metrics", "archive"],
+      "classification_access": ["LOW", "MEDIUM", "HIGH"],
+      "can_export": true,
+      "can_view_audit": true
+    }
+  ]
+}

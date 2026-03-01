@@ -22,8 +22,15 @@
             ]
         },
         {
-            "title": "Detect",
+            "title": "Govern",
             "order": 3,
+            "items": [
+                {"view_id": "governance", "label": "Data Governance", "path": "/governance", "icon": "Lock", "order": 0}
+            ]
+        },
+        {
+            "title": "Detect",
+            "order": 4,
             "items": [
                 {"view_id": "models", "label": "Models", "path": "/models", "icon": "Brain", "order": 0},
                 {"view_id": "use-cases", "label": "Use Cases", "path": "/use-cases", "icon": "Briefcase", "order": 1},
@@ -33,7 +40,7 @@
         },
         {
             "title": "Investigate",
-            "order": 4,
+            "order": 5,
             "items": [
                 {"view_id": "alerts", "label": "Risk Cases", "path": "/alerts", "icon": "AlertTriangle", "order": 0},
                 {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 1},
@@ -42,7 +49,7 @@
         },
         {
             "title": "Advanced",
-            "order": 5,
+            "order": 6,
             "items": [
                 {"view_id": "schema", "label": "Schema", "path": "/schema", "icon": "Table", "order": 0},
                 {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 1},

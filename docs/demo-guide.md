@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (33 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (34 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 33 guided scenarios in 13 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 34 guided scenarios in 14 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 24 tours and 33 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 25 tours and 34 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 116 operations defined across 19 views
+- 128 operations defined across 22 views
 
 ### 7.3 Scenario Categories
 
@@ -823,6 +823,41 @@ Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metad
 2. **Metadata Explorer** (`/metadata`) — "OOB" column in calculation list grid
 3. **Settings Manager** (`/settings`) — "Layer" column in settings list grid
 4. **Model Composer** (`/models`) — inline badge next to each model name
+
+---
+
+## Data Governance — Phase 22
+
+Phase 22 adds dynamic data masking, role-based access control, and audit-aware PII protection. Navigate to `/governance` (Govern > Data Governance in sidebar).
+
+### Walkthrough A: Switch Roles and Compare
+
+1. Navigate to **Data Governance** (`/governance`)
+2. Note the **role indicator** in the app header — defaults to "Surveillance Analyst"
+3. On the **Masking Policies** tab, review the 7 masking policies — each shows the entity, field, classification level, masking type, and which roles can see unmasked data
+4. Switch to the **Data Preview** tab
+5. See trader data with **masked values** — trader_name shows partial masking (A***e), trader_id shows a hex token
+6. Click the **role switcher** in the header and select "Compliance Officer"
+7. The data preview **instantly updates** — all fields now show unmasked: "Alice Smith", "T001"
+8. Key takeaway: "The same API, the same data, dynamically masked based on who is looking"
+
+### Walkthrough B: Audit Log Protection
+
+1. Switch to the **Audit Log** tab
+2. As "Analyst", you see an access-denied message — analysts cannot view audit entries
+3. Switch to "Compliance Officer" via the header dropdown — audit entries now appear with full PII visible
+4. Key takeaway: "Even audit logs respect role-based access — analysts see activity patterns without personal data"
+
+### Walkthrough C: Role Management
+
+1. Switch to the **Role Management** tab
+2. See 4 role cards: Analyst, Compliance Officer, Data Engineer, Administrator
+3. Each card shows tier access badges, classification access levels, and permissions
+4. The active role is highlighted — click "Switch" on any other card to change
+
+### Guided Scenario
+
+**S34: Role-Based Data Masking** (Governance category, intermediate) — available in the Scenarios browser. Walks through role switching, data comparison, and audit log masking in 8 steps.
 
 ---
 

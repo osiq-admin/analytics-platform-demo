@@ -79,6 +79,13 @@ async def lifespan(app: FastAPI):
     )
     app.state.versions = VersionService(settings.workspace_dir, app.state.metadata)
 
+    # Governance: masking + RBAC
+    from backend.services.masking_service import MaskingService
+    from backend.services.rbac_service import RBACService
+
+    app.state.masking_service = MaskingService(settings.workspace_dir)
+    app.state.rbac_service = RBACService(settings.workspace_dir)
+
     # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
     _init_lakehouse_services(app)
 

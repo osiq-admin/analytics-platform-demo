@@ -36,3 +36,40 @@ class GovernanceTag(BaseModel):
     tag_type: Literal["pii", "classification", "retention", "regulation"]
     key: str
     value: str
+
+
+# --- Phase 22: Masking & RBAC models ---
+
+
+class MaskingPolicy(BaseModel):
+    policy_id: str
+    target_entity: str
+    target_field: str
+    classification: Literal["HIGH", "MEDIUM", "LOW"]
+    masking_type: Literal["redact", "partial", "tokenize", "hash", "generalize", "none"]
+    algorithm: str = ""
+    params: dict = Field(default_factory=dict)
+    unmask_roles: list[str] = Field(default_factory=list)
+    audit_unmask: bool = False
+
+
+class MaskingPolicies(BaseModel):
+    version: str = "1.0"
+    policies: list[MaskingPolicy] = Field(default_factory=list)
+
+
+class RoleDefinition(BaseModel):
+    role_id: str
+    display_name: str = ""
+    description: str = ""
+    icon: str = "User"
+    tier_access: list[str] = Field(default_factory=list)
+    classification_access: list[str] = Field(default_factory=list)
+    can_export: bool = False
+    can_view_audit: bool = False
+
+
+class RoleRegistry(BaseModel):
+    version: str = "1.0"
+    default_role: str = "analyst"
+    roles: list[RoleDefinition] = Field(default_factory=list)
