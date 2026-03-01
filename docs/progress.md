@@ -349,6 +349,7 @@
 | M252 | Reference Iceberg + Metadata Replicator | COMPLETE | 3 | 3 | MetadataReplicator: syncs entity defs, calculations, detection models, settings to Iceberg. ReferenceService Iceberg dual-write for golden records. 20 tests |
 | M253 | Lakehouse API Endpoints | COMPLETE | 2 | 2 | 14 REST endpoints: config, tables (list/info/snapshots/schema-history), governance (PII/classification), calc audit (log/stats/lineage), pipeline runs, materialized views (status/refresh). 20 tests |
 | M254 | Pipeline Integration | COMPLETE | 4 | 4 | Lifespan wiring for all lakehouse services (graceful Parquet-only fallback). GovernanceService/SchemaEvolutionService made optional-lakehouse. Integration tests. 8 tests |
+| M255 | Lakehouse Explorer Frontend | COMPLETE | 3 | 3 | Lakehouse tab in MedallionOverview with 6 panels (Iceberg tables, schema evolution, PII governance, calc audit, pipeline runs, MVs). Tour, scenario S33, 6 architecture sections (100 total), lakehouse category. |
 
 ---
 

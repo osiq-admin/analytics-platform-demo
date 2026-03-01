@@ -60,6 +60,10 @@ const CATEGORY_META: Record<
     label: "Data Governance",
     description: "Data quality scoring, quarantine, and profiling",
   },
+  lakehouse: {
+    label: "Lakehouse",
+    description: "Apache Iceberg tables, PII governance, and pipeline audit",
+  },
 };
 
 const CATEGORY_ORDER: ScenarioCategory[] = [
@@ -72,6 +76,7 @@ const CATEGORY_ORDER: ScenarioCategory[] = [
   "admin",
   "pipeline",
   "governance",
+  "lakehouse",
 ];
 
 const DIFFICULTY_LABELS: Record<ScenarioDifficulty, { label: string; color: string }> = {

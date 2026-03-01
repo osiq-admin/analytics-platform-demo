@@ -1080,6 +1080,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Data contracts enforce quality rules and SLAs at each tier boundary.",
       "Pipeline stages define the ordered execution plan for moving data through tiers.",
       "Side tiers (Quarantine, Reference, Sandbox) handle special cases outside the main flow.",
+      "Switch to the Lakehouse tab to explore Apache Iceberg tables, PII governance, and calculation audit data.",
     ],
   },
 };
