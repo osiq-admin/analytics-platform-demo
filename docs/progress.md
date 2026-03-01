@@ -339,6 +339,8 @@
 |---|---|---|---|---|---|
 | M243 | Lakehouse Config + Pydantic Models | COMPLETE | 2 | 2 | LakehouseConfig, IcebergTierConfig, 8 models, lakehouse.yaml (5 profiles), iceberg_config.json, 21 model tests |
 | M244 | LakehouseService + SQLite Catalog | COMPLETE | 3 | 3 | PyIceberg SQLite catalog, table CRUD, append/overwrite, schema evolution, snapshots, branches, tags, properties, DuckDB integration, 26 service tests |
+| M245 | Silver Iceberg Dual-Write | COMPLETE | 2 | 2 | DataLoader dual-write (Parquet + Iceberg), backward-compatible when no lakehouse, overwrite on reload, 5 tests |
+| M246 | Schema Evolution Service | COMPLETE | 2 | 2 | Entity→PyArrow schema derivation, drift detection, evolution application, history persistence, sync all, 12 tests |
 
 ---
 
