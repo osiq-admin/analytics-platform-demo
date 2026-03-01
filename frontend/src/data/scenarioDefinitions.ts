@@ -3556,6 +3556,107 @@ const S33_LAKEHOUSE_DATA_GOVERNANCE: ScenarioDefinition = {
   ],
 };
 
+// --------------------------------------------------------------------------
+// S34: Role-Based Data Masking (Governance, Intermediate, 5 min)
+// --------------------------------------------------------------------------
+const S34_ROLE_BASED_DATA_MASKING: ScenarioDefinition = {
+  id: "s34_role_based_data_masking",
+  name: "Role-Based Data Masking",
+  description:
+    "Explore how PII fields are dynamically masked based on RBAC roles. Switch between analyst (masked) and compliance officer (unmasked) to see real-time masking differences across data preview and audit logs.",
+  category: "governance",
+  difficulty: "intermediate",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='governance-masking-policies']",
+      title: "Review Masking Policies",
+      content:
+        "Start at the Data Governance view. The Masking Policies tab shows all 7 masking policies — each with entity, field, classification level, masking type, and which roles can bypass masking.",
+      placement: "right",
+      route: "/governance",
+      action: "wait",
+      hint: "Navigate to Data Governance and review the policies table.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='governance-role-management']",
+      title: "View Role Definitions",
+      content:
+        "Switch to the Role Management tab to see all 4 roles. Note which tiers each role can access and whether they can view audit logs or export data.",
+      placement: "right",
+      action: "click",
+      actionTarget: "[data-tour='governance-role-management']",
+      hint: "Click the 'Role Management' tab to see role definitions.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='role-switcher']",
+      title: "Switch to Compliance Officer",
+      content:
+        "Click the role switcher in the header and change to 'Compliance Officer'. This role has full PII access — all masked fields will become visible.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='role-switcher']",
+      hint: "Click the role badge in the header to open the dropdown, then select Compliance Officer.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='governance-data-preview']",
+      title: "View Unmasked Data",
+      content:
+        "Switch to the Data Preview tab. As Compliance Officer, all PII fields are now unmasked — trader names, IDs, and account details are fully visible.",
+      placement: "right",
+      action: "click",
+      actionTarget: "[data-tour='governance-data-preview']",
+      hint: "Click 'Data Preview' tab to see unmasked entity data.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='role-switcher']",
+      title: "Switch Back to Analyst",
+      content:
+        "Switch back to 'Surveillance Analyst'. PII fields will be masked again — trader_name shows partial masking (A***e), trader_id shows tokenized hex values.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='role-switcher']",
+      hint: "Click the role switcher and select Surveillance Analyst.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='governance-data-preview']",
+      title: "Compare Masked vs Unmasked",
+      content:
+        "The Data Preview now shows masked values. Compare the role columns — masked fields are highlighted in red with the masking type badge. The same data, same API, different view based on who is looking.",
+      placement: "left",
+      action: "wait",
+      hint: "Review the comparison table showing different masking levels per role.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='governance-audit-log']",
+      title: "Check Audit Log Access",
+      content:
+        "Switch to the Audit Log tab. As Analyst, you'll see an access-denied message — analysts cannot view audit logs. Switch to Compliance Officer to see masked-aware audit entries.",
+      placement: "right",
+      action: "click",
+      actionTarget: "[data-tour='governance-audit-log']",
+      hint: "Click 'Audit Log' tab. Note the access restriction for analyst role.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='governance-audit-log']",
+      title: "Audit PII Protection Complete",
+      content:
+        "Key takeaway: Even audit logs respect role-based access. Analysts see activity patterns without seeing personal data. Compliance officers see full PII for regulatory investigations. All masking is applied at read time — stored data remains intact.",
+      placement: "top",
+      action: "wait",
+      hint: "Review how audit log PII masking varies by role.",
+      delay: 3000,
+    },
+  ],
+};
+
 // ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
@@ -3593,4 +3694,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s31_data_quality_investigation: S31_DATA_QUALITY_INVESTIGATION,
   s32_reference_data_reconciliation: S32_REFERENCE_DATA_RECONCILIATION,
   s33_lakehouse_data_governance: S33_LAKEHOUSE_DATA_GOVERNANCE,
+  s34_role_based_data_masking: S34_ROLE_BASED_DATA_MASKING,
 };
