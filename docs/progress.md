@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-01 (M255 Phase 21 Iceberg Lakehouse; 1186 total tests: 962 backend + 224 E2E, 20 views, 33 scenarios, 100 architecture sections, 972 modules)
+**Last Updated**: 2026-03-01 (M256 Phase 21 Iceberg Lakehouse; 1186 total tests: 962 backend + 224 E2E, 21 views, 33 scenarios, 100 architecture sections, 971 modules)
 
 ---
 

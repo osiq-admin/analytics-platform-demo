@@ -1,7 +1,7 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 20 views, 1186 tests (962 backend + 224 E2E), 8 entities, 5 detection models, 33 guided scenarios, 100 architecture sections.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 21 views, 1186 tests (962 backend + 224 E2E), 8 entities, 5 detection models, 33 guided scenarios, 100 architecture sections.
 
 ## Quick Start
 ```bash
@@ -10,14 +10,14 @@ uv run python -m qa test backend              # Run backend tests (962)
 uv run python -m qa test e2e                  # Run E2E Playwright tests (224)
 uv run python -m qa quality --python           # Run quality scan (ruff, bandit, radon, vulture, coverage)
 uv run python -m qa gate                       # Evaluate quality gate
-cd frontend && npm run build                   # Build frontend (972 modules)
+cd frontend && npm run build                   # Build frontend (971 modules)
 uv run python -m scripts.generate_data         # Regenerate CSVs
 uv run python -m scripts.generate_snapshots    # Regenerate snapshots
 ```
 
 ## Architecture
 - **Backend**: `backend/` — FastAPI + DuckDB, 25 API route modules, calculation/detection engines, lakehouse services
-- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 20 views, Zustand stores
+- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 21 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
 - **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality, governance, lakehouse
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)

@@ -2,7 +2,7 @@
 
 **Purpose**: Single authoritative protocol covering the full lifecycle of every feature — Pre-Work → Planning → Execution → Completion. Follow this protocol for every feature, every session, no exceptions.
 
-**Last Updated**: 2026-02-28
+**Last Updated**: 2026-03-01
 
 ---
 
@@ -177,30 +177,30 @@ uv run python -m qa test e2e              # E2E tests — ALL PASS
 
 Every file and line containing hardcoded test counts. When test counts change, update **ALL** of these. Current test counts are also available via `uv run python -m qa report`.
 
-### Backend Test Count (currently 794)
+### Backend Test Count (currently 962)
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 4 (Project Overview) | `1018 tests (794 backend + 224 E2E)` |
-| `CLAUDE.md` | Quick Start comment | `# Run backend tests (794)` |
-| `CLAUDE.md` | Architecture section | `794 backend tests + 224 E2E` |
-| `README.md` | Project Structure | `# 1018 tests (794 backend + 224 E2E Playwright)` |
-| `README.md` | Testing section comment | `# Backend tests (794)` |
-| `README.md` | Testing section text | `1018 tests total: 794 backend...` |
-| `docs/progress.md` | Line 5 (header) | `1018 total tests: 794 backend + 224 E2E` |
-| `docs/feature-development-checklist.md` | Line 5 (header) | `1018 total tests: 794 backend + 224 E2E` |
-| `docs/feature-development-checklist.md` | Section 1 | `currently 794` |
-| `docs/feature-development-checklist.md` | Section 4 | `currently 794` |
+| `CLAUDE.md` | Line 4 (Project Overview) | `1186 tests (962 backend + 224 E2E)` |
+| `CLAUDE.md` | Quick Start comment | `# Run backend tests (962)` |
+| `CLAUDE.md` | Architecture section | `962 backend tests + 224 E2E` |
+| `README.md` | Project Structure | `# 1186 tests (962 backend + 224 E2E Playwright)` |
+| `README.md` | Testing section comment | `# Backend tests (962)` |
+| `README.md` | Testing section text | `1186 tests total: 962 backend...` |
+| `docs/progress.md` | Line 5 (header) | `1186 total tests: 962 backend + 224 E2E` |
+| `docs/feature-development-checklist.md` | Line 5 (header) | `1186 total tests: 962 backend + 224 E2E` |
+| `docs/feature-development-checklist.md` | Section 1 | `currently 962` |
+| `docs/feature-development-checklist.md` | Section 4 | `currently 962` |
 | `docs/feature-development-checklist.md` | Section 5 | `currently 224` |
-| `docs/feature-development-checklist.md` | Quick Reference | `# Backend tests (794+)` |
+| `docs/feature-development-checklist.md` | Quick Reference | `# Backend tests (962+)` |
 | `docs/feature-development-checklist.md` | Quick Reference | `# E2E Playwright tests (224+)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Current State | `1018 tests (794 backend + 224 E2E)` |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Current State | `1186 tests (962 backend + 224 E2E)` |
 
 ### E2E Test Count (currently 224)
 
 Same files as above — search for the E2E count alongside backend count.
 
-### Total Test Count (currently 1018)
+### Total Test Count (currently 1186)
 
 Sum of backend + E2E. Same files as above.
 
@@ -215,7 +215,7 @@ Sum of backend + E2E. Same files as above.
 
 ## Other Count Registries
 
-### View Count (currently 20)
+### View Count (currently 21)
 
 | File | Location |
 |------|----------|
@@ -224,7 +224,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Scenario Count (currently 32)
+### Scenario Count (currently 33)
 
 | File | Location |
 |------|----------|
@@ -232,7 +232,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/progress.md` | Line 5 (header) |
 | `docs/feature-development-checklist.md` | Line 5 (header) |
 
-### Architecture Section Count (currently 94, 81.9% metadata-driven)
+### Architecture Section Count (currently 100)
 
 | File | Location |
 |------|----------|
@@ -241,7 +241,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/architecture-traceability.md` | Header |
 | Context-level `MEMORY.md` | Current State section |
 
-### Operation Script Count (currently 122 across 20 views)
+### Operation Script Count (currently 123 across 21 views)
 
 | File | Location |
 |------|----------|
@@ -249,14 +249,14 @@ Sum of backend + E2E. Same files as above.
 | Context-level `MEMORY.md` | Current State section |
 | In-repo `.claude/memory/MEMORY.md` | Current State section |
 
-### Tour Count (currently 23 tours in registry)
+### Tour Count (currently 24 tours in registry)
 
 | File | Location |
 |------|----------|
 | `workspace/metadata/tours/registry.json` | `tours` array length |
 | `docs/demo-guide.md` | Tour registry section |
 
-### Milestone Range (currently M0-M227)
+### Milestone Range (currently M0-M256)
 
 | File | Location |
 |------|----------|
@@ -273,7 +273,7 @@ Run these and confirm pass/fail before merging.
 ```bash
 # Backend tests via QA automation — expect ALL PASS, count matches registry
 uv run python -m qa test backend
-# Expected: "794 passed" (or current count)
+# Expected: "962 passed" (or current count)
 
 # E2E tests via QA automation — run in batches if >100 tests cause browser crashes
 uv run python -m qa test e2e
@@ -293,7 +293,7 @@ cd frontend && npm run build 2>&1 | grep "modules transformed"
 # Expected: "971 modules transformed" (or current count)
 
 # Test count sync — verify all files agree
-grep -rn "794\|224\|1018" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
+grep -rn "962\|224\|1186" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"
 # Expected: all show same counts
 
 # Module count sync
@@ -302,7 +302,7 @@ grep -rn "971" CLAUDE.md README.md | grep -i "module"
 
 # Architecture audit — verify maturity % matches registry
 grep -c "metadataMaturity:" frontend/src/data/architectureRegistry.ts
-# Expected: 94 (or current section count)
+# Expected: 100 (or current section count)
 ```
 
 ---

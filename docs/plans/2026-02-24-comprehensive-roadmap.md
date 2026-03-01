@@ -12,19 +12,20 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-19 + 7B + Overhauls, M0-M227):**
+**What's built (Phases 1-21 + 7B + Overhauls, M0-M256):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 20 frontend views, 1018 tests (794 backend + 224 E2E), Playwright verified
+- 21 frontend views, 1186 tests (962 backend + 224 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 81.9% metadata-driven (94 sections across 20 views)
+- 81% metadata-driven (100 sections across 21 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
 - Reference Data/MDM tier with 301 golden records, reconciliation engine, field-level provenance
-- 32 guided scenarios, 122 operation scripts, 8 demo checkpoints
+- Apache Iceberg lakehouse with schema evolution, PII governance, run versioning, calculate-once engine
+- 33 guided scenarios, 123 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~83.1%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -623,7 +624,7 @@ Every entity field carries governance metadata:
 
 ### Tier 3 — Governance & Compliance
 
-### Phase 21: Apache Iceberg Lakehouse Architecture — **IN PROGRESS**
+### Phase 21: Apache Iceberg Lakehouse Architecture — **COMPLETE**
 
 *Introduce Apache Iceberg as the lakehouse storage layer with schema evolution, PII/IPP governance, run versioning, multi-tenant-ready namespace design, DuckDB OLAP layer, and config-driven deployment abstraction.*
 
