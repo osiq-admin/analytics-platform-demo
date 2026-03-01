@@ -3658,6 +3658,87 @@ const S34_ROLE_BASED_DATA_MASKING: ScenarioDefinition = {
 };
 
 // ==========================================================================
+// S35: Explore Business Glossary (Phase 23)
+// ==========================================================================
+
+const S35_EXPLORE_BUSINESS_GLOSSARY: ScenarioDefinition = {
+  id: "s35_explore_business_glossary",
+  name: "Explore Business Glossary",
+  description:
+    "Navigate the ISO 11179-compliant glossary, explore term definitions with FIBO alignment, review semantic metrics, and assess DAMA-DMBOK knowledge area coverage.",
+  category: "governance",
+  difficulty: "beginner",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='glossary-categories']",
+      title: "Browse by Category",
+      content:
+        "Start by clicking the 'Market Abuse' category in the sidebar. This filters the term list to show only market abuse-related terms like Wash Trade, Spoofing, and Layering.",
+      placement: "right",
+      action: "click",
+      hint: "Select Market Abuse to see surveillance-related terms.",
+    },
+    {
+      target: "[data-tour='glossary-search']",
+      title: "Search for a Term",
+      content:
+        "Type 'wash' in the search box. The list filters to show the Wash Trade term. Search checks term IDs, business names, definitions, and synonyms.",
+      placement: "bottom",
+      action: "type",
+      hint: "Try searching for 'insider' or 'spoofing' too.",
+    },
+    {
+      target: "[data-tour='glossary-term-list']",
+      title: "Select a Term",
+      content:
+        "Click on the 'Wash Trade' row in the term list. Notice terms with 'planned' status have a blue dashed border — these represent future platform capabilities.",
+      placement: "bottom",
+      action: "click",
+      hint: "Look for the dashed border on planned terms.",
+    },
+    {
+      target: "[data-tour='glossary-term-detail']",
+      title: "Review Term Detail",
+      content:
+        "The detail panel shows the full ISO 11179 decomposition: Object Class (Trade), Property (Wash Indicator), and Representation (Score). Below that: FIBO alignment, technical mappings to execution.trader_id, and regulatory references (MAR Art. 12, SEC Rule 10b-5).",
+      placement: "left",
+      action: "wait",
+      delay: 3000,
+      hint: "Scroll down to see FIBO, mappings, and regulatory references.",
+    },
+    {
+      target: "[data-tour='glossary-metrics-list']",
+      title: "Switch to Semantic Metrics",
+      content:
+        "Click the 'Semantic Metrics' tab. These are business-friendly computed metrics built from Gold and Platinum tier data. Click any metric to see its SQL formula, source tier, and sliceable dimensions.",
+      placement: "bottom",
+      action: "click",
+      hint: "Try clicking 'Daily Alert Rate' for its formula.",
+    },
+    {
+      target: "[data-tour='glossary-dmbok-grid']",
+      title: "DAMA-DMBOK Coverage",
+      content:
+        "Click the 'DAMA-DMBOK' tab. All 11 knowledge areas are mapped to platform capabilities. 10 areas show 'high' coverage and 1 shows 'medium'. Each card shows the specific capabilities that deliver coverage.",
+      placement: "bottom",
+      action: "click",
+      hint: "Review which phases implement each knowledge area.",
+    },
+    {
+      target: "[data-tour='glossary-standards']",
+      title: "Standards Compliance",
+      content:
+        "Click the 'Standards & Gaps' tab. Review the 18 compliant standards with their compliance levels (full/partial/reference). The Roadmap section shows 10 gap standards with suggested future phases. Below that, Entity Gap Analysis details 25 missing attributes across 8 entities.",
+      placement: "top",
+      action: "wait",
+      delay: 3000,
+      hint: "Key takeaway: The platform complies with 18 industry standards.",
+    },
+  ],
+};
+
+// ==========================================================================
 // Master export — all scenarios keyed by ID
 // ==========================================================================
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
@@ -3695,4 +3776,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s32_reference_data_reconciliation: S32_REFERENCE_DATA_RECONCILIATION,
   s33_lakehouse_data_governance: S33_LAKEHOUSE_DATA_GOVERNANCE,
   s34_role_based_data_masking: S34_ROLE_BASED_DATA_MASKING,
+  s35_explore_business_glossary: S35_EXPLORE_BUSINESS_GLOSSARY,
 };

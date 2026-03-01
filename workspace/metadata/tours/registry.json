@@ -26,10 +26,11 @@
     {"tour_id": "data-quality", "view_path": "/quality", "title": "Data Quality Dashboard Tour", "step_count": 4},
     {"tour_id": "reference-data", "view_path": "/reference", "title": "Reference Data Tour", "step_count": 4},
     {"tour_id": "lakehouse-explorer", "view_path": "/medallion", "title": "Lakehouse Explorer Tour", "step_count": 7},
-    {"tour_id": "governance", "view_path": "/governance", "title": "Data Governance Tour", "step_count": 7}
+    {"tour_id": "governance", "view_path": "/governance", "title": "Data Governance Tour", "step_count": 7},
+    {"tour_id": "glossary", "view_path": "/glossary", "title": "Business Glossary Tour", "step_count": 5}
   ],
   "scenarios": {
-    "total_count": 34,
+    "total_count": 35,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -39,7 +40,7 @@
       {"category": "Investigation", "count": 3},
       {"category": "Administration", "count": 6},
       {"category": "Pipeline", "count": 1},
-      {"category": "Governance", "count": 3},
+      {"category": "Governance", "count": 4},
       {"category": "Lakehouse", "count": 1}
     ]
   }
