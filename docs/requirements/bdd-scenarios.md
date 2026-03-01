@@ -1606,3 +1606,53 @@ And the version metadata includes start_time, end_time, record_count, and status
 And the Lakehouse Explorer "Pipeline Runs" panel shows the run in the version history
 And previous run versions remain accessible for comparison
 ```
+
+---
+
+## Category 14: Masking & RBAC
+
+### Scenario: Dynamic Masking by Role
+```gherkin
+Given the user has the "analyst" role active
+When viewing trader data via the masked-preview endpoint
+Then the "trader_name" field is partially masked (e.g., "J*** S****")
+And the "trader_id" field is tokenized (e.g., "tok_a1b2c3")
+And fields not covered by masking policies are shown in plain text
+```
+
+### Scenario: Compliance Officer Full Access
+```gherkin
+Given the user has the "compliance_officer" role active
+When viewing the same trader data via the masked-preview endpoint
+Then all fields are unmasked and shown in plain text
+And no masking badges appear on any cells
+```
+
+### Scenario: Audit Log PII Protection
+```gherkin
+Given the user has the "analyst" role active
+And the analyst role has can_view_audit set to false
+When requesting the audit log via /api/governance/audit-log
+Then access is denied with an appropriate message
+And no audit entries are returned
+```
+
+### Scenario: Role Switching Live Preview
+```gherkin
+Given the user has the "analyst" role active
+And trader data fields are partially masked in the data preview
+When the user switches to "compliance_officer" via the switch-role API
+And the masked-preview is refreshed
+Then previously masked fields become fully visible
+And the active role indicator updates to "compliance_officer"
+```
+
+### Scenario: Tier Access Restriction
+```gherkin
+Given the "analyst" role has tier_access restricted to ["gold", "platinum"]
+When the analyst requests data from the "silver" tier
+Then access is restricted and the data is not returned
+Given the "compliance_officer" role has tier_access including "silver"
+When the compliance_officer requests data from the "silver" tier
+Then access is granted and the data is returned normally
+```
