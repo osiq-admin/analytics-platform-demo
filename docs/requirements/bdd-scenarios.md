@@ -1656,3 +1656,70 @@ Given the "compliance_officer" role has tier_access including "silver"
 When the compliance_officer requests data from the "silver" tier
 Then access is granted and the data is returned normally
 ```
+
+## Feature: Business Glossary (Phase 23)
+
+### Scenario: Browse Glossary by Category
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Market Abuse" category in the sidebar
+Then only terms with category "market_abuse" are shown in the term list
+And the category sidebar shows the count of matching terms
+```
+
+### Scenario: Search Glossary Terms
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I type "wash" in the search box
+Then the term list filters to show terms matching "wash" in term_id, business_name, definition, or synonyms
+And "Wash Trade" appears in the results
+```
+
+### Scenario: Reverse Lookup Entity Field to Glossary Term
+```gherkin
+Given the platform is running
+When I call GET /api/glossary/field/execution/trader_id
+Then the response includes the "wash_trade" glossary term
+And the term shows the technical mapping with relationship "key_field"
+```
+
+### Scenario: DAMA-DMBOK Coverage Display
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "DAMA-DMBOK" tab
+Then 11 knowledge area cards are displayed
+And each card shows a coverage badge (high or medium)
+And each card lists platform capabilities for that knowledge area
+```
+
+### Scenario: Semantic Metric Detail
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Semantic Metrics" tab
+And I select the "daily_alert_rate" metric
+Then the detail panel shows the metric formula, source tier, unit, and dimensions
+And the dimensions list includes sliceable dimension names
+```
+
+### Scenario: Standards Compliance Registry
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Standards & Gaps" tab
+Then a compliance table shows 18 standards with compliance level badges (full/partial/reference)
+And a roadmap section shows 10 gap standards with suggested implementation phases
+```
+
+### Scenario: Entity Gap Analysis
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I view the entity gap analysis section in the "Standards & Gaps" tab
+Then I see expandable cards for entities with missing attributes
+And the product entity shows 6 missing attributes with ISO/regulatory references
+And each gap includes a priority badge and regulatory need description
+```
