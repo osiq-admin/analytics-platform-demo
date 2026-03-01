@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (34 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (35 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 34 guided scenarios in 14 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 35 guided scenarios in 15 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 25 tours and 34 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 26 tours and 35 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -544,7 +544,7 @@ Click **Skip to End** to show the final state.
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Glossary
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 128 operations defined across 22 views
+- 136 operations defined across 23 views
 
 ### 7.3 Scenario Categories
 
@@ -858,6 +858,44 @@ Phase 22 adds dynamic data masking, role-based access control, and audit-aware P
 ### Guided Scenario
 
 **S34: Role-Based Data Masking** (Governance category, intermediate) — available in the Scenarios browser. Walks through role switching, data comparison, and audit log masking in 8 steps.
+
+---
+
+## Business Glossary — Phase 23
+
+Phase 23 adds an ISO 11179 business glossary, semantic layer with business-friendly metrics, DAMA-DMBOK knowledge area coverage, and standards compliance tracking. Navigate to `/glossary` (Govern > Business Glossary in sidebar).
+
+### Walkthrough A: Browse Business Terms
+
+1. Navigate to **Business Glossary** (`/glossary`)
+2. The **Glossary Terms** tab shows 18 business terms organized by category (market_abuse, trading, compliance, risk, data_quality)
+3. Use the search bar to filter terms by name, definition, or category
+4. Click any term to see its full detail: ISO 11179 metadata, regulatory references, technical field mappings, related terms, and data steward
+5. Note the **ownership matrix** showing which teams own which data domains
+
+### Walkthrough B: Explore Semantic Metrics
+
+1. Switch to the **Semantic Metrics** tab
+2. Browse 12 business-friendly metrics with formulas, source tiers, and dimensions
+3. Each metric shows its SQL formula, source entities, and available drill-down dimensions
+4. Metrics are composed from glossary terms — click through to see the underlying business definitions
+
+### Walkthrough C: DAMA-DMBOK Coverage
+
+1. Switch to the **DMBOK Coverage** tab
+2. See coverage across all 11 DAMA-DMBOK knowledge areas
+3. Each area shows which platform phases implement it, with coverage percentage and status
+4. Areas range from fully covered (Data Modeling, Data Quality) to partially covered (Document & Content)
+
+### Walkthrough D: Standards Compliance
+
+1. Switch to the **Standards** tab
+2. Review compliance status across ISO 11179, ISO 8000, ISO 25012, ISO 27001, and BCBS 239
+3. Each standard shows applicable requirements, implementation status, and phase references
+
+### Guided Scenario
+
+**S35: Business Glossary Exploration** (Glossary category, beginner) — available in the Scenarios browser. Walks through term browsing, semantic metrics, DMBOK coverage, and standards compliance in 8 steps.
 
 ---
 

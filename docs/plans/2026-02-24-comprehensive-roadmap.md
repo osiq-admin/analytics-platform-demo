@@ -12,20 +12,21 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-22 + 7B + Overhauls, M0-M268):**
+**What's built (Phases 1-23 + 7B + Overhauls, M0-M280):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 22 frontend views, 1287 tests (1057 backend + 230 E2E), Playwright verified
+- 23 frontend views, 1343 tests (1105 backend + 238 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 82% metadata-driven (104 sections across 22 views)
+- 82% metadata-driven (112 sections across 23 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
 - Reference Data/MDM tier with 301 golden records, reconciliation engine, field-level provenance
 - Apache Iceberg lakehouse with schema evolution, PII governance, run versioning, calculate-once engine
-- 34 guided scenarios, 128 operation scripts, 8 demo checkpoints
+- ISO 11179 business glossary with semantic layer, DAMA-DMBOK coverage, standards compliance
+- 35 guided scenarios, 136 operation scripts, 8 demo checkpoints
 
 **What's already metadata-driven (~81%):**
 - Calculation definitions: JSON with SQL logic, inputs, outputs, DAG dependencies
@@ -44,7 +45,7 @@
 - ~~No data quality gates or quarantine tier~~ — RESOLVED (Phase 18: Data Quality)
 - ~~No data classification, PII detection, or sensitivity marking~~ — RESOLVED (Phase 21: Iceberg Lakehouse, PII governance)
 - ~~No masking or encryption of sensitive fields~~ — RESOLVED (Phase 22: Masking/RBAC, dynamic role-based masking)
-- No business glossary or semantic layer
+- ~~No business glossary or semantic layer~~ — RESOLVED (Phase 23: ISO 11179 glossary, semantic metrics, DAMA-DMBOK)
 - No data lineage tracking (OpenLineage)
 - ~~No connector abstraction (hardcoded CSV file reader)~~ — RESOLVED (Phase 15: Data Onboarding)
 - No platform migration support (DuckDB-specific SQL throughout)
@@ -1354,7 +1355,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | **COMPLETE** | M228-M242: PlatinumService, SandboxService, ArchiveService, AnalyticsTiers view — 1116 tests (885+231), 21 views |
 | **P2 — Important** | Phase 21 (Iceberg Lakehouse) | **COMPLETE** | M243-M256: LakehouseService, schema evolution, PII governance, calc-once engine, run versioning — 1186 tests (962+224) |
 | **P2 — Important** | Phase 22 (Masking/Encryption/RBAC) | **COMPLETE** | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1287 tests (1057+230), 22 views, 34 scenarios, 104 sections |
-| **P3 — Enhance** | Phase 23 (Business Glossary) | PLANNED | ISO 11179, semantic layer, DAMA-DMBOK |
+| **P3 — Enhance** | Phase 23 (Business Glossary) | **COMPLETE** | M269-M280: ISO 11179 glossary (18 terms), semantic layer (12 metrics, 8 dimensions), DAMA-DMBOK coverage, standards compliance, BusinessGlossary view, S35 scenario — 1343 tests (1105+238), 23 views, 35 scenarios, 112 sections |
 | **P3 — Enhance** | Phase 24 (Observability/Lineage) | PLANNED | OpenLineage, pipeline metrics, audit trail |
 | **P3 — Enhance** | Phase 25 (Standards Integration) | PLANNED | ISO 27001, BCBS 239, compliance matrix |
 | **P3 — Enhance** | Phase 26 (Migration Readiness) | PLANNED | SQLMesh, Arrow, metadata export, multi-platform SQL |

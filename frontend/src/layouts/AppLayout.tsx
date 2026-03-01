@@ -41,6 +41,7 @@ function getTourIdForPath(pathname: string): string | null {
     quality: "data-quality",
     reference: "reference-data",
     governance: "governance",
+    glossary: "glossary",
   };
   return map[seg] ?? "overview";
 }

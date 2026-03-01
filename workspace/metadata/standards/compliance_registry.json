@@ -1,0 +1,307 @@
+{
+  "registry_id": "standards_compliance",
+  "version": "1.0",
+  "description": "Consolidated standards compliance registry for audit and regulatory traceability",
+  "standards": [
+    {
+      "standard_id": "iso_6166",
+      "name": "ISO 6166 — ISIN",
+      "full_name": "International Securities Identification Number",
+      "category": "identification",
+      "compliance_level": "full",
+      "fields_mapped": ["product.isin"],
+      "regulatory_drivers": ["MiFID II RTS 25", "MAR Art. 16"],
+      "implementing_phases": [1],
+      "notes": "All 50 products have valid ISIN identifiers"
+    },
+    {
+      "standard_id": "iso_10383",
+      "name": "ISO 10383 — MIC",
+      "full_name": "Market Identifier Codes",
+      "category": "identification",
+      "compliance_level": "full",
+      "fields_mapped": ["venue.mic", "product.exchange_mic", "execution.venue_mic", "order.venue_mic"],
+      "regulatory_drivers": ["MiFID II RTS 25", "MAR Art. 16"],
+      "implementing_phases": [1],
+      "notes": "6 venues with valid MIC codes"
+    },
+    {
+      "standard_id": "iso_10962",
+      "name": "ISO 10962 — CFI",
+      "full_name": "Classification of Financial Instruments",
+      "category": "identification",
+      "compliance_level": "full",
+      "fields_mapped": ["product.cfi_code", "product.instrument_type"],
+      "regulatory_drivers": ["MiFID II RTS 25"],
+      "implementing_phases": [1],
+      "notes": "All products have valid CFI codes"
+    },
+    {
+      "standard_id": "iso_4217",
+      "name": "ISO 4217 — Currency Codes",
+      "full_name": "Codes for the Representation of Currencies",
+      "category": "identification",
+      "compliance_level": "full",
+      "fields_mapped": ["product.currency"],
+      "regulatory_drivers": ["MiFID II RTS 25"],
+      "implementing_phases": [1],
+      "notes": "USD, EUR, GBP, HKD currencies used"
+    },
+    {
+      "standard_id": "iso_3166",
+      "name": "ISO 3166-1 — Country Codes",
+      "full_name": "Codes for the Representation of Names of Countries",
+      "category": "identification",
+      "compliance_level": "full",
+      "fields_mapped": ["venue.country", "account.registration_country"],
+      "regulatory_drivers": ["MiFID II RTS 25"],
+      "implementing_phases": [1],
+      "notes": "Valid country codes on venues and accounts"
+    },
+    {
+      "standard_id": "iso_8601",
+      "name": "ISO 8601 — Date/Time",
+      "full_name": "Date and Time Format",
+      "category": "data_format",
+      "compliance_level": "full",
+      "fields_mapped": ["All date/time fields across all entities"],
+      "regulatory_drivers": ["General best practice"],
+      "implementing_phases": [1],
+      "notes": "YYYY-MM-DD format used consistently"
+    },
+    {
+      "standard_id": "fix_protocol",
+      "name": "FIX Protocol",
+      "full_name": "Financial Information eXchange",
+      "category": "messaging",
+      "compliance_level": "partial",
+      "fields_mapped": ["order.order_type (tag 40)", "order.status (tag 39)", "order.side (tag 54)", "order.time_in_force (tag 59)", "execution.exec_type (tag 150)", "execution.capacity (tag 1057)"],
+      "regulatory_drivers": ["Industry standard"],
+      "implementing_phases": [1],
+      "notes": "6 of 50+ FIX tags mapped to entity fields"
+    },
+    {
+      "standard_id": "eu_mar",
+      "name": "EU MAR",
+      "full_name": "EU Market Abuse Regulation",
+      "category": "regulatory",
+      "compliance_level": "full",
+      "fields_mapped": ["Detection models: wash_trading, spoofing, insider_dealing, market_manipulation, front_running"],
+      "regulatory_drivers": ["MAR Art. 12 (manipulation)", "MAR Art. 14 (insider dealing)", "MAR Art. 16 (detection)"],
+      "implementing_phases": [1, 4, 5],
+      "notes": "5 detection models aligned with MAR market abuse types"
+    },
+    {
+      "standard_id": "mifid2",
+      "name": "MiFID II",
+      "full_name": "Markets in Financial Instruments Directive II",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "fields_mapped": ["Entity fields per RTS 25", "Detection models per Art. 16"],
+      "regulatory_drivers": ["MiFID II Art. 16", "RTS 25"],
+      "implementing_phases": [1, 2],
+      "notes": "Entity fields and surveillance obligations. Gaps: Art. 26 transaction reporting, Art. 27 best execution, RTS 6 algo trading"
+    },
+    {
+      "standard_id": "dodd_frank",
+      "name": "Dodd-Frank Act",
+      "full_name": "Dodd-Frank Wall Street Reform and Consumer Protection Act",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "fields_mapped": ["Spoofing detection (§747)"],
+      "regulatory_drivers": ["Dodd-Frank §747"],
+      "implementing_phases": [1],
+      "notes": "Spoofing detection model aligned with §747 anti-spoofing provisions"
+    },
+    {
+      "standard_id": "finra",
+      "name": "FINRA Rules",
+      "full_name": "Financial Industry Regulatory Authority",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "fields_mapped": ["Wash trade detection (Rule 6140)", "Market manipulation (Rule 5210)"],
+      "regulatory_drivers": ["FINRA Rule 5210", "FINRA Rule 6140"],
+      "implementing_phases": [1],
+      "notes": "Wash trading and market manipulation detection aligned"
+    },
+    {
+      "standard_id": "emir",
+      "name": "EMIR",
+      "full_name": "European Market Infrastructure Regulation",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "fields_mapped": ["Product classification for derivative reporting"],
+      "regulatory_drivers": ["EMIR Art. 9"],
+      "implementing_phases": [1],
+      "notes": "Product entity supports derivative classification. Gap: Art. 9 transaction reporting"
+    },
+    {
+      "standard_id": "sec_rules",
+      "name": "SEC Rules",
+      "full_name": "Securities and Exchange Commission",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "fields_mapped": ["Insider dealing detection (Rule 10b-5)", "Wash trade detection (§9(a)(2))"],
+      "regulatory_drivers": ["SEC Rule 10b-5", "SEA §9(a)(2)"],
+      "implementing_phases": [1],
+      "notes": "Detection models aligned with SEC anti-fraud and anti-manipulation rules"
+    },
+    {
+      "standard_id": "iso_11179",
+      "name": "ISO/IEC 11179:2023",
+      "full_name": "Metadata Registries",
+      "category": "metadata",
+      "compliance_level": "full",
+      "fields_mapped": ["Business glossary term structure (Object Class + Property + Representation)"],
+      "regulatory_drivers": ["Data governance best practice"],
+      "implementing_phases": [23],
+      "notes": "Full Parts 1-6 compliance in glossary term decomposition"
+    },
+    {
+      "standard_id": "dama_dmbok",
+      "name": "DAMA-DMBOK 2.0",
+      "full_name": "Data Management Body of Knowledge",
+      "category": "data_management",
+      "compliance_level": "full",
+      "fields_mapped": ["11 knowledge areas mapped to platform capabilities"],
+      "regulatory_drivers": ["Enterprise data management maturity"],
+      "implementing_phases": [23],
+      "notes": "All 11 knowledge areas covered, 10 with high coverage"
+    },
+    {
+      "standard_id": "fibo",
+      "name": "FIBO",
+      "full_name": "Financial Industry Business Ontology (EDM Council)",
+      "category": "ontology",
+      "compliance_level": "partial",
+      "fields_mapped": ["fibo_class and fibo_namespace on glossary terms"],
+      "regulatory_drivers": ["Financial data interoperability"],
+      "implementing_phases": [23],
+      "notes": "Alignment via glossary term FIBO references, not full ontology implementation"
+    },
+    {
+      "standard_id": "bcbs_239",
+      "name": "BCBS 239",
+      "full_name": "Principles for Effective Risk Data Aggregation and Risk Reporting",
+      "category": "risk_management",
+      "compliance_level": "partial",
+      "fields_mapped": ["bcbs239_principle on glossary terms and semantic metrics"],
+      "regulatory_drivers": ["Basel Committee on Banking Supervision"],
+      "implementing_phases": [23],
+      "notes": "Principles 3-5 (Accuracy, Completeness, Timeliness) mapped to metrics and terms"
+    },
+    {
+      "standard_id": "iso_20022",
+      "name": "ISO 20022",
+      "full_name": "Financial Services — Universal Financial Industry Message Scheme",
+      "category": "messaging",
+      "compliance_level": "reference",
+      "fields_mapped": ["Informs glossary term naming conventions"],
+      "regulatory_drivers": ["SWIFT migration", "Industry standard"],
+      "implementing_phases": [23],
+      "notes": "Reference only — naming conventions aligned with ISO 20022 Business Concepts pattern"
+    }
+  ],
+  "gap_standards": [
+    {
+      "standard_id": "iso_17442",
+      "name": "ISO 17442 — LEI",
+      "full_name": "Legal Entity Identifier",
+      "category": "identification",
+      "compliance_level": "not_implemented",
+      "gap_description": "No LEI field on account or trader entities",
+      "regulatory_drivers": ["MiFID II Art. 26", "EMIR Art. 9"],
+      "suggested_phase": "24+"
+    },
+    {
+      "standard_id": "iso_18774",
+      "name": "ISO 18774 — FISN",
+      "full_name": "Financial Instrument Short Name",
+      "category": "identification",
+      "compliance_level": "not_implemented",
+      "gap_description": "No FISN field on product entity",
+      "regulatory_drivers": ["ANNA DSB"],
+      "suggested_phase": "24+"
+    },
+    {
+      "standard_id": "eu_ssr",
+      "name": "EU SSR",
+      "full_name": "Short Selling Regulation",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "No short sell flag on orders or accounts",
+      "regulatory_drivers": ["EU SSR Art. 5-8"],
+      "suggested_phase": "25+"
+    },
+    {
+      "standard_id": "mifid2_rts6",
+      "name": "MiFID II RTS 6",
+      "full_name": "Algorithmic Trading Requirements",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "No algo ID on orders or executions",
+      "regulatory_drivers": ["MiFID II RTS 6 Art. 1-8"],
+      "suggested_phase": "25+"
+    },
+    {
+      "standard_id": "mifid2_art27",
+      "name": "MiFID II Art. 27",
+      "full_name": "Best Execution Reporting",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "No venue comparison metrics for best execution analysis",
+      "regulatory_drivers": ["MiFID II Art. 27"],
+      "suggested_phase": "26+"
+    },
+    {
+      "standard_id": "anna_dsb_uti",
+      "name": "ANNA DSB UTI",
+      "full_name": "Unique Trade Identifier",
+      "category": "identification",
+      "compliance_level": "not_implemented",
+      "gap_description": "No UTI field on executions for derivative reporting",
+      "regulatory_drivers": ["EMIR Art. 9", "ANNA DSB"],
+      "suggested_phase": "24+"
+    },
+    {
+      "standard_id": "sftr",
+      "name": "SFTR",
+      "full_name": "Securities Financing Transactions Regulation",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "Securities financing transactions not in scope",
+      "regulatory_drivers": ["SFTR Art. 4"],
+      "suggested_phase": "27+"
+    },
+    {
+      "standard_id": "cftc",
+      "name": "CFTC Rules",
+      "full_name": "Commodity Futures Trading Commission",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "No CFTC-specific surveillance requirements",
+      "regulatory_drivers": ["CEA §4c"],
+      "suggested_phase": "25+"
+    },
+    {
+      "standard_id": "fca_mar",
+      "name": "FCA MAR",
+      "full_name": "UK Market Abuse Regulation (post-Brexit)",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "UK MAR not distinguished from EU MAR",
+      "regulatory_drivers": ["UK MAR"],
+      "suggested_phase": "25+"
+    },
+    {
+      "standard_id": "apac_regulators",
+      "name": "ASIC/MAS/HKMA",
+      "full_name": "Asia-Pacific Financial Regulators",
+      "category": "regulatory",
+      "compliance_level": "not_implemented",
+      "gap_description": "product.regulatory_scope=APAC exists but no specific APAC regulatory requirements",
+      "regulatory_drivers": ["ASIC MIR", "MAS SFA", "HKMA guidelines"],
+      "suggested_phase": "26+"
+    }
+  ]
+}

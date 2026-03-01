@@ -1,0 +1,67 @@
+{
+  "dimensions": [
+    {
+      "dimension_id": "asset_class",
+      "business_name": "Asset Class",
+      "definition": "Product asset class category for slicing metrics",
+      "source_entity": "product",
+      "source_field": "asset_class",
+      "values": ["equity", "fx", "commodity", "index", "fixed_income"],
+      "glossary_term_id": "financial_product"
+    },
+    {
+      "dimension_id": "model",
+      "business_name": "Detection Model",
+      "definition": "Surveillance detection model identifier",
+      "source_entity": "detection_model",
+      "source_field": "model_id",
+      "values": ["wash_trading", "spoofing", "insider_dealing", "market_manipulation", "front_running"],
+      "glossary_term_id": "alert_score"
+    },
+    {
+      "dimension_id": "venue",
+      "business_name": "Trading Venue",
+      "definition": "ISO 10383 Market Identifier Code of the trading venue",
+      "source_entity": "venue",
+      "source_field": "mic",
+      "values": ["XNYS", "XNAS", "XLON", "XPAR", "XHKG", "XFRA"],
+      "glossary_term_id": "market_venue"
+    },
+    {
+      "dimension_id": "trader",
+      "business_name": "Trader",
+      "definition": "Individual trader identifier for performance analysis",
+      "source_entity": "trader",
+      "source_field": "trader_id",
+      "values": [],
+      "glossary_term_id": "trader"
+    },
+    {
+      "dimension_id": "account",
+      "business_name": "Trading Account",
+      "definition": "Trading account for client-level analysis",
+      "source_entity": "account",
+      "source_field": "account_id",
+      "values": [],
+      "glossary_term_id": "trading_account"
+    },
+    {
+      "dimension_id": "business_date",
+      "business_name": "Business Date",
+      "definition": "Trading business date for time-series analysis",
+      "source_entity": "execution",
+      "source_field": "execution_date",
+      "values": [],
+      "glossary_term_id": ""
+    },
+    {
+      "dimension_id": "product_type",
+      "business_name": "Product Type",
+      "definition": "Financial instrument type classification",
+      "source_entity": "product",
+      "source_field": "instrument_type",
+      "values": ["common_stock", "call_option", "put_option", "future", "spot"],
+      "glossary_term_id": "financial_product"
+    }
+  ]
+}

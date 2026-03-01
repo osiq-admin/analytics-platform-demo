@@ -25,7 +25,8 @@
             "title": "Govern",
             "order": 3,
             "items": [
-                {"view_id": "governance", "label": "Data Governance", "path": "/governance", "icon": "Lock", "order": 0}
+                {"view_id": "glossary", "label": "Business Glossary", "path": "/glossary", "icon": "BookOpen", "order": 0},
+                {"view_id": "governance", "label": "Data Governance", "path": "/governance", "icon": "Lock", "order": 1}
             ]
         },
         {
