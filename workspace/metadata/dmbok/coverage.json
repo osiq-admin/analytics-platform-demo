@@ -1,0 +1,172 @@
+{
+  "dmbok_id": "dama_dmbok_coverage",
+  "version": "2.0",
+  "description": "DAMA-DMBOK 2.0 knowledge area coverage mapping for trade surveillance platform",
+  "knowledge_areas": [
+    {
+      "area_id": "data_governance",
+      "name": "Data Governance",
+      "description": "Overall management of data availability, usability, integrity, and security",
+      "coverage": "high",
+      "platform_capabilities": [
+        "PII/IPP classification and governance registry",
+        "Data masking and RBAC policies",
+        "Compliance requirement mapping (MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC)",
+        "Audit trail with immutable records",
+        "Business glossary with ownership matrix"
+      ],
+      "implementing_phases": [21, 22, 23],
+      "implementing_views": ["DataGovernance", "BusinessGlossary"]
+    },
+    {
+      "area_id": "data_architecture",
+      "name": "Data Architecture",
+      "description": "Models, policies, rules, and standards governing data collection, storage, integration, and use",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Medallion architecture (Bronze to Silver to Gold to Platinum)",
+        "Data contracts for tier transitions",
+        "Pipeline orchestration with stage management",
+        "Entity relationship modeling with ISO/FIX alignment",
+        "Architecture traceability across all views"
+      ],
+      "implementing_phases": [14, 15, 16, 17],
+      "implementing_views": ["MedallionOverview", "PipelineMonitor", "EntityDesigner"]
+    },
+    {
+      "area_id": "data_modeling",
+      "name": "Data Modeling & Design",
+      "description": "Analysis, design, building, testing, and maintenance of data models",
+      "coverage": "high",
+      "platform_capabilities": [
+        "8 ISO/FIX-aligned entity definitions",
+        "Entity Designer with field metadata and relationships",
+        "Schema Explorer with column-level detail",
+        "Relationship graph visualization (React Flow)",
+        "Entity comparison and field mapping"
+      ],
+      "implementing_phases": [1, 2, 3, 4, 5, 6],
+      "implementing_views": ["EntityDesigner", "SchemaExplorer", "MappingStudio"]
+    },
+    {
+      "area_id": "data_storage",
+      "name": "Data Storage & Operations",
+      "description": "Design, implementation, and support of stored data to maximize its value",
+      "coverage": "high",
+      "platform_capabilities": [
+        "DuckDB embedded analytics engine",
+        "Dual storage: CSV (human-editable) + Parquet (engine)",
+        "Lakehouse architecture with Apache Iceberg concepts",
+        "Metadata-driven JSON configuration on disk",
+        "Archive and retention management"
+      ],
+      "implementing_phases": [14, 20],
+      "implementing_views": ["DataManager", "AnalyticsTiers"]
+    },
+    {
+      "area_id": "data_security",
+      "name": "Data Security",
+      "description": "Policies and procedures to ensure proper authentication, authorization, access, and auditing",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Role-based access control (6 roles: admin, compliance_officer, analyst, auditor, data_steward, viewer)",
+        "Data masking policies (redact, partial, tokenize, hash, generalize)",
+        "PII classification (HIGH, MEDIUM, LOW)",
+        "Audit trail for unmask operations",
+        "Encryption-at-rest tracking via crypto_shred flags"
+      ],
+      "implementing_phases": [22],
+      "implementing_views": ["DataGovernance"]
+    },
+    {
+      "area_id": "data_integration",
+      "name": "Data Integration & Interoperability",
+      "description": "Processes related to movement and consolidation of data",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Bronze to Silver field mapping with transformation rules",
+        "Silver to Gold aggregation and enrichment pipelines",
+        "Connector framework for external data sources",
+        "Data onboarding workflow with validation",
+        "Cross-entity join and relationship resolution"
+      ],
+      "implementing_phases": [15, 16, 17],
+      "implementing_views": ["MappingStudio", "DataOnboarding", "PipelineMonitor"]
+    },
+    {
+      "area_id": "data_quality",
+      "name": "Data Quality",
+      "description": "Planning, implementation, and control of activities that apply quality management techniques to data",
+      "coverage": "high",
+      "platform_capabilities": [
+        "6 quality dimensions (completeness, accuracy, consistency, timeliness, uniqueness, validity)",
+        "Quality scoring engine with configurable weights",
+        "Quarantine service for data quality failures",
+        "Quality trends and historical tracking",
+        "Per-entity quality assessment"
+      ],
+      "implementing_phases": [18],
+      "implementing_views": ["DataQuality"]
+    },
+    {
+      "area_id": "reference_master_data",
+      "name": "Reference & Master Data",
+      "description": "Ongoing reconciliation and maintenance of core critical shared data",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Golden record management for 4 entity types (product, venue, account, trader)",
+        "301 golden records with matching and merging rules",
+        "Reference data validation and enrichment",
+        "Master data quality scoring",
+        "Cross-entity reference resolution"
+      ],
+      "implementing_phases": [19],
+      "implementing_views": ["ReferenceData"]
+    },
+    {
+      "area_id": "document_content",
+      "name": "Document & Content Management",
+      "description": "Activities surrounding the lifecycle of unstructured data",
+      "coverage": "medium",
+      "platform_capabilities": [
+        "Business glossary with ISO 11179 term definitions",
+        "Regulatory reference documentation",
+        "BDD scenario documentation",
+        "Architecture traceability documentation",
+        "Demo guide and walkthrough content"
+      ],
+      "implementing_phases": [23],
+      "implementing_views": ["BusinessGlossary"]
+    },
+    {
+      "area_id": "metadata_management",
+      "name": "Metadata Management",
+      "description": "Planning, implementation, and control of metadata",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Everything is metadata: entities, calculations, settings, models — all JSON on disk",
+        "Metadata Explorer for browsing all metadata types",
+        "22+ metadata types (entities, calculations, settings, detection_models, widgets, etc.)",
+        "Metadata-driven navigation, grids, views, themes, and workflows",
+        "Metadata editing with Monaco-based editor"
+      ],
+      "implementing_phases": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "implementing_views": ["MetadataExplorer", "MetadataEditor"]
+    },
+    {
+      "area_id": "data_warehousing_bi",
+      "name": "Data Warehousing & Business Intelligence",
+      "description": "Management of analytical data processing and the activities supporting business intelligence",
+      "coverage": "high",
+      "platform_capabilities": [
+        "Platinum tier with KPI generation and model effectiveness metrics",
+        "Interactive SQL Console with Monaco editor",
+        "Dashboard with metadata-driven widgets",
+        "Alert score distribution and trend analysis",
+        "Cross-asset concentration and volume analytics"
+      ],
+      "implementing_phases": [20],
+      "implementing_views": ["AnalyticsTiers", "SQLConsole", "Dashboard"]
+    }
+  ]
+}

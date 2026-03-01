@@ -1,0 +1,78 @@
+{
+  "gap_analysis_id": "entity_attribute_gaps",
+  "version": "1.0",
+  "description": "Entity attribute gap analysis based on ISO standards and regulatory requirements",
+  "entities": [
+    {
+      "entity_id": "product",
+      "current_field_count": 18,
+      "gaps": [
+        { "field_name": "lei_issuer", "type": "string", "standard": "ISO 17442", "regulatory_need": "MiFID II RTS 25 — issuer LEI for transaction reporting", "priority": "high", "glossary_term_id": "legal_entity_identifier" },
+        { "field_name": "fisn", "type": "string", "standard": "ISO 18774", "regulatory_need": "Financial Instrument Short Name — standardized abbreviated name", "priority": "medium", "glossary_term_id": "" },
+        { "field_name": "figi", "type": "string", "standard": "OMG FIGI", "regulatory_need": "Financial Instrument Global Identifier — vendor-neutral ID", "priority": "medium", "glossary_term_id": "" },
+        { "field_name": "sector", "type": "string", "standard": "GICS/ICB", "regulatory_need": "Sector classification for concentration analysis", "priority": "medium", "glossary_term_id": "concentration_risk" },
+        { "field_name": "notional_currency", "type": "string", "standard": "ISO 4217", "regulatory_need": "For FX/derivatives — notional currency vs. settlement currency", "priority": "low", "glossary_term_id": "" },
+        { "field_name": "price_multiplier", "type": "decimal", "standard": "FIX tag 231", "regulatory_need": "Contract multiplier for derivatives position sizing", "priority": "low", "glossary_term_id": "" }
+      ]
+    },
+    {
+      "entity_id": "execution",
+      "current_field_count": 13,
+      "gaps": [
+        { "field_name": "settlement_date", "type": "date", "standard": "ISO 8601", "regulatory_need": "T+1/T+2 settlement tracking", "priority": "high", "glossary_term_id": "settlement" },
+        { "field_name": "net_amount", "type": "decimal", "standard": "FIX tag 118", "regulatory_need": "Gross notional value of the execution", "priority": "high", "glossary_term_id": "" },
+        { "field_name": "counterparty_lei", "type": "string", "standard": "ISO 17442", "regulatory_need": "Counterparty identification for EMIR reporting", "priority": "high", "glossary_term_id": "counterparty" },
+        { "field_name": "algo_id", "type": "string", "standard": "MiFID II RTS 6", "regulatory_need": "Algorithm identifier for algo-generated executions", "priority": "medium", "glossary_term_id": "algo_strategy" },
+        { "field_name": "transaction_reference", "type": "string", "standard": "ANNA DSB UTI", "regulatory_need": "Trade repository submission identifier", "priority": "medium", "glossary_term_id": "unique_trade_identifier" }
+      ]
+    },
+    {
+      "entity_id": "order",
+      "current_field_count": 15,
+      "gaps": [
+        { "field_name": "client_order_id", "type": "string", "standard": "FIX tag 11 (ClOrdID)", "regulatory_need": "Canonical client reference — mandatory MiFID II RTS 25", "priority": "high", "glossary_term_id": "" },
+        { "field_name": "stop_price", "type": "decimal", "standard": "FIX tag 99", "regulatory_need": "Stop orders — for spoofing detection (stop-loss manipulation)", "priority": "medium", "glossary_term_id": "spoofing" },
+        { "field_name": "display_quantity", "type": "decimal", "standard": "FIX tag 111", "regulatory_need": "Iceberg order visible quantity — relevant for layering detection", "priority": "medium", "glossary_term_id": "layering" },
+        { "field_name": "algo_strategy_id", "type": "string", "standard": "MiFID II RTS 6", "regulatory_need": "Links order to algorithmic trading strategy", "priority": "medium", "glossary_term_id": "algo_strategy" }
+      ]
+    },
+    {
+      "entity_id": "account",
+      "current_field_count": 10,
+      "gaps": [
+        { "field_name": "lei", "type": "string", "standard": "ISO 17442", "regulatory_need": "Legal Entity Identifier — mandatory for MiFID II/EMIR", "priority": "high", "glossary_term_id": "legal_entity_identifier" },
+        { "field_name": "beneficial_owner_id", "type": "string", "standard": "AML 4th Directive", "regulatory_need": "Ultimate beneficial owner for KYC/AML", "priority": "high", "glossary_term_id": "beneficial_owner" },
+        { "field_name": "short_sell_eligible", "type": "boolean", "standard": "EU SSR", "regulatory_need": "Short selling regulation eligibility flag", "priority": "medium", "glossary_term_id": "short_selling" },
+        { "field_name": "margin_account", "type": "boolean", "standard": "FINRA Rule 4210", "regulatory_need": "Margin account flag for leverage risk monitoring", "priority": "low", "glossary_term_id": "" }
+      ]
+    },
+    {
+      "entity_id": "trader",
+      "current_field_count": 6,
+      "gaps": [
+        { "field_name": "regulatory_qualification", "type": "string", "standard": "FINRA Series 7/63", "regulatory_need": "Required qualifications for trader authorization", "priority": "medium", "glossary_term_id": "" },
+        { "field_name": "jurisdiction", "type": "string", "standard": "ISO 3166", "regulatory_need": "Trader's regulatory jurisdiction", "priority": "medium", "glossary_term_id": "" },
+        { "field_name": "supervisor_id", "type": "string", "standard": "", "regulatory_need": "Manager/supervisor chain for escalation workflows", "priority": "low", "glossary_term_id": "" }
+      ]
+    },
+    {
+      "entity_id": "venue",
+      "current_field_count": 8,
+      "gaps": [
+        { "field_name": "segment_mic", "type": "string", "standard": "ISO 10383", "regulatory_need": "Operating MIC vs. segment MIC distinction", "priority": "medium", "glossary_term_id": "market_venue" },
+        { "field_name": "settlement_cycle", "type": "string", "standard": "", "regulatory_need": "T+1/T+2 settlement cycle for the venue", "priority": "low", "glossary_term_id": "settlement" },
+        { "field_name": "supported_order_types", "type": "array", "standard": "FIX", "regulatory_need": "Which order types (market, limit, stop, iceberg) the venue accepts", "priority": "low", "glossary_term_id": "" }
+      ]
+    },
+    {
+      "entity_id": "md_eod",
+      "current_field_count": 10,
+      "gaps": []
+    },
+    {
+      "entity_id": "md_intraday",
+      "current_field_count": 8,
+      "gaps": []
+    }
+  ]
+}
