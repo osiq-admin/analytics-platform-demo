@@ -345,6 +345,7 @@
 | M248 | Calculation Optimization Models | COMPLETE | 1 | 1 | CalcFingerprint, CalcResultLog Pydantic models |
 | M249 | CalcResultService + Gold Iceberg | COMPLETE | 3 | 3 | SHA-256 fingerprinting, skip detection (immutable+param-dependent), audit logging, Gold Iceberg writes, 20 tests |
 | M250 | Run Versioning Service | COMPLETE | 2 | 2 | RunVersioningService: daily/backfill/rerun/correction runs, Iceberg branch lifecycle, tagging, rollback, persistence, 12 tests |
+| M251 | Materialized View Manager | COMPLETE | 2 | 2 | MaterializedViewService: metadata-driven MV config, refresh (single/all/by-strategy), DuckDB OLAP layer, 4 MV definitions, 11 tests |
 
 ---
 
