@@ -128,15 +128,19 @@ class ArchiveService:
         for p in policies:
             all_required.update(p.data_types)
         gdpr_policies = [p for p in policies if p.gdpr_relevant]
+        total_size = sum(e.size_bytes for e in manifest.entries)
+        dates = [e.archived_at for e in manifest.entries if e.archived_at]
+        coverage = round(
+            len(archived_entities) / max(len(all_required), 1) * 100, 1
+        )
 
         return {
             "total_policies": len(policies),
-            "total_entries": manifest.total_entries,
-            "archived_entities": sorted(archived_entities),
-            "required_entities": sorted(all_required),
-            "coverage_pct": round(
-                len(archived_entities) / max(len(all_required), 1) * 100, 1
-            ),
-            "gdpr_policies": len(gdpr_policies),
-            "last_export": manifest.last_export,
+            "entities_covered": len(archived_entities),
+            "total_archived": manifest.total_entries,
+            "gdpr_relevant": len(gdpr_policies),
+            "total_size_bytes": total_size,
+            "oldest_archive": min(dates) if dates else "",
+            "newest_archive": max(dates) if dates else "",
+            "compliance_status": "compliant" if coverage >= 100 else "partial",
         }

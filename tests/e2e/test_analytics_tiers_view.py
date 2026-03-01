@@ -56,9 +56,8 @@ class TestAnalyticsTiersView:
     def test_archive_tab_shows_policies(self):
         """Archive tab shows retention policies with regulation names."""
         self.page.locator("[data-tour='analytics-tier-tabs'] button", has_text="Archive").click()
-        self.page.wait_for_load_state("networkidle")
-        self.page.wait_for_timeout(500)
-        expect(self.page.locator("[data-tour='analytics-archive-policies']")).to_be_visible()
+        # Wait for the policies panel to appear after API calls complete
+        expect(self.page.locator("[data-tour='analytics-archive-policies']")).to_be_visible(timeout=10000)
         # MiFID II is the first retention policy in the metadata
         expect(self.page.locator("text=MiFID II").first).to_be_visible()
 
@@ -69,8 +68,8 @@ class TestAnalyticsTiersView:
     def test_archive_gdpr_policy_visible(self):
         """Archive tab shows GDPR retention policy with relevant flag."""
         self.page.locator("[data-tour='analytics-tier-tabs'] button", has_text="Archive").click()
-        self.page.wait_for_load_state("networkidle")
-        self.page.wait_for_timeout(500)
+        # Wait for policies to load from API
+        expect(self.page.locator("[data-tour='analytics-archive-policies']")).to_be_visible(timeout=10000)
         # GDPR policy row should show "Yes" for gdpr_relevant
         expect(self.page.locator("text=GDPR").first).to_be_visible()
         # The GDPR row has gdpr_relevant=true, rendered as "Yes"

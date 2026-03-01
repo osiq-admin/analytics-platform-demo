@@ -107,12 +107,13 @@ def test_compliance_summary(svc: ArchiveService):
     """Summary has expected keys and correct initial values."""
     summary = svc.get_compliance_summary()
     assert summary["total_policies"] == 2
-    assert summary["total_entries"] == 0
-    assert summary["coverage_pct"] == 0.0
-    assert "archived_entities" in summary
-    assert "required_entities" in summary
-    assert "gdpr_policies" in summary
-    assert "last_export" in summary
+    assert summary["total_archived"] == 0
+    assert summary["entities_covered"] == 0
+    assert summary["gdpr_relevant"] >= 0
+    assert summary["compliance_status"] in ("compliant", "partial")
+    assert "total_size_bytes" in summary
+    assert "oldest_archive" in summary
+    assert "newest_archive" in summary
 
 
 def test_gdpr_crypto_shred_flag(svc: ArchiveService):

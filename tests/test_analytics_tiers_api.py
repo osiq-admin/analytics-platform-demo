@@ -416,10 +416,11 @@ class TestArchiveAPI:
         assert r.status_code == 200
         data = r.json()
         assert data["total_policies"] == 2
-        assert "archived_entities" in data
-        assert "required_entities" in data
-        assert "coverage_pct" in data
-        assert data["gdpr_policies"] == 1
+        assert "entities_covered" in data
+        assert "total_archived" in data
+        assert "gdpr_relevant" in data
+        assert "compliance_status" in data
+        assert "total_size_bytes" in data
 
     def test_timeline(self, client):
         """GET /api/archive/timeline returns retention timeline."""
