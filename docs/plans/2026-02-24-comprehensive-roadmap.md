@@ -12,14 +12,14 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-19 + 7B + Overhauls, M0-M227):**
+**What's built (Phases 1-20 + 7B + Overhauls, M0-M242):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 20 frontend views, 1018 tests (794 backend + 224 E2E), Playwright verified
+- 21 frontend views, 1116 tests (885 backend + 231 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 81.9% metadata-driven (94 sections across 20 views)
+- 100 architecture sections across 21 views
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
@@ -1338,7 +1338,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P1 — Next** | Phase 17 (Silver→Gold Pipeline) | **COMPLETE** | M197-M204: Contract validator, pipeline orchestrator, Silver→Gold mapping + data contract, MappingStudio tier selectors, PipelineMonitor overhaul (true DAG + medallion stages), MedallionOverview execution status — 800 tests (590+210), 30 scenarios, 82 sections |
 | **P2 — Important** | Phase 18 (Data Quality) | **COMPLETE** | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling — 862 tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 | **P2 — Important** | Phase 19 (Reference Data/MDM) | **COMPLETE** | M216-M227: Golden records (301 across 4 entities), reconciliation engine, 9 API endpoints, ReferenceData view, S32 scenario — 1018 tests (794+224), 20 views |
-| **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | PLANNED | KPIs, testing isolation, regulatory retention |
+| **P2 — Important** | Phase 20 (Platinum/Sandbox/Archive) | **COMPLETE** | M228-M242: Platinum KPIs, Sandbox isolation, Archive retention, 3 services, 3 API routers (16 endpoints), AnalyticsTiers view, S33 scenario — 1116 tests (885+231), 21 views, 100 architecture sections |
 | **P2 — Important** | Phase 21 (Data Governance) | PLANNED | Classification, PII detection, compliance |
 | **P2 — Important** | Phase 22 (Masking/Encryption/RBAC) | PLANNED | Dynamic masking, column encryption, role-based access |
 | **P3 — Enhance** | Phase 23 (Business Glossary) | PLANNED | ISO 11179, semantic layer, DAMA-DMBOK |

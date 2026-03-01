@@ -18,7 +18,8 @@
                 {"view_id": "onboarding", "label": "Onboarding", "path": "/onboarding", "icon": "Upload", "order": 0},
                 {"view_id": "mappings", "label": "Mappings", "path": "/mappings", "icon": "GitBranch", "order": 1},
                 {"view_id": "quality", "label": "Data Quality", "path": "/quality", "icon": "ShieldCheck", "order": 2},
-                {"view_id": "medallion", "label": "Medallion", "path": "/medallion", "icon": "Layers", "order": 3}
+                {"view_id": "medallion", "label": "Medallion", "path": "/medallion", "icon": "Layers", "order": 3},
+                {"view_id": "analytics-tiers", "label": "Analytics Tiers", "path": "/analytics-tiers", "icon": "Gem", "order": 4}
             ]
         },
         {

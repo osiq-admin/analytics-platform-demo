@@ -62,6 +62,26 @@
       "entities": ["product", "venue", "account", "trader"],
       "parallel": true,
       "contract_id": "silver_to_reference_product"
+    },
+    {
+      "stage_id": "gold_to_sandbox",
+      "name": "Gold to Sandbox",
+      "tier_from": "gold",
+      "tier_to": "sandbox",
+      "order": 7,
+      "depends_on": ["silver_to_gold"],
+      "entities": ["sandbox_snapshot"],
+      "parallel": false
+    },
+    {
+      "stage_id": "gold_to_archive",
+      "name": "Gold to Archive",
+      "tier_from": "gold",
+      "tier_to": "archive",
+      "order": 8,
+      "depends_on": ["silver_to_gold"],
+      "entities": ["order", "execution", "alert", "account", "trader"],
+      "parallel": true
     }
   ]
 }

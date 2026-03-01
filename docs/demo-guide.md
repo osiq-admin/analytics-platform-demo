@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (31 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (33 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 32 guided scenarios in 12 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 33 guided scenarios in 13 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Analytics). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 23 tours and 32 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 24 tours and 33 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -408,7 +408,7 @@ Click **Skip to End** to show the final state.
 - **AI-assisted**: natural language → SQL → investigation, AI calc generation
 - **Governance workflow**: use cases → submissions → review → approve/reject
 - **5-layer validation**: static analysis, schema compat, sandbox exec, impact, regression
-- **31 guided scenarios**: Watch Demo or Try It Yourself mode across 12 categories
+- **33 guided scenarios**: Watch Demo or Try It Yourself mode across 13 categories
 - **Single command**: `./start.sh` — no Docker, no external databases
 
 ## Act 4: Model Composition Wizard — Phase 7B
@@ -537,14 +537,14 @@ Click **Skip to End** to show the final state.
 ### 7.1 Scenario Browser
 
 **Key Points:**
-- 31 guided scenarios organized in 12 categories
+- 33 guided scenarios organized in 13 categories
 - Each scenario has: name, description, difficulty badge (beginner/intermediate/advanced), estimated time
 - Two modes: **Watch Demo** (auto-play) and **Try It Yourself** (interactive with hints)
 - Completed scenarios get a checkmark
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Analytics
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 116 operations defined across 19 views
+- 122 operations defined across 21 views
 
 ### 7.3 Scenario Categories
 
@@ -578,6 +578,7 @@ Click **Skip to End** to show the final state.
 | Mapping | S29 | Beginner |
 | Medallion Pipeline | S30 | Intermediate |
 | Governance | S31-S32 | Intermediate |
+| Analytics | S33 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -699,6 +700,29 @@ Navigate to **Define → Reference Data** to browse golden records for the 4 mas
 
 **S32: Reference Data — Golden Record Reconciliation** (Governance category, intermediate difficulty) — available in the Scenarios browser. Walks through entity selection, golden record browsing, provenance inspection, and reconciliation.
 
+## Analytics Tiers (AnalyticsTiers)
+
+Navigate to **Ingest → Analytics Tiers** to access the extended analytical tiers view covering Platinum, Sandbox, and Archive.
+
+### Key Points
+- **Path**: `/analytics-tiers`
+- **Purpose**: Manage the three extended analytical tiers of the medallion architecture
+- **Features**:
+  - **3-tab layout**: Platinum, Sandbox, Archive — each tier with dedicated management UI
+  - **Platinum tab**: Pre-built KPI dashboard with daily alert summaries, model effectiveness metrics, score distribution statistics, and regulatory report datasets. KPIs are metadata-defined SQL aggregations that run on Gold tier data.
+  - **Sandbox tab**: Isolated testing environment with copy-on-write sandbox creation. Users can modify settings, thresholds, and mappings without production impact. Supports side-by-side comparison of sandbox vs. production results, with promote or discard workflow.
+  - **Archive tab**: Regulatory retention policy management. Displays retention periods per regulation (MiFID II 5-7yr, Dodd-Frank 5yr, MAR 5yr, FINRA 6yr, GDPR minimal). Archive format uses compressed Parquet with metadata sidecar. GDPR vs. regulatory retention resolved via crypto-shredding.
+
+### Interactive: Explore Analytics Tiers
+1. Navigate to **Ingest → Analytics Tiers**
+2. Start on the **Platinum** tab — review KPI cards showing alert summaries and model effectiveness
+3. Switch to the **Sandbox** tab — create a new sandbox session, modify thresholds, compare results
+4. Switch to the **Archive** tab — review retention policies per regulation, archive status per entity
+5. Key takeaway: "Extended tiers support pre-built analytics (Platinum), safe testing (Sandbox), and regulatory compliance (Archive) — all metadata-driven"
+
+### Guided Scenario
+**S33: Analytics Tiers Exploration** (Analytics category, intermediate difficulty) — available in the Scenarios browser. Walks through Platinum KPIs, Sandbox isolation testing, and Archive retention policies.
+
 ---
 
 ## Architecture Traceability Mode — M128
@@ -734,7 +758,7 @@ Each section is rated on a 5-level metadata maturity scale:
 
 ### Coverage
 
-- **86 traced sections** across all 19 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
+- **100 traced sections** across all 21 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
 - Every view has 3-6 traced sections covering its major panels and features
 - Cross-cutting sections cover: sidebar navigation, demo toolbar, theme switcher, tour system, scenario system, help system
 

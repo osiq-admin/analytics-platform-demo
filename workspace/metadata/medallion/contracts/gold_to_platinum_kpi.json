@@ -1,0 +1,19 @@
+{
+  "contract_id": "gold_to_platinum_kpi",
+  "source_tier": "gold",
+  "target_tier": "platinum",
+  "entity": "kpi",
+  "description": "Aggregate gold-tier alerts and calculation results into executive KPI dashboards",
+  "field_mappings": [
+    {"source": "alert_id", "target": "kpi_alert_ref", "transform": "count_distinct"},
+    {"source": "score", "target": "avg_score", "transform": "avg_round_2dp"},
+    {"source": "model_id", "target": "model_ref", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "field": "kpi_id"},
+    {"rule": "completeness", "threshold": 0.95}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 95.0},
+  "owner": "surveillance-ops",
+  "classification": "restricted"
+}

@@ -6,7 +6,7 @@ import { useNavigationStore } from "../stores/navigationStore.ts";
 // Fallback navigation if API is unavailable — mirrors workspace/metadata/navigation/main.json
 const FALLBACK_NAVIGATION = [
   { title: "Define", items: [{ label: "Entities", path: "/entities" }, { label: "Calculations", path: "/metadata" }, { label: "Settings", path: "/settings" }, { label: "Reference Data", path: "/reference" }] },
-  { title: "Ingest", items: [{ label: "Onboarding", path: "/onboarding" }, { label: "Mappings", path: "/mappings" }, { label: "Data Quality", path: "/quality" }, { label: "Medallion", path: "/medallion" }] },
+  { title: "Ingest", items: [{ label: "Onboarding", path: "/onboarding" }, { label: "Mappings", path: "/mappings" }, { label: "Data Quality", path: "/quality" }, { label: "Medallion", path: "/medallion" }, { label: "Analytics Tiers", path: "/analytics-tiers" }] },
   { title: "Detect", items: [{ label: "Models", path: "/models" }, { label: "Use Cases", path: "/use-cases" }, { label: "Pipeline", path: "/pipeline" }, { label: "Dashboard", path: "/dashboard" }] },
   { title: "Investigate", items: [{ label: "Risk Cases", path: "/alerts" }, { label: "Submissions", path: "/submissions" }, { label: "Regulatory Map", path: "/regulatory" }] },
   { title: "Advanced", items: [{ label: "Schema", path: "/schema" }, { label: "SQL Console", path: "/sql" }, { label: "Data", path: "/data" }, { label: "Editor", path: "/editor" }, { label: "Assistant", path: "/assistant" }] },

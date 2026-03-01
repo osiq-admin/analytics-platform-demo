@@ -1,0 +1,109 @@
+{
+  "kpi_id": "regulatory_report",
+  "name": "Regulatory Report",
+  "category": "regulatory_report",
+  "generated_at": "2026-02-28T20:31:49.450575+00:00",
+  "period": "2026-02",
+  "data_points": [
+    {
+      "dimension_values": {
+        "regulation": "MAR",
+        "model_id": "market_price_ramping"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 23,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "MAR",
+        "model_id": "insider_dealing"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 6,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "MAR",
+        "model_id": "spoofing_layering"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 3,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "MiFID II",
+        "model_id": "wash_trading_full_day"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 11,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "MiFID II",
+        "model_id": "wash_trading_intraday"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 10,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "MiFID II",
+        "model_id": "market_price_ramping"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 10,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "Dodd-Frank",
+        "model_id": "wash_trading_full_day"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 7,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "Dodd-Frank",
+        "model_id": "spoofing_layering"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 6,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "FINRA",
+        "model_id": "wash_trading_full_day"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 24,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "FINRA",
+        "model_id": "wash_trading_intraday"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 20,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "regulation": "FINRA",
+        "model_id": "spoofing_layering"
+      },
+      "metric_name": "alert_count",
+      "metric_value": 5,
+      "period": "2026-02"
+    }
+  ],
+  "record_count": 11
+}

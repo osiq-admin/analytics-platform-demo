@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M227 Phase 19 + QA Toolkit Complete; 1018 total tests: 794 backend + 224 E2E, 20 views, 32 scenarios, 94 architecture sections, 971 modules)
+**Last Updated**: 2026-02-28 (M242 Phase 20 Complete; 1116 total tests: 885 backend + 231 E2E, 21 views, 33 scenarios, 100 architecture sections, 972 modules)
 
 ---
 
@@ -56,6 +56,7 @@
 | Data Quality, Quarantine & Profiling (Phase 18) | COMPLETE | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios — 862 total tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 | Reference Data & MDM (Phase 19) | COMPLETE | M216-M227: Golden records for 4 entities (product/venue/account/trader), reconciliation engine with exact+fuzzy matching, field-level provenance, 9 API endpoints, ReferenceData view, 4 data contracts, S32 scenario — 1018 total tests (794+224), 20 views, 32 scenarios, 94 architecture sections |
 | QA Automation Toolkit | COMPLETE | `qa/` package: test runner, quality scanner (ruff/bandit/radon/vulture/coverage), regression detection, flaky test detection, quality gate, file watcher, git pre-push hooks. All 6 quality tools PASS. All guidelines updated |
+| Extended Analytical Tiers (Phase 20) | COMPLETE | M228-M242: Platinum KPIs, Sandbox isolation, Archive retention, 3 services, 3 API routers (16 endpoints), AnalyticsTiers view, ~90 backend tests, 7 E2E tests, 6 architecture sections, S33 scenario — 1116 total tests (885+231), 21 views, 33 scenarios, 100 architecture sections |
 
 ---
 
@@ -331,6 +332,26 @@
 | M225 | Tours, Scenarios, Operations, Architecture | COMPLETE | 3 | 3 | reference-data tour (4 steps), S32 scenario, 6 operations, 4 architecture sections (94 total) |
 | M226 | Full Test Suite + Playwright Verification | COMPLETE | 2 | 2 | 705 backend + 224 E2E, 971 modules, light+dark mode verified |
 | M227 | E2E Tests + Documentation + PR | COMPLETE | 2 | 2 | 7 E2E tests, all docs updated, count sync, PR |
+
+### Phase 20: Extended Analytical Tiers — Platinum, Sandbox, Archive (M228-M242)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M228 | Pydantic Models + Metadata Schema | COMPLETE | 3 | 3 | Platinum KPI, Sandbox session, Archive policy models + metadata JSON files |
+| M229 | Platinum Service + API | COMPLETE | 3 | 3 | PlatinumService with KPI execution engine, /api/platinum/* endpoints |
+| M230 | Sandbox Service + API | COMPLETE | 3 | 3 | SandboxService with copy-on-write isolation, /api/sandbox/* endpoints |
+| M231 | Archive Service + API | COMPLETE | 3 | 3 | ArchiveService with retention policies, /api/archive/* endpoints |
+| M232 | Backend Test Suite | COMPLETE | 3 | 3 | ~90 backend tests across 3 services and 3 API routers |
+| M233 | AnalyticsTiers View — Scaffold + Tabs | COMPLETE | 3 | 3 | 21st view with 3 tabs: Platinum, Sandbox, Archive |
+| M234 | Platinum Tab — KPI Dashboard | COMPLETE | 3 | 3 | KPI cards, score distribution chart, model effectiveness metrics |
+| M235 | Sandbox Tab — Isolation Manager | COMPLETE | 3 | 3 | Session list, create/compare/promote/discard workflow |
+| M236 | Archive Tab — Retention Policies | COMPLETE | 3 | 3 | Policy list, retention periods per regulation, archive status |
+| M237 | Navigation + Route + Sidebar | COMPLETE | 2 | 2 | Lazy route, sidebar entry, navigation metadata update |
+| M238 | Tours, Scenarios, Operations | COMPLETE | 2 | 2 | analytics-tiers tour, S33 scenario, 6 operations |
+| M239 | Architecture Registry | COMPLETE | 2 | 2 | 6 new sections (100 total), maturity ratings |
+| M240 | E2E Tests | COMPLETE | 2 | 2 | 7 E2E Playwright tests for AnalyticsTiers view |
+| M241 | Full Test Suite + Build Verification | COMPLETE | 2 | 2 | 885 backend + 231 E2E tests passing, 972 frontend modules |
+| M242 | Phase D Documentation Sweep | COMPLETE | 2 | 2 | Update all docs, sync counts, commit |
 
 ---
 

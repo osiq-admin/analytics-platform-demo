@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 94 sections across 20 views + 3 cross-cutting components.
+// 100 sections across 21 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -3847,6 +3847,202 @@ export const VIEW_TRACES: ViewTrace[] = [
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
           "Reconciliation fully driven by API with metadata-based matching rules",
+        metadataOpportunities: [],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // VIEW 23: Analytics Tiers
+  // =========================================================================
+  {
+    viewId: "analytics-tiers",
+    viewName: "Analytics Tiers",
+    route: "/analytics-tiers",
+    sections: [
+      {
+        id: "analytics-tiers.tabs",
+        displayName: "Tier Tab Selector",
+        viewId: "analytics-tiers",
+        description:
+          "Tab bar switching between Platinum KPIs, Sandbox testing, and Archive management — three operational tiers beyond the core medallion pipeline",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders tab bar and conditional tier panels" },
+        ],
+        stores: [],
+        apis: [],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "mostly-metadata-driven",
+        maturityExplanation:
+          "Tab labels are hardcoded but content within each tab is fully metadata-driven from API",
+        metadataOpportunities: ["Could load tab definitions from metadata API"],
+      },
+      {
+        id: "analytics-tiers.platinum",
+        displayName: "Platinum KPI Dashboard",
+        viewId: "analytics-tiers",
+        description:
+          "Browse pre-built KPI datasets aggregated from Gold tier detection results. Shows dataset name, record count, freshness, aggregation type, and column definitions",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders Platinum KPI dataset list and detail panel" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/analytics/platinum/datasets",
+            role: "Returns list of Platinum KPI datasets with metadata",
+            routerFile: "backend/api/analytics.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/analytics/platinum/*.json",
+            category: "metadata",
+            role: "Platinum KPI dataset definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "KPI datasets fully loaded from metadata API with definitions from workspace/metadata/analytics/platinum/",
+        metadataOpportunities: [],
+      },
+      {
+        id: "analytics-tiers.sandbox",
+        displayName: "Sandbox Lifecycle Manager",
+        viewId: "analytics-tiers",
+        description:
+          "Create, run, and manage isolated sandbox environments for testing threshold and model changes against cloned production data",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders sandbox list, creation form, and lifecycle controls" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/analytics/sandbox",
+            role: "Returns list of sandbox environments",
+            routerFile: "backend/api/analytics.py",
+          },
+          {
+            method: "POST",
+            path: "/api/analytics/sandbox",
+            role: "Creates a new sandbox environment",
+            routerFile: "backend/api/analytics.py",
+          },
+          {
+            method: "POST",
+            path: "/api/analytics/sandbox/{sandbox_id}/run",
+            role: "Executes a sandbox run",
+            routerFile: "backend/api/analytics.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/analytics/sandbox/*.json",
+            category: "metadata",
+            role: "Sandbox environment definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Sandbox environments fully managed via API with metadata definitions",
+        metadataOpportunities: [],
+      },
+      {
+        id: "analytics-tiers.archive",
+        displayName: "Archive Retention Dashboard",
+        viewId: "analytics-tiers",
+        description:
+          "View retention policies per tier and browse archived datasets — hot/warm/cold storage durations, compression settings, and regulatory hold flags",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders archive retention policies and dataset list" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/analytics/archive/policies",
+            role: "Returns archive retention policies",
+            routerFile: "backend/api/analytics.py",
+          },
+          {
+            method: "GET",
+            path: "/api/analytics/archive/datasets",
+            role: "Returns archived datasets with status",
+            routerFile: "backend/api/analytics.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/analytics/archive/*.json",
+            category: "metadata",
+            role: "Archive retention policy definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Archive policies and datasets fully driven by metadata API",
+        metadataOpportunities: [],
+      },
+      {
+        id: "analytics-tiers.sandbox-comparison",
+        displayName: "Sandbox Comparison Panel",
+        viewId: "analytics-tiers",
+        description:
+          "Side-by-side comparison of sandbox results vs production — alert counts, score distributions, and threshold impact analysis",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders comparison table with production vs sandbox metrics" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/analytics/sandbox/{sandbox_id}/compare",
+            role: "Returns production vs sandbox comparison metrics",
+            routerFile: "backend/api/analytics.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Comparison data fully computed and served by API",
+        metadataOpportunities: [],
+      },
+      {
+        id: "analytics-tiers.retention-timeline",
+        displayName: "Retention Policy Timeline",
+        viewId: "analytics-tiers",
+        description:
+          "Visual timeline showing retention lifecycle stages (hot → warm → cold → delete) for each tier, with regulatory hold indicators",
+        files: [
+          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders retention timeline visualization" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/analytics/archive/policies",
+            role: "Returns retention policies with lifecycle stages",
+            routerFile: "backend/api/analytics.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/analytics/archive/policies.json",
+            category: "metadata",
+            role: "Retention policy lifecycle definitions",
+          },
+        ],
+        technologies: [],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Retention timeline fully driven by archive policy metadata",
         metadataOpportunities: [],
       },
     ],
