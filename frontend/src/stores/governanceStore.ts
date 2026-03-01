@@ -101,14 +101,8 @@ export const useGovernanceStore = create<GovernanceState>((set) => ({
 
   switchRole: async (roleId: string) => {
     try {
-      const data = await api.post<{ current_role: string; roles: RoleDefinition[] }>(
-        "/governance/switch-role",
-        { role_id: roleId }
-      );
-      set({
-        currentRole: data.current_role ?? roleId,
-        roles: data.roles ?? [],
-      });
+      await api.post<RoleDefinition>("/governance/switch-role", { role_id: roleId });
+      set({ currentRole: roleId });
     } catch (e) {
       set({ error: String(e) });
     }
