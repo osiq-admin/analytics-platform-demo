@@ -25,6 +25,7 @@ const MedallionOverview = lazy(() => import("./views/MedallionOverview/index.tsx
 const DataOnboarding = lazy(() => import("./views/DataOnboarding/index.tsx"));
 const DataQuality = lazy(() => import("./views/DataQuality/index.tsx"));
 const ReferenceData = lazy(() => import("./views/ReferenceData/index.tsx"));
+const DataGovernance = lazy(() => import("./views/DataGovernance/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +46,9 @@ export const routes: RouteObject[] = [
       { path: "mappings", element: <MappingStudio /> },
       { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
+
+      // Govern — data governance
+      { path: "governance", element: <Suspense fallback={null}><DataGovernance /></Suspense> },
 
       // Detect — models, use cases, pipeline, dashboard
       { path: "models", element: <ModelComposer /> },
