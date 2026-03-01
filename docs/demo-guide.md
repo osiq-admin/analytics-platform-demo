@@ -826,6 +826,41 @@ Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metad
 
 ---
 
+## Data Governance — Phase 22
+
+Phase 22 adds dynamic data masking, role-based access control, and audit-aware PII protection. Navigate to `/governance` (Govern > Data Governance in sidebar).
+
+### Walkthrough A: Switch Roles and Compare
+
+1. Navigate to **Data Governance** (`/governance`)
+2. Note the **role indicator** in the app header — defaults to "Surveillance Analyst"
+3. On the **Masking Policies** tab, review the 7 masking policies — each shows the entity, field, classification level, masking type, and which roles can see unmasked data
+4. Switch to the **Data Preview** tab
+5. See trader data with **masked values** — trader_name shows partial masking (A***e), trader_id shows a hex token
+6. Click the **role switcher** in the header and select "Compliance Officer"
+7. The data preview **instantly updates** — all fields now show unmasked: "Alice Smith", "T001"
+8. Key takeaway: "The same API, the same data, dynamically masked based on who is looking"
+
+### Walkthrough B: Audit Log Protection
+
+1. Switch to the **Audit Log** tab
+2. As "Analyst", you see an access-denied message — analysts cannot view audit entries
+3. Switch to "Compliance Officer" via the header dropdown — audit entries now appear with full PII visible
+4. Key takeaway: "Even audit logs respect role-based access — analysts see activity patterns without personal data"
+
+### Walkthrough C: Role Management
+
+1. Switch to the **Role Management** tab
+2. See 4 role cards: Analyst, Compliance Officer, Data Engineer, Administrator
+3. Each card shows tier access badges, classification access levels, and permissions
+4. The active role is highlighted — click "Switch" on any other card to change
+
+### Guided Scenario
+
+**S34: Role-Based Data Masking** (Governance category, intermediate) — available in the Scenarios browser. Walks through role switching, data comparison, and audit log masking in 8 steps.
+
+---
+
 ## Grid & Layout Features — Phase 12
 
 Phase 12 addresses UI/UX usability across all viewports from 1024px to 1920px+. AG Grid columns are now properly sized with tooltips and resizable headers.

@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-01 (M256 Phase 21 Iceberg Lakehouse; 1186 total tests: 962 backend + 224 E2E, 21 views, 33 scenarios, 100 architecture sections, 971 modules)
+**Last Updated**: 2026-03-01 (M268 Phase 22 Masking & RBAC; 1152 total tests: 1057 backend + 230 E2E, 22 views, 34 scenarios, 104 architecture sections, 973 modules)
 
 ---
 
@@ -56,7 +56,8 @@
 | Data Quality, Quarantine & Profiling (Phase 18) | COMPLETE | M205-M215: Quality dimensions (ISO 8000/25012), weighted scoring engine, quarantine service, DataQuality view with spider chart + profiling, E2E tests, tours/scenarios — 862 total tests (645+217), 19 views, 31 scenarios, 86 architecture sections |
 | Reference Data & MDM (Phase 19) | COMPLETE | M216-M227: Golden records for 4 entities (product/venue/account/trader), reconciliation engine with exact+fuzzy matching, field-level provenance, 9 API endpoints, ReferenceData view, 4 data contracts, S32 scenario — 1018 total tests (794+224), 20 views, 32 scenarios, 94 architecture sections |
 | QA Automation Toolkit | COMPLETE | `qa/` package: test runner, quality scanner (ruff/bandit/radon/vulture/coverage), regression detection, flaky test detection, quality gate, file watcher, git pre-push hooks. All 6 quality tools PASS. All guidelines updated |
-| Apache Iceberg Lakehouse Architecture (Phase 21) | IN PROGRESS | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab |
+| Apache Iceberg Lakehouse Architecture (Phase 21) | COMPLETE | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab — 1186 total tests (962+224), 21 views |
+| Masking, Encryption & Access Control (Phase 22) | COMPLETE | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1152 total tests (1057+230), 22 views, 34 scenarios, 104 architecture sections |
 
 ---
 
@@ -350,6 +351,22 @@
 | M253 | Lakehouse API Endpoints | COMPLETE | 2 | 2 | 14 REST endpoints: config, tables (list/info/snapshots/schema-history), governance (PII/classification), calc audit (log/stats/lineage), pipeline runs, materialized views (status/refresh). 20 tests |
 | M254 | Pipeline Integration | COMPLETE | 4 | 4 | Lifespan wiring for all lakehouse services (graceful Parquet-only fallback). GovernanceService/SchemaEvolutionService made optional-lakehouse. Integration tests. 8 tests |
 | M255 | Lakehouse Explorer Frontend | COMPLETE | 3 | 3 | Lakehouse tab in MedallionOverview with 6 panels (Iceberg tables, schema evolution, PII governance, calc audit, pipeline runs, MVs). Tour, scenario S33, 6 architecture sections (100 total), lakehouse category. |
+
+### Phase 22: Masking, Encryption & Access Control (M257-M269)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M257 | Masking Policy Metadata + Role Definitions + Pydantic Models | COMPLETE | 2 | 2 | masking_policies.json (7 policies), roles.json (4 roles), MaskingPolicy/RoleDefinition/MaskingPolicies/RoleRegistry models |
+| M258 | MaskingService with TDD | COMPLETE | 2 | 2 | Dynamic field-level masking engine: partial, tokenize, hash, generalize, redact. 60 tests |
+| M259 | RBACService with TDD | COMPLETE | 2 | 2 | Role switching, tier access, classification checks, audit/export permissions. 18 tests |
+| M260 | Governance API Router + Service Wiring | COMPLETE | 2 | 2 | 7 REST endpoints: roles, current-role, switch-role, masking-policies, masked-preview, role-comparison, audit-log. 13 tests |
+| M261 | Audit-Aware Masking | COMPLETE | 1 | 1 | get_history_masked() — PII masked at read time by role. Stored unmasked for regulatory compliance. 4 tests |
+| M262-M263 | DataGovernance Frontend View | COMPLETE | 3 | 3 | 4-tab view: Masking Policies, Role Management, Data Preview, Audit Log. governanceStore, navigation, route |
+| M264 | Global Role Switcher | COMPLETE | 1 | 1 | Role indicator/dropdown in AppLayout header with role-colored badges. Visible on every view |
+| M265 | Tours, Scenarios, Operations | COMPLETE | 2 | 2 | Governance tour (7 steps), S34 scenario (8 steps), 6 operations + 4 tips, tour registry updated |
+| M266 | Architecture Registry + BDD | COMPLETE | 2 | 2 | 4 architecture sections (104 total), 5 BDD scenarios (Category 14: Masking & RBAC), traceability update |
+| M267 | E2E Playwright Tests | COMPLETE | 1 | 1 | 6 E2E tests: view render, masking policies API, role switching, role comparison, audit log, roles list |
+| M268 | Demo Guide + Progress | COMPLETE | 1 | 1 | Demo guide section with 3 walkthroughs + guided scenario reference. Progress tracker entries |
 
 ---
 
