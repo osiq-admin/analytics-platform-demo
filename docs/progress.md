@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-01 (M280 Phase 23 Business Glossary; 1343 total tests: 1105 backend + 238 E2E, 23 views, 35 scenarios, 112 architecture sections, 975 modules)
+**Last Updated**: 2026-03-02 (M285 Phase 24 Test Sweep; 1410 total tests: 1147 backend + 263 E2E, 23 views, 35 scenarios, 112 architecture sections, 975 modules)
 
 ---
 
@@ -59,6 +59,7 @@
 | Apache Iceberg Lakehouse Architecture (Phase 21) | COMPLETE | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab — 1186 total tests (962+224), 21 views |
 | Masking, Encryption & Access Control (Phase 22) | COMPLETE | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1152 total tests (1057+230), 22 views, 34 scenarios, 104 architecture sections |
 | Business Glossary & Semantic Layer (Phase 23) | COMPLETE | M269-M280: ISO 11179 glossary, semantic metrics, DAMA-DMBOK, standards compliance, entity gaps — 1105 backend + 238 E2E |
+| Comprehensive Test Sweep (Phase 24) | COMPLETE | M281-M285: Contract tests, startup integration, consistency validators, API sentinel, E2E governance role-switching, nav smoke — 1147 backend + 263 E2E |
 
 ---
 
@@ -385,6 +386,16 @@
 | M278 | Architecture Registry + BDD Scenarios | COMPLETE | 2 | 2 | 8 architecture sections (112 total), BDD scenarios (Category 15: Business Glossary), traceability update |
 | M279 | E2E Playwright Tests | COMPLETE | 1 | 1 | 8 E2E tests: view render, glossary API, semantic API, term search, DMBOK coverage, standards compliance |
 | M280 | Phase D Completion | COMPLETE | 1 | 1 | Full documentation sweep, count sync, demo guide, progress tracker entries |
+
+### Phase 24: Comprehensive Test Sweep (M281-M285)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M281 | Governance API Contract Tests | COMPLETE | 1 | 1 | 15 tests validating response shapes match frontend TypeScript interfaces (roles, masked-preview, role-comparison, audit-log, masking-policies) |
+| M282 | Dashboard Contract + Startup Integration | COMPLETE | 1 | 1 | 4 dashboard shape tests + 3 startup CSV→Parquet→DuckDB integration tests |
+| M283 | Consistency Validators + API Sentinel | COMPLETE | 1 | 1 | 20 tests: navigation (6), tours (4), masking policies (6), API module sentinel (4) — auto-detects cross-system drift |
+| M284 | E2E Governance + Navigation Smoke | COMPLETE | 1 | 1 | 3 governance role-switching E2E tests + 22-path dynamic navigation smoke test |
+| M285 | Full Suite Verification | COMPLETE | 1 | 1 | 1147 backend + 263 E2E = 1410 total, 0 failures, docs updated |
 
 ---
 
