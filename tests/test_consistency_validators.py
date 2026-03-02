@@ -305,6 +305,7 @@ class TestAPIEndpointSentinel:
             "archive",
             "cases",
             "dashboard",
+            "reports",
             "data",
             "data_info",
             "demo",

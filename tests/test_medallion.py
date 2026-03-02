@@ -384,10 +384,12 @@ class TestPlatinumSandboxArchiveContracts:
         assert any(r["rule"] == "checksum_validation" for r in data["quality_rules"])
 
     def test_pipeline_stages_count(self):
-        """Pipeline stages include the new sandbox and archive stages (8 total)."""
+        """Pipeline stages include sandbox, archive, and case stages (10 total)."""
         stages_path = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "pipeline_stages.json"
         data = json.loads(stages_path.read_text())
-        assert len(data["stages"]) == 8
+        assert len(data["stages"]) == 10
         stage_ids = [s["stage_id"] for s in data["stages"]]
         assert "gold_to_sandbox" in stage_ids
         assert "gold_to_archive" in stage_ids
+        assert "gold_to_sandbox_case" in stage_ids
+        assert "sandbox_to_archive_case" in stage_ids

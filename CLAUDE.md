@@ -1,27 +1,27 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 25 views, 1704 tests (1418 backend + 286 E2E), 8 entities, 5 detection models, 39 guided scenarios, 121 architecture sections.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 26 views, 1776 tests (1480 backend + 296 E2E), 8 entities, 5 detection models, 40 guided scenarios, 129 architecture sections.
 
 ## Quick Start
 ```bash
 ./start.sh                                    # Start app on port 8000
-uv run python -m qa test backend              # Run backend tests (1418)
-uv run python -m qa test e2e                  # Run E2E Playwright tests (286)
+uv run python -m qa test backend              # Run backend tests (1480)
+uv run python -m qa test e2e                  # Run E2E Playwright tests (296)
 uv run python -m qa quality --python           # Run quality scan (ruff, bandit, radon, vulture, coverage)
 uv run python -m qa gate                       # Evaluate quality gate
-cd frontend && npm run build                   # Build frontend (1082 modules)
+cd frontend && npm run build                   # Build frontend (1093 modules)
 uv run python -m scripts.generate_data         # Regenerate CSVs
 uv run python -m scripts.generate_snapshots    # Regenerate snapshots
 ```
 
 ## Architecture
-- **Backend**: `backend/` — FastAPI + DuckDB, 34 API route modules, calculation/detection engines, lakehouse services, lineage/observability services
-- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 25 views, Zustand stores
+- **Backend**: `backend/` — FastAPI + DuckDB, 36 API route modules, calculation/detection engines, lakehouse services, lineage/observability services
+- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 26 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
-- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality, governance, lakehouse, glossary, semantic, dmbok, observability
+- **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality, governance, lakehouse, glossary, semantic, dmbok, observability, report_templates
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)
-- **Tests**: `tests/` — 1418 backend tests + 286 E2E Playwright tests
+- **Tests**: `tests/` — 1480 backend tests + 296 E2E Playwright tests
 - **Scripts**: `scripts/` — data generation, snapshot generation
 - **Docs**: `docs/` — progress tracker, demo guide, plans, schemas, checklists
 
@@ -73,7 +73,7 @@ These systems MUST be updated whenever certain feature types are added. See `doc
 - **Development workflow protocol**: `docs/development-workflow-protocol.md` — MANDATORY for every feature lifecycle
 - **Comprehensive roadmap**: `docs/plans/2026-02-24-comprehensive-roadmap.md` — 33 phases across 7 tiers (medallion architecture, data governance, standards, migration readiness)
 - All plans: `docs/plans/` (design doc, phase 1-12 implementation plans)
-- Progress tracker: `docs/progress.md` (M0-M326 complete)
+- Progress tracker: `docs/progress.md` (M0-M368 complete)
 - Demo guide: `docs/demo-guide.md`
 - Feature checklist: `docs/feature-development-checklist.md`
 - Development guidelines: `docs/development-guidelines.md`

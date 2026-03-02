@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-02 (M326 Phase 25 Standards Integration; 1704 total tests: 1418 backend + 286 E2E, 25 views, 39 scenarios, 121 architecture sections, 1082 modules)
+**Last Updated**: 2026-03-03 (M368 Phase 27 Investigation & Case Management; 1776 total tests: 1480 backend + 296 E2E, 26 views, 40 scenarios, 129 architecture sections, 1093 modules)
 
 ---
 
@@ -64,6 +64,7 @@
 | Post-Merge System Audit (Phase 25) | COMPLETE | M286-M288: Restore AnalyticsTiers integrations dropped during PR #16 merge, register 3 API routers, add route/sidebar/tour, fix API sentinel + stale scenario ref, verify 1238 backend + 271 E2E tests, 976 frontend modules — 24 views, 30 API modules |
 | Observability, Lineage & Audit (Phase 26) | COMPLETE | M289-M316: E2E stabilization, file splitting, 6-layer lineage engine, DataLineage view (25th), PipelineMonitor/DataGovernance extensions — 1694 tests (1408 backend + 286 E2E), 25 views, 39 scenarios, 120 architecture sections, 1082 modules |
 | Standards Integration (Phase 25) | COMPLETE | M317-M326: Standards compliance matrix (18 standards, 48 controls), BCBS 239 full mapping (11 principles), Standards Compliance tab in RegulatoryMap (3rd tab), compliance matrix API, evidence links, gap analysis — 1704 tests (1418 backend + 286 E2E), 121 architecture sections |
+| Investigation & Case Management (Phase 27) | COMPLETE | M327-M368: CaseManagement view (26th), case lifecycle (open→investigating→escalated→closed), investigation annotations, STOR/SAR report generation, lakehouse medallion integration, compliance dashboard, AI triage — 1776 tests (1480 backend + 296 E2E), 26 views, 40 scenarios, 129 architecture sections, 1093 modules |
 
 ---
 
@@ -476,6 +477,53 @@
 | M324 | Tours, scenarios, operations update | COMPLETE | 1 | 1 | Tour step 6, S23 step 10, 2 new operations |
 | M325 | Playwright visual verification | COMPLETE | 1 | 1 | 5 screenshots: full tab, evidence detail, gap analysis |
 | M326 | Documentation and cross-reference audit | COMPLETE | 1 | 1 | All docs updated with new counts and Phase 25 milestones |
+
+### Phase 27: Investigation & Case Management (M327-M368)
+
+| Milestone | Description | Status | Plan | Actual | Notes |
+|---|---|---|---|---|---|
+| M327 | Case Pydantic models | COMPLETE | 1 | 1 | Case, CaseAnnotation, CaseSLAInfo, CaseStatusHistory Pydantic models |
+| M328 | Case metadata and workflow definitions | COMPLETE | 1 | 1 | Case workflow JSON, status transitions, SLA thresholds, priority matrix |
+| M329 | CaseService core logic | COMPLETE | 1 | 1 | CRUD operations, status transitions, SLA tracking, alert linking |
+| M330 | Case API endpoints | COMPLETE | 1 | 1 | REST endpoints for case CRUD, status updates, annotations, search |
+| M331 | Backend tests — case models | COMPLETE | 1 | 1 | 7 tests for Pydantic model validation and serialization |
+| M332 | Backend tests — case service | COMPLETE | 1 | 1 | 14 tests for service logic, status transitions, SLA calculations |
+| M333 | Backend tests — case API | COMPLETE | 1 | 1 | 12 tests for API endpoints, error handling, query parameters |
+| M334 | CaseManagement view — grid and list | COMPLETE | 2 | 2 | AG Grid case list, status filters, priority badges, SLA indicators |
+| M335 | CaseManagement view — detail panel | COMPLETE | 2 | 2 | Case detail with timeline, status actions, linked alerts, annotations |
+| M336 | CaseManagement view — timeline tab | COMPLETE | 1 | 1 | Chronological event timeline with status changes and annotations |
+| M337 | CaseManagement view — linked alerts tab | COMPLETE | 1 | 1 | AG Grid of linked alerts with drill-through to RiskCaseManager |
+| M338 | CaseManagement view — status actions | COMPLETE | 1 | 1 | Status transition buttons with confirmation dialogs and reason capture |
+| M339 | Navigation, route, sidebar integration | COMPLETE | 1 | 1 | /cases route, sidebar entry in Investigations group, navigation metadata |
+| M340 | E2E tests for CaseManagement | COMPLETE | 1 | 1 | 10 new Playwright E2E tests for case grid, detail, timeline, actions |
+| M341 | Investigation annotations — backend | COMPLETE | 1 | 1 | Annotation types, evidence attachments, structured findings model |
+| M342 | Investigation annotations — frontend | COMPLETE | 1 | 1 | Annotation editor, evidence links, finding categories UI |
+| M343 | RiskCaseManager annotation integration | COMPLETE | 1 | 1 | "Create Case" and "Add to Case" actions from alert detail |
+| M344 | Annotation search and filtering | COMPLETE | 1 | 1 | Full-text search across annotations, filter by type and author |
+| M345 | Investigation workflow enhancements | COMPLETE | 1 | 1 | Assignment tracking, escalation rules, due date management |
+| M346 | Investigation annotations tests | COMPLETE | 1 | 1 | Backend tests for annotation CRUD, search, and workflow |
+| M347 | Report template metadata | COMPLETE | 1 | 1 | STOR/SAR report templates in workspace/metadata/report_templates/ |
+| M348 | ReportService core logic | COMPLETE | 1 | 1 | Template rendering, case data aggregation, report generation |
+| M349 | Report API endpoints | COMPLETE | 1 | 1 | REST endpoints for report generation, template listing, report export |
+| M350 | Report generation UI | COMPLETE | 1 | 1 | Reports tab in CaseManagement with template selection and preview |
+| M351 | Backend tests — report service | COMPLETE | 1 | 1 | 8 tests for report generation, template rendering, data aggregation |
+| M352 | Backend tests — report API | COMPLETE | 1 | 1 | 5 tests for report endpoints, validation, error handling |
+| M353 | Case medallion contracts | COMPLETE | 1 | 1 | 2 new contracts: bronze-to-silver case normalization, silver-to-gold case enrichment |
+| M354 | Case pipeline stages | COMPLETE | 1 | 1 | 2 new pipeline stages for case data processing |
+| M355 | Case materialized views | COMPLETE | 1 | 1 | 2 materialized views: case_summary_mv, case_sla_mv |
+| M356 | Lakehouse case integration | COMPLETE | 1 | 1 | Case data flows through medallion tiers with lineage tracking |
+| M357 | Backend tests — case medallion | COMPLETE | 1 | 1 | 13 tests for medallion contracts, pipeline stages, materialized views |
+| M358 | Lakehouse integration verification | COMPLETE | 1 | 1 | End-to-end verification of case data in lakehouse architecture |
+| M359 | Compliance dashboard — case metrics | COMPLETE | 1 | 1 | Case volume, resolution time, SLA compliance metrics |
+| M360 | Compliance dashboard — trend charts | COMPLETE | 1 | 1 | Recharts time series for case trends, escalation rates |
+| M361 | Compliance dashboard — regulatory summary | COMPLETE | 1 | 1 | Regulatory filing status, STOR/SAR submission tracking |
+| M362 | Compliance dashboard tests | COMPLETE | 1 | 1 | Tests for dashboard metrics aggregation and API |
+| M363 | Compliance dashboard verification | COMPLETE | 1 | 1 | Visual verification of dashboard charts and metrics |
+| M364 | AI triage scoring model | COMPLETE | 1 | 1 | Priority scoring based on alert patterns, entity risk, historical cases |
+| M365 | AI triage recommendation engine | COMPLETE | 1 | 1 | Automated case assignment and escalation recommendations |
+| M366 | AI triage UI integration | COMPLETE | 1 | 1 | Triage suggestions in case detail, confidence scores, explain mode |
+| M367 | Backend tests — AI triage | COMPLETE | 1 | 1 | 3 tests for triage scoring, recommendations, and explanations |
+| M368 | Phase 27 documentation sweep | COMPLETE | 1 | 1 | All docs updated: 26 views, 36 API modules, 1776 tests, 129 architecture sections, 40 scenarios |
 
 ---
 
@@ -995,7 +1043,7 @@ Comprehensive comparison of the design doc (`docs/plans/2026-02-23-analytics-pla
 | FX reverse pair cascade logic | Implementation detail deferred | During M2 |
 | Production deployment (Kafka/Flink/Doris) | Out of scope for demo | Future work |
 | Multi-user auth | Out of scope for demo | Future work |
-| Case management workflow | Out of scope for demo | Future work |
+| ~~Case management workflow~~ | ~~Out of scope for demo~~ | DONE — Phase 27 (M327-M368) |
 
 ---
 
