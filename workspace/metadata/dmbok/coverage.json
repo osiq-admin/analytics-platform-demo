@@ -13,10 +13,13 @@
         "Data masking and RBAC policies",
         "Compliance requirement mapping (MAR, MiFID II, Dodd-Frank, FINRA, EMIR, SEC)",
         "Audit trail with immutable records",
-        "Business glossary with ownership matrix"
+        "Business glossary with ownership matrix",
+        "Data lineage with 6-layer composable graph (OpenLineage 1.0 compatible)",
+        "Observability event logging with tamper-evident hash chains",
+        "ISO 8000 quality overlay at every lineage node"
       ],
-      "implementing_phases": [21, 22, 23],
-      "implementing_views": ["DataGovernance", "BusinessGlossary"]
+      "implementing_phases": [21, 22, 23, 26],
+      "implementing_views": ["DataGovernance", "BusinessGlossary", "DataLineage"]
     },
     {
       "area_id": "data_architecture",
@@ -28,10 +31,12 @@
         "Data contracts for tier transitions",
         "Pipeline orchestration with stage management",
         "Entity relationship modeling with ISO/FIX alignment",
-        "Architecture traceability across all views"
+        "Architecture traceability across all views",
+        "End-to-end data lineage with field-level tracing and impact analysis",
+        "W3C PROV-O / ISO 23494 provenance alignment"
       ],
-      "implementing_phases": [14, 15, 16, 17],
-      "implementing_views": ["MedallionOverview", "PipelineMonitor", "EntityDesigner"]
+      "implementing_phases": [14, 15, 16, 17, 26],
+      "implementing_views": ["MedallionOverview", "PipelineMonitor", "EntityDesigner", "DataLineage"]
     },
     {
       "area_id": "data_modeling",
@@ -103,10 +108,12 @@
         "Quality scoring engine with configurable weights",
         "Quarantine service for data quality failures",
         "Quality trends and historical tracking",
-        "Per-entity quality assessment"
+        "Per-entity quality assessment",
+        "ISO 8000-61 quality scores at every lineage tier node (6 ISO 25012 dimensions)",
+        "Quality overlay on data lineage graph with SLA tracking"
       ],
-      "implementing_phases": [18],
-      "implementing_views": ["DataQuality"]
+      "implementing_phases": [18, 26],
+      "implementing_views": ["DataQuality", "DataLineage"]
     },
     {
       "area_id": "reference_master_data",

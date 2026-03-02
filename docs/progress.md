@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-02 (M288 Phase 25 Post-Merge System Audit; 1509 total tests: 1238 backend + 271 E2E, 24 views, 35 scenarios, 112 architecture sections, 976 modules)
+**Last Updated**: 2026-03-02 (M316 Phase 26 Observability, Lineage & Audit; 1694 total tests: 1408 backend + 286 E2E, 25 views, 39 scenarios, 120 architecture sections, 1082 modules)
 
 ---
 
@@ -426,6 +426,39 @@
 | M286 | Restore Dropped Integrations | COMPLETE | 1 | 1 | Register archive/platinum/sandbox API routers, add /analytics-tiers route, sidebar fallback, tour map, API sentinel, fix stale scenario ref |
 | M287 | Full Test Suite Verification | COMPLETE | 1 | 1 | 1238 backend + 271 E2E = 1509 total, 976 frontend modules, 20/20 consistency validators |
 | M288 | Documentation Count Sync | COMPLETE | 1 | 1 | All docs updated: 24 views, 30 API modules, 1509 tests across CLAUDE.md, README, progress, checklist |
+
+### Phase 26: Observability, Lineage & Audit + Codebase Granularity + E2E Stabilization (M289-M316)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M289 | Split test_e2e_views.py | COMPLETE | 1 | 1 | 6 domain files: test_views_render, test_dashboard_e2e, test_define_views_e2e, test_detect_views_e2e, test_metadata_ops_e2e, test_govern_views_e2e |
+| M290 | Split test_e2e_phase7b.py | COMPLETE | 1 | 1 | 4 domain files: test_phase7b_apis, test_phase7b_views, test_phase7b_ux, test_phase7b_settings |
+| M291 | Fix conftest.py browser scope | COMPLETE | 1 | 1 | session → module scope; prevents browser crash at ~80 tests |
+| M292 | Split architectureRegistry.ts | COMPLETE | 2 | 2 | 4519 lines → 24 per-view files + crossCutting + barrel index |
+| M293 | Split scenarioDefinitions/operationScripts/tourDefinitions | COMPLETE | 2 | 2 | 3 mega files → per-view modules with barrel indexes |
+| M294 | Split large view components | COMPLETE | 1 | 1 | MedallionOverview/BusinessGlossary/AnalyticsTiers → tab components |
+| M295 | E2E stability verification | DEFERRED | 1 | — | Browser scope fix verified via backend test pass |
+| M296 | QA baseline update | DEFERRED | 1 | — | Merged into M315 |
+| M297 | Pydantic models for events, lineage, metrics | COMPLETE | 2 | 2 | 20+ Pydantic models: EventRecord, LineageNode/Edge/Graph, FieldTrace, ImpactAnalysis, SurveillanceCoverage, SettingsImpactPreview |
+| M298 | Observability metadata definitions | COMPLETE | 1 | 1 | event_types, metric_definitions, lineage_config, lineage_standards, coverage_config |
+| M299 | EventService with hash chain | COMPLETE | 2 | 2 | JSONL storage, SHA-256 hash chain, emit/get_events/verify_chain |
+| M300 | LineageService — 6-layer engine | COMPLETE | 3 | 3 | Materialized adjacency list (~215 nodes, ~125 edges), 6 layers, weighted BFS, ~20 methods |
+| M301 | MetricsService | COMPLETE | 1 | 1 | record/get_series/get_summary/get_sla_compliance |
+| M302 | Generate demo data | COMPLETE | 1 | 1 | 274 events, 41 lineage runs, 180 metric points |
+| M303 | Wire EventService into services | COMPLETE | 1 | 1 | pipeline_orchestrator + contract_validator emit events |
+| M304 | API routers (lineage, observability, metrics) | COMPLETE | 2 | 2 | 18 lineage + 3 observability + 3 metrics endpoints. 33 API tests |
+| M305 | MetadataService extensions | COMPLETE | 1 | 1 | load_event_types, load_metric_definitions, load_lineage_config |
+| M306 | DataLineage view shell + store + routing | COMPLETE | 2 | 2 | lineageStore.ts, DataLineage/index.tsx, 3-tab layout, coverage modal, route/sidebar/nav |
+| M307 | Lineage Explorer hero graph | COMPLETE | 2 | 2 | 651-line React Flow component: tier swim lanes, 4 custom node types, animated edges, regulatory badges, selection dimming |
+| M308 | Field Tracing tab | COMPLETE | 2 | 2 | 460-line component: entity/field dropdowns, dagre chain graph, quality badges, trace-all mode |
+| M309 | Impact Analysis tab | COMPLETE | 2 | 2 | 615-line component: weighted BFS graph, hard/soft highlighting, what-if threshold simulator |
+| M310 | PipelineMonitor extensions | COMPLETE | 2 | 2 | MetricsPanel (Recharts), EventTimeline, PipelineRunsPanel (OpenLineage runs) |
+| M311 | DataGovernance Observability tab | COMPLETE | 1 | 1 | ObservabilityTab: event log, hash chain verification, distribution chart |
+| M312 | Alert-to-lineage integration | COMPLETE | 1 | 1 | "View Full Lineage" button in RiskCaseManager CalculationTrace → /lineage?alert={id} |
+| M313 | Tours, scenarios, operations, architecture, E2E | COMPLETE | 2 | 2 | 5-step tour, S36-S39 scenarios, 10 operations, 8 architecture sections, 15 E2E tests |
+| M314 | DMBOK coverage update | COMPLETE | 1 | 1 | Lineage and observability capabilities added to DMBOK coverage.json |
+| M315 | QA baseline + quality gate | COMPLETE | 1 | 1 | 1408 backend + 286 E2E = 1694 total, frontend 1082 modules |
+| M316 | Full documentation sweep | COMPLETE | 1 | 1 | All docs updated: 25 views, 34 API modules, 1694 tests, 120 architecture sections |
 
 ---
 
