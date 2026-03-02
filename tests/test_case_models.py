@@ -1,4 +1,7 @@
 """Tests for case management Pydantic models."""
+import json
+from pathlib import Path
+
 import pytest
 from backend.models.cases import Case, CaseAnnotation, CaseSLAInfo
 
@@ -44,3 +47,19 @@ class TestCase:
         c2 = Case(**data)
         assert c2.case_id == c.case_id
         assert c2.alert_ids == ["ALT-001", "ALT-002"]
+
+
+class TestCaseWorkflow:
+    def test_workflow_metadata_loads(self):
+        path = Path("workspace/metadata/workflows/case_management.json")
+        data = json.loads(path.read_text())
+        assert data["workflow_id"] == "case_management"
+        assert len(data["states"]) == 5
+
+    def test_workflow_transitions_valid(self):
+        path = Path("workspace/metadata/workflows/case_management.json")
+        data = json.loads(path.read_text())
+        state_ids = {s["id"] for s in data["states"]}
+        for s in data["states"]:
+            for t in s["transitions"]:
+                assert t in state_ids, f"Invalid transition {t} from {s['id']}"

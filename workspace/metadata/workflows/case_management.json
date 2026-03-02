@@ -1,0 +1,11 @@
+{
+    "workflow_id": "case_management",
+    "description": "Investigation case lifecycle with SLA tracking",
+    "states": [
+        {"id": "open", "label": "Open", "badge_variant": "info", "transitions": ["investigating"]},
+        {"id": "investigating", "label": "Investigating", "badge_variant": "warning", "transitions": ["escalated", "resolved"]},
+        {"id": "escalated", "label": "Escalated", "badge_variant": "error", "transitions": ["investigating", "resolved"]},
+        {"id": "resolved", "label": "Resolved", "badge_variant": "success", "transitions": ["closed", "investigating"]},
+        {"id": "closed", "label": "Closed", "badge_variant": "secondary", "transitions": []}
+    ]
+}
