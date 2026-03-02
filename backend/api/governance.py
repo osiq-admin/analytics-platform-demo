@@ -134,24 +134,46 @@ def masked_preview(entity: str, request: Request):
 
 @router.get("/role-comparison/{entity}")
 def role_comparison(entity: str, request: Request):
-    """For each role, load first 5 rows and mask them — powers side-by-side comparison."""
+    """For each role, mask first 5 rows — returns field-level comparison for side-by-side display.
+
+    Response format matches frontend RoleComparisonResponse:
+    { entity, fields: [{ field, values: { role_id: { value, masked, masking_type } } }] }
+    """
     records = _load_entity_records(request, entity, limit=5)
     if records is None:
         return JSONResponse({"error": f"Entity table not found: {entity}"}, status_code=404)
+    if not records:
+        return {"entity": entity, "fields": []}
 
     masking = _masking(request)
     rbac = _rbac(request)
 
-    roles_result: dict = {}
+    # Build per-role masked records and metadata
+    role_masked: dict[str, list[dict]] = {}
+    role_meta: dict[str, dict] = {}
     for role_def in rbac.list_roles():
         rid = role_def.role_id
-        masked = masking.mask_records(entity, records, rid)
-        meta: dict = {}
-        if records:
-            _, meta = masking.mask_record_with_metadata(entity, records[0], rid)
-        roles_result[rid] = {"records": masked, "masking_metadata": meta}
+        role_masked[rid] = masking.mask_records(entity, records, rid)
+        _, role_meta[rid] = masking.mask_record_with_metadata(entity, records[0], rid)
 
-    return {"entity": entity, "roles": roles_result}
+    # Transform to field-level comparison using first record
+    field_names = list(records[0].keys())
+    role_ids = [r.role_id for r in rbac.list_roles()]
+
+    fields = []
+    for fname in field_names:
+        values: dict = {}
+        for rid in role_ids:
+            masked_val = role_masked[rid][0].get(fname, "")
+            meta = role_meta[rid].get(fname, {})
+            values[rid] = {
+                "value": str(masked_val) if masked_val is not None else "",
+                "masked": meta.get("masked", False),
+                "masking_type": meta.get("masking_type") if meta.get("masked") else None,
+            }
+        fields.append({"field": fname, "values": values})
+
+    return {"entity": entity, "fields": fields}
 
 
 # ---------------------------------------------------------------------------

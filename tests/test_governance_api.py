@@ -303,29 +303,30 @@ class TestMaskedPreview:
 
 class TestRoleComparison:
     def test_role_comparison_trader(self, client):
-        """GET /api/governance/role-comparison/trader returns multi-role comparison."""
+        """GET /api/governance/role-comparison/trader returns field-level comparison."""
         r = client.get("/api/governance/role-comparison/trader")
         assert r.status_code == 200
         data = r.json()
         assert data["entity"] == "trader"
-        assert "roles" in data
+        assert "fields" in data
 
-        # Should have all 4 roles
-        assert "analyst" in data["roles"]
-        assert "compliance_officer" in data["roles"]
-        assert "data_engineer" in data["roles"]
-        assert "admin" in data["roles"]
+        # Should have field entries
+        fields = {f["field"]: f for f in data["fields"]}
+        assert "trader_name" in fields
+        assert "trader_id" in fields
 
-        # Analyst records should be masked
-        analyst_first = data["roles"]["analyst"]["records"][0]
-        assert analyst_first["trader_name"] != "Alice Smith"
+        # Each field should have values for all 4 roles
+        tn = fields["trader_name"]["values"]
+        assert "analyst" in tn
+        assert "compliance_officer" in tn
+        assert "data_engineer" in tn
+        assert "admin" in tn
 
-        # Compliance officer records should be unmasked
-        co_first = data["roles"]["compliance_officer"]["records"][0]
-        assert co_first["trader_name"] == "Alice Smith"
+        # Analyst trader_name should be masked
+        assert tn["analyst"]["masked"] is True
 
-        # Each role result should have masking_metadata
-        assert "masking_metadata" in data["roles"]["analyst"]
+        # Compliance officer trader_name should be unmasked
+        assert tn["compliance_officer"]["masked"] is False
 
     def test_role_comparison_not_found(self, client):
         """GET /api/governance/role-comparison/nonexistent returns 404."""

@@ -96,8 +96,37 @@ async def lifespan(app: FastAPI):
     # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
     _init_lakehouse_services(app)
 
+    # Load CSV data into DuckDB and register alerts_summary if present
+    _load_data(app)
+
     yield
     db_manager.close()
+
+
+def _load_data(app: FastAPI) -> None:
+    """Load CSV data into DuckDB and register alerts_summary if available."""
+    from backend.engine.data_loader import DataLoader
+
+    ws = settings.workspace_dir
+    lakehouse = getattr(app.state, "lakehouse", None)
+    loader = DataLoader(ws, db_manager, lakehouse=lakehouse)
+    loaded = loader.load_all()
+    if loaded:
+        log.info("Loaded %d tables into DuckDB: %s", len(loaded), ", ".join(loaded))
+
+    # Register alerts_summary from Parquet if available
+    summary_path = ws / "alerts" / "summary.parquet"
+    if summary_path.exists():
+        try:
+            cursor = db_manager.cursor()
+            cursor.execute('DROP TABLE IF EXISTS "alerts_summary"')
+            cursor.execute(
+                f"CREATE TABLE alerts_summary AS SELECT * FROM read_parquet('{summary_path}')"  # nosec B608
+            )
+            cursor.close()
+            log.info("Registered alerts_summary from %s", summary_path)
+        except Exception:
+            log.warning("Failed to register alerts_summary", exc_info=True)
 
 
 def _init_lakehouse_services(app: FastAPI) -> None:

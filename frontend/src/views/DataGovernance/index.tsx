@@ -379,6 +379,7 @@ function DataPreviewTab() {
 // ---------------------------------------------------------------------------
 
 function AuditLogTab() {
+  const { currentRole } = useGovernanceStore();
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -396,7 +397,7 @@ function AuditLogTab() {
         setMessage("Failed to load audit log.");
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [currentRole]);
 
   if (loading) {
     return (
