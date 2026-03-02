@@ -1,23 +1,23 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 23 views, 1410 tests (1147 backend + 263 E2E), 8 entities, 5 detection models, 35 guided scenarios, 112 architecture sections.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 24 views, 1509 tests (1238 backend + 271 E2E), 8 entities, 5 detection models, 35 guided scenarios, 112 architecture sections.
 
 ## Quick Start
 ```bash
 ./start.sh                                    # Start app on port 8000
-uv run python -m qa test backend              # Run backend tests (1147)
-uv run python -m qa test e2e                  # Run E2E Playwright tests (263)
+uv run python -m qa test backend              # Run backend tests (1238)
+uv run python -m qa test e2e                  # Run E2E Playwright tests (271)
 uv run python -m qa quality --python           # Run quality scan (ruff, bandit, radon, vulture, coverage)
 uv run python -m qa gate                       # Evaluate quality gate
-cd frontend && npm run build                   # Build frontend (975 modules)
+cd frontend && npm run build                   # Build frontend (976 modules)
 uv run python -m scripts.generate_data         # Regenerate CSVs
 uv run python -m scripts.generate_snapshots    # Regenerate snapshots
 ```
 
 ## Architecture
-- **Backend**: `backend/` — FastAPI + DuckDB, 27 API route modules, calculation/detection engines, lakehouse services
-- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 23 views, Zustand stores
+- **Backend**: `backend/` — FastAPI + DuckDB, 30 API route modules, calculation/detection engines, lakehouse services
+- **Frontend**: `frontend/` — React 19 + TypeScript + Vite, 24 views, Zustand stores
 - **Data**: `workspace/` — metadata JSON, CSV data, Parquet results, alert traces
 - **Metadata types**: entities, calculations, settings, detection_models, widgets, query_presets, navigation, format_rules, audit_trail, standards (iso, fix, compliance), grids, view_config, theme, workflows, demo, tours, medallion, connectors, mappings, quality, governance, lakehouse, glossary, semantic, dmbok
 - **Navigation**: metadata-driven (`workspace/metadata/navigation/main.json`)
