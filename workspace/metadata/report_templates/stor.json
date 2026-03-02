@@ -1,0 +1,48 @@
+{
+  "template_id": "stor",
+  "name": "Suspicious Transaction Order Report (STOR)",
+  "regulation": "UK MAR Article 16",
+  "description": "Report template for filing Suspicious Transaction and Order Reports under the Market Abuse Regulation.",
+  "sections": [
+    {
+      "section_id": "reporting_entity",
+      "label": "Reporting Entity",
+      "fields": [
+        {"field_id": "firm_name", "label": "Firm Name", "source": "static", "default": "Demo Trading Ltd"},
+        {"field_id": "firm_lei", "label": "LEI", "source": "static", "default": "DEMO00000000000001"},
+        {"field_id": "reporter_name", "label": "Reporter", "source": "case.assignee"},
+        {"field_id": "report_date", "label": "Report Date", "source": "generated.timestamp"}
+      ]
+    },
+    {
+      "section_id": "suspected_person",
+      "label": "Suspected Person / Entity",
+      "fields": [
+        {"field_id": "trader_id", "label": "Trader ID", "source": "alert.entity_context.trader_id"},
+        {"field_id": "account_id", "label": "Account ID", "source": "alert.entity_context.account_id"},
+        {"field_id": "product_id", "label": "Instrument", "source": "alert.entity_context.product_id"}
+      ]
+    },
+    {
+      "section_id": "transaction_details",
+      "label": "Transaction Details",
+      "fields": [
+        {"field_id": "alert_id", "label": "Alert Reference", "source": "alert.alert_id"},
+        {"field_id": "model_name", "label": "Detection Model", "source": "alert.model_name"},
+        {"field_id": "alert_score", "label": "Alert Score", "source": "alert.accumulated_score"},
+        {"field_id": "alert_date", "label": "Alert Date", "source": "alert.timestamp"},
+        {"field_id": "business_date", "label": "Business Date", "source": "alert.entity_context.business_date"}
+      ]
+    },
+    {
+      "section_id": "suspicion_details",
+      "label": "Basis for Suspicion",
+      "fields": [
+        {"field_id": "case_description", "label": "Investigation Summary", "source": "case.description"},
+        {"field_id": "disposition", "label": "Disposition", "source": "case.disposition"},
+        {"field_id": "annotation_count", "label": "Investigation Notes", "source": "case.annotations.length"},
+        {"field_id": "case_status", "label": "Case Status", "source": "case.status"}
+      ]
+    }
+  ]
+}

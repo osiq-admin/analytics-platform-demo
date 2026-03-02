@@ -1,0 +1,47 @@
+{
+  "template_id": "sar",
+  "name": "Suspicious Activity Report (SAR)",
+  "regulation": "US FinCEN BSA",
+  "description": "Report template for filing Suspicious Activity Reports under the Bank Secrecy Act.",
+  "sections": [
+    {
+      "section_id": "filing_institution",
+      "label": "Filing Institution",
+      "fields": [
+        {"field_id": "institution_name", "label": "Institution Name", "source": "static", "default": "Demo Trading Inc."},
+        {"field_id": "ein", "label": "EIN", "source": "static", "default": "00-0000001"},
+        {"field_id": "filer_name", "label": "Filer Name", "source": "case.assignee"},
+        {"field_id": "filing_date", "label": "Filing Date", "source": "generated.timestamp"}
+      ]
+    },
+    {
+      "section_id": "subject",
+      "label": "Subject Information",
+      "fields": [
+        {"field_id": "trader_id", "label": "Subject ID", "source": "alert.entity_context.trader_id"},
+        {"field_id": "account_id", "label": "Account Number", "source": "alert.entity_context.account_id"},
+        {"field_id": "account_type", "label": "Account Type", "source": "alert.entity_context.account_type"}
+      ]
+    },
+    {
+      "section_id": "suspicious_activity",
+      "label": "Suspicious Activity Information",
+      "fields": [
+        {"field_id": "activity_type", "label": "Activity Type", "source": "alert.model_name"},
+        {"field_id": "alert_score", "label": "Risk Score", "source": "alert.accumulated_score"},
+        {"field_id": "date_of_activity", "label": "Date of Activity", "source": "alert.entity_context.business_date"},
+        {"field_id": "case_description", "label": "Narrative", "source": "case.description"},
+        {"field_id": "case_priority", "label": "Priority", "source": "case.priority"}
+      ]
+    },
+    {
+      "section_id": "transaction_info",
+      "label": "Transaction Information",
+      "fields": [
+        {"field_id": "alert_id", "label": "Internal Reference", "source": "alert.alert_id"},
+        {"field_id": "product_id", "label": "Instrument", "source": "alert.entity_context.product_id"},
+        {"field_id": "venue", "label": "Venue", "source": "alert.entity_context.venue_mic"}
+      ]
+    }
+  ]
+}

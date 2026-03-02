@@ -106,6 +106,10 @@ async def lifespan(app: FastAPI):
     from backend.services.case_service import CaseService
     app.state.case_service = CaseService(settings.workspace_dir)
 
+    # Reports
+    from backend.services.report_service import ReportService
+    app.state.report_service = ReportService(settings.workspace_dir)
+
     # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
     _init_lakehouse_services(app)
 

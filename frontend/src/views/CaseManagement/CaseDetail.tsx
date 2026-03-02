@@ -3,6 +3,7 @@ import StatusBadge from "../../components/StatusBadge.tsx";
 import type { Case } from "../../stores/caseStore.ts";
 import CaseTimeline from "./CaseTimeline.tsx";
 import LinkedAlerts from "./LinkedAlerts.tsx";
+import ReportGenerator from "./ReportGenerator.tsx";
 
 interface CaseDetailProps {
   caseData: Case;
@@ -181,9 +182,7 @@ export default function CaseDetail({
         )}
 
         {activeTab === "reports" && (
-          <div className="flex items-center justify-center h-32 text-xs text-muted">
-            STOR/SAR report generation coming in Stage 4...
-          </div>
+          <ReportGenerator caseId={caseData.case_id} />
         )}
       </div>
     </div>
