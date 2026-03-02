@@ -12,9 +12,9 @@ import TraceOverlay from "../components/TraceabilityMode/TraceOverlay.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
 import { useGovernanceStore } from "../stores/governanceStore.ts";
-import { TOURS } from "../data/tourDefinitions.ts";
-import { SCENARIOS } from "../data/scenarioDefinitions.ts";
-import { VIEW_OPERATIONS } from "../data/operationScripts.ts";
+import { TOURS } from "../data/tours";
+import { SCENARIOS } from "../data/scenarios";
+import { VIEW_OPERATIONS } from "../data/operations";
 
 /** Map pathname segments to tour IDs */
 function getTourIdForPath(pathname: string): string | null {

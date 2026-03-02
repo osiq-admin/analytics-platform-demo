@@ -2,7 +2,7 @@ import { useState } from "react";
 import { clsx } from "clsx";
 import { FloatingPortal } from "@floating-ui/react";
 import { useTraceabilityStore } from "../../stores/traceabilityStore.ts";
-import { getTraceSection } from "../../data/architectureRegistry.ts";
+import { getTraceSection } from "../../data/architecture/index.ts";
 import MetadataMaturityBadge from "./MetadataMaturityBadge.tsx";
 import type { ApiEndpoint, DataSource } from "../../data/architectureRegistryTypes.ts";
 
