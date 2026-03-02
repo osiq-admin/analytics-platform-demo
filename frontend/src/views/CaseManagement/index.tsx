@@ -66,7 +66,7 @@ function formatDate(ts: string) {
   }
 }
 
-function badgeCell(value: string, variant: string) {
+function BadgeCell({ value, variant }: { value: string; variant: string }) {
   const colors: Record<string, string> = {
     success: "bg-green-500/15 text-green-500 border-green-500/30",
     error: "bg-red-500/15 text-red-500 border-red-500/30",
@@ -74,9 +74,11 @@ function badgeCell(value: string, variant: string) {
     info: "bg-blue-400/15 text-blue-400 border-blue-400/30",
     muted: "bg-gray-400/10 text-gray-400 border-gray-400/20",
   };
-  const el = document.createElement("span");
-  el.innerHTML = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${colors[variant] ?? colors.muted}">${value}</span>`;
-  return el;
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${colors[variant] ?? colors.muted}`}>
+      {value}
+    </span>
+  );
 }
 
 type ViewTab = "cases" | "dashboard";
@@ -142,7 +144,7 @@ export default function CaseManagement() {
         width: 130,
         cellRenderer: (params: { value: string }) =>
           params.value
-            ? badgeCell(params.value, variantFor(params.value, variantMap))
+            ? <BadgeCell value={params.value} variant={variantFor(params.value, variantMap)} />
             : null,
       },
       {
@@ -151,7 +153,7 @@ export default function CaseManagement() {
         width: 110,
         cellRenderer: (params: { value: string }) =>
           params.value
-            ? badgeCell(params.value, priorityVariant(params.value))
+            ? <BadgeCell value={params.value} variant={priorityVariant(params.value)} />
             : null,
       },
       { field: "assignee", headerName: "Assignee", width: 140 },
@@ -167,10 +169,7 @@ export default function CaseManagement() {
         valueGetter: (params) => params.data?.sla?.sla_status ?? "",
         cellRenderer: (params: { value: string }) =>
           params.value
-            ? badgeCell(
-                params.value.replace("_", " "),
-                slaVariant(params.value),
-              )
+            ? <BadgeCell value={params.value.replace("_", " ")} variant={slaVariant(params.value)} />
             : null,
       },
       {
@@ -241,6 +240,7 @@ export default function CaseManagement() {
                 onRowClicked={handleRowClicked}
                 getRowId={(params) => params.data.case_id}
                 rowSelection="single"
+                domLayout="autoHeight"
               />
             )}
           </Panel>

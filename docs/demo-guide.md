@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (39 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (40 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 39 guided scenarios in 16 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary, Lineage). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 40 guided scenarios in 17 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary, Lineage, Cases). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -332,7 +332,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 27 tours and 39 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 27 tours and 40 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -554,7 +554,7 @@ Click **Skip to End** to show the final state.
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Glossary
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Glossary, Cases
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -570,7 +570,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 146 operations defined across 25 views
+- 152 operations defined across 26 views
 
 ### 7.3 Scenario Categories
 
@@ -588,6 +588,7 @@ Click **Skip to End** to show the final state.
 | Mapping | S29 | Beginner |
 | Medallion Pipeline | S30 | Intermediate |
 | Governance | S31-S32 | Intermediate |
+| Cases | S40 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -914,7 +915,7 @@ Phase 23 adds an ISO 11179 business glossary, semantic layer with business-frien
 Navigate to **Govern → Data Lineage** or visit `/lineage`.
 
 ### Key Points
-- 25th view — flagship 3-tab lineage explorer
+- 26th view — flagship 3-tab lineage explorer
 - 6-layer composable lineage graph with ~215 nodes and ~125 edges
 - ISO 8000 quality scores at every tier node (6 ISO 25012 dimensions)
 - Regulatory compliance overlay (MAR, MiFID II, Dodd-Frank, FINRA)
@@ -959,6 +960,42 @@ Navigate to **Govern → Data Lineage** or visit `/lineage`.
 - **S37**: Trace a Regulatory-Required Field
 - **S38**: Analyze Impact of a Change
 - **S39**: Alert Explainability Tunnel
+
+---
+
+## Act 9: Case Management & Compliance — Phase 27
+
+**Navigate to:** `/cases`
+
+**What to Show:**
+
+1. **Cases Grid** — AG Grid showing 15 investigation cases with columns: case_id, title, status (badge), priority (badge), assignee, alert count, SLA status, created_at
+2. **Case Detail** — Click any case to open the detail panel below the grid
+   - **Summary Tab**: Case metadata, status action buttons (transition through open → investigating → escalated → resolved → closed)
+   - **Timeline Tab**: Chronological investigation annotations with type badges (note, disposition, escalation, evidence)
+   - **Linked Alerts Tab**: AG Grid showing all alerts linked to this case — click any alert to navigate to the RiskCaseManager
+   - **Reports Tab**: STOR/SAR regulatory report generator — select a template, generate, and preview the report JSON
+
+3. **Dashboard Tab** — Switch to the "Dashboard" tab at the top
+   - Summary cards: Open Cases, Overdue SLAs, Pending Reports, Resolution Rate, Archived Cases
+   - Case Volume Trend: AreaChart showing opened/resolved/escalated over time
+   - Priority Distribution: PieChart breakdown by priority
+   - SLA Tracking: Table of at-risk and breached cases
+   - Lakehouse Tier Distribution: Gold alerts → Sandbox active cases → Archive retained
+
+4. **Alert-to-Case Flow** — Navigate to `/alerts`, click any alert, scroll down to see:
+   - "Create Case" button — opens inline form with title, priority, category
+   - "AI Triage" button — calls the triage endpoint, auto-fills the case form with suggested priority, category, and initial notes
+
+**Talking Points:**
+- Full investigation lifecycle from alert detection to regulatory filing
+- Cases live in the Sandbox tier (mutable investigation workspace) and archive to the Archive tier (2555-day regulatory retention)
+- STOR (UK MAR Article 16) and SAR (US FinCEN) templates auto-populate from case and alert data
+- AI Triage uses pattern matching on alert model type to suggest investigation priority
+
+### Guided Scenario
+
+**S40: Case Investigation Lifecycle** (Cases category, intermediate difficulty) — available in the Scenarios browser. Walks through case browsing, status transitions, timeline annotations, alert linking, report generation, and the alert-to-case creation flow.
 
 ---
 

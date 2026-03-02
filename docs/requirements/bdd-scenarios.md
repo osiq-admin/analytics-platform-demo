@@ -1838,3 +1838,62 @@ Then a modal opens showing a products × abuse types coverage matrix
 And cells show coverage status (covered, partial, gap)
 And a regulatory gap analysis section highlights uncovered combinations
 ```
+
+---
+
+## Case Management (Phase 27)
+
+### Feature: Case Lifecycle Management
+
+### Scenario: Create investigation case from alert
+```gherkin
+Given an alert "ALT-001" exists with status "new"
+When the analyst creates a case from alert "ALT-001"
+Then a new case is created with status "open"
+And the case alert_ids contains "ALT-001"
+And the case has a CASE-prefixed ID
+```
+
+### Scenario: Transition case through investigation workflow
+```gherkin
+Given a case "CASE-001" exists with status "open"
+When the analyst transitions the case to "investigating"
+Then the case status is "investigating"
+When the analyst transitions the case to "resolved"
+Then the case status is "resolved"
+And the resolved_at timestamp is set
+```
+
+### Scenario: Add investigation annotation to case
+```gherkin
+Given a case "CASE-001" exists
+When the analyst adds a note annotation "Initial review complete"
+Then the case has 1 annotation
+And the annotation type is "note"
+And the annotation content is "Initial review complete"
+```
+
+### Scenario: Generate STOR report from case
+```gherkin
+Given a case "CASE-001" exists with linked alerts
+When the analyst generates a report using the "stor" template
+Then a report is generated with all template fields populated
+And the report is saved to workspace/reports/
+```
+
+### Scenario: AI triage suggests case priority
+```gherkin
+Given an alert "ALT-MPR-001" exists for model "mpr"
+When the analyst triggers AI triage
+Then the triage returns suggested_priority "high"
+And the triage returns suggested_category "market_abuse"
+```
+
+### Scenario: Compliance dashboard shows case statistics
+```gherkin
+Given 5 cases exist with varied statuses and priorities
+When the compliance officer views the dashboard
+Then summary cards show correct open count and resolution rate
+And the priority distribution chart renders
+And the SLA tracking table shows at-risk cases
+```

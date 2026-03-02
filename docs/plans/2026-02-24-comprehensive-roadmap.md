@@ -1097,11 +1097,13 @@ Every entity field carries governance metadata:
 
 ### Tier 5 — Enhanced Intelligence
 
-### Phase 27: AI-Assisted Configuration
+### Phase 27: Investigation & Case Management — **COMPLETE**
 
-*LLM understands system metadata, suggests calculations, orchestrates integrations.*
+*Full investigation case lifecycle — from alert triage through case creation, investigation annotations, STOR/SAR regulatory report generation, and compliance officer dashboard.*
 
-**Goal:** The AI Assistant is aware of all medallion tiers, data contracts, quality rules, governance policies, and business glossary. It can help users configure mappings, create calculations, tune thresholds, and understand data lineage.
+**Status:** COMPLETE (2026-03-03). Implemented as M327-M368 on branch `feature/phase27/investigation-case-management`. See `docs/plans/2026-03-02-investigation-case-management.md` for implementation plan.
+
+**Goal:** Build the investigation case lifecycle that converts the detection engine's analytical output into business-outcome tooling — cases stored as JSON files linked to alerts via alert_ids, flowing through Sandbox→Archive medallion tiers with regulatory retention.
 
 **Tasks:**
 
@@ -1390,10 +1392,10 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P3 — Enhance** | Phase 24 (Observability/Lineage) | **COMPLETE** | M289-M316: 6-layer lineage engine, DataLineage view (25th), observability services, E2E stabilization — 1694 tests (1408+286), 25 views, 39 scenarios, 120 sections |
 | **P3 — Enhance** | Phase 25 (Standards Integration) | **COMPLETE** | M317-M326: Standards compliance matrix (18 standards, 48 controls), BCBS 239 mapping (11 principles), Standards Compliance tab, evidence links, gap analysis — 1704 tests (1418+286), 121 sections |
 | **P3 — Enhance** | Phase 26 (Migration Readiness) | PLANNED | SQLMesh, Arrow, metadata export, multi-platform SQL |
-| **P3 — Enhance** | Phase 27 (AI Configuration) | PLANNED | LLM metadata awareness, assisted mapping/tuning |
+| **P3 — Enhance** | Phase 27 (Investigation & Case Management) | **COMPLETE** | M327-M368: CaseService, 26th view (CaseManagement), STOR/SAR reports, compliance dashboard, AI triage, medallion integration — 1776 tests (1480+296), 26 views, 40 scenarios, 129 sections |
 | **P3 — Enhance** | Phase 28 (Alert Tuning + Models) | PLANNED | Distribution analysis, 10 new detection models |
 | **P4 — Future** | Phases 29-31 (Security, Testing, Cloud) | PLANNED | Production infrastructure |
-| **P5 — Long-term** | Phases 32-33 (Analytics, Cases, Productization) | PLANNED | Multi-tenant, case management, plugins |
+| **P5 — Long-term** | Phases 32-33 (Analytics, Productization) | PLANNED | Multi-tenant, plugins |
 
 ---
 
