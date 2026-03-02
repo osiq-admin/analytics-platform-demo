@@ -1,0 +1,12 @@
+{
+  "tier_id": "archive",
+  "policies": [
+    {"policy_id": "mifid2", "regulation": "MiFID II", "retention_years": 7, "data_types": ["order", "execution", "alert"], "description": "Orders, executions, communications", "gdpr_relevant": false, "crypto_shred": false},
+    {"policy_id": "dodd_frank", "regulation": "Dodd-Frank / SEC 17a-4", "retention_years": 5, "data_types": ["order", "execution", "alert"], "description": "Trade records, communications", "gdpr_relevant": false, "crypto_shred": false},
+    {"policy_id": "mar", "regulation": "MAR", "retention_years": 5, "data_types": ["alert", "execution", "md_eod"], "description": "Surveillance data, alert records", "gdpr_relevant": false, "crypto_shred": false},
+    {"policy_id": "finra_4511", "regulation": "FINRA 4511", "retention_years": 6, "data_types": ["order", "execution", "alert", "account", "trader"], "description": "All business records", "gdpr_relevant": false, "crypto_shred": false},
+    {"policy_id": "gdpr", "regulation": "GDPR", "retention_years": 1, "data_types": ["account", "trader"], "description": "PII data — crypto-shredding ready", "gdpr_relevant": true, "crypto_shred": true}
+  ],
+  "archive_dir": "workspace/archive",
+  "default_format": "compressed_parquet"
+}

@@ -1,0 +1,18 @@
+{
+  "contract_id": "gold_to_archive",
+  "source_tier": "gold",
+  "target_tier": "archive",
+  "entity": "archive_export",
+  "description": "Export gold-tier data to long-term archive for regulatory retention compliance",
+  "field_mappings": [
+    {"source": "*", "target": "*", "transform": "passthrough"},
+    {"source": "_metadata", "target": "archive_metadata", "transform": "add_retention_tags"}
+  ],
+  "quality_rules": [
+    {"rule": "retention_compliance"},
+    {"rule": "checksum_validation"}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100.0},
+  "owner": "compliance-ops",
+  "classification": "confidential"
+}

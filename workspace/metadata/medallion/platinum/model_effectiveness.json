@@ -1,0 +1,13 @@
+{
+  "kpi_id": "model_effectiveness",
+  "name": "Model Effectiveness",
+  "description": "Per-model detection trigger rates and total alert counts",
+  "category": "model_effectiveness",
+  "sql_template": "SELECT model_id, COUNT(*) as total_alerts, SUM(CASE WHEN score > threshold THEN 1 ELSE 0 END) as triggered, AVG(score) as avg_score FROM alerts GROUP BY model_id",
+  "dimensions": [
+    {"field": "model_id", "label": "Detection Model"}
+  ],
+  "schedule": "daily",
+  "source_tier": "gold",
+  "output_format": "json"
+}

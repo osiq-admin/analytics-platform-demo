@@ -17,6 +17,9 @@ from backend.models.widgets import ViewWidgetConfig
 from backend.models.workflow import DemoConfig, TourRegistry, WorkflowConfig
 
 if TYPE_CHECKING:
+    from backend.models.analytics_tiers import (
+        ArchiveConfig, ArchiveManifest, KPIDataset, PlatinumConfig, SandboxRegistry,
+    )
     from backend.models.medallion import DataContract, MedallionConfig, PipelineConfig, TransformationStep
     from backend.models.onboarding import ConnectorConfig
     from backend.models.quality import QualityDimensionsConfig
@@ -1236,3 +1239,96 @@ class MetadataService:
             if rec.golden_id == golden_id:
                 return rec
         return None
+
+    # --- Platinum KPI ---
+
+    def load_platinum_config(self) -> PlatinumConfig | None:
+        """Load all KPI definitions from workspace/metadata/medallion/platinum/*.json.
+
+        Scans the directory, loads each JSON as a KPIDefinition, wraps in PlatinumConfig.
+        """
+        from backend.models.analytics_tiers import KPIDefinition, PlatinumConfig
+        folder = self._base / "medallion" / "platinum"
+        if not folder.exists():
+            return None
+        definitions: list[KPIDefinition] = []
+        for f in sorted(folder.glob("*.json")):
+            definitions.append(KPIDefinition.model_validate_json(f.read_text()))
+        if not definitions:
+            return None
+        return PlatinumConfig(kpi_definitions=definitions)
+
+    def load_kpi_dataset(self, kpi_id: str) -> KPIDataset | None:
+        """Load pre-generated KPI dataset from workspace/platinum/{kpi_id}.json."""
+        from backend.models.analytics_tiers import KPIDataset
+        p = self._base.parent / "platinum" / f"{kpi_id}.json"
+        if not p.exists():
+            return None
+        return KPIDataset.model_validate_json(p.read_text())
+
+    def save_kpi_dataset(self, kpi_id: str, dataset: KPIDataset) -> None:
+        """Save KPI dataset to workspace/platinum/{kpi_id}.json."""
+        d = self._base.parent / "platinum"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / f"{kpi_id}.json"
+        p.write_text(dataset.model_dump_json(indent=2))
+
+    def list_kpi_datasets(self) -> list[KPIDataset]:
+        """List all KPI datasets from workspace/platinum/*.json."""
+        from backend.models.analytics_tiers import KPIDataset
+        folder = self._base.parent / "platinum"
+        if not folder.exists():
+            return []
+        items: list[KPIDataset] = []
+        for f in sorted(folder.glob("*.json")):
+            items.append(KPIDataset.model_validate_json(f.read_text()))
+        return items
+
+    # --- Sandbox ---
+
+    def load_sandbox_registry(self) -> SandboxRegistry:
+        """Load from workspace/sandbox/registry.json. Return empty registry if missing."""
+        from backend.models.analytics_tiers import SandboxRegistry
+        p = self._base.parent / "sandbox" / "registry.json"
+        if not p.exists():
+            return SandboxRegistry()
+        return SandboxRegistry.model_validate_json(p.read_text())
+
+    def save_sandbox_registry(self, registry: SandboxRegistry) -> None:
+        """Save to workspace/sandbox/registry.json."""
+        d = self._base.parent / "sandbox"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / "registry.json"
+        p.write_text(registry.model_dump_json(indent=2))
+
+    def load_sandbox_template(self) -> dict | None:
+        """Load from workspace/metadata/medallion/sandbox/template.json."""
+        p = self._base / "medallion" / "sandbox" / "template.json"
+        if not p.exists():
+            return None
+        return json.loads(p.read_text())
+
+    # --- Archive ---
+
+    def load_archive_config(self) -> ArchiveConfig | None:
+        """Load from workspace/metadata/medallion/archive/policies.json."""
+        from backend.models.analytics_tiers import ArchiveConfig
+        p = self._base / "medallion" / "archive" / "policies.json"
+        if not p.exists():
+            return None
+        return ArchiveConfig.model_validate_json(p.read_text())
+
+    def load_archive_manifest(self) -> ArchiveManifest:
+        """Load from workspace/archive/manifest.json. Return empty manifest if missing."""
+        from backend.models.analytics_tiers import ArchiveManifest
+        p = self._base.parent / "archive" / "manifest.json"
+        if not p.exists():
+            return ArchiveManifest()
+        return ArchiveManifest.model_validate_json(p.read_text())
+
+    def save_archive_manifest(self, manifest: ArchiveManifest) -> None:
+        """Save to workspace/archive/manifest.json."""
+        d = self._base.parent / "archive"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / "manifest.json"
+        p.write_text(manifest.model_dump_json(indent=2))

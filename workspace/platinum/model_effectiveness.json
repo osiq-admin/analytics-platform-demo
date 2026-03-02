@@ -1,0 +1,90 @@
+{
+  "kpi_id": "model_effectiveness",
+  "name": "Model Effectiveness",
+  "category": "model_effectiveness",
+  "generated_at": "2026-02-28T20:31:49.449823+00:00",
+  "period": "2026-02",
+  "data_points": [
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day"
+      },
+      "metric_name": "total_alerts",
+      "metric_value": 50,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day"
+      },
+      "metric_name": "triggered",
+      "metric_value": 28,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday"
+      },
+      "metric_name": "total_alerts",
+      "metric_value": 11,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday"
+      },
+      "metric_name": "triggered",
+      "metric_value": 10,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping"
+      },
+      "metric_name": "total_alerts",
+      "metric_value": 27,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping"
+      },
+      "metric_name": "triggered",
+      "metric_value": 16,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "insider_dealing"
+      },
+      "metric_name": "total_alerts",
+      "metric_value": 24,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "insider_dealing"
+      },
+      "metric_name": "triggered",
+      "metric_value": 14,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "spoofing_layering"
+      },
+      "metric_name": "total_alerts",
+      "metric_value": 16,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "spoofing_layering"
+      },
+      "metric_name": "triggered",
+      "metric_value": 16,
+      "period": "2026-02"
+    }
+  ],
+  "record_count": 10
+}

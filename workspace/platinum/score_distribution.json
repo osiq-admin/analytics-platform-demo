@@ -1,0 +1,280 @@
+{
+  "kpi_id": "score_distribution",
+  "name": "Score Distribution",
+  "category": "score_distribution",
+  "generated_at": "2026-02-28T20:31:49.451383+00:00",
+  "period": "2026-02",
+  "data_points": [
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "0-10"
+      },
+      "metric_name": "count",
+      "metric_value": 3,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "10-20"
+      },
+      "metric_name": "count",
+      "metric_value": 0,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "20-30"
+      },
+      "metric_name": "count",
+      "metric_value": 8,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "30-40"
+      },
+      "metric_name": "count",
+      "metric_value": 7,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "40-50"
+      },
+      "metric_name": "count",
+      "metric_value": 7,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "50-60"
+      },
+      "metric_name": "count",
+      "metric_value": 4,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "60-70"
+      },
+      "metric_name": "count",
+      "metric_value": 3,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "70-80"
+      },
+      "metric_name": "count",
+      "metric_value": 2,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "80-90"
+      },
+      "metric_name": "count",
+      "metric_value": 13,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_full_day",
+        "score_bucket": "90-100"
+      },
+      "metric_name": "count",
+      "metric_value": 1,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "0-10"
+      },
+      "metric_name": "count",
+      "metric_value": 0,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "10-20"
+      },
+      "metric_name": "count",
+      "metric_value": 2,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "20-30"
+      },
+      "metric_name": "count",
+      "metric_value": 6,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "30-40"
+      },
+      "metric_name": "count",
+      "metric_value": 7,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "40-50"
+      },
+      "metric_name": "count",
+      "metric_value": 0,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "50-60"
+      },
+      "metric_name": "count",
+      "metric_value": 6,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "60-70"
+      },
+      "metric_name": "count",
+      "metric_value": 13,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "70-80"
+      },
+      "metric_name": "count",
+      "metric_value": 7,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "80-90"
+      },
+      "metric_name": "count",
+      "metric_value": 14,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "wash_trading_intraday",
+        "score_bucket": "90-100"
+      },
+      "metric_name": "count",
+      "metric_value": 8,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "0-10"
+      },
+      "metric_name": "count",
+      "metric_value": 0,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "10-20"
+      },
+      "metric_name": "count",
+      "metric_value": 5,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "20-30"
+      },
+      "metric_name": "count",
+      "metric_value": 13,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "30-40"
+      },
+      "metric_name": "count",
+      "metric_value": 10,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "40-50"
+      },
+      "metric_name": "count",
+      "metric_value": 8,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "50-60"
+      },
+      "metric_name": "count",
+      "metric_value": 4,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "60-70"
+      },
+      "metric_name": "count",
+      "metric_value": 6,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "70-80"
+      },
+      "metric_name": "count",
+      "metric_value": 10,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "80-90"
+      },
+      "metric_name": "count",
+      "metric_value": 3,
+      "period": "2026-02"
+    },
+    {
+      "dimension_values": {
+        "model_id": "market_price_ramping",
+        "score_bucket": "90-100"
+      },
+      "metric_name": "count",
+      "metric_value": 2,
+      "period": "2026-02"
+    }
+  ],
+  "record_count": 30
+}

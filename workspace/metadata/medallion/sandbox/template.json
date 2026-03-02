@@ -1,0 +1,13 @@
+{
+  "tier_id": "sandbox",
+  "default_source_tier": "gold",
+  "available_overrides": [
+    {"setting_id": "mpr_score_threshold", "label": "MPR Score Threshold", "type": "float", "default": 30.0},
+    {"setting_id": "wash_time_window_minutes", "label": "Wash Time Window", "type": "int", "default": 60},
+    {"setting_id": "insider_score_threshold", "label": "Insider Score Threshold", "type": "float", "default": 25.0},
+    {"setting_id": "spoofing_score_threshold", "label": "Spoofing Score Threshold", "type": "float", "default": 28.0}
+  ],
+  "lifecycle_states": ["created", "configured", "running", "completed", "discarded"],
+  "max_sandboxes": 5,
+  "auto_discard_days": 7
+}

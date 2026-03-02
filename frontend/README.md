@@ -30,7 +30,8 @@ frontend/src/
 │   ├── ModelComposer/       # Detection model viewer with calc/strictness breakdown
 │   ├── DataManager/         # Data table browser with live SQL preview
 │   ├── RiskCaseManager/     # Alert summary grid + alert detail (score breakdown, trace)
-│   └── AIAssistant/         # Chat interface, mock scenario player, query preview
+│   ├── AIAssistant/         # Chat interface, mock scenario player, query preview
+│   └── AnalyticsTiers/      # Platinum KPIs, Sandbox isolation, Archive retention policies
 ├── stores/
 │   ├── alertStore.ts        # Alert data and selection state
 │   ├── metadataStore.ts     # Entities, calculations, detection models cache
@@ -58,6 +59,7 @@ frontend/src/
 | `/data` | Data Manager | Compose |
 | `/alerts` | Risk Case Manager | Investigate |
 | `/assistant` | AI Assistant | AI |
+| `/analytics-tiers` | Analytics Tiers | Ingest |
 
 ## Tech Stack
 

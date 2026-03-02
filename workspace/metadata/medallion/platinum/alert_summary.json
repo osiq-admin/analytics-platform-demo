@@ -1,0 +1,14 @@
+{
+  "kpi_id": "alert_summary",
+  "name": "Alert Summary",
+  "description": "Aggregated alert counts and average scores by detection model and asset class",
+  "category": "alert_summary",
+  "sql_template": "SELECT model_id, asset_class, COUNT(*) as alert_count, AVG(score) as avg_score FROM alerts GROUP BY model_id, asset_class",
+  "dimensions": [
+    {"field": "model_id", "label": "Detection Model"},
+    {"field": "asset_class", "label": "Asset Class"}
+  ],
+  "schedule": "daily",
+  "source_tier": "gold",
+  "output_format": "json"
+}

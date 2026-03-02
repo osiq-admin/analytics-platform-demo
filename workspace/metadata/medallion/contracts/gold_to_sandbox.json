@@ -1,0 +1,17 @@
+{
+  "contract_id": "gold_to_sandbox",
+  "source_tier": "gold",
+  "target_tier": "sandbox",
+  "entity": "sandbox_snapshot",
+  "description": "Snapshot gold-tier data into isolated sandbox environment for experimentation",
+  "field_mappings": [
+    {"source": "*", "target": "*", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "isolation_check"},
+    {"rule": "freshness", "max_age_minutes": 60}
+  ],
+  "sla": {"freshness_minutes": 60, "completeness_pct": 90.0},
+  "owner": "data-science",
+  "classification": "internal"
+}

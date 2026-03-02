@@ -337,3 +337,57 @@ class TestSilverToReferenceContracts:
         contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
         ref_contracts = list(contracts_dir.glob("silver_to_reference_*.json"))
         assert len(ref_contracts) == 4
+
+
+# ---------------------------------------------------------------------------
+# Platinum / Sandbox / Archive contract and pipeline tests (M236)
+# ---------------------------------------------------------------------------
+
+class TestPlatinumSandboxArchiveContracts:
+    """Tests for gold-to-platinum, gold-to-sandbox, and gold-to-archive contracts and pipeline stages."""
+
+    def test_gold_to_platinum_contract_exists(self):
+        """Gold-to-platinum KPI contract exists and is loadable."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        path = contracts_dir / "gold_to_platinum_kpi.json"
+        assert path.exists(), f"Missing contract: {path}"
+        data = json.loads(path.read_text())
+        assert data["contract_id"] == "gold_to_platinum_kpi"
+        assert data["source_tier"] == "gold"
+        assert data["target_tier"] == "platinum"
+        assert data["entity"] == "kpi"
+        assert len(data["quality_rules"]) >= 2
+
+    def test_gold_to_sandbox_contract_exists(self):
+        """Gold-to-sandbox contract exists and is loadable."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        path = contracts_dir / "gold_to_sandbox.json"
+        assert path.exists(), f"Missing contract: {path}"
+        data = json.loads(path.read_text())
+        assert data["contract_id"] == "gold_to_sandbox"
+        assert data["source_tier"] == "gold"
+        assert data["target_tier"] == "sandbox"
+        assert data["entity"] == "sandbox_snapshot"
+        assert any(r["rule"] == "isolation_check" for r in data["quality_rules"])
+
+    def test_gold_to_archive_contract_exists(self):
+        """Gold-to-archive contract exists and is loadable."""
+        contracts_dir = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "contracts"
+        path = contracts_dir / "gold_to_archive.json"
+        assert path.exists(), f"Missing contract: {path}"
+        data = json.loads(path.read_text())
+        assert data["contract_id"] == "gold_to_archive"
+        assert data["source_tier"] == "gold"
+        assert data["target_tier"] == "archive"
+        assert data["entity"] == "archive_export"
+        assert any(r["rule"] == "retention_compliance" for r in data["quality_rules"])
+        assert any(r["rule"] == "checksum_validation" for r in data["quality_rules"])
+
+    def test_pipeline_stages_count(self):
+        """Pipeline stages include the new sandbox and archive stages (8 total)."""
+        stages_path = Path(__file__).parent.parent / "workspace" / "metadata" / "medallion" / "pipeline_stages.json"
+        data = json.loads(stages_path.read_text())
+        assert len(data["stages"]) == 8
+        stage_ids = [s["stage_id"] for s in data["stages"]]
+        assert "gold_to_sandbox" in stage_ids
+        assert "gold_to_archive" in stage_ids
