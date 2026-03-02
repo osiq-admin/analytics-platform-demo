@@ -1,0 +1,658 @@
+{
+  "matrix_id": "standards_compliance_matrix",
+  "version": "1.0",
+  "description": "Detailed compliance matrix mapping standards to platform controls with evidence links",
+  "last_assessed": "2026-03-02",
+  "summary": {
+    "total_standards": 18,
+    "total_controls": 48,
+    "full_count": 30,
+    "partial_count": 14,
+    "gap_count": 4,
+    "compliance_percentage": 77
+  },
+  "standards": [
+    {
+      "standard_id": "iso_6166",
+      "name": "ISO 6166 - ISIN",
+      "category": "identification",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_6166_c1",
+          "control_name": "ISIN field validation",
+          "description": "Securities identified using ISO 6166 ISIN codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "ISO 6166 field mapping for product.isin"},
+            {"type": "entity", "path": "workspace/metadata/entities/product.json", "description": "Product entity with isin field"}
+          ]
+        },
+        {
+          "control_id": "iso_6166_c2",
+          "control_name": "ISIN format validation",
+          "description": "12-character alphanumeric ISIN format validation",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "Validation rules for ISIN format"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_10383",
+      "name": "ISO 10383 - MIC",
+      "category": "identification",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_10383_c1",
+          "control_name": "MIC codes on venue entity",
+          "description": "Venues identified using ISO 10383 Market Identifier Codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "ISO 10383 field mapping for venue.mic"},
+            {"type": "entity", "path": "workspace/metadata/entities/venue.json", "description": "Venue entity with mic field"}
+          ]
+        },
+        {
+          "control_id": "iso_10383_c2",
+          "control_name": "Venue MIC validation",
+          "description": "MIC code validation against ISO 10383 catalogue",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/10383.json", "description": "ISO 10383 MIC code catalogue"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_10962",
+      "name": "ISO 10962 - CFI",
+      "category": "identification",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_10962_c1",
+          "control_name": "CFI code classification",
+          "description": "Instruments classified using ISO 10962 Classification of Financial Instruments codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "entity", "path": "workspace/metadata/entities/product.json", "description": "Product entity with cfi_code field"}
+          ]
+        },
+        {
+          "control_id": "iso_10962_c2",
+          "control_name": "Instrument type derivation from CFI",
+          "description": "Instrument type derived from CFI code classification",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/10962.json", "description": "ISO 10962 CFI code catalogue"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_4217",
+      "name": "ISO 4217 - Currency",
+      "category": "identification",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_4217_c1",
+          "control_name": "Currency code validation",
+          "description": "Currency fields validated against ISO 4217 codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "entity", "path": "workspace/metadata/entities/product.json", "description": "Product entity with currency field"}
+          ]
+        },
+        {
+          "control_id": "iso_4217_c2",
+          "control_name": "ISO currency code catalogue",
+          "description": "Full ISO 4217 currency code reference catalogue",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/4217.json", "description": "ISO 4217 currency code catalogue"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_3166",
+      "name": "ISO 3166 - Country",
+      "category": "identification",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_3166_c1",
+          "control_name": "Country code validation",
+          "description": "Country fields validated against ISO 3166 codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "entity", "path": "workspace/metadata/entities/venue.json", "description": "Venue entity with country field"},
+            {"type": "entity", "path": "workspace/metadata/entities/account.json", "description": "Account entity with country field"}
+          ]
+        },
+        {
+          "control_id": "iso_3166_c2",
+          "control_name": "ISO country code catalogue",
+          "description": "Full ISO 3166 country code reference catalogue",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/3166.json", "description": "ISO 3166 country code catalogue"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_8601",
+      "name": "ISO 8601 - Date/Time",
+      "category": "data_format",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_8601_c1",
+          "control_name": "Timestamp format compliance",
+          "description": "All datetime fields use ISO 8601 format",
+          "platform_capability": "data_format",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/8601.json", "description": "ISO 8601 date/time format specification"}
+          ]
+        },
+        {
+          "control_id": "iso_8601_c2",
+          "control_name": "Date/time parsing and storage",
+          "description": "Consistent ISO 8601 parsing and storage across all entities",
+          "platform_capability": "data_format",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/8601.json", "description": "ISO 8601 parsing rules"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_20022",
+      "name": "ISO 20022 - Financial Messaging",
+      "category": "messaging",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "iso_20022_c1",
+          "control_name": "Canonical field naming alignment",
+          "description": "Entity field naming aligned with ISO 20022 canonical naming conventions",
+          "platform_capability": "data_model",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/20022.json", "description": "ISO 20022 message schema references"}
+          ],
+          "gap_notes": "Field naming partially aligned; full ISO 20022 message generation not implemented"
+        },
+        {
+          "control_id": "iso_20022_c2",
+          "control_name": "Message schema references",
+          "description": "References to ISO 20022 message schemas for transaction reporting",
+          "platform_capability": "data_model",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso/20022.json", "description": "ISO 20022 message type definitions"}
+          ],
+          "gap_notes": "Schema references catalogued; full message generation not in scope for demo"
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_11179",
+      "name": "ISO 11179 - Metadata Registries",
+      "category": "metadata",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_11179_c1",
+          "control_name": "Term naming convention",
+          "description": "Business terms follow ISO 11179 Object Class + Property + Representation naming",
+          "platform_capability": "glossary",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "45+ terms with ISO 11179 naming conventions"}
+          ]
+        },
+        {
+          "control_id": "iso_11179_c2",
+          "control_name": "Metadata registration and cataloguing",
+          "description": "All metadata elements registered and catalogued in categories",
+          "platform_capability": "glossary",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/glossary/categories.json", "description": "6 glossary categories for metadata classification"}
+          ]
+        },
+        {
+          "control_id": "iso_11179_c3",
+          "control_name": "Decomposition and traceability",
+          "description": "Term decomposition with entity gap analysis for traceability",
+          "platform_capability": "glossary",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/glossary/entity_gaps.json", "description": "Entity gap analysis for 8 entities"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_8000",
+      "name": "ISO 8000 - Data Quality",
+      "category": "data_quality",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_8000_c1",
+          "control_name": "Quality measurement per ISO 8000-61",
+          "description": "Data quality measurement using ISO 8000-61 framework with 7 dimensions",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "7 quality dimensions aligned with ISO 8000-61"}
+          ]
+        },
+        {
+          "control_id": "iso_8000_c2",
+          "control_name": "Quality profiling and reporting",
+          "description": "Automated quality profiling with scoring and threshold reporting",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "service", "path": "backend/engine/quality_engine.py", "description": "Quality scoring engine with threshold evaluation"},
+            {"type": "api", "path": "backend/api/quality.py", "description": "/api/quality/scores endpoint"}
+          ]
+        },
+        {
+          "control_id": "iso_8000_c3",
+          "control_name": "Quality scoring thresholds",
+          "description": "Configurable quality thresholds (critical <60, warning 60-80, healthy >80)",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Quality dimension thresholds configuration"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_25012",
+      "name": "ISO 25012 - Data Quality Model",
+      "category": "data_quality",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "iso_25012_c1",
+          "control_name": "Completeness dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.1 — Completeness measurement with weight 0.20",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Completeness dimension (ISO/IEC 25012:2008 S4.2.1, weight 0.20)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c2",
+          "control_name": "Accuracy dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.2 — Accuracy measurement with weight 0.20",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Accuracy dimension (ISO/IEC 25012:2008 S4.2.2, weight 0.20)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c3",
+          "control_name": "Consistency dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.3 — Consistency measurement with weight 0.15",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Consistency dimension (ISO/IEC 25012:2008 S4.2.3, weight 0.15)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c4",
+          "control_name": "Timeliness dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.4 — Timeliness measurement with weight 0.15",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Timeliness dimension (ISO/IEC 25012:2008 S4.2.4, weight 0.15)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c5",
+          "control_name": "Uniqueness dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.5 — Uniqueness measurement with weight 0.10",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Uniqueness dimension (ISO/IEC 25012:2008 S4.2.5, weight 0.10)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c6",
+          "control_name": "Validity dimension",
+          "description": "ISO/IEC 25012:2008 S4.2.6 — Validity measurement with weight 0.10",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Validity dimension (ISO/IEC 25012:2008 S4.2.6, weight 0.10)"}
+          ]
+        },
+        {
+          "control_id": "iso_25012_c7",
+          "control_name": "Currentness dimension",
+          "description": "ISO 8000-61 — Currentness measurement with weight 0.10",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Currentness dimension (ISO 8000-61, weight 0.10)"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "iso_27001",
+      "name": "ISO 27001 - Information Security",
+      "category": "security",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "iso_27001_c1",
+          "control_name": "Role-based access control",
+          "description": "4 RBAC roles with tier-based and classification-based access control",
+          "platform_capability": "rbac_service",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "service", "path": "backend/services/rbac_service.py", "description": "RBAC service with 4 roles"},
+            {"type": "metadata", "path": "workspace/metadata/governance/roles.json", "description": "4 roles (analyst, compliance_officer, data_engineer, admin)"}
+          ]
+        },
+        {
+          "control_id": "iso_27001_c2",
+          "control_name": "Data masking and PII protection",
+          "description": "5 masking algorithms with role-based unmasking and PII classification",
+          "platform_capability": "masking_service",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "service", "path": "backend/services/masking_service.py", "description": "5 masking algorithms (partial, tokenize, hash, generalize, redact)"},
+            {"type": "metadata", "path": "workspace/metadata/governance/masking_policies.json", "description": "7 field-level masking policies"},
+            {"type": "metadata", "path": "workspace/metadata/governance/pii_registry.json", "description": "PII classification per entity"}
+          ]
+        },
+        {
+          "control_id": "iso_27001_c3",
+          "control_name": "Audit logging",
+          "description": "Append-only audit trail for all data modifications",
+          "platform_capability": "audit_service",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "service", "path": "backend/services/audit_service.py", "description": "Append-only audit trail service"},
+            {"type": "metadata", "path": "workspace/metadata/_audit/", "description": "Audit trail storage directory"}
+          ]
+        },
+        {
+          "control_id": "iso_27001_c4",
+          "control_name": "Encryption at rest",
+          "description": "Data encryption for stored data at rest",
+          "platform_capability": "storage",
+          "compliance_level": "gap",
+          "evidence_links": [],
+          "gap_notes": "Demo platform uses unencrypted Parquet; production would require AES-256"
+        }
+      ]
+    },
+    {
+      "standard_id": "bcbs_239",
+      "name": "BCBS 239 - Risk Data Aggregation",
+      "category": "risk_management",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "bcbs_239_c1",
+          "control_name": "Full principle mapping",
+          "description": "All 11 BCBS 239 principles mapped to platform capabilities with evidence links",
+          "platform_capability": "standards_compliance",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/bcbs239_mapping.json", "description": "Full 11-principle BCBS 239 mapping with evidence"}
+          ],
+          "gap_notes": "7 principles fully implemented, 4 partial (reporting, comprehensiveness, frequency, distribution)"
+        }
+      ]
+    },
+    {
+      "standard_id": "dama_dmbok",
+      "name": "DAMA-DMBOK",
+      "category": "data_management",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "dmbok_c1",
+          "control_name": "Data governance",
+          "description": "Data governance framework with roles, policies, and access control",
+          "platform_capability": "data_governance",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/governance/roles.json", "description": "4 governance roles with tiered access"},
+            {"type": "metadata", "path": "workspace/metadata/governance/masking_policies.json", "description": "7 masking policies for data protection"}
+          ]
+        },
+        {
+          "control_id": "dmbok_c2",
+          "control_name": "Data quality management",
+          "description": "Comprehensive data quality framework with 7 ISO 25012 dimensions",
+          "platform_capability": "quality_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "7 quality dimensions"},
+            {"type": "service", "path": "backend/engine/quality_engine.py", "description": "Quality scoring engine"}
+          ]
+        },
+        {
+          "control_id": "dmbok_c3",
+          "control_name": "Metadata management",
+          "description": "Extensive metadata management across 25+ metadata types",
+          "platform_capability": "metadata_management",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/", "description": "25+ metadata type directories"},
+            {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "45+ governed business terms"}
+          ]
+        },
+        {
+          "control_id": "dmbok_c4",
+          "control_name": "Master/reference data",
+          "description": "Golden record management for 4 entity types (301 records)",
+          "platform_capability": "reference_data",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/reference/", "description": "301 golden records across 4 entity types (product, venue, account, trader)"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "fix_protocol",
+      "name": "FIX Protocol",
+      "category": "messaging",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "fix_c1",
+          "control_name": "Order type mapping (Tag 40)",
+          "description": "FIX Tag 40 OrdType mapped to order.order_type field",
+          "platform_capability": "data_model",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/fix_protocol.json", "description": "FIX Tag 40 order type mapping"}
+          ]
+        },
+        {
+          "control_id": "fix_c2",
+          "control_name": "Execution type mapping (Tag 150)",
+          "description": "FIX Tag 150 ExecType mapped to execution.exec_type field",
+          "platform_capability": "data_model",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/fix_protocol.json", "description": "FIX Tag 150 execution type mapping"}
+          ]
+        },
+        {
+          "control_id": "fix_c3",
+          "control_name": "Side mapping (Tag 54)",
+          "description": "FIX Tag 54 Side mapped to order.side field",
+          "platform_capability": "data_model",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/fix_protocol.json", "description": "FIX Tag 54 side mapping"}
+          ],
+          "gap_notes": "Basic side mapping implemented; full FIX side enumeration not complete"
+        }
+      ]
+    },
+    {
+      "standard_id": "fibo",
+      "name": "FIBO - Financial Industry Business Ontology",
+      "category": "ontology",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "fibo_c1",
+          "control_name": "Ontology class alignment",
+          "description": "Glossary terms aligned with FIBO ontology classes",
+          "platform_capability": "glossary",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "Terms with fibo_class references"}
+          ],
+          "gap_notes": "Partial alignment via glossary fibo_class field; not a full FIBO implementation"
+        },
+        {
+          "control_id": "fibo_c2",
+          "control_name": "Semantic layer mapping",
+          "description": "Semantic metrics mapped to FIBO-aligned concepts",
+          "platform_capability": "semantic_layer",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/semantic/metrics.json", "description": "12 semantic metrics with business definitions"}
+          ],
+          "gap_notes": "Semantic metrics reference FIBO concepts; not a full ontology integration"
+        }
+      ]
+    },
+    {
+      "standard_id": "eu_mar",
+      "name": "EU MAR - Market Abuse Regulation",
+      "category": "regulatory",
+      "compliance_level": "full",
+      "controls": [
+        {
+          "control_id": "mar_c1",
+          "control_name": "Market abuse detection",
+          "description": "5 detection models covering market abuse scenarios",
+          "platform_capability": "detection_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/detection_models/", "description": "5 detection models (wash_full_day, wash_intraday, market_price_ramping, spoofing_layering, insider_dealing)"}
+          ]
+        },
+        {
+          "control_id": "mar_c2",
+          "control_name": "Suspicious transaction reporting",
+          "description": "6 MAR-specific compliance requirements with implementation references",
+          "platform_capability": "compliance_reporting",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/compliance_requirements.json", "description": "6 MAR compliance requirements mapped to implementations"}
+          ]
+        },
+        {
+          "control_id": "mar_c3",
+          "control_name": "Alert generation and scoring",
+          "description": "82 alerts across 5 models and 5 asset classes with severity scoring",
+          "platform_capability": "detection_engine",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/alerts/", "description": "82 alerts (MPR 68%, wash 17%, insider 9%, spoofing 6%)"}
+          ]
+        }
+      ]
+    },
+    {
+      "standard_id": "mifid2",
+      "name": "MiFID II",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "mifid2_c1",
+          "control_name": "Transaction reporting fields",
+          "description": "MiFID II transaction reporting field requirements mapped",
+          "platform_capability": "compliance_reporting",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/compliance_requirements.json", "description": "MiFID II compliance requirements"}
+          ]
+        },
+        {
+          "control_id": "mifid2_c2",
+          "control_name": "Instrument identification",
+          "description": "Instruments identified using ISO 6166 ISIN and ISO 10962 CFI codes",
+          "platform_capability": "entity_validation",
+          "compliance_level": "full",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "ISO 6166/10962 field mappings for instrument identification"}
+          ]
+        },
+        {
+          "control_id": "mifid2_c3",
+          "control_name": "Best execution monitoring",
+          "description": "Venue capture for best execution analysis",
+          "platform_capability": "venue_monitoring",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "entity", "path": "workspace/metadata/entities/execution.json", "description": "Execution entity with venue_mic field"}
+          ],
+          "gap_notes": "Limited to venue capture, no full best execution analysis"
+        }
+      ]
+    },
+    {
+      "standard_id": "dodd_frank",
+      "name": "Dodd-Frank Act",
+      "category": "regulatory",
+      "compliance_level": "partial",
+      "controls": [
+        {
+          "control_id": "dodd_frank_c1",
+          "control_name": "Swap reporting requirements",
+          "description": "Swap transaction data capture and reporting capability",
+          "platform_capability": "compliance_reporting",
+          "compliance_level": "partial",
+          "evidence_links": [
+            {"type": "metadata", "path": "workspace/metadata/standards/compliance/dodd_frank.json", "description": "Dodd-Frank compliance requirements"}
+          ],
+          "gap_notes": "Basic swap data capture via asset_class; full swap data repository not in scope"
+        }
+      ]
+    }
+  ]
+}

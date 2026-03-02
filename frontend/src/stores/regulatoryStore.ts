@@ -82,6 +82,69 @@ export interface SuggestionData {
   };
 }
 
+/* ---------- Compliance Matrix Types ---------- */
+
+export interface EvidenceLink {
+  type: string;
+  path: string;
+  description: string;
+}
+
+export interface ComplianceControl {
+  control_id: string;
+  control_name: string;
+  description: string;
+  platform_capability: string;
+  compliance_level: string;
+  evidence_links: EvidenceLink[];
+  gap_notes?: string | null;
+}
+
+export interface ComplianceStandard {
+  standard_id: string;
+  name: string;
+  category: string;
+  compliance_level: string;
+  controls: ComplianceControl[];
+}
+
+export interface ComplianceMatrixSummary {
+  total_standards: number;
+  total_controls: number;
+  full_count: number;
+  partial_count: number;
+  gap_count: number;
+  compliance_percentage: number;
+}
+
+export interface ComplianceMatrixData {
+  matrix_id: string;
+  summary: ComplianceMatrixSummary;
+  standards: ComplianceStandard[];
+}
+
+export interface BCBS239Principle {
+  principle_number: number;
+  principle_name: string;
+  description: string;
+  compliance_level: string;
+  platform_capabilities: string[];
+  evidence_links: EvidenceLink[];
+  gap_notes?: string | null;
+}
+
+export interface BCBS239Data {
+  mapping_id: string;
+  overall_compliance: {
+    total_principles: number;
+    full_count: number;
+    partial_count: number;
+    gap_count: number;
+    compliance_score: number;
+  };
+  principles: BCBS239Principle[];
+}
+
 /* ---------- State ---------- */
 
 interface RegulatoryState {
@@ -90,10 +153,13 @@ interface RegulatoryState {
   graphNodes: TraceabilityNode[];
   graphEdges: TraceabilityEdge[];
   suggestions: SuggestionData | null;
+  complianceMatrix: ComplianceMatrixData | null;
+  bcbs239: BCBS239Data | null;
   loading: boolean;
   error: string | null;
   fetchAll: () => Promise<void>;
   fetchSuggestions: () => Promise<void>;
+  fetchComplianceData: () => Promise<void>;
 }
 
 interface RegistryResponse {
@@ -112,6 +178,8 @@ export const useRegulatoryStore = create<RegulatoryState>((set) => ({
   graphNodes: [],
   graphEdges: [],
   suggestions: null,
+  complianceMatrix: null,
+  bcbs239: null,
   loading: false,
   error: null,
 
@@ -142,6 +210,18 @@ export const useRegulatoryStore = create<RegulatoryState>((set) => ({
         "/metadata/regulatory/suggestions"
       );
       set({ suggestions });
+    } catch (e) {
+      set({ error: String(e) });
+    }
+  },
+
+  fetchComplianceData: async () => {
+    try {
+      const [matrix, bcbs] = await Promise.all([
+        api.get<ComplianceMatrixData>("/metadata/standards/compliance-matrix"),
+        api.get<BCBS239Data>("/metadata/standards/bcbs239"),
+      ]);
+      set({ complianceMatrix: matrix, bcbs239: bcbs });
     } catch (e) {
       set({ error: String(e) });
     }

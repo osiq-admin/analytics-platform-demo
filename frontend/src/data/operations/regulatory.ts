@@ -57,11 +57,23 @@ export const regulatoryOperations: ViewOperations = {
       description:
         "Enable Trace mode from the toolbar to see info icons on each section. Click an icon to view which files, APIs, metadata, and technologies control that section, plus metadata-maturity analysis.",
     },
+    {
+      id: "view_compliance_matrix",
+      name: "View Compliance Matrix",
+      description:
+        "Browse the standards compliance matrix with evidence links showing how the platform aligns with 18 international standards across 48 controls.",
+    },
+    {
+      id: "view_bcbs239_principles",
+      name: "View BCBS 239 Principles",
+      description:
+        "Review all 11 BCBS 239 risk data aggregation principles with compliance levels, platform capabilities, and evidence links.",
+    },
   ],
   tips: [
     "Green nodes indicate covered articles; red indicates gaps requiring attention",
     "Click any node to see details with descriptions in the full-width bottom pane",
-    "Use the tab switcher to toggle between the Traceability Map and Regulation Details table",
+    "Tab switcher for Traceability Map / Regulation Details / Standards Compliance",
     "Drag the horizontal divider between panes to resize. Sizes persist across sessions.",
     "The gap analysis prioritizes requirements by regulatory importance and risk",
   ],

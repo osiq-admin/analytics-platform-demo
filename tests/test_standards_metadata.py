@@ -322,6 +322,139 @@ def workspace(tmp_path):
         json.dumps(compliance_registry, indent=2)
     )
 
+    # Compliance matrix fixture
+    (ws / "metadata" / "standards" / "compliance_matrix.json").write_text(json.dumps({
+        "matrix_id": "standards_compliance_matrix",
+        "version": "1.0",
+        "description": "Test compliance matrix",
+        "last_assessed": "2026-03-02",
+        "summary": {
+            "total_standards": 3,
+            "total_controls": 6,
+            "full_count": 4,
+            "partial_count": 1,
+            "gap_count": 1,
+            "compliance_percentage": 75
+        },
+        "standards": [
+            {
+                "standard_id": "iso_6166",
+                "name": "ISO 6166 - ISIN",
+                "category": "identification",
+                "compliance_level": "full",
+                "controls": [
+                    {
+                        "control_id": "iso_6166_c1",
+                        "control_name": "ISIN field validation",
+                        "description": "Product entity uses ISIN for identification",
+                        "platform_capability": "entity_validation",
+                        "compliance_level": "full",
+                        "evidence_links": [
+                            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "ISO field mapping"}
+                        ]
+                    },
+                    {
+                        "control_id": "iso_6166_c2",
+                        "control_name": "ISIN format validation",
+                        "description": "12-character alphanumeric format",
+                        "platform_capability": "entity_validation",
+                        "compliance_level": "full",
+                        "evidence_links": [
+                            {"type": "metadata", "path": "workspace/metadata/standards/iso_mapping.json", "description": "Validation rules"}
+                        ]
+                    }
+                ]
+            },
+            {
+                "standard_id": "iso_8000",
+                "name": "ISO 8000 - Data Quality",
+                "category": "data_quality",
+                "compliance_level": "full",
+                "controls": [
+                    {
+                        "control_id": "iso_8000_c1",
+                        "control_name": "Quality measurement",
+                        "description": "Quality scoring per ISO 8000-61",
+                        "platform_capability": "quality_engine",
+                        "compliance_level": "full",
+                        "evidence_links": [
+                            {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "7 quality dimensions"}
+                        ]
+                    },
+                    {
+                        "control_id": "iso_8000_c2",
+                        "control_name": "Quality profiling",
+                        "description": "Data profiling and reporting",
+                        "platform_capability": "quality_engine",
+                        "compliance_level": "partial",
+                        "evidence_links": [],
+                        "gap_notes": "Profiling limited to dimension scoring"
+                    }
+                ]
+            },
+            {
+                "standard_id": "iso_27001",
+                "name": "ISO 27001 - Information Security",
+                "category": "security",
+                "compliance_level": "partial",
+                "controls": [
+                    {
+                        "control_id": "iso_27001_c1",
+                        "control_name": "RBAC access control",
+                        "description": "Role-based access control",
+                        "platform_capability": "rbac_service",
+                        "compliance_level": "full",
+                        "evidence_links": [
+                            {"type": "service", "path": "backend/services/rbac_service.py", "description": "RBAC service"}
+                        ]
+                    },
+                    {
+                        "control_id": "iso_27001_c2",
+                        "control_name": "Encryption at rest",
+                        "description": "Data encryption for stored data",
+                        "platform_capability": "storage",
+                        "compliance_level": "gap",
+                        "evidence_links": [],
+                        "gap_notes": "Not implemented in demo"
+                    }
+                ]
+            }
+        ]
+    }))
+
+    # BCBS 239 mapping fixture
+    (ws / "metadata" / "standards" / "bcbs239_mapping.json").write_text(json.dumps({
+        "mapping_id": "bcbs239_principles",
+        "version": "1.0",
+        "description": "Test BCBS 239 mapping",
+        "last_assessed": "2026-03-02",
+        "overall_compliance": {
+            "total_principles": 11,
+            "full_count": 7,
+            "partial_count": 4,
+            "gap_count": 0,
+            "compliance_score": 82
+        },
+        "principles": [
+            {
+                "principle_number": i,
+                "principle_name": name,
+                "description": f"BCBS 239 Principle {i} description",
+                "compliance_level": "full" if i <= 6 else "partial",
+                "platform_capabilities": ["test_capability"],
+                "evidence_links": [
+                    {"type": "metadata", "path": f"workspace/metadata/test_{i}.json", "description": f"Evidence for principle {i}"}
+                ],
+                "gap_notes": None if i <= 6 else "Partial in demo"
+            }
+            for i, name in enumerate([
+                "Governance", "Data Architecture", "Accuracy", "Completeness",
+                "Timeliness", "Adaptability", "Accuracy (Reporting)",
+                "Comprehensiveness", "Clarity", "Frequency", "Distribution"
+            ], 1)
+        ]
+    }))
+
     # Write regulation registry
     (ws / "metadata" / "regulations").mkdir(parents=True)
     regulation_registry = {
@@ -557,3 +690,107 @@ class TestEnhancedRegulations:
         assert sec is not None
         articles = [a["id"] for a in sec["articles"]]
         assert "sec_10b5" in articles
+
+
+class TestComplianceMatrix:
+    def test_compliance_matrix_endpoint(self, client):
+        resp = client.get("/api/metadata/standards/compliance-matrix")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["matrix_id"] == "standards_compliance_matrix"
+        assert "standards" in data
+        assert len(data["standards"]) >= 3
+
+    def test_compliance_matrix_has_controls(self, client):
+        resp = client.get("/api/metadata/standards/compliance-matrix")
+        data = resp.json()
+        for std in data["standards"]:
+            assert "controls" in std
+            assert len(std["controls"]) >= 1
+            for ctrl in std["controls"]:
+                assert "control_id" in ctrl
+                assert "control_name" in ctrl
+                assert "compliance_level" in ctrl
+                assert ctrl["compliance_level"] in ("full", "partial", "gap")
+
+    def test_compliance_matrix_evidence_links(self, client):
+        resp = client.get("/api/metadata/standards/compliance-matrix")
+        data = resp.json()
+        has_evidence = False
+        for std in data["standards"]:
+            for ctrl in std["controls"]:
+                assert "evidence_links" in ctrl
+                for link in ctrl["evidence_links"]:
+                    assert "type" in link
+                    assert "path" in link
+                    assert "description" in link
+                    has_evidence = True
+        assert has_evidence, "At least one control should have evidence links"
+
+    def test_compliance_matrix_summary(self, client):
+        resp = client.get("/api/metadata/standards/compliance-matrix")
+        data = resp.json()
+        summary = data["summary"]
+        assert "total_standards" in summary
+        assert "total_controls" in summary
+        assert "full_count" in summary
+        assert "partial_count" in summary
+        assert "gap_count" in summary
+        assert "compliance_percentage" in summary
+        assert 0 <= summary["compliance_percentage"] <= 100
+
+    def test_compliance_matrix_gap_controls_have_notes(self, client):
+        resp = client.get("/api/metadata/standards/compliance-matrix")
+        data = resp.json()
+        for std in data["standards"]:
+            for ctrl in std["controls"]:
+                if ctrl["compliance_level"] == "gap":
+                    assert ctrl.get("gap_notes"), f"Gap control {ctrl['control_id']} should have gap_notes"
+
+
+class TestBCBS239Mapping:
+    def test_bcbs239_endpoint(self, client):
+        resp = client.get("/api/metadata/standards/bcbs239")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["mapping_id"] == "bcbs239_principles"
+        assert "principles" in data
+
+    def test_bcbs239_all_11_principles(self, client):
+        resp = client.get("/api/metadata/standards/bcbs239")
+        data = resp.json()
+        assert len(data["principles"]) == 11
+        numbers = {p["principle_number"] for p in data["principles"]}
+        assert numbers == set(range(1, 12))
+
+    def test_bcbs239_principle_structure(self, client):
+        resp = client.get("/api/metadata/standards/bcbs239")
+        data = resp.json()
+        for p in data["principles"]:
+            assert "principle_number" in p
+            assert "principle_name" in p
+            assert "description" in p
+            assert "compliance_level" in p
+            assert p["compliance_level"] in ("full", "partial", "gap")
+            assert "platform_capabilities" in p
+            assert isinstance(p["platform_capabilities"], list)
+            assert "evidence_links" in p
+
+    def test_bcbs239_compliance_score(self, client):
+        resp = client.get("/api/metadata/standards/bcbs239")
+        data = resp.json()
+        oc = data["overall_compliance"]
+        assert "compliance_score" in oc
+        assert 0 <= oc["compliance_score"] <= 100
+        assert oc["total_principles"] == 11
+        assert oc["full_count"] + oc["partial_count"] + oc["gap_count"] == 11
+
+    def test_bcbs239_principle_names(self, client):
+        resp = client.get("/api/metadata/standards/bcbs239")
+        data = resp.json()
+        names = {p["principle_name"] for p in data["principles"]}
+        assert "Governance" in names
+        assert "Data Architecture" in names
+        assert "Accuracy" in names
+        assert "Completeness" in names
+        assert "Timeliness" in names

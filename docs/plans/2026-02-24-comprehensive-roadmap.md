@@ -12,14 +12,14 @@
 
 ## Current State Assessment
 
-**What's built (Phases 1-26 + 7B + Overhauls, M0-M316):**
+**What's built (Phases 1-26 + 7B + Overhauls + Phase 25, M0-M326):**
 - 8 entities (product, execution, order, md_eod, md_intraday, venue, account, trader)
 - 10 calculations across 4 layers (transaction → time_window → aggregation → derived)
 - 5 detection models (wash trading x2, spoofing, market price ramping, insider dealing)
-- 25 frontend views, 1694 tests (1408 backend + 286 E2E), Playwright verified
+- 25 frontend views, 1704 tests (1418 backend + 286 E2E), Playwright verified
 - QA automation toolkit with regression detection, quality gates, and reporting
 - Settings system with hierarchical overrides (already exemplary metadata-driven design)
-- 84% metadata-driven (120 sections across 25 views)
+- 84% metadata-driven (121 sections across 25 views)
 - 11-tier medallion architecture with data contracts, transformations, and pipeline stages
 - Bronze→Silver mapping engine with metadata-driven MappingStudio
 - Data quality engine with ISO 8000/25012 dimensions, quarantine service, DataQuality view
@@ -1360,7 +1360,7 @@ Each model is purely metadata-defined (JSON) using the medallion architecture. N
 | **P2 — Important** | Phase 22 (Masking/Encryption/RBAC) | **COMPLETE** | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1287 tests (1057+230), 22 views, 34 scenarios, 104 sections |
 | **P3 — Enhance** | Phase 23 (Business Glossary) | **COMPLETE** | M269-M280: ISO 11179 glossary (18 terms), semantic layer (12 metrics, 8 dimensions), DAMA-DMBOK coverage, standards compliance, BusinessGlossary view, S35 scenario — 1343 tests (1105+238), 23 views, 35 scenarios, 112 sections |
 | **P3 — Enhance** | Phase 24 (Observability/Lineage) | **COMPLETE** | M289-M316: 6-layer lineage engine, DataLineage view (25th), observability services, E2E stabilization — 1694 tests (1408+286), 25 views, 39 scenarios, 120 sections |
-| **P3 — Enhance** | Phase 25 (Standards Integration) | PLANNED | ISO 27001, BCBS 239, compliance matrix |
+| **P3 — Enhance** | Phase 25 (Standards Integration) | **COMPLETE** | M317-M326: Standards compliance matrix (18 standards, 48 controls), BCBS 239 mapping (11 principles), Standards Compliance tab, evidence links, gap analysis — 1704 tests (1418+286), 121 sections |
 | **P3 — Enhance** | Phase 26 (Migration Readiness) | PLANNED | SQLMesh, Arrow, metadata export, multi-platform SQL |
 | **P3 — Enhance** | Phase 27 (AI Configuration) | PLANNED | LLM metadata awareness, assisted mapping/tuning |
 | **P3 — Enhance** | Phase 28 (Alert Tuning + Models) | PLANNED | Distribution analysis, 10 new detection models |

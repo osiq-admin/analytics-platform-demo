@@ -999,6 +999,24 @@ class MetadataService:
         config = ComplianceRegistry.model_validate_json(path.read_text())
         return config.model_dump()
 
+    def load_compliance_matrix(self) -> dict:
+        """Load the standards compliance matrix from workspace/metadata/standards/compliance_matrix.json."""
+        path = self._base / "standards" / "compliance_matrix.json"
+        if not path.exists():
+            return {"matrix_id": "standards_compliance_matrix", "standards": [], "summary": {}}
+        from backend.models.standards import ComplianceMatrix
+        config = ComplianceMatrix.model_validate_json(path.read_text())
+        return config.model_dump()
+
+    def load_bcbs239_mapping(self) -> dict:
+        """Load the BCBS 239 principle mapping from workspace/metadata/standards/bcbs239_mapping.json."""
+        path = self._base / "standards" / "bcbs239_mapping.json"
+        if not path.exists():
+            return {"mapping_id": "bcbs239_principles", "principles": [], "overall_compliance": {}}
+        from backend.models.standards import BCBS239Mapping
+        config = BCBS239Mapping.model_validate_json(path.read_text())
+        return config.model_dump()
+
     # -- Grid Configurations --
 
     def load_grid_config(self, view_id: str) -> dict | None:

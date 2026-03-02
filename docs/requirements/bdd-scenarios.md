@@ -1726,6 +1726,51 @@ And each gap includes a priority badge and regulatory need description
 
 ---
 
+## Feature: Standards Compliance
+
+### Scenario: Standards Compliance Matrix Displays All Standards
+```gherkin
+Given the platform is running
+And the Regulatory Map view is loaded at /regulatory
+When I click the "Standards Compliance" tab
+Then I see summary cards showing 18 standards, 48 controls, and 77% compliance percentage
+And the compliance matrix grid shows controls with evidence links
+And each control has a compliance level badge (full, partial, or gap)
+```
+
+### Scenario: BCBS 239 Principles Are Fully Mapped
+```gherkin
+Given the platform is running
+And the Regulatory Map view is loaded at /regulatory
+When I click the "Standards Compliance" tab
+Then I see all 11 BCBS 239 principle cards
+And each card shows compliance level (full or partial) and platform capabilities
+And principles 7, 8, 10, 11 show "partial" with gap notes explaining limitations
+```
+
+### Scenario: Evidence Links Trace Controls to Platform Files
+```gherkin
+Given the platform is running
+And the Regulatory Map view is loaded at /regulatory
+When I click the "Standards Compliance" tab
+And I click on a control row in the compliance matrix grid
+Then the evidence detail panel appears below
+And it shows evidence links with type badges (metadata, service, entity, test)
+And each link includes a file path and description
+```
+
+### Scenario: Gap Analysis Identifies Missing Controls
+```gherkin
+Given the platform is running
+And the Regulatory Map view is loaded at /regulatory
+When I click the "Standards Compliance" tab
+And I click the "Gap Analysis" toggle
+Then I see gap controls highlighted in red with standard name and control name
+And each gap includes a gap_notes description explaining what is missing
+```
+
+---
+
 ## Feature: Data Lineage
 
 ### Scenario: View End-to-End Tier Lineage

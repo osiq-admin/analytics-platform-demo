@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-03-02 (M316 — 1694 total tests: 1408 backend + 286 E2E, 39 scenarios, 25 views, 120 architecture sections)
+**Last Updated**: 2026-03-02 (M326 — 1704 total tests: 1418 backend + 286 E2E, 39 scenarios, 25 views, 121 architecture sections)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 1408)
+- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 1418)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 1408)
+- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 1418)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -341,7 +341,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (1408+)
+# Backend tests (1418+)
 uv run python -m qa test backend
 
 # E2E Playwright tests (286+)
@@ -390,3 +390,4 @@ uv run python -m scripts.generate_snapshots
 | 2026-03-01 | Updated for M268 (Phase 22 Masking/RBAC) — updated test counts to 1287 (1057+230), 34 scenarios, 22 views, 104 architecture sections | Claude Opus 4.6 |
 | 2026-03-01 | Updated for M280 (Phase 23 Business Glossary) — updated test counts to 1343 (1105+238), 35 scenarios, 23 views, 112 architecture sections, added glossary/semantic/dmbok metadata types | Claude Opus 4.6 |
 | 2026-03-02 | Updated for M316 (Phase 26 Observability/Lineage/Audit) — updated test counts to 1694 (1408+286), 39 scenarios, 25 views, 120 architecture sections, 1082 modules, 34 API routes, added observability metadata type | Claude Opus 4.6 |
+| 2026-03-02 | Updated for M326 (Phase 25 Standards Integration) — updated test counts to 1704 (1418+286), 121 architecture sections, added standards compliance matrix | Claude Opus 4.6 |

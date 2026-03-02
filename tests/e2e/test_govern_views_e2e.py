@@ -87,6 +87,52 @@ class TestRegulatoryMap:
 
 
 # ============================================================================
+# Standards Compliance Tab (Phase 25)
+# ============================================================================
+
+class TestStandardsComplianceTab:
+    """E2E tests for the Standards Compliance tab in RegulatoryMap view."""
+
+    def test_standards_tab_renders(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.get_by_role("button", name="Standards Compliance").click()
+        loaded_page.wait_for_selector("[data-trace='regulatory.standards-summary']", timeout=10000)
+        summary = loaded_page.locator("[data-trace='regulatory.standards-summary']")
+        assert summary.is_visible()
+        assert loaded_page.get_by_text("Standards").first.is_visible()
+        assert loaded_page.get_by_text("Compliance").first.is_visible()
+
+    def test_compliance_matrix_grid_renders(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.get_by_role("button", name="Standards Compliance").click()
+        loaded_page.wait_for_selector("[data-trace='regulatory.compliance-matrix']", timeout=10000)
+        matrix = loaded_page.locator("[data-trace='regulatory.compliance-matrix']")
+        assert matrix.is_visible()
+        assert matrix.locator(".ag-header-cell").count() >= 5
+
+    def test_bcbs239_section_renders(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.get_by_role("button", name="Standards Compliance").click()
+        loaded_page.wait_for_selector("[data-trace='regulatory.bcbs239-principles']", timeout=10000)
+        bcbs = loaded_page.locator("[data-trace='regulatory.bcbs239-principles']")
+        assert bcbs.is_visible()
+        assert loaded_page.get_by_text("Governance").first.is_visible()
+        assert loaded_page.get_by_text("Data Architecture").first.is_visible()
+
+    def test_gap_analysis_section(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/regulatory")
+        loaded_page.wait_for_load_state("networkidle", timeout=15000)
+        loaded_page.get_by_role("button", name="Standards Compliance").click()
+        loaded_page.wait_for_selector("[data-trace='regulatory.gap-analysis']", timeout=10000)
+        gap = loaded_page.locator("[data-trace='regulatory.gap-analysis']")
+        assert gap.is_visible()
+        assert loaded_page.get_by_text("Gap Analysis").first.is_visible()
+
+
+# ============================================================================
 # Scenario 10: OOB Layer Separation (Phase 11)
 # ============================================================================
 

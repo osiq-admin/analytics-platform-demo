@@ -307,5 +307,55 @@ export const regulatoryMapSections: ViewTrace = {
       maturityExplanation:
         "Suggestions are computed by analyzing metadata relationships. Gap detection is purely metadata-based.",
     },
+    {
+      id: "regulatory.standards-compliance",
+      displayName: "Standards Compliance",
+      viewId: "regulatory",
+      description:
+        "Standards compliance matrix with BCBS 239 principle mapping, evidence links, and gap analysis. Shows how the platform aligns with 18 international standards across 48 controls.",
+      files: [
+        { path: "frontend/src/views/RegulatoryMap/index.tsx", role: "Standards compliance tab rendering" },
+        { path: "frontend/src/stores/regulatoryStore.ts", role: "Fetches compliance matrix and BCBS 239 data" },
+        { path: "backend/api/metadata.py", role: "Serves compliance matrix and BCBS 239 endpoints" },
+        { path: "backend/services/metadata_service.py", role: "Loads compliance matrix and BCBS 239 JSON files" },
+      ],
+      stores: [
+        {
+          name: "regulatoryStore",
+          path: "frontend/src/stores/regulatoryStore.ts",
+          role: "Provides compliance matrix and BCBS 239 data via lazy loading",
+        },
+      ],
+      apis: [
+        {
+          method: "GET",
+          path: "/api/metadata/standards/compliance-matrix",
+          role: "Returns the standards compliance matrix with controls and evidence links",
+          routerFile: "backend/api/metadata.py",
+        },
+        {
+          method: "GET",
+          path: "/api/metadata/standards/bcbs239",
+          role: "Returns the BCBS 239 principle mapping with compliance scores",
+          routerFile: "backend/api/metadata.py",
+        },
+      ],
+      dataSources: [
+        {
+          path: "workspace/metadata/standards/compliance_matrix.json",
+          category: "metadata",
+          role: "Standards compliance matrix with 18 standards and 48 controls",
+        },
+        {
+          path: "workspace/metadata/standards/bcbs239_mapping.json",
+          category: "metadata",
+          role: "BCBS 239 full 11-principle mapping with evidence links",
+        },
+      ],
+      technologies: [{ name: "AG Grid", role: "Compliance matrix table with evidence links" }],
+      metadataMaturity: "fully-metadata-driven",
+      maturityExplanation:
+        "Compliance matrix and BCBS 239 mapping are entirely JSON-driven. Adding a control or principle automatically updates the UI.",
+    },
   ],
 };

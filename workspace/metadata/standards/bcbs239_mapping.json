@@ -1,0 +1,165 @@
+{
+  "mapping_id": "bcbs239_principles",
+  "version": "1.0",
+  "description": "Full mapping of all 11 BCBS 239 principles to platform capabilities",
+  "last_assessed": "2026-03-02",
+  "overall_compliance": {
+    "total_principles": 11,
+    "full_count": 7,
+    "partial_count": 4,
+    "gap_count": 0,
+    "compliance_score": 82
+  },
+  "principles": [
+    {
+      "principle_number": 1,
+      "principle_name": "Governance",
+      "description": "A bank's board and senior management should establish strong governance arrangements for risk data aggregation and risk reporting",
+      "compliance_level": "full",
+      "platform_capabilities": ["data_governance", "audit_trail", "role_management", "glossary_governance"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/governance/roles.json", "description": "4 roles (analyst, compliance_officer, data_engineer, admin) with tier_access, classification_access"},
+        {"type": "service", "path": "backend/services/audit_service.py", "description": "Append-only audit trail service"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "45+ governed terms with ownership metadata"},
+        {"type": "metadata", "path": "workspace/metadata/governance/pii_registry.json", "description": "PII classification per entity"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 2,
+      "principle_name": "Data Architecture",
+      "description": "A bank should design, build and maintain data architecture and IT infrastructure which fully supports its risk data aggregation capabilities and risk reporting practices",
+      "compliance_level": "full",
+      "platform_capabilities": ["medallion_architecture", "data_contracts", "lineage", "pipeline_orchestration"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/medallion/tiers.json", "description": "11-tier medallion (Landing→Bronze→Silver→Gold→Platinum→Reference→Sandbox→Logging→Metrics→Archive)"},
+        {"type": "metadata", "path": "workspace/metadata/medallion/contracts.json", "description": "Data contracts between tiers"},
+        {"type": "service", "path": "backend/services/lineage_service.py", "description": "6-layer materialized adjacency list lineage engine"},
+        {"type": "metadata", "path": "workspace/metadata/medallion/pipeline_stages.json", "description": "8 pipeline stages with dependency ordering"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 3,
+      "principle_name": "Accuracy",
+      "description": "A bank should be able to generate accurate risk data to meet normal and stress/crisis reporting accuracy requirements",
+      "compliance_level": "full",
+      "platform_capabilities": ["quality_engine", "accuracy_dimension", "validation_gates"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Accuracy dimension (ISO/IEC 25012:2008 S4.2.2, weight 0.20)"},
+        {"type": "service", "path": "backend/engine/quality_engine.py", "description": "Quality scoring with thresholds (critical <60, warning 60-80, healthy >80)"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "Terms with bcbs239_principle: accuracy (data_accuracy, data_uniqueness)"},
+        {"type": "metadata", "path": "workspace/metadata/semantic/metrics.json", "description": "6 metrics mapped to accuracy principle"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 4,
+      "principle_name": "Completeness",
+      "description": "A bank should be able to capture and aggregate all material risk data across the banking group",
+      "compliance_level": "full",
+      "platform_capabilities": ["quality_engine", "completeness_dimension", "profiling"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Completeness dimension (ISO/IEC 25012:2008 S4.2.1, weight 0.20)"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "data_completeness term with BCBS 239 Principle 4 reference"},
+        {"type": "metadata", "path": "workspace/metadata/semantic/metrics.json", "description": "4 metrics mapped to completeness principle"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/entity_gaps.json", "description": "Gap analysis for 8 entities"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 5,
+      "principle_name": "Timeliness",
+      "description": "A bank should be able to generate aggregate risk data in a timely manner to meet all risk reporting requirements",
+      "compliance_level": "full",
+      "platform_capabilities": ["quality_engine", "timeliness_dimension", "sla_monitoring"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/quality/dimensions.json", "description": "Timeliness dimension (ISO/IEC 25012:2008 S4.2.4, weight 0.15)"},
+        {"type": "metadata", "path": "workspace/metadata/medallion/pipeline_stages.json", "description": "8 stages with pipeline execution ordering"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "data_timeliness term with BCBS 239 Principle 5 reference"},
+        {"type": "metadata", "path": "workspace/metadata/semantic/metrics.json", "description": "2 metrics mapped to timeliness principle"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 6,
+      "principle_name": "Adaptability",
+      "description": "A bank should be able to generate aggregate risk data to meet a broad range of on-demand, ad hoc risk management reporting requests",
+      "compliance_level": "full",
+      "platform_capabilities": ["metadata_driven_architecture", "json_configuration", "dynamic_detection"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/", "description": "84% metadata-driven architecture (120 architecture sections)"},
+        {"type": "metadata", "path": "workspace/metadata/detection_models/", "description": "5 configurable detection models with JSON-driven parameters"},
+        {"type": "metadata", "path": "workspace/metadata/settings/", "description": "Settings hierarchy with product-specific overrides"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "concentration_risk term with BCBS 239 Principle 6 reference"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 7,
+      "principle_name": "Accuracy (Reporting)",
+      "description": "Risk management reports should accurately and precisely convey aggregated risk data and reflect risk in an exact manner",
+      "compliance_level": "partial",
+      "platform_capabilities": ["calculation_engine", "platinum_tier", "kpi_aggregation"],
+      "evidence_links": [
+        {"type": "service", "path": "backend/engine/calculation_engine.py", "description": "DAG-based calculation engine with topological sort, 4 layers (TRANSACTION→TIME_WINDOW→AGGREGATION→DERIVED)"},
+        {"type": "metadata", "path": "workspace/metadata/medallion/tiers.json", "description": "Platinum tier (tier 6) for pre-built KPIs and executive dashboards"},
+        {"type": "service", "path": "backend/engine/settings_resolver.py", "description": "Parameter resolution for calculation engine"}
+      ],
+      "gap_notes": "Reporting accuracy validated through calculation DAG; no automated reconciliation with source systems in demo"
+    },
+    {
+      "principle_number": 8,
+      "principle_name": "Comprehensiveness",
+      "description": "Risk management reports should cover all material risk areas within the organisation",
+      "compliance_level": "partial",
+      "platform_capabilities": ["detection_model_coverage", "surveillance_matrix", "lineage_tracing"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/detection_models/", "description": "5 models (wash_full_day, wash_intraday, market_price_ramping, spoofing_layering, insider_dealing)"},
+        {"type": "metadata", "path": "workspace/alerts/", "description": "82 alerts across 5 models and 5 asset classes (equities, FX, futures, options, swaps)"},
+        {"type": "metadata", "path": "workspace/metadata/standards/compliance_requirements.json", "description": "14 requirements mapped to implementations"},
+        {"type": "service", "path": "backend/services/lineage_service.py", "description": "Full data lineage for alert explainability"}
+      ],
+      "gap_notes": "Coverage is strong for market abuse; credit and operational risk models not in scope for demo"
+    },
+    {
+      "principle_number": 9,
+      "principle_name": "Clarity",
+      "description": "Risk management reports should communicate information in a clear and concise manner",
+      "compliance_level": "full",
+      "platform_capabilities": ["business_glossary", "semantic_layer", "iso_11179_naming"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/glossary/terms.json", "description": "45+ terms with ISO 11179 naming (Object Class + Property + Representation)"},
+        {"type": "metadata", "path": "workspace/metadata/glossary/categories.json", "description": "6 categories (market_abuse, data_entities, metrics, regulatory, data_quality, architecture)"},
+        {"type": "metadata", "path": "workspace/metadata/semantic/metrics.json", "description": "12 semantic metrics with business definitions"}
+      ],
+      "gap_notes": null
+    },
+    {
+      "principle_number": 10,
+      "principle_name": "Frequency",
+      "description": "The board and senior management should set the frequency of risk management report production and distribution",
+      "compliance_level": "partial",
+      "platform_capabilities": ["pipeline_scheduling", "event_service", "pipeline_stages"],
+      "evidence_links": [
+        {"type": "metadata", "path": "workspace/metadata/medallion/pipeline_stages.json", "description": "8 pipeline stages with dependency chains"},
+        {"type": "service", "path": "backend/services/event_service.py", "description": "Event-driven pipeline execution logging"},
+        {"type": "metadata", "path": "workspace/metadata/medallion/tiers.json", "description": "Retention policies per tier (7 days to 7 years)"}
+      ],
+      "gap_notes": "Pipeline stages are defined but real-time scheduling engine is not implemented in demo; demo uses batch execution"
+    },
+    {
+      "principle_number": 11,
+      "principle_name": "Distribution",
+      "description": "Risk management reports should be distributed to the relevant parties while ensuring confidentiality is maintained",
+      "compliance_level": "partial",
+      "platform_capabilities": ["rbac_access_control", "data_masking", "role_switcher"],
+      "evidence_links": [
+        {"type": "service", "path": "backend/services/rbac_service.py", "description": "4 RBAC roles with tier-based and classification-based access control"},
+        {"type": "service", "path": "backend/services/masking_service.py", "description": "5 masking algorithms (partial, tokenize, hash, generalize, redact) with role-based unmasking"},
+        {"type": "metadata", "path": "workspace/metadata/governance/masking_policies.json", "description": "7 field-level masking policies"}
+      ],
+      "gap_notes": "RBAC and masking implemented; no external report distribution engine in demo"
+    }
+  ]
+}

@@ -574,6 +574,20 @@ def get_compliance_requirements(request: Request):
     return svc.load_compliance_registry()
 
 
+@router.get("/standards/compliance-matrix")
+def get_compliance_matrix(request: Request):
+    """Return the standards compliance matrix with controls and evidence links."""
+    svc = _meta(request)
+    return svc.load_compliance_matrix()
+
+
+@router.get("/standards/bcbs239")
+def get_bcbs239_mapping(request: Request):
+    """Return the BCBS 239 principle mapping."""
+    svc = _meta(request)
+    return svc.load_bcbs239_mapping()
+
+
 # -- View Configurations --
 
 @router.get("/view_config/{view_id}")

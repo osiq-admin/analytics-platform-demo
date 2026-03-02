@@ -65,3 +65,78 @@ class ComplianceRegistry(BaseModel):
     registry_id: str = "compliance_requirements"
     description: str = ""
     requirements: list[ComplianceRequirement] = Field(default_factory=list)
+
+
+# -- Standards Compliance Matrix --
+
+
+class EvidenceLink(BaseModel):
+    type: str  # "metadata", "service", "api", "entity", "test"
+    path: str
+    description: str
+
+
+class ComplianceControl(BaseModel):
+    control_id: str
+    control_name: str
+    description: str
+    platform_capability: str
+    compliance_level: str  # "full", "partial", "gap"
+    evidence_links: list[EvidenceLink] = Field(default_factory=list)
+    gap_notes: str | None = None
+
+
+class ComplianceStandard(BaseModel):
+    standard_id: str
+    name: str
+    category: str
+    compliance_level: str
+    controls: list[ComplianceControl] = Field(default_factory=list)
+
+
+class ComplianceMatrixSummary(BaseModel):
+    total_standards: int = 0
+    total_controls: int = 0
+    full_count: int = 0
+    partial_count: int = 0
+    gap_count: int = 0
+    compliance_percentage: int = 0
+
+
+class ComplianceMatrix(BaseModel):
+    matrix_id: str = "standards_compliance_matrix"
+    version: str = "1.0"
+    description: str = ""
+    last_assessed: str = ""
+    summary: ComplianceMatrixSummary = Field(default_factory=ComplianceMatrixSummary)
+    standards: list[ComplianceStandard] = Field(default_factory=list)
+
+
+# -- BCBS 239 Principle Mapping --
+
+
+class BCBS239Principle(BaseModel):
+    principle_number: int
+    principle_name: str
+    description: str
+    compliance_level: str  # "full", "partial", "gap"
+    platform_capabilities: list[str] = Field(default_factory=list)
+    evidence_links: list[EvidenceLink] = Field(default_factory=list)
+    gap_notes: str | None = None
+
+
+class BCBS239OverallCompliance(BaseModel):
+    total_principles: int = 11
+    full_count: int = 0
+    partial_count: int = 0
+    gap_count: int = 0
+    compliance_score: int = 0
+
+
+class BCBS239Mapping(BaseModel):
+    mapping_id: str = "bcbs239_principles"
+    version: str = "1.0"
+    description: str = ""
+    last_assessed: str = ""
+    overall_compliance: BCBS239OverallCompliance = Field(default_factory=BCBS239OverallCompliance)
+    principles: list[BCBS239Principle] = Field(default_factory=list)

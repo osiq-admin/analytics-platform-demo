@@ -351,10 +351,21 @@ const S23_REGULATORY_AUDIT: ScenarioDefinition = {
       delay: 3500,
     },
     {
+      target: "[data-tour='standards-summary']",
+      title: "Standards Compliance Matrix",
+      content:
+        'Click the "Standards Compliance" tab to review the detailed compliance matrix and BCBS 239 principle mapping. See how the platform aligns with 18 international standards across 48 controls with evidence links.',
+      placement: "bottom",
+      route: "/regulatory",
+      action: "wait",
+      hint: "Click the Standards Compliance tab to see the compliance matrix, BCBS 239 principles, and gap analysis.",
+      delay: 3000,
+    },
+    {
       target: "[data-tour='regulatory-cards']",
       title: "Regulatory Audit Complete",
       content:
-        "You've completed a full regulatory coverage audit: reviewed obligation cards, explored the traceability graph, identified gaps, reviewed AI suggestions, and navigated to Models to address shortfalls. This closed-loop workflow ensures continuous regulatory compliance.",
+        "You've completed a full regulatory coverage audit: reviewed obligation cards, explored the traceability graph, identified gaps, reviewed AI suggestions, examined standards compliance, and navigated to Models to address shortfalls. This closed-loop workflow ensures continuous regulatory compliance.",
       placement: "right",
       route: "/regulatory",
       action: "navigate",

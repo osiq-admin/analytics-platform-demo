@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-02 (M316 Phase 26 Observability, Lineage & Audit; 1694 total tests: 1408 backend + 286 E2E, 25 views, 39 scenarios, 120 architecture sections, 1082 modules)
+**Last Updated**: 2026-03-02 (M326 Phase 25 Standards Integration; 1704 total tests: 1418 backend + 286 E2E, 25 views, 39 scenarios, 121 architecture sections, 1082 modules)
 
 ---
 
@@ -63,6 +63,7 @@
 | Comprehensive Test Sweep (Phase 24) | COMPLETE | M281-M285: Contract tests, startup integration, consistency validators, API sentinel, E2E governance role-switching, nav smoke — 1147 backend + 263 E2E |
 | Post-Merge System Audit (Phase 25) | COMPLETE | M286-M288: Restore AnalyticsTiers integrations dropped during PR #16 merge, register 3 API routers, add route/sidebar/tour, fix API sentinel + stale scenario ref, verify 1238 backend + 271 E2E tests, 976 frontend modules — 24 views, 30 API modules |
 | Observability, Lineage & Audit (Phase 26) | COMPLETE | M289-M316: E2E stabilization, file splitting, 6-layer lineage engine, DataLineage view (25th), PipelineMonitor/DataGovernance extensions — 1694 tests (1408 backend + 286 E2E), 25 views, 39 scenarios, 120 architecture sections, 1082 modules |
+| Standards Integration (Phase 25) | COMPLETE | M317-M326: Standards compliance matrix (18 standards, 48 controls), BCBS 239 full mapping (11 principles), Standards Compliance tab in RegulatoryMap (3rd tab), compliance matrix API, evidence links, gap analysis — 1704 tests (1418 backend + 286 E2E), 121 architecture sections |
 
 ---
 
@@ -460,6 +461,21 @@
 | M314 | DMBOK coverage update | COMPLETE | 1 | 1 | Lineage and observability capabilities added to DMBOK coverage.json |
 | M315 | QA baseline + quality gate | COMPLETE | 1 | 1 | 1408 backend + 286 E2E = 1694 total, frontend 1082 modules |
 | M316 | Full documentation sweep | COMPLETE | 1 | 1 | All docs updated: 25 views, 34 API modules, 1694 tests, 120 architecture sections |
+
+### Phase 25: Standards Integration (M317-M326)
+
+| Milestone | Description | Status | Plan | Actual | Notes |
+|---|---|---|---|---|---|
+| M317 | Standards compliance matrix metadata | COMPLETE | 1 | 1 | 18 standards, 48 controls with evidence links and gap analysis |
+| M318 | BCBS 239 full principle mapping | COMPLETE | 1 | 1 | All 11 principles mapped with platform capabilities and evidence |
+| M319 | Backend compliance matrix API | COMPLETE | 1 | 1 | 2 new endpoints, Pydantic models, MetadataService methods |
+| M320 | Backend tests for compliance endpoints | COMPLETE | 1 | 1 | 10 new tests (5 compliance matrix + 5 BCBS 239) |
+| M321 | Standards Compliance tab UI | COMPLETE | 2 | 2 | 3rd tab in RegulatoryMap: summary cards, AG Grid matrix, BCBS 239 cards, gap analysis |
+| M322 | E2E tests for Standards Compliance | COMPLETE | 1 | 1 | 4 new E2E tests for tab rendering, grid, BCBS 239, gap analysis |
+| M323 | Architecture registry update | COMPLETE | 1 | 1 | 5th section for regulatory view (121 total sections) |
+| M324 | Tours, scenarios, operations update | COMPLETE | 1 | 1 | Tour step 6, S23 step 10, 2 new operations |
+| M325 | Playwright visual verification | COMPLETE | 1 | 1 | 5 screenshots: full tab, evidence detail, gap analysis |
+| M326 | Documentation and cross-reference audit | COMPLETE | 1 | 1 | All docs updated with new counts and Phase 25 milestones |
 
 ---
 

@@ -251,7 +251,7 @@ The Metadata Editor provides side-by-side JSON + visual editing for all 4 metada
 The Regulatory Map provides end-to-end traceability from regulatory requirements to detection logic.
 
 ### Key Points
-- **Two-tab layout**: Toggle between "Traceability Map" and "Regulation Details" using the tab switcher in the top-right corner
+- **Three-tab layout**: Toggle between "Traceability Map", "Regulation Details", and "Standards Compliance" using the tab switcher in the top-right corner
 - **Coverage Summary Cards**: Total requirements, covered count, uncovered count, coverage percentage
 - **Traceability Map tab**: Interactive React Flow graph with resizable panes (graph top, detail bottom)
   - Smoothstep edges with labels ("contains", "detected by", "uses") and arrowheads
@@ -265,6 +265,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 - **Regulation Details tab**: AG Grid table listing all regulations and articles with columns: Regulation, Jurisdiction, Article, Title, Coverage (green/red badges). Click any row to see full article description in the bottom pane.
 - **Resizable panes**: Drag the horizontal divider between graph/grid and detail panes. Sizes persist across sessions.
 - **Suggestions Panel**: Automated gap analysis with actionable recommendations
+- **Standards Compliance tab**: Compliance matrix (18 standards, 48 controls), BCBS 239 principles (11), evidence links, gap analysis
 
 ### Interactive: Explore the Traceability Chain
 1. Navigate to **Investigate → Regulatory Map**
@@ -285,6 +286,15 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
 5. See **Coverage Gaps** (red) — regulatory articles without detection models
 6. See **Model Improvements** (amber) — models that could be strengthened with additional calculations
 7. Key takeaway: "The system identifies exactly where regulatory coverage is weak and suggests improvements"
+
+### Interactive: Review Standards Compliance
+1. Click the **Standards Compliance** tab in the top-right
+2. See 5 summary cards: 18 standards, 48 controls, 30 full, 14 partial, 77% compliance
+3. The **Compliance Matrix** AG Grid shows every control with standard name, category, level (full/partial/gap), capability, and evidence count
+4. Click a row to see the **Evidence Detail** panel — evidence links with type badges (metadata, service, entity, test) and file paths
+5. Scroll down to **BCBS 239 Principles** — 11 cards showing compliance level, platform capabilities, and gap notes
+6. Click **Gap Analysis** toggle to see controls with gaps and remediation notes
+7. Key takeaway: "The platform demonstrably aligns with 18 international standards via detailed evidence links and gap analysis"
 
 ### Standards & Compliance Registry
 - **ISO Standards**: 6 ISO standards with field mappings and validation rules (ISO 6166, 10383, 10962, 4217, 3166-1, 8601)

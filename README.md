@@ -107,7 +107,7 @@ uv run python -m scripts.generate_snapshots
 | | Dashboard | Summary cards, 4 chart widgets with type switching + visibility toggles |
 | **Investigate** | Risk Case Manager | Alert grid → 6-panel investigation workspace |
 | | Submissions | Review queue with auto-recommendations, approve/reject workflow |
-| | Regulatory Map | Traceability graph + regulation details (MAR, MiFID II, Dodd-Frank, FINRA) |
+| | Regulatory Map | Traceability graph, regulation details, standards compliance matrix + BCBS 239 |
 | **Advanced** | Schema Explorer | DuckDB tables, columns, types |
 | | SQL Console | Monaco editor, preset queries, AI-assisted query generation |
 | | Data Manager | Browse and preview loaded data tables |
@@ -153,7 +153,7 @@ Clean separation between out-of-box (vendor-shipped) and user customizations:
 ### Architecture Traceability Mode
 
 Toolbar toggle overlays info icons on every section across all 25 views:
-- 120 traced sections showing source files, Zustand stores, API endpoints, metadata sources
+- 121 traced sections showing source files, Zustand stores, API endpoints, metadata sources
 - 5-level metadata maturity rating per section (Fully Metadata-Driven → Infrastructure)
 - Improvement opportunities for each section
 
@@ -206,14 +206,14 @@ Toolbar toggle overlays info icons on every section across all 25 views:
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
 ├── qa/                  # QA automation toolkit (test/quality/regression)
-├── tests/               # 1694 tests (1408 backend + 286 E2E Playwright)
+├── tests/               # 1704 tests (1418 backend + 286 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing & QA Automation
 
 ```bash
-# Backend tests (1408) — via QA automation framework
+# Backend tests (1418) — via QA automation framework
 uv run python -m qa test backend
 
 # E2E Playwright tests (286)
@@ -236,7 +236,7 @@ uv run python -m qa report --regression  # Compare against baseline
 cd frontend && npm run build
 ```
 
-1694 tests total: 1408 backend unit/integration + 286 E2E Playwright. All 25 views have dedicated E2E coverage. QA automation toolkit provides regression detection, quality gates, and timestamped reports.
+1704 tests total: 1418 backend unit/integration + 286 E2E Playwright. All 25 views have dedicated E2E coverage. QA automation toolkit provides regression detection, quality gates, and timestamped reports.
 
 ## Development
 

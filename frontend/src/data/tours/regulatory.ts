@@ -37,5 +37,11 @@ export const regulatoryTour: TourDefinition = {
       content: "Automated suggestions for improving regulatory coverage — coverage gaps that need new models, and existing models that could be strengthened.",
       placement: "top",
     },
+    {
+      target: "[data-tour='standards-summary']",
+      title: "Standards Compliance",
+      content: "View the compliance matrix showing how the platform aligns with ISO, BCBS 239, DAMA-DMBOK, and other international standards. Summary cards show total standards, controls, and compliance percentage.",
+      placement: "bottom",
+    },
   ],
 };

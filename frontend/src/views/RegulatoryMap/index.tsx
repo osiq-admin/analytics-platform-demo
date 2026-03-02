@@ -24,6 +24,9 @@ import {
   type TraceabilityNode,
   type TraceabilityEdge,
   type SuggestionData,
+  type ComplianceMatrixData,
+  type BCBS239Data,
+  type ComplianceControl,
 } from "../../stores/regulatoryStore.ts";
 
 /* ---------- Constants ---------- */
@@ -151,13 +154,13 @@ interface RegulationRow {
   articleId: string;
 }
 
-type ViewTab = "graph" | "details";
+type ViewTab = "graph" | "details" | "standards";
 
 /* ---------- Component ---------- */
 
 export default function RegulatoryMap() {
-  const { regulations, coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll } =
-    useRegulatoryStore();
+  const { regulations, coverage, graphNodes, graphEdges, suggestions, loading, error, fetchAll,
+    complianceMatrix, bcbs239, fetchComplianceData } = useRegulatoryStore();
   const palette = useThemePalettes();
 
   // Update module-level border colors from metadata palette
@@ -178,6 +181,12 @@ export default function RegulatoryMap() {
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
+
+  useEffect(() => {
+    if (activeTab === "standards" && !complianceMatrix) {
+      fetchComplianceData();
+    }
+  }, [activeTab, complianceMatrix, fetchComplianceData]);
 
   const { nodes, edges } = useMemo(
     () => layoutGraph(graphNodes, graphEdges),
@@ -224,6 +233,7 @@ export default function RegulatoryMap() {
   const viewTabs: { key: ViewTab; label: string }[] = [
     { key: "graph", label: "Traceability Map" },
     { key: "details", label: "Regulation Details" },
+    { key: "standards", label: "Standards Compliance" },
   ];
 
   return (
@@ -260,97 +270,109 @@ export default function RegulatoryMap() {
         />
       </div>
 
-      {/* Tab content with resizable panels */}
-      <Group
-        orientation="vertical"
-        className="flex-1 min-h-0"
-        defaultLayout={defaultLayout}
-        onLayoutChanged={onLayoutChanged}
-      >
-        <ResizablePanel id="regulatory-top" defaultSize="60%" minSize="25%">
-          {activeTab === "graph" ? (
-            <Panel title="Traceability Graph" className="h-full" noPadding dataTour="regulatory-graph" dataTrace="regulatory.traceability-graph">
-              <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                fitView
-                proOptions={{ hideAttribution: true }}
-                nodesDraggable={false}
-                nodesConnectable={false}
-                onNodeClick={(_event, node) => {
-                  const raw = (node.data as { raw: TraceabilityNode }).raw;
-                  setSelectedNode(raw);
-                }}
-              >
-                <Background color="var(--color-border)" gap={20} size={1} />
-                <MiniMap
-                  style={{ background: "var(--color-surface)", height: 60, width: 100 }}
-                  nodeColor="var(--color-accent)"
-                  maskColor="rgba(0,0,0,0.3)"
-                />
-                <Controls showInteractive={false} />
-              </ReactFlow>
-            </Panel>
-          ) : (
-            <Panel title="Regulation Details" className="h-full" noPadding dataTour="regulatory-details-grid" dataTrace="regulatory.coverage-grid">
-              <DataGrid
-                rowData={regulationRows}
-                columnDefs={regulationColumns}
-                getRowId={(p) => p.data.articleId}
-                rowSelection="single"
-                onRowClicked={(e) => {
-                  if (e.data) setSelectedRow(e.data);
-                }}
-              />
-            </Panel>
-          )}
-        </ResizablePanel>
-
-        <Separator className="h-1.5 bg-border hover:bg-accent transition-colors cursor-row-resize" />
-
-        <ResizablePanel id="regulatory-bottom" defaultSize="40%" minSize="15%">
-          <Panel
-            title={activeTab === "graph" ? "Node Details" : "Article Details"}
-            className="h-full"
-            dataTour="regulatory-detail"
+      {activeTab === "standards" ? (
+        /* Standards Compliance tab — full-height scrollable content */
+        <div className="flex-1 min-h-0 overflow-auto">
+          <StandardsComplianceContent
+            complianceMatrix={complianceMatrix}
+            bcbs239={bcbs239}
+          />
+        </div>
+      ) : (
+        <>
+          {/* Tab content with resizable panels */}
+          <Group
+            orientation="vertical"
+            className="flex-1 min-h-0"
+            defaultLayout={defaultLayout}
+            onLayoutChanged={onLayoutChanged}
           >
-            {activeTab === "graph" ? (
-              selectedNode ? (
-                <NodeDetail node={selectedNode} />
+            <ResizablePanel id="regulatory-top" defaultSize="60%" minSize="25%">
+              {activeTab === "graph" ? (
+                <Panel title="Traceability Graph" className="h-full" noPadding dataTour="regulatory-graph" dataTrace="regulatory.traceability-graph">
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    fitView
+                    proOptions={{ hideAttribution: true }}
+                    nodesDraggable={false}
+                    nodesConnectable={false}
+                    onNodeClick={(_event, node) => {
+                      const raw = (node.data as { raw: TraceabilityNode }).raw;
+                      setSelectedNode(raw);
+                    }}
+                  >
+                    <Background color="var(--color-border)" gap={20} size={1} />
+                    <MiniMap
+                      style={{ background: "var(--color-surface)", height: 60, width: 100 }}
+                      nodeColor="var(--color-accent)"
+                      maskColor="rgba(0,0,0,0.3)"
+                    />
+                    <Controls showInteractive={false} />
+                  </ReactFlow>
+                </Panel>
               ) : (
-                <p className="text-xs text-muted">Click a node in the graph to view details.</p>
-              )
-            ) : (
-              selectedRow ? (
-                <ArticleDetail row={selectedRow} />
-              ) : (
-                <p className="text-xs text-muted">Click a row in the table to view article details.</p>
-              )
-            )}
+                <Panel title="Regulation Details" className="h-full" noPadding dataTour="regulatory-details-grid" dataTrace="regulatory.coverage-grid">
+                  <DataGrid
+                    rowData={regulationRows}
+                    columnDefs={regulationColumns}
+                    getRowId={(p) => p.data.articleId}
+                    rowSelection="single"
+                    onRowClicked={(e) => {
+                      if (e.data) setSelectedRow(e.data);
+                    }}
+                  />
+                </Panel>
+              )}
+            </ResizablePanel>
 
-            {/* Legend */}
-            <div className="mt-4 pt-3 border-t border-border">
-              <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-1.5">Legend</p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1">
-                {LEGEND_ITEMS.map((item) => (
-                  <div key={item.label} className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm border-2" style={{ borderColor: item.color }} />
-                    <span className="text-[10px] text-foreground/70">{item.label}</span>
+            <Separator className="h-1.5 bg-border hover:bg-accent transition-colors cursor-row-resize" />
+
+            <ResizablePanel id="regulatory-bottom" defaultSize="40%" minSize="15%">
+              <Panel
+                title={activeTab === "graph" ? "Node Details" : "Article Details"}
+                className="h-full"
+                dataTour="regulatory-detail"
+              >
+                {activeTab === "graph" ? (
+                  selectedNode ? (
+                    <NodeDetail node={selectedNode} />
+                  ) : (
+                    <p className="text-xs text-muted">Click a node in the graph to view details.</p>
+                  )
+                ) : (
+                  selectedRow ? (
+                    <ArticleDetail row={selectedRow} />
+                  ) : (
+                    <p className="text-xs text-muted">Click a row in the table to view article details.</p>
+                  )
+                )}
+
+                {/* Legend */}
+                <div className="mt-4 pt-3 border-t border-border">
+                  <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-1.5">Legend</p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {LEGEND_ITEMS.map((item) => (
+                      <div key={item.label} className="flex items-center gap-1.5">
+                        <span className="inline-block w-2.5 h-2.5 rounded-sm border-2" style={{ borderColor: item.color }} />
+                        <span className="text-[10px] text-foreground/70">{item.label}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-        </ResizablePanel>
-      </Group>
+                </div>
+              </Panel>
+            </ResizablePanel>
+          </Group>
 
-      {/* Suggestions Panel */}
-      {suggestions && (
-        <SuggestionsPanel
-          suggestions={suggestions}
-          expanded={showSuggestions}
-          onToggle={() => setShowSuggestions((p) => !p)}
-        />
+          {/* Suggestions Panel */}
+          {suggestions && (
+            <SuggestionsPanel
+              suggestions={suggestions}
+              expanded={showSuggestions}
+              onToggle={() => setShowSuggestions((p) => !p)}
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -375,6 +397,199 @@ const regulationColumns: ColDef<RegulationRow>[] = [
     ),
   },
 ];
+
+/* ---------- Compliance Matrix Columns ---------- */
+
+interface ComplianceMatrixRow extends ComplianceControl {
+  standard_name: string;
+  standard_category: string;
+}
+
+const complianceMatrixColumns: ColDef<ComplianceMatrixRow>[] = [
+  { field: "standard_name", headerName: "Standard", width: 160 },
+  { field: "standard_category", headerName: "Category", width: 100 },
+  { field: "control_id", headerName: "Control", width: 120 },
+  { field: "control_name", headerName: "Name", minWidth: 150, flex: 1 },
+  {
+    field: "compliance_level",
+    headerName: "Level",
+    width: 90,
+    cellRenderer: (p: { value: string }) => (
+      <StatusBadge
+        label={p.value}
+        variant={p.value === "full" ? "success" : p.value === "partial" ? "warning" : "error"}
+      />
+    ),
+  },
+  { field: "platform_capability", headerName: "Capability", width: 130 },
+  {
+    headerName: "Evidence",
+    width: 80,
+    valueGetter: (p) => p.data?.evidence_links?.length ?? 0,
+  },
+];
+
+/* ---------- Standards Compliance Content ---------- */
+
+function StandardsComplianceContent({
+  complianceMatrix,
+  bcbs239,
+}: {
+  complianceMatrix: ComplianceMatrixData | null;
+  bcbs239: BCBS239Data | null;
+}) {
+  const [selectedControl, setSelectedControl] = useState<ComplianceControl | null>(null);
+  const [showGaps, setShowGaps] = useState(false);
+
+  if (!complianceMatrix || !bcbs239) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  const { summary } = complianceMatrix;
+
+  const matrixRows: ComplianceMatrixRow[] = complianceMatrix.standards.flatMap((std) =>
+    std.controls.map((ctrl) => ({
+      ...ctrl,
+      standard_name: std.name,
+      standard_category: std.category,
+    }))
+  );
+
+  const gapControls = matrixRows.filter((r) => r.compliance_level === "gap");
+
+  return (
+    <div className="flex flex-col h-full gap-3" data-trace="regulatory.standards-compliance">
+      {/* Summary cards */}
+      <div className="grid grid-cols-5 gap-3" data-tour="standards-summary" data-trace="regulatory.standards-summary">
+        <ComplianceSummaryCard label="Standards" value={summary.total_standards} />
+        <ComplianceSummaryCard label="Controls" value={summary.total_controls} />
+        <ComplianceSummaryCard label="Full" value={summary.full_count} accent="text-green-500" />
+        <ComplianceSummaryCard label="Partial" value={summary.partial_count} accent="text-amber-500" />
+        <ComplianceSummaryCard
+          label="Compliance"
+          value={`${summary.compliance_percentage}%`}
+          accent={summary.compliance_percentage >= 75 ? "text-green-500" : "text-amber-500"}
+        />
+      </div>
+
+      {/* Compliance Matrix Grid */}
+      <Panel title="Compliance Matrix" noPadding dataTour="standards-matrix" dataTrace="regulatory.compliance-matrix" className="h-[320px]">
+        <DataGrid<ComplianceMatrixRow>
+          rowData={matrixRows}
+          columnDefs={complianceMatrixColumns}
+          onRowClicked={(e) => setSelectedControl(e.data ?? null)}
+          rowSelection="single"
+          getRowId={(p) => p.data.control_id}
+        />
+      </Panel>
+
+      {/* Evidence detail */}
+      {selectedControl && (
+        <Panel title={`Evidence: ${selectedControl.control_name}`} dataTrace="regulatory.evidence-detail">
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center gap-2">
+              <StatusBadge
+                label={selectedControl.compliance_level}
+                variant={selectedControl.compliance_level === "full" ? "success" : selectedControl.compliance_level === "partial" ? "warning" : "error"}
+              />
+              <span className="text-muted">{selectedControl.platform_capability}</span>
+            </div>
+            <p className="text-muted">{selectedControl.description}</p>
+            {selectedControl.gap_notes && (
+              <p className="text-amber-500 text-[10px]">Gap: {selectedControl.gap_notes}</p>
+            )}
+            <div className="space-y-1">
+              <span className="text-muted font-medium">Evidence Links:</span>
+              {selectedControl.evidence_links.length === 0 ? (
+                <p className="text-muted italic">No evidence links</p>
+              ) : (
+                selectedControl.evidence_links.map((link, i) => (
+                  <div key={i} className="flex items-center gap-2 text-[10px] font-mono bg-surface-elevated rounded px-2 py-1">
+                    <StatusBadge label={link.type} variant="info" />
+                    <span className="text-foreground">{link.path}</span>
+                    <span className="text-muted ml-auto">{link.description}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </Panel>
+      )}
+
+      {/* BCBS 239 Principles */}
+      <Panel title="BCBS 239 Principles" dataTour="bcbs239-principles" dataTrace="regulatory.bcbs239-principles">
+        <div className="grid grid-cols-3 gap-2">
+          {bcbs239.principles.map((p) => (
+            <div key={p.principle_number} className="rounded border border-border bg-surface-elevated p-2 text-xs">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-medium text-foreground">
+                  {p.principle_number}. {p.principle_name}
+                </span>
+                <StatusBadge
+                  label={p.compliance_level}
+                  variant={p.compliance_level === "full" ? "success" : p.compliance_level === "partial" ? "warning" : "error"}
+                />
+              </div>
+              <p className="text-muted text-[10px] mb-1 line-clamp-2">{p.description}</p>
+              <div className="flex flex-wrap gap-1">
+                {p.platform_capabilities.map((cap) => (
+                  <span key={cap} className="bg-surface rounded px-1 py-0.5 text-[9px] text-muted">
+                    {cap}
+                  </span>
+                ))}
+              </div>
+              {p.gap_notes && (
+                <p className="text-amber-500 text-[9px] mt-1">{p.gap_notes}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </Panel>
+
+      {/* Gap Analysis */}
+      {gapControls.length > 0 && (
+        <div data-trace="regulatory.gap-analysis">
+          <button
+            onClick={() => setShowGaps(!showGaps)}
+            className="flex items-center gap-2 text-xs font-medium text-muted hover:text-foreground transition-colors mb-2"
+          >
+            <span className={`transform transition-transform ${showGaps ? "rotate-90" : ""}`}>&#9654;</span>
+            Gap Analysis ({gapControls.length} gaps)
+          </button>
+          {showGaps && (
+            <div className="space-y-2">
+              {gapControls.map((gap) => (
+                <div key={gap.control_id} className="rounded border border-red-500/30 bg-red-500/5 p-2 text-xs">
+                  <div className="flex items-center gap-2 mb-1">
+                    <StatusBadge label="gap" variant="error" />
+                    <span className="font-medium text-foreground">{gap.standard_name}</span>
+                    <span className="text-muted">&mdash; {gap.control_name}</span>
+                  </div>
+                  {gap.gap_notes && <p className="text-muted text-[10px]">{gap.gap_notes}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Compliance Summary Card ---------- */
+
+function ComplianceSummaryCard({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
+  return (
+    <div className="rounded border border-border bg-surface p-2 text-center">
+      <div className={`text-lg font-semibold ${accent ?? "text-foreground"}`}>{value}</div>
+      <div className="text-[10px] text-muted uppercase tracking-wide">{label}</div>
+    </div>
+  );
+}
 
 /* ---------- Summary Card ---------- */
 
