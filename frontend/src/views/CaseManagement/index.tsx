@@ -5,6 +5,7 @@ import DataGrid from "../../components/DataGrid.tsx";
 import StatusBadge from "../../components/StatusBadge.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import CaseDetail from "./CaseDetail.tsx";
+import ComplianceDashboard from "./ComplianceDashboard.tsx";
 import { useCaseStore, type Case } from "../../stores/caseStore.ts";
 import {
   useWorkflowStates,
@@ -287,10 +288,9 @@ export default function CaseManagement() {
           title="Compliance Dashboard"
           className="flex-1"
           dataTrace="cases.dashboard"
+          dataTour="cases-dashboard"
         >
-          <div className="flex items-center justify-center h-full text-xs text-muted">
-            Dashboard coming in Stage 6...
-          </div>
+          <ComplianceDashboard />
         </Panel>
       )}
     </div>

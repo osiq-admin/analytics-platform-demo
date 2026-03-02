@@ -39,8 +39,13 @@ export interface CaseStats {
   total_cases: number;
   by_status: Record<string, number>;
   by_priority: Record<string, number>;
+  by_category: Record<string, number>;
   overdue_sla: number;
+  at_risk_sla: number;
   resolution_rate: number;
+  archived_cases: number;
+  pending_reports: number;
+  total_linked_alerts: number;
 }
 
 interface CaseState {

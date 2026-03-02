@@ -87,3 +87,15 @@ class TestCaseServiceQueries:
         assert stats["total_cases"] == 2
         assert "by_status" in stats
         assert "by_priority" in stats
+
+    def test_get_stats_extended(self, svc):
+        svc.create_case(title="A", alert_ids=["ALT-001", "ALT-002"])
+        c = svc.create_case(title="B", alert_ids=["ALT-003"])
+        svc.update_status(c["case_id"], "investigating")
+        svc.update_status(c["case_id"], "resolved")
+        stats = svc.get_stats()
+        assert stats["total_linked_alerts"] == 3
+        assert stats["resolution_rate"] == 0.5
+        assert "by_category" in stats
+        assert stats["archived_cases"] == 0
+        assert stats["pending_reports"] == 1  # case A is open, no report

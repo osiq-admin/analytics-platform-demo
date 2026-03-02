@@ -110,15 +110,41 @@ class CaseService:
         cases = self.list_cases()
         statuses = Counter(c["status"] for c in cases)
         priorities = Counter(c["priority"] for c in cases)
+        categories = Counter(c.get("category", "unknown") for c in cases)
         overdue = sum(
             1 for c in cases
             if c.get("sla", {}).get("sla_status") == "breached"
         )
+        at_risk = sum(
+            1 for c in cases
+            if c.get("sla", {}).get("sla_status") == "at_risk"
+        )
         resolved = sum(1 for c in cases if c["status"] in ("resolved", "closed"))
+        archived = sum(1 for c in cases if c["status"] == "closed")
+        total_alerts = sum(len(c.get("alert_ids", [])) for c in cases)
+
+        # Pending reports: count of open/investigating cases without a report
+        reports_dir = self._dir.parent / "reports"
+        report_case_ids = set()
+        if reports_dir.exists():
+            for f in reports_dir.glob("*.json"):
+                try:
+                    r = json.loads(f.read_text())
+                    report_case_ids.add(r.get("case_id"))
+                except Exception:
+                    pass
+        active_ids = {c["case_id"] for c in cases if c["status"] in ("open", "investigating")}
+        pending_reports = len(active_ids - report_case_ids)
+
         return {
             "total_cases": len(cases),
             "by_status": dict(statuses),
             "by_priority": dict(priorities),
+            "by_category": dict(categories),
             "overdue_sla": overdue,
+            "at_risk_sla": at_risk,
             "resolution_rate": round(resolved / len(cases), 2) if cases else 0,
+            "archived_cases": archived,
+            "pending_reports": pending_reports,
+            "total_linked_alerts": total_alerts,
         }
