@@ -95,6 +95,35 @@ def get_ai_context(request: Request):
     }
 
 
+@router.post("/triage/{alert_id}")
+def triage_alert(alert_id: str):
+    """AI-assisted alert triage — returns suggested priority, category, and notes (mock mode)."""
+    aid = alert_id.upper()
+    if "MPR" in aid:
+        priority, category = "high", "market_abuse"
+        notes = "Market Price Rigging detected. Multiple wash trades across venues suggest coordinated price manipulation. Recommend immediate investigation."
+    elif "WASH" in aid:
+        priority, category = "medium", "market_abuse"
+        notes = "Wash Trading pattern identified. Self-dealing detected between related accounts. Review trade timestamps and counterparty relationships."
+    elif "INSIDER" in aid or "INS" in aid:
+        priority, category = "critical", "insider_trading"
+        notes = "Potential insider trading. Abnormal trading volume detected ahead of material non-public information release. Escalate to compliance officer."
+    elif "SPOOF" in aid:
+        priority, category = "high", "spoofing"
+        notes = "Spoofing/layering pattern. Large orders placed and cancelled within short timeframes. Review order book depth changes."
+    else:
+        priority, category = "medium", "market_abuse"
+        notes = "Alert flagged for review. Initial analysis suggests potential market abuse pattern. Further investigation recommended."
+
+    return {
+        "alert_id": alert_id,
+        "suggested_priority": priority,
+        "suggested_category": category,
+        "initial_notes": notes,
+        "similar_case_ids": [],
+    }
+
+
 @router.get("/context-summary")
 def get_context_summary(request: Request):
     """Return a concise AI context summary derived from current metadata state."""
