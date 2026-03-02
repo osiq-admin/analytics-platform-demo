@@ -39,6 +39,7 @@ function getTourIdForPath(pathname: string): string | null {
     medallion: "medallion",
     onboarding: "onboarding",
     quality: "data-quality",
+    "analytics-tiers": "analytics-tiers",
     reference: "reference-data",
     governance: "governance",
     glossary: "glossary",

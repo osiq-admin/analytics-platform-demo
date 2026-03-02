@@ -1058,7 +1058,7 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
         name: "Create Sandbox",
         description:
           "Provision an isolated sandbox environment cloned from production data to test threshold or model changes safely.",
-        scenarioId: "s33_analytics_tiers",
+        scenarioId: "s33_lakehouse_data_governance",
       },
       {
         id: "run_sandbox_comparison",
