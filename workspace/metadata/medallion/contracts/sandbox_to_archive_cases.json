@@ -1,0 +1,20 @@
+{
+  "contract_id": "sandbox_to_archive_cases",
+  "source_tier": "sandbox",
+  "target_tier": "archive",
+  "entity": "case",
+  "description": "Regulatory archival of resolved/closed investigation cases with full audit trail",
+  "field_mappings": [
+    {"source": "case.*", "target": "archive.case.*", "transform": "passthrough"},
+    {"source": "case.annotations", "target": "archive.case.annotations", "transform": "passthrough"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["case_id", "title", "status", "disposition", "resolved_at"]},
+    {"rule": "enum_check", "field": "status", "values": ["resolved", "closed"]},
+    {"rule": "min_length", "field": "annotations", "min": 1, "description": "Must have at least one annotation documenting investigation"}
+  ],
+  "sla": {"freshness_minutes": 1440, "completeness_pct": 100.0},
+  "retention_days": 2555,
+  "owner": "compliance-ops",
+  "classification": "restricted"
+}

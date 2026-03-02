@@ -35,6 +35,24 @@
       "sql_template": "SELECT 'execution' as entity, count(*) as record_count FROM execution UNION ALL SELECT 'order', count(*) FROM \"order\" UNION ALL SELECT 'product', count(*) FROM product",
       "target_table": "mv_tier_record_counts",
       "description": "Record counts per entity for monitoring"
+    },
+    {
+      "mv_id": "case_summary",
+      "source_tier": "sandbox",
+      "source_tables": ["cases"],
+      "refresh_strategy": "on_demand",
+      "sql_template": "SELECT status, priority, assignee, category, count(*) as case_count FROM cases GROUP BY status, priority, assignee, category",
+      "target_table": "mv_case_summary",
+      "description": "Case counts by status, priority, assignee, and category"
+    },
+    {
+      "mv_id": "case_resolution_time",
+      "source_tier": "sandbox",
+      "source_tables": ["cases"],
+      "refresh_strategy": "on_demand",
+      "sql_template": "SELECT priority, category, avg(EXTRACT(EPOCH FROM (resolved_at::timestamp - created_at::timestamp)) / 3600) as avg_resolution_hours FROM cases WHERE resolved_at IS NOT NULL GROUP BY priority, category",
+      "target_table": "mv_case_resolution_time",
+      "description": "Average resolution time in hours by priority and category"
     }
   ]
 }

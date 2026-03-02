@@ -1,0 +1,11 @@
+{
+  "transformation_id": "gold_to_sandbox_cases",
+  "source_tier": "gold",
+  "target_tier": "sandbox",
+  "entity": "case",
+  "description": "Create investigation case workspace from Gold-tier alert data with entity context enrichment",
+  "sql_template": "-- Executed programmatically by CaseService\n-- Creates case JSON from alert data with entity context, scoring breakdown, and calculation traces",
+  "parameters": {"alert_ids": "from_request", "enrichment": ["entity_context", "scoring_breakdown", "calculation_traces"]},
+  "quality_checks": ["case_id_unique", "alert_ids_valid", "status_enum_valid"],
+  "error_handling": "log_and_continue"
+}

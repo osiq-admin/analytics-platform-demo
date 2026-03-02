@@ -218,5 +218,123 @@ export const caseManagementSections: ViewTrace = {
       maturityExplanation:
         "Workflow transitions and badge variants loaded from metadata. Button rendering logic is code-driven but state machine is metadata-defined.",
     },
+    {
+      id: "cases.reports",
+      displayName: "STOR/SAR Report Generation",
+      viewId: "cases",
+      description:
+        "Report generation tab in case detail. Template selector (STOR, SAR) loads from metadata. Generates regulatory reports by resolving field source paths against case and alert data. Reports stored as JSON with expandable preview.",
+      files: [
+        {
+          path: "frontend/src/views/CaseManagement/ReportGenerator.tsx",
+          role: "Template selector, generate button, report list with preview",
+        },
+        { path: "backend/services/report_service.py", role: "Template loading and report generation" },
+        { path: "backend/api/reports.py", role: "Report API endpoints" },
+      ],
+      stores: [],
+      apis: [
+        {
+          method: "GET",
+          path: "/api/reports/templates",
+          role: "Lists available report templates (STOR, SAR)",
+          routerFile: "backend/api/reports.py",
+        },
+        {
+          method: "POST",
+          path: "/api/reports/generate",
+          role: "Generates report from case data and template",
+          routerFile: "backend/api/reports.py",
+        },
+        {
+          method: "GET",
+          path: "/api/reports",
+          role: "Lists generated reports, optionally filtered by case_id",
+          routerFile: "backend/api/reports.py",
+        },
+      ],
+      dataSources: [
+        {
+          path: "workspace/metadata/report_templates/*.json",
+          category: "metadata",
+          role: "STOR and SAR template definitions with section/field source paths",
+        },
+        {
+          path: "workspace/reports/*.json",
+          category: "results",
+          role: "Generated report JSON files",
+        },
+      ],
+      technologies: [],
+      metadataMaturity: "fully-metadata-driven",
+      maturityExplanation:
+        "Report templates are pure metadata: section structure, field definitions, and source path resolution are all JSON-configured. UI renders dynamically from template metadata.",
+    },
+    {
+      id: "cases.lakehouse",
+      displayName: "Case Lakehouse Integration",
+      viewId: "cases",
+      description:
+        "Cases flow through the 11-tier medallion architecture: created from Gold-tier alerts into the mutable Sandbox tier for investigation, then archived to the Archive tier for regulatory retention (2555 days). Data contracts validate case quality at each tier boundary.",
+      files: [
+        { path: "backend/services/case_service.py", role: "Persists cases to sandbox workspace" },
+      ],
+      stores: [],
+      apis: [],
+      dataSources: [
+        {
+          path: "workspace/metadata/medallion/pipeline_stages.json",
+          category: "metadata",
+          role: "Case pipeline stages (gold_to_sandbox_case, sandbox_to_archive_case)",
+        },
+        {
+          path: "workspace/metadata/medallion/contracts/gold_to_sandbox_cases.json",
+          category: "metadata",
+          role: "Data contract for case creation with quality rules",
+        },
+        {
+          path: "workspace/metadata/medallion/contracts/sandbox_to_archive_cases.json",
+          category: "metadata",
+          role: "Data contract for case archival with retention policy",
+        },
+        {
+          path: "workspace/metadata/medallion/materialized_views.json",
+          category: "metadata",
+          role: "Case summary and resolution time materialized views",
+        },
+      ],
+      technologies: [],
+      metadataMaturity: "fully-metadata-driven",
+      maturityExplanation:
+        "Pipeline stages, data contracts, quality rules, retention policies, and materialized views are all defined in medallion metadata JSON files.",
+    },
+    {
+      id: "cases.lineage",
+      displayName: "Case Data Lineage",
+      viewId: "cases",
+      description:
+        "Cases appear as nodes in the data lineage graph. Each case links to parent alert nodes (Gold tier) and downstream archive nodes. Visible in the DataLineage view as part of the platform-wide lineage graph.",
+      files: [
+        { path: "backend/services/case_service.py", role: "Creates case entities linked to alerts" },
+      ],
+      stores: [],
+      apis: [],
+      dataSources: [
+        {
+          path: "workspace/metadata/medallion/transformations/gold_to_sandbox_cases.json",
+          category: "metadata",
+          role: "Transformation definition for case creation lineage edge",
+        },
+        {
+          path: "workspace/metadata/medallion/transformations/sandbox_to_archive_cases.json",
+          category: "metadata",
+          role: "Transformation definition for case archival lineage edge",
+        },
+      ],
+      technologies: [],
+      metadataMaturity: "fully-metadata-driven",
+      maturityExplanation:
+        "Lineage edges defined by transformation metadata. Case-to-alert and case-to-archive relationships are metadata-configured.",
+    },
   ],
 };

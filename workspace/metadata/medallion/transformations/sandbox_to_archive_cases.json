@@ -1,0 +1,11 @@
+{
+  "transformation_id": "sandbox_to_archive_cases",
+  "source_tier": "sandbox",
+  "target_tier": "archive",
+  "entity": "case",
+  "description": "Archive resolved/closed cases with full audit trail, annotations, and linked alert data for regulatory retention",
+  "sql_template": "-- Executed programmatically on case status transition to resolved/closed\n-- Archives complete case record with annotations, linked alerts, and generated reports",
+  "parameters": {"filter": "status IN ('resolved', 'closed')", "include_reports": true},
+  "quality_checks": ["disposition_set", "annotations_present", "resolved_at_set"],
+  "error_handling": "fail_and_alert"
+}

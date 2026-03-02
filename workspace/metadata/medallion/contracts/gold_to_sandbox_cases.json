@@ -1,0 +1,22 @@
+{
+  "contract_id": "gold_to_sandbox_cases",
+  "source_tier": "gold",
+  "target_tier": "sandbox",
+  "entity": "case",
+  "description": "Contract for investigation case creation from Gold-tier alert data",
+  "field_mappings": [
+    {"source": "alert_id", "target": "case.alert_ids[]", "transform": "collect"},
+    {"source": "alert.assignee", "target": "case.assignee", "transform": "passthrough"},
+    {"source": "alert.model_id", "target": "case.category", "transform": "model_to_category"}
+  ],
+  "quality_rules": [
+    {"rule": "not_null", "fields": ["case_id", "title", "status", "priority"]},
+    {"rule": "enum_check", "field": "status", "values": ["open", "investigating", "escalated", "resolved", "closed"]},
+    {"rule": "enum_check", "field": "priority", "values": ["critical", "high", "medium", "low"]},
+    {"rule": "unique", "field": "case_id"},
+    {"rule": "referential_integrity", "field": "alert_ids", "reference_entity": "alert", "reference_field": "alert_id"}
+  ],
+  "sla": {"freshness_minutes": 60, "completeness_pct": 95.0},
+  "owner": "surveillance-ops",
+  "classification": "restricted"
+}

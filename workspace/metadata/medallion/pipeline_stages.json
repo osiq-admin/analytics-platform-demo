@@ -82,6 +82,28 @@
       "depends_on": ["silver_to_gold"],
       "entities": ["order", "execution", "alert", "account", "trader"],
       "parallel": true
+    },
+    {
+      "stage_id": "gold_to_sandbox_case",
+      "name": "Case Creation (Gold → Sandbox)",
+      "tier_from": "gold",
+      "tier_to": "sandbox",
+      "order": 9,
+      "depends_on": ["silver_to_gold"],
+      "entities": ["case"],
+      "parallel": false,
+      "contract_id": "gold_to_sandbox_cases"
+    },
+    {
+      "stage_id": "sandbox_to_archive_case",
+      "name": "Case Archival (Sandbox → Archive)",
+      "tier_from": "sandbox",
+      "tier_to": "archive",
+      "order": 10,
+      "depends_on": ["gold_to_sandbox_case"],
+      "entities": ["case"],
+      "parallel": false,
+      "contract_id": "sandbox_to_archive_cases"
     }
   ]
 }
