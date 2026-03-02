@@ -51,11 +51,14 @@ def app_server():
         proc.kill()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def browser_instance():
-    """Create a shared browser instance for the test session."""
+    """Fresh browser per test module — prevents memory exhaustion at ~80+ tests."""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--disable-dev-shm-usage"],
+        )
         yield browser
         browser.close()
 
