@@ -10,6 +10,34 @@
 
 ---
 
+## Expert Research Findings (2026-03-02)
+
+> **Full document:** [`docs/plans/2026-03-02-expert-research-findings.md`](2026-03-02-expert-research-findings.md)
+>
+> Three-expert research sprint (Product Strategy, R&D Architecture, Regulatory Compliance) analyzing the platform's competitive position, technical architecture, and regulatory gaps. Key findings:
+>
+> **Unanimous #1 priority: Case Management & Investigation Workflows** — table stakes for every competitor (NICE Actimize, Behavox, SteelEye, Nasdaq all have it). The platform does the hard analytical work but stops before delivering the business outcome.
+>
+> **Consensus top 5 build items:**
+> 1. Case Management View (alert triage → investigation → case → resolution → filing)
+> 2. STOR/SAR Auto-Generation (template engine pre-populated from alert data + lineage)
+> 3. Compliance Officer Dashboard (backlog aging, SLA tracking, model performance)
+> 4. Agentic AI Triage (Claude tool-use for investigation summaries, not just chat)
+> 5. Real-Time Alert Simulation (WebSocket streaming for live demo drama)
+>
+> **Recommended phase reordering:** Promote Case Management (was Phase 32) to immediate next. Defer Migration Readiness (Phase 26), Security/Testing/Cloud (29-31). See findings doc for competitive matrix, regulatory gap analysis, demo narrative recommendations, and 50+ sourced references.
+>
+> **Platform strengths (unanimous across all 3 experts):**
+> - Metadata-driven architecture (84%) — no competitor has this depth
+> - 11-tier medallion with full lineage — unique in the market
+> - Standards compliance (18 standards, 48 controls, BCBS 239) — competitors mention standards; we prove compliance with evidence
+> - Tamper-evident event chain (SHA-256 hash chaining) — regulatory auditability
+> - 6-layer lineage engine — most technically differentiated component
+>
+> **Market context:** Trade surveillance $4.1B → $9.31B by 2033. RegTech $16B → $62B by 2032. Goldman Sachs and Deutsche Bank actively testing agentic AI for surveillance. NICE Actimize reports 85% false positive reduction with GenAI.
+
+---
+
 ## Current State Assessment
 
 **What's built (Phases 1-26 + 7B + Overhauls + Phase 25, M0-M326):**
