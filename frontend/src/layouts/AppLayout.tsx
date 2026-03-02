@@ -44,6 +44,7 @@ function getTourIdForPath(pathname: string): string | null {
     governance: "governance",
     glossary: "glossary",
     lineage: "lineage",
+    cases: "cases",
   };
   return map[seg] ?? "overview";
 }

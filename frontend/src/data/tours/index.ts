@@ -28,6 +28,7 @@ import { lakehouse_explorerTour } from "./lakehouse_explorer";
 import { governanceTour } from "./governance";
 import { glossaryTour } from "./glossary";
 import { lineageTour } from "./lineage";
+import { casesTour } from "./cases";
 
 export const TOURS: Record<string, TourDefinition> = {
   overview: overviewTour,
@@ -58,4 +59,5 @@ export const TOURS: Record<string, TourDefinition> = {
   governance: governanceTour,
   glossary: glossaryTour,
   lineage: lineageTour,
+  cases: casesTour,
 };

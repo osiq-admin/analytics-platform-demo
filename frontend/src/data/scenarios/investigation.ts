@@ -376,8 +376,97 @@ const S23_REGULATORY_AUDIT: ScenarioDefinition = {
   ],
 };
 
+// --------------------------------------------------------------------------
+// S40: Case Management Workflow (Intermediate, 7 min)
+// --------------------------------------------------------------------------
+const S40_CASE_MANAGEMENT: ScenarioDefinition = {
+  id: "s40_case_management",
+  name: "Case Management Workflow",
+  description:
+    "Full investigation case lifecycle — browse cases, review detail with timeline, view linked alerts, transition status through the workflow, and explore the compliance dashboard.",
+  category: "investigation",
+  difficulty: "intermediate",
+  estimatedMinutes: 7,
+  prerequisites: ["s21_alert_investigation"],
+  steps: [
+    {
+      target: "[data-tour='cases-grid']",
+      title: "Cases Grid",
+      content:
+        "Start at the Case Management view. The grid shows all investigation cases with status badges, priority, assignee, linked alert count, and SLA tracking. Cases are created from alerts during triage.",
+      placement: "bottom",
+      route: "/cases",
+      action: "navigate",
+      actionTarget: "[data-tour='cases-grid']",
+      hint: "Navigate to Case Management using the sidebar.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='cases-grid'] .ag-body-viewport .ag-row:first-child",
+      title: "Open a Case",
+      content:
+        "Click on a case to open its detail view. The detail panel provides the full investigation context: summary metadata, status actions, timeline of annotations, linked alerts, and regulatory reports.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='cases-grid'] .ag-body-viewport .ag-row:first-child",
+      hint: "Click on the first case row to open its detail view.",
+      delay: 2500,
+    },
+    {
+      target: "[data-tour='cases-detail']",
+      title: "Case Summary",
+      content:
+        "The summary tab shows case metadata: ID, title, priority, category, assignee, and linked alert count. Status transition buttons let you move the case through the investigation workflow.",
+      placement: "left",
+      action: "wait",
+      hint: "Review the case summary and note the available status transitions.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='cases-timeline']",
+      title: "Investigation Timeline",
+      content:
+        "Click the Timeline tab to see the chronological history of all investigation annotations. Each entry shows type (note, disposition, escalation, evidence), author, and timestamp — a complete audit trail.",
+      placement: "left",
+      action: "wait",
+      hint: "Click the Timeline tab to review the investigation history.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='cases-linked-alerts']",
+      title: "Linked Alerts",
+      content:
+        "The Linked Alerts tab shows all alerts connected to this case. Each alert displays its detection model, score, and date. Click 'View' to navigate to the full alert detail in Risk Case Manager.",
+      placement: "left",
+      action: "wait",
+      hint: "Click the Linked Alerts tab to see the alerts that triggered this investigation.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='cases-status-actions']",
+      title: "Status Transitions",
+      content:
+        "Use the status buttons to transition the case through the workflow: Open → Investigating → Escalated or Resolved → Closed. Valid transitions are determined by the case_management workflow metadata.",
+      placement: "top",
+      action: "wait",
+      hint: "Try clicking a status transition button to advance the case workflow.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='cases-grid']",
+      title: "Case Management Complete",
+      content:
+        "You've explored the full case lifecycle: grid overview, case detail with summary, investigation timeline, linked alerts, and workflow status transitions. Cases provide the bridge between automated detection and human investigation.",
+      placement: "bottom",
+      action: "wait",
+      delay: 3000,
+    },
+  ],
+};
+
 export const investigationScenarios: Record<string, ScenarioDefinition> = {
   s21_alert_investigation: S21_ALERT_INVESTIGATION,
   s22_cross_alert_analysis: S22_CROSS_ALERT_ANALYSIS,
   s23_regulatory_audit: S23_REGULATORY_AUDIT,
+  s40_case_management: S40_CASE_MANAGEMENT,
 };
