@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "composite_id_format": "{layer}:{type}:{name}:{tier}",
+  "entities": ["execution", "order", "product", "md_eod", "md_intraday", "venue", "account", "trader"],
+  "tiers": ["landing", "bronze", "silver", "gold", "platinum", "archive", "sandbox"],
+  "layers": [
+    {
+      "id": "tier_flow",
+      "name": "Tier Flow",
+      "description": "Horizontal pipeline: entity data flowing through medallion tiers",
+      "source": "workspace/metadata/medallion/pipeline_stages.json"
+    },
+    {
+      "id": "field_mapping",
+      "name": "Field Lineage",
+      "description": "Column-level field mappings between tier transitions",
+      "source": "workspace/metadata/mappings/"
+    },
+    {
+      "id": "calc_chain",
+      "name": "Calculation Chain",
+      "description": "Calculation DAG → detection model → alert chain",
+      "source": "workspace/metadata/calculations/"
+    },
+    {
+      "id": "entity_fk",
+      "name": "Entity Relationships",
+      "description": "Foreign key relationships between entities",
+      "source": "workspace/metadata/entities/"
+    },
+    {
+      "id": "setting_impact",
+      "name": "Setting Impact",
+      "description": "Settings → calculations → models → alerts dependency",
+      "source": "workspace/metadata/settings/"
+    },
+    {
+      "id": "regulatory_req",
+      "name": "Regulatory Requirements",
+      "description": "Regulation → entity field → detection capability mapping",
+      "source": "workspace/metadata/standards/compliance/"
+    }
+  ],
+  "field_lineage_sources": {
+    "mappings": "workspace/metadata/mappings/",
+    "calculations": "workspace/metadata/calculations/"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "abuse_types": [
+    "wash_trading",
+    "spoofing",
+    "insider_dealing",
+    "market_manipulation",
+    "layering"
+  ],
+  "product_groupings": {
+    "equity": {"asset_classes": ["equity"], "description": "Equity instruments"},
+    "fx": {"asset_classes": ["fx"], "description": "Foreign exchange"},
+    "futures": {"asset_classes": ["futures"], "description": "Futures contracts"},
+    "options": {"asset_classes": ["options"], "description": "Options contracts"},
+    "fixed_income": {"asset_classes": ["fixed_income"], "description": "Fixed income instruments"}
+  },
+  "regulatory_mappings": {
+    "wash_trading": ["MAR_Art16", "FINRA_Rule3110", "Dodd_Frank"],
+    "spoofing": ["MAR_Art16", "Dodd_Frank", "MiFID_RTS25"],
+    "insider_dealing": ["MAR_Art16", "FINRA_Rule3110"],
+    "market_manipulation": ["MAR_Art16", "MiFID_RTS25", "Dodd_Frank"],
+    "layering": ["MAR_Art16", "Dodd_Frank", "FINRA_Rule3110"]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "event_types": [
+    {
+      "type": "pipeline_execution",
+      "severity": "info",
+      "retention_days": 90,
+      "description": "Pipeline stage execution start, completion, or failure"
+    },
+    {
+      "type": "quality_check",
+      "severity": "info",
+      "retention_days": 90,
+      "description": "Data quality rule evaluation result"
+    },
+    {
+      "type": "data_access",
+      "severity": "info",
+      "retention_days": 365,
+      "description": "Data read or export by user or process"
+    },
+    {
+      "type": "alert_action",
+      "severity": "warning",
+      "retention_days": 365,
+      "description": "Alert lifecycle action: generated, escalated, resolved, dismissed"
+    },
+    {
+      "type": "metadata_change",
+      "severity": "info",
+      "retention_days": 365,
+      "description": "Metadata create, update, or delete operation"
+    },
+    {
+      "type": "masking_unmask",
+      "severity": "warning",
+      "retention_days": 365,
+      "description": "PII field unmasking by authorized user"
+    }
+  ]
+}

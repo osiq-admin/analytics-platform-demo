@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "metrics": [
+    {
+      "id": "pipeline_execution_time",
+      "type": "execution_time",
+      "unit": "ms",
+      "aggregation": "avg",
+      "sla_threshold": 5000,
+      "description": "Pipeline stage execution time in milliseconds"
+    },
+    {
+      "id": "quality_score_completeness",
+      "type": "quality_score",
+      "unit": "percent",
+      "aggregation": "avg",
+      "sla_threshold": 95.0,
+      "description": "Data completeness quality score per tier"
+    },
+    {
+      "id": "quality_score_validity",
+      "type": "quality_score",
+      "unit": "percent",
+      "aggregation": "avg",
+      "sla_threshold": 90.0,
+      "description": "Data validity quality score per tier"
+    },
+    {
+      "id": "throughput_records_per_second",
+      "type": "throughput",
+      "unit": "rps",
+      "aggregation": "avg",
+      "sla_threshold": 50,
+      "description": "Records processed per second"
+    },
+    {
+      "id": "sla_compliance",
+      "type": "sla_compliance",
+      "unit": "percent",
+      "aggregation": "min",
+      "sla_threshold": 95.0,
+      "description": "Percentage of pipeline runs meeting SLA"
+    },
+    {
+      "id": "error_rate",
+      "type": "error_rate",
+      "unit": "percent",
+      "aggregation": "max",
+      "sla_threshold": 5.0,
+      "description": "Pipeline error rate (failed runs / total runs)"
+    }
+  ]
+}

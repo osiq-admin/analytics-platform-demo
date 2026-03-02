@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "standards": [
+    {
+      "id": "openlineage_1.0",
+      "name": "OpenLineage 1.0",
+      "facets": ["columnLineage", "dataQualityAssertions", "schema", "parentRun"]
+    },
+    {
+      "id": "w3c_prov_o",
+      "name": "W3C PROV-O / ISO 23494",
+      "mapping": {
+        "Entity": "LineageNode",
+        "Activity": "LineageRun",
+        "Agent": "actor"
+      }
+    },
+    {
+      "id": "iso_8000_61",
+      "name": "ISO 8000-61 Data Quality",
+      "applied_to": "QualityOverlayData on every LineageNode"
+    },
+    {
+      "id": "iso_8000_150",
+      "name": "ISO 8000-150 Master Data Exchange",
+      "fields": ["data_steward", "data_owner"]
+    },
+    {
+      "id": "iso_25012",
+      "name": "ISO 25012 Data Quality Model",
+      "dimensions": ["completeness", "validity", "accuracy", "consistency", "timeliness", "uniqueness"]
+    },
+    {
+      "id": "dama_dmbok",
+      "name": "DAMA-DMBOK 2.0",
+      "chapters": ["Data Quality", "Data Governance", "Data Architecture"]
+    }
+  ],
+  "regulatory_coverage": ["MAR_Art16", "MiFID_RTS25", "Dodd_Frank", "FINRA_Rule3110", "EMIR"]
+}
