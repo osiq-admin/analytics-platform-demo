@@ -1,0 +1,68 @@
+{
+  "run_id": "09351745-b745-4152-8325-f2b1a782f2fe",
+  "job_name": "silver_to_gold",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-27T16:47:46+00:00",
+  "duration_ms": 505,
+  "record_count": 1484,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@silver",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@gold",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "execution_id",
+      "input_fields": [
+        "execution_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.92
+    },
+    {
+      "output_field": "quantity",
+      "input_fields": [
+        "quantity"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.97
+    },
+    {
+      "output_field": "product_id",
+      "input_fields": [
+        "product_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.99
+    }
+  ],
+  "quality_scores": {
+    "completeness": 94.3,
+    "validity": 88.4,
+    "consistency": 93.0
+  },
+  "parent_run_id": ""
+}

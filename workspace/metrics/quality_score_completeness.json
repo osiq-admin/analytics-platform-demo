@@ -1,0 +1,308 @@
+{
+  "metric_id": "quality_score_completeness",
+  "metric_type": "quality_score",
+  "entity": "",
+  "tier": "silver",
+  "points": [
+    {
+      "metric_id": "387ac2c1-d40b-4cf1-a700-8929760c2b57",
+      "metric_type": "quality_score",
+      "value": 99.24,
+      "unit": "percent",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "83f7e5fd-f57d-435d-8780-345e658e8ebb",
+      "metric_type": "quality_score",
+      "value": 97.66,
+      "unit": "percent",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "ee9e82d7-6b4b-42f2-8664-9ed2e9733f8a",
+      "metric_type": "quality_score",
+      "value": 97.02,
+      "unit": "percent",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "13858dad-04fe-466b-9216-7a287719e99c",
+      "metric_type": "quality_score",
+      "value": 97.17,
+      "unit": "percent",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "f1a073ca-e90f-48e7-b4a9-d83d9ded277c",
+      "metric_type": "quality_score",
+      "value": 97.54,
+      "unit": "percent",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "5dea808a-4467-4d65-b397-9332e070cd80",
+      "metric_type": "quality_score",
+      "value": 99.45,
+      "unit": "percent",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "5d349ec7-b6aa-417f-b87b-104c9f2b5c4f",
+      "metric_type": "quality_score",
+      "value": 96.51,
+      "unit": "percent",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "f29a1cd3-39e7-43f8-8996-83146d92709d",
+      "metric_type": "quality_score",
+      "value": 91.62,
+      "unit": "percent",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "19142212-e86d-4e5a-8342-84b06d94045c",
+      "metric_type": "quality_score",
+      "value": 96.31,
+      "unit": "percent",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "505449a3-9788-4dfa-bc91-97ed52f248cc",
+      "metric_type": "quality_score",
+      "value": 96.75,
+      "unit": "percent",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "33e492be-bbf6-4184-a832-1c49077b55e8",
+      "metric_type": "quality_score",
+      "value": 97.19,
+      "unit": "percent",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "68df3e9a-89be-48ad-8458-3ec66c48e9df",
+      "metric_type": "quality_score",
+      "value": 98.86,
+      "unit": "percent",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "c778e708-c665-4337-bc1e-53d129d2a260",
+      "metric_type": "quality_score",
+      "value": 97.67,
+      "unit": "percent",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "c4f59d0c-bed0-4623-b161-df3ddd4cb0cc",
+      "metric_type": "quality_score",
+      "value": 99.66,
+      "unit": "percent",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "03aedec1-45c3-415d-8036-4c2ee84814ad",
+      "metric_type": "quality_score",
+      "value": 98.88,
+      "unit": "percent",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "f65d17ae-90da-4146-9d3a-05ecd1031144",
+      "metric_type": "quality_score",
+      "value": 96.34,
+      "unit": "percent",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "572589a6-7ed6-4ca2-aec9-edc3a6cf8bf8",
+      "metric_type": "quality_score",
+      "value": 97.74,
+      "unit": "percent",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "56332f2a-34b2-4b14-8fc0-618ad1fb7d72",
+      "metric_type": "quality_score",
+      "value": 99.03,
+      "unit": "percent",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "4a6f0970-a79f-4c15-823e-b177a089cf34",
+      "metric_type": "quality_score",
+      "value": 93.73,
+      "unit": "percent",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "eb7695a1-efb4-4415-b652-ea0e52ed65a5",
+      "metric_type": "quality_score",
+      "value": 99.56,
+      "unit": "percent",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "3875f172-5f72-443f-ad07-a6c42fe43744",
+      "metric_type": "quality_score",
+      "value": 97.99,
+      "unit": "percent",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "ccc70db3-fd94-4099-961b-425134698aa5",
+      "metric_type": "quality_score",
+      "value": 97.45,
+      "unit": "percent",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "490a79e4-8225-46e8-98b2-862c0bb7a71b",
+      "metric_type": "quality_score",
+      "value": 96.48,
+      "unit": "percent",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "4e5fbd2b-ceb3-40d4-a3c7-0742584e42b2",
+      "metric_type": "quality_score",
+      "value": 98.6,
+      "unit": "percent",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "a6fb93a1-2ef9-4ba5-87b5-e61508aa9efa",
+      "metric_type": "quality_score",
+      "value": 99.35,
+      "unit": "percent",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "ba385dae-3eeb-40cf-b6d5-f7d1628aaed0",
+      "metric_type": "quality_score",
+      "value": 91.49,
+      "unit": "percent",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "dd2ac8eb-d5d1-43ed-9c51-4ee1e3ab459e",
+      "metric_type": "quality_score",
+      "value": 96.63,
+      "unit": "percent",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "fae74388-fb34-456b-921c-655a1dfbc4f0",
+      "metric_type": "quality_score",
+      "value": 98.45,
+      "unit": "percent",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "a42965ab-6f7e-476e-ac9e-fd66ac5aba0d",
+      "metric_type": "quality_score",
+      "value": 96.72,
+      "unit": "percent",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    },
+    {
+      "metric_id": "352ec968-c417-4998-bdc0-8d4da1d87246",
+      "metric_type": "quality_score",
+      "value": 97.16,
+      "unit": "percent",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "dimension": "completeness"
+      }
+    }
+  ]
+}

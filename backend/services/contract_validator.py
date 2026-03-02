@@ -37,8 +37,9 @@ class ContractValidator:
     Unsupported rule types pass by default for forward-compatibility.
     """
 
-    def __init__(self, db: DuckDBManager) -> None:
+    def __init__(self, db: DuckDBManager, event_service=None) -> None:
         self._db = db
+        self._event_service = event_service
 
     def validate(self, contract: DataContract, table_name: str) -> ContractValidationResult:
         """Validate all quality rules in a contract against the given table.
@@ -69,12 +70,35 @@ class ContractValidator:
         quality_score = round((passing / total) * 100, 1) if total > 0 else 100.0
         all_passed = all(r.passed for r in rule_results) if rule_results else True
 
-        return ContractValidationResult(
+        result = ContractValidationResult(
             contract_id=contract.contract_id,
             passed=all_passed,
             rule_results=rule_results,
             quality_score=quality_score,
         )
+        self._emit_quality_event(contract.contract_id, table_name, result)
+        return result
+
+    def _emit_quality_event(self, contract_id: str, table_name: str,
+                            result: ContractValidationResult) -> None:
+        """Emit a quality_check event if event_service is available."""
+        if self._event_service is None:
+            return
+        try:
+            self._event_service.emit(
+                event_type="quality_check",
+                actor="contract_validator",
+                entity=table_name,
+                details={
+                    "contract_id": contract_id,
+                    "passed": result.passed,
+                    "quality_score": result.quality_score,
+                    "rules_total": len(result.rule_results),
+                    "rules_passed": sum(1 for r in result.rule_results if r.passed),
+                },
+            )
+        except Exception:
+            pass  # Non-critical — don't fail validation on event emission error
 
     # ------------------------------------------------------------------
     # Rule handlers

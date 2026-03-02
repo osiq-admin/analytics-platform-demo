@@ -11,18 +11,20 @@ import {
   type AuditLogResponse,
   type RoleComparisonResponse,
 } from "../../stores/governanceStore.ts";
+import ObservabilityTab from "./ObservabilityTab.tsx";
 
 // ---------------------------------------------------------------------------
 // Tab types
 // ---------------------------------------------------------------------------
 
-type ViewTab = "masking" | "roles" | "preview" | "audit";
+type ViewTab = "masking" | "roles" | "preview" | "audit" | "observability";
 
 const TABS: { key: ViewTab; label: string }[] = [
   { key: "masking", label: "Masking Policies" },
   { key: "roles", label: "Role Management" },
   { key: "preview", label: "Data Preview" },
   { key: "audit", label: "Audit Log" },
+  { key: "observability", label: "Observability" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -526,6 +528,7 @@ export default function DataGovernance() {
         {activeTab === "roles" && <RoleManagementTab />}
         {activeTab === "preview" && <DataPreviewTab />}
         {activeTab === "audit" && <AuditLogTab />}
+        {activeTab === "observability" && <ObservabilityTab />}
       </div>
     </div>
   );

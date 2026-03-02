@@ -1,0 +1,40 @@
+{
+  "run_id": "31aa7503-d5bd-4a36-823e-a36b7a5a4e6a",
+  "job_name": "gold_to_platinum",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-02T08:22:34+00:00",
+  "duration_ms": 2973,
+  "record_count": 1484,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@gold",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@platinum",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 71.3,
+    "validity": 93.7,
+    "consistency": 91.8
+  },
+  "parent_run_id": ""
+}

@@ -1,0 +1,40 @@
+{
+  "run_id": "ff1c6e70-c704-46e8-9d24-a3e331c3e6d0",
+  "job_name": "gold_to_archive",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-05T11:07:01+00:00",
+  "duration_ms": 1724,
+  "record_count": 4138,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@gold",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@archive",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 99.3,
+    "validity": 89.4,
+    "consistency": 97.7
+  },
+  "parent_run_id": ""
+}

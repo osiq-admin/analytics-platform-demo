@@ -23,6 +23,7 @@ import { analytics_tiersOperations } from "./analytics_tiers";
 import { medallionOperations } from "./medallion";
 import { governanceOperations } from "./governance";
 import { glossaryOperations } from "./glossary";
+import { lineageOperations } from "./lineage";
 
 export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
   dashboard: dashboardOperations,
@@ -48,4 +49,5 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
   medallion: medallionOperations,
   governance: governanceOperations,
   glossary: glossaryOperations,
+  lineage: lineageOperations,
 };

@@ -1,0 +1,334 @@
+{
+  "version": "1.0",
+  "total_runs": 41,
+  "runs": [
+    {
+      "run_id": "31aa7503-d5bd-4a36-823e-a36b7a5a4e6a",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-02T08:22:34+00:00",
+      "duration_ms": 2973,
+      "record_count": 1484
+    },
+    {
+      "run_id": "d1d0f6fe-b686-420b-a785-e52992ee2319",
+      "job_name": "gold_to_archive",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-02T13:50:04+00:00",
+      "duration_ms": 3024,
+      "record_count": 2025
+    },
+    {
+      "run_id": "9a07bd83-42fc-49ae-a51c-a61aac54fa22",
+      "job_name": "silver_to_reference",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-02T13:59:19+00:00",
+      "duration_ms": 4422,
+      "record_count": 3312
+    },
+    {
+      "run_id": "5ccb316f-fbec-4a8d-bb27-e6728bf32850",
+      "job_name": "gold_to_sandbox",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-02T14:21:11+00:00",
+      "duration_ms": 4264,
+      "record_count": 4125
+    },
+    {
+      "run_id": "2b5c6872-7ef2-4977-a059-6973b0acfe6d",
+      "job_name": "ingest_landing",
+      "event_type": "FAIL",
+      "event_time": "2026-02-02T15:02:18+00:00",
+      "duration_ms": 71,
+      "record_count": 0
+    },
+    {
+      "run_id": "c26e21d9-ef6e-4968-93be-ce971559d827",
+      "job_name": "landing_to_bronze",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-05T10:01:09+00:00",
+      "duration_ms": 3789,
+      "record_count": 335
+    },
+    {
+      "run_id": "ff1c6e70-c704-46e8-9d24-a3e331c3e6d0",
+      "job_name": "gold_to_archive",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-05T11:07:01+00:00",
+      "duration_ms": 1724,
+      "record_count": 4138
+    },
+    {
+      "run_id": "13d09eb4-ac3e-4604-ac63-34705c04be62",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-05T13:28:48+00:00",
+      "duration_ms": 829,
+      "record_count": 4751
+    },
+    {
+      "run_id": "f3110167-4596-4e5e-9213-b2282274b6b4",
+      "job_name": "gold_to_sandbox",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-05T13:39:27+00:00",
+      "duration_ms": 2449,
+      "record_count": 519
+    },
+    {
+      "run_id": "d3c73ae5-83ed-468e-8eb2-0e9bfa82c7c9",
+      "job_name": "silver_to_gold",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-05T14:05:27+00:00",
+      "duration_ms": 1678,
+      "record_count": 4518
+    },
+    {
+      "run_id": "c5c44a4e-1ab0-4da4-af10-62e9392f4a65",
+      "job_name": "ingest_landing",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-10T08:53:07+00:00",
+      "duration_ms": 4444,
+      "record_count": 1303
+    },
+    {
+      "run_id": "aefbe5f8-4d57-4291-a493-4d48c7760790",
+      "job_name": "bronze_to_silver",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-10T09:04:19+00:00",
+      "duration_ms": 3461,
+      "record_count": 3971
+    },
+    {
+      "run_id": "03e62e07-dc37-4bf5-996d-fc8840a3e24b",
+      "job_name": "landing_to_bronze",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-10T15:05:51+00:00",
+      "duration_ms": 2818,
+      "record_count": 2896
+    },
+    {
+      "run_id": "59349fdc-8e75-457e-984a-ab292aca8d44",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-10T15:13:39+00:00",
+      "duration_ms": 2539,
+      "record_count": 4073
+    },
+    {
+      "run_id": "b6e20ae8-c4db-4bb7-91d4-02db615f115a",
+      "job_name": "gold_to_archive",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-16T10:42:39+00:00",
+      "duration_ms": 2965,
+      "record_count": 4667
+    },
+    {
+      "run_id": "dc1f2225-a314-4be8-a5ef-e310f227dcc2",
+      "job_name": "silver_to_gold",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-16T13:33:57+00:00",
+      "duration_ms": 2526,
+      "record_count": 696
+    },
+    {
+      "run_id": "546a2549-af33-4beb-8ec7-8308fcf20b26",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-16T13:46:55+00:00",
+      "duration_ms": 3029,
+      "record_count": 3316
+    },
+    {
+      "run_id": "a532db2e-334e-401c-940b-9fcf07d964ea",
+      "job_name": "silver_to_reference",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-16T17:16:41+00:00",
+      "duration_ms": 1926,
+      "record_count": 4736
+    },
+    {
+      "run_id": "b38cf672-a562-454e-999d-b14428d03938",
+      "job_name": "silver_to_gold",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-23T11:13:37+00:00",
+      "duration_ms": 3090,
+      "record_count": 448
+    },
+    {
+      "run_id": "2f36c167-8cd9-4a24-881a-0b22b8d6c737",
+      "job_name": "landing_to_bronze",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-23T12:28:15+00:00",
+      "duration_ms": 1354,
+      "record_count": 843
+    },
+    {
+      "run_id": "fe31b0b8-3a76-4ec8-ac14-518b698c0b40",
+      "job_name": "gold_to_sandbox",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-23T12:52:39+00:00",
+      "duration_ms": 1173,
+      "record_count": 1104
+    },
+    {
+      "run_id": "16b053ad-e646-4d51-93f0-97d3233136cb",
+      "job_name": "ingest_landing",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-23T15:31:56+00:00",
+      "duration_ms": 2727,
+      "record_count": 4124
+    },
+    {
+      "run_id": "1d2fa62a-7072-4f8a-9b67-e60d400de434",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-23T17:35:12+00:00",
+      "duration_ms": 3169,
+      "record_count": 4582
+    },
+    {
+      "run_id": "44c1a103-0655-4808-bbbc-e40ec623b512",
+      "job_name": "gold_to_archive",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T12:35:19+00:00",
+      "duration_ms": 2042,
+      "record_count": 2488
+    },
+    {
+      "run_id": "76da3232-b6f0-4637-b7bf-3668208ba6f3",
+      "job_name": "silver_to_gold",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T13:48:09+00:00",
+      "duration_ms": 1830,
+      "record_count": 4985
+    },
+    {
+      "run_id": "760f12cc-165b-4905-94b6-181102df1561",
+      "job_name": "ingest_landing",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T15:22:35+00:00",
+      "duration_ms": 2440,
+      "record_count": 2407
+    },
+    {
+      "run_id": "c9846d6d-58e7-4715-bcda-dcb8f3f6b61a",
+      "job_name": "landing_to_bronze",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T17:36:14+00:00",
+      "duration_ms": 620,
+      "record_count": 4830
+    },
+    {
+      "run_id": "307faf95-81c0-429f-a1aa-86633dccd6d1",
+      "job_name": "silver_to_reference",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T17:47:53+00:00",
+      "duration_ms": 2651,
+      "record_count": 4913
+    },
+    {
+      "run_id": "67d4d789-0c8d-4441-9f82-287a1c78e876",
+      "job_name": "bronze_to_silver",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-25T17:58:30+00:00",
+      "duration_ms": 710,
+      "record_count": 1181
+    },
+    {
+      "run_id": "df86aa13-45ea-49de-b373-592e833e7a2d",
+      "job_name": "bronze_to_silver",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-27T10:54:32+00:00",
+      "duration_ms": 4034,
+      "record_count": 2285
+    },
+    {
+      "run_id": "2fba1712-7e88-404b-b2f5-dd492cc2cbc0",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-27T11:48:18+00:00",
+      "duration_ms": 2831,
+      "record_count": 2388
+    },
+    {
+      "run_id": "b4824524-4aa0-466e-872a-14ea5315cf0c",
+      "job_name": "silver_to_reference",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-27T14:52:22+00:00",
+      "duration_ms": 1399,
+      "record_count": 2429
+    },
+    {
+      "run_id": "09351745-b745-4152-8325-f2b1a782f2fe",
+      "job_name": "silver_to_gold",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-27T16:47:46+00:00",
+      "duration_ms": 505,
+      "record_count": 1484
+    },
+    {
+      "run_id": "e17c3264-096d-459b-ab42-28c4974c5b34",
+      "job_name": "gold_to_sandbox",
+      "event_type": "COMPLETE",
+      "event_time": "2026-02-27T17:06:59+00:00",
+      "duration_ms": 2944,
+      "record_count": 2381
+    },
+    {
+      "run_id": "283b12e5-d067-46b1-94b3-e3530308895f",
+      "job_name": "landing_to_bronze",
+      "event_type": "FAIL",
+      "event_time": "2026-02-27T17:15:15+00:00",
+      "duration_ms": 383,
+      "record_count": 0
+    },
+    {
+      "run_id": "99fa93c2-6e46-4af3-b9e7-b9b71b6cacff",
+      "job_name": "bronze_to_silver",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T09:29:19+00:00",
+      "duration_ms": 1508,
+      "record_count": 3371
+    },
+    {
+      "run_id": "ba8a0769-8a83-46dc-bfe7-ee0eeea7781d",
+      "job_name": "ingest_landing",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T09:33:28+00:00",
+      "duration_ms": 4526,
+      "record_count": 3013
+    },
+    {
+      "run_id": "dd8ebf30-427f-4915-862e-23ca38e192e4",
+      "job_name": "landing_to_bronze",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T11:11:39+00:00",
+      "duration_ms": 3521,
+      "record_count": 3553
+    },
+    {
+      "run_id": "4e9ab425-05a0-47c2-9e40-b04f19679f14",
+      "job_name": "gold_to_archive",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T11:45:37+00:00",
+      "duration_ms": 4204,
+      "record_count": 794
+    },
+    {
+      "run_id": "f7b4e6d3-2c38-41e0-9065-df95e2d513a8",
+      "job_name": "gold_to_platinum",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T12:21:19+00:00",
+      "duration_ms": 4971,
+      "record_count": 4743
+    },
+    {
+      "run_id": "6f5907fe-777d-4fa9-a04b-c69977252cc7",
+      "job_name": "gold_to_sandbox",
+      "event_type": "COMPLETE",
+      "event_time": "2026-03-02T16:12:36+00:00",
+      "duration_ms": 4596,
+      "record_count": 1277
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "run_id": "5ccb316f-fbec-4a8d-bb27-e6728bf32850",
+  "job_name": "gold_to_sandbox",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-02T14:21:11+00:00",
+  "duration_ms": 4264,
+  "record_count": 4125,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@gold",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@sandbox",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 99.4,
+    "validity": 94.2,
+    "consistency": 98.0
+  },
+  "parent_run_id": ""
+}

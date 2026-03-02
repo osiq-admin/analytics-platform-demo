@@ -1,0 +1,308 @@
+{
+  "metric_id": "throughput_records_per_second",
+  "metric_type": "throughput",
+  "entity": "pipeline",
+  "tier": "",
+  "points": [
+    {
+      "metric_id": "9bf9fc24-8a5a-4c80-b732-9c15437d9ca4",
+      "metric_type": "throughput",
+      "value": 124.2,
+      "unit": "rps",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "27bcca96-f2f2-43b2-a978-d33ac90c2d85",
+      "metric_type": "throughput",
+      "value": 113.3,
+      "unit": "rps",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "695bd35c-2b10-4692-9452-e55dceac8a33",
+      "metric_type": "throughput",
+      "value": 98.1,
+      "unit": "rps",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "d2570ad7-ace9-469c-8adc-9091ffda960d",
+      "metric_type": "throughput",
+      "value": 114.4,
+      "unit": "rps",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "7f697999-4ac8-4d1c-9d57-6dadff55326c",
+      "metric_type": "throughput",
+      "value": 105.4,
+      "unit": "rps",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "726f4118-6af4-479e-8193-ec5297aac16b",
+      "metric_type": "throughput",
+      "value": 106.5,
+      "unit": "rps",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "55785369-524b-4afb-8f24-3e57c7b23c09",
+      "metric_type": "throughput",
+      "value": 106.0,
+      "unit": "rps",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "eaadf15b-0c76-4b86-a62c-ed2aa0781905",
+      "metric_type": "throughput",
+      "value": 108.0,
+      "unit": "rps",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "aac38467-c2f6-4116-8ac9-9bf9560aa9eb",
+      "metric_type": "throughput",
+      "value": 107.0,
+      "unit": "rps",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "699d2576-7e34-4c7f-9cff-b436778066b1",
+      "metric_type": "throughput",
+      "value": 110.1,
+      "unit": "rps",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "582d09a9-2afe-49c7-888d-0666a5639841",
+      "metric_type": "throughput",
+      "value": 125.4,
+      "unit": "rps",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "da4fe62e-32fc-402b-a57d-6acf01762874",
+      "metric_type": "throughput",
+      "value": 75.2,
+      "unit": "rps",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "5f43fd43-1489-4bec-9acd-3bb5598544ca",
+      "metric_type": "throughput",
+      "value": 103.9,
+      "unit": "rps",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "784e84b2-69bd-4b82-845d-ccad851da8c9",
+      "metric_type": "throughput",
+      "value": 106.5,
+      "unit": "rps",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "cd0c4d91-0b98-40c9-8539-ecca1d921f15",
+      "metric_type": "throughput",
+      "value": 103.2,
+      "unit": "rps",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "c326c1d0-3ce7-4c94-afa7-0685d8d13155",
+      "metric_type": "throughput",
+      "value": 117.3,
+      "unit": "rps",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "2ca9eb9f-f99c-4e36-829f-df45b19a54ad",
+      "metric_type": "throughput",
+      "value": 58.6,
+      "unit": "rps",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "992b108a-9a69-40ce-a1b1-2e1e7c3244a8",
+      "metric_type": "throughput",
+      "value": 76.9,
+      "unit": "rps",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "1fbbbe3a-c2c1-457f-a4e7-512989e662d5",
+      "metric_type": "throughput",
+      "value": 111.3,
+      "unit": "rps",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "75b71270-6a39-4686-95ee-237d98def5d0",
+      "metric_type": "throughput",
+      "value": 88.0,
+      "unit": "rps",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "8e1fdd74-3144-40c0-bd5a-312494e30a07",
+      "metric_type": "throughput",
+      "value": 123.2,
+      "unit": "rps",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "bc0b51f5-7fa3-4429-9be6-96793eb9203b",
+      "metric_type": "throughput",
+      "value": 120.2,
+      "unit": "rps",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "8c2617b3-8e6b-4fe8-8401-c217f01258d5",
+      "metric_type": "throughput",
+      "value": 112.4,
+      "unit": "rps",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "8df56fb6-020a-458a-97ef-17f5331ca982",
+      "metric_type": "throughput",
+      "value": 103.7,
+      "unit": "rps",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "caf2b08f-5d8f-4f4b-ad67-decdc9b653f0",
+      "metric_type": "throughput",
+      "value": 106.0,
+      "unit": "rps",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "72c367a1-2a04-407e-9a3d-6d7f2abe1ecb",
+      "metric_type": "throughput",
+      "value": 90.1,
+      "unit": "rps",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "94aca846-17c7-42b2-b73d-60f9e110e4cc",
+      "metric_type": "throughput",
+      "value": 96.6,
+      "unit": "rps",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "8fcac2a8-5691-4257-8a49-6f7ea36f65e8",
+      "metric_type": "throughput",
+      "value": 94.4,
+      "unit": "rps",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "cd12a999-c25b-4d33-aa52-1dc3f468ae08",
+      "metric_type": "throughput",
+      "value": 115.5,
+      "unit": "rps",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "c3e2d559-0374-4b83-98a9-c0c86b2cee75",
+      "metric_type": "throughput",
+      "value": 82.4,
+      "unit": "rps",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    }
+  ]
+}

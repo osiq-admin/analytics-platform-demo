@@ -23,6 +23,7 @@ import { dataQualitySections } from "./dataQuality";
 import { referenceDataSections } from "./referenceData";
 import { dataGovernanceSections } from "./dataGovernance";
 import { businessGlossarySections } from "./businessGlossary";
+import { dataLineageSections } from "./dataLineage";
 
 export const VIEW_TRACES: ViewTrace[] = [
   dashboardSections,
@@ -48,6 +49,7 @@ export const VIEW_TRACES: ViewTrace[] = [
   referenceDataSections,
   dataGovernanceSections,
   businessGlossarySections,
+  dataLineageSections,
 ];
 
 // ---------------------------------------------------------------------------

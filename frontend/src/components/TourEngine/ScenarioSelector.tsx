@@ -64,6 +64,10 @@ const CATEGORY_META: Record<
     label: "Lakehouse",
     description: "Apache Iceberg tables, PII governance, and pipeline audit",
   },
+  lineage: {
+    label: "Data Lineage",
+    description: "End-to-end data lineage, field tracing, and impact analysis",
+  },
 };
 
 const CATEGORY_ORDER: ScenarioCategory[] = [
@@ -77,6 +81,7 @@ const CATEGORY_ORDER: ScenarioCategory[] = [
   "pipeline",
   "governance",
   "lakehouse",
+  "lineage",
 ];
 
 const DIFFICULTY_LABELS: Record<ScenarioDifficulty, { label: string; color: string }> = {

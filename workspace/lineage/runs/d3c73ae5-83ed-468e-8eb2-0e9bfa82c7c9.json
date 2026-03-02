@@ -1,0 +1,77 @@
+{
+  "run_id": "d3c73ae5-83ed-468e-8eb2-0e9bfa82c7c9",
+  "job_name": "silver_to_gold",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-05T14:05:27+00:00",
+  "duration_ms": 1678,
+  "record_count": 4518,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@silver",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@gold",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "execution_id",
+      "input_fields": [
+        "execution_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.93
+    },
+    {
+      "output_field": "asset_class",
+      "input_fields": [
+        "asset_class"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.96
+    },
+    {
+      "output_field": "product_id",
+      "input_fields": [
+        "product_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.94
+    },
+    {
+      "output_field": "price",
+      "input_fields": [
+        "price"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.97
+    }
+  ],
+  "quality_scores": {
+    "completeness": 94.8,
+    "validity": 88.5,
+    "consistency": 98.7
+  },
+  "parent_run_id": ""
+}

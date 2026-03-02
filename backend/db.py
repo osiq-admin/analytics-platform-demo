@@ -93,6 +93,15 @@ async def lifespan(app: FastAPI):
     app.state.glossary_service = GlossaryService(settings.workspace_dir)
     app.state.semantic_service = SemanticLayerService(settings.workspace_dir)
 
+    # Observability: events, lineage, metrics
+    from backend.services.event_service import EventService
+    from backend.services.lineage_service import LineageService
+    from backend.services.metrics_service import MetricsService
+
+    app.state.event_service = EventService(settings.workspace_dir)
+    app.state.lineage_service = LineageService(settings.workspace_dir)
+    app.state.metrics_service = MetricsService(settings.workspace_dir)
+
     # Lakehouse services (optional — gracefully degrade if Iceberg unavailable)
     _init_lakehouse_services(app)
 

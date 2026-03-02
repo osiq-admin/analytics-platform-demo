@@ -28,10 +28,11 @@
     {"tour_id": "analytics-tiers", "view_path": "/analytics-tiers", "title": "Analytics Tiers Tour", "step_count": 4},
     {"tour_id": "lakehouse-explorer", "view_path": "/medallion", "title": "Lakehouse Explorer Tour", "step_count": 7},
     {"tour_id": "governance", "view_path": "/governance", "title": "Data Governance Tour", "step_count": 7},
-    {"tour_id": "glossary", "view_path": "/glossary", "title": "Business Glossary Tour", "step_count": 5}
+    {"tour_id": "glossary", "view_path": "/glossary", "title": "Business Glossary Tour", "step_count": 5},
+    {"tour_id": "lineage", "view_path": "/lineage", "title": "Data Lineage Tour", "step_count": 5}
   ],
   "scenarios": {
-    "total_count": 35,
+    "total_count": 39,
     "categories": [
       {"category": "Settings", "count": 6},
       {"category": "Calculations", "count": 4},
@@ -42,7 +43,8 @@
       {"category": "Administration", "count": 6},
       {"category": "Pipeline", "count": 1},
       {"category": "Governance", "count": 4},
-      {"category": "Lakehouse", "count": 1}
+      {"category": "Lakehouse", "count": 1},
+      {"category": "Lineage", "count": 4}
     ]
   }
 }

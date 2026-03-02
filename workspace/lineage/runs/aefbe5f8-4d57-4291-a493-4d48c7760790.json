@@ -1,0 +1,97 @@
+{
+  "run_id": "aefbe5f8-4d57-4291-a493-4d48c7760790",
+  "job_name": "bronze_to_silver",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-10T09:04:19+00:00",
+  "duration_ms": 3461,
+  "record_count": 3971,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@bronze",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@silver",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "order_id",
+      "input_fields": [
+        "order_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.97
+    },
+    {
+      "output_field": "notional_value",
+      "input_fields": [
+        "price",
+        "quantity"
+      ],
+      "transformation": "derive",
+      "expression": "",
+      "confidence": 0.93
+    },
+    {
+      "output_field": "price",
+      "input_fields": [
+        "price"
+      ],
+      "transformation": "cast",
+      "expression": "",
+      "confidence": 0.99
+    },
+    {
+      "output_field": "execution_id",
+      "input_fields": [
+        "execution_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.98
+    },
+    {
+      "output_field": "quantity",
+      "input_fields": [
+        "quantity"
+      ],
+      "transformation": "cast",
+      "expression": "",
+      "confidence": 0.96
+    },
+    {
+      "output_field": "execution_timestamp",
+      "input_fields": [
+        "execution_date",
+        "execution_time"
+      ],
+      "transformation": "derive",
+      "expression": "",
+      "confidence": 0.92
+    }
+  ],
+  "quality_scores": {
+    "completeness": 99.7,
+    "validity": 93.2,
+    "consistency": 99.1
+  },
+  "parent_run_id": ""
+}

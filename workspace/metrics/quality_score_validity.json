@@ -1,0 +1,308 @@
+{
+  "metric_id": "quality_score_validity",
+  "metric_type": "quality_score",
+  "entity": "",
+  "tier": "silver",
+  "points": [
+    {
+      "metric_id": "e63fb33d-f911-446d-8d13-ac2167ec34b5",
+      "metric_type": "quality_score",
+      "value": 95.89,
+      "unit": "percent",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "99f0a2d6-a9bf-4a6b-8e32-0c6e08da8eb7",
+      "metric_type": "quality_score",
+      "value": 97.26,
+      "unit": "percent",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "7f2fd6ac-d4bd-4657-a636-9da225db8222",
+      "metric_type": "quality_score",
+      "value": 94.97,
+      "unit": "percent",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "11c1f869-71be-4e48-8f61-d274630d72be",
+      "metric_type": "quality_score",
+      "value": 92.8,
+      "unit": "percent",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "91f13097-0d8c-45f9-a2ff-2fd0d9a4573d",
+      "metric_type": "quality_score",
+      "value": 97.41,
+      "unit": "percent",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "1f3b5b97-1bfb-40ba-9d32-29e5ca191e18",
+      "metric_type": "quality_score",
+      "value": 88.9,
+      "unit": "percent",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "592382ce-81da-45f5-94fe-5c69d73f9f4a",
+      "metric_type": "quality_score",
+      "value": 96.27,
+      "unit": "percent",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "8e45f6ce-4dff-4401-aa67-405314d2ac48",
+      "metric_type": "quality_score",
+      "value": 94.46,
+      "unit": "percent",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "45eb2f62-755c-44ac-9654-73b47f589b38",
+      "metric_type": "quality_score",
+      "value": 95.27,
+      "unit": "percent",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "518f3511-dd53-4588-abed-849084c7d6db",
+      "metric_type": "quality_score",
+      "value": 96.05,
+      "unit": "percent",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "cd32965d-0545-4fab-87d0-085a3c467fc2",
+      "metric_type": "quality_score",
+      "value": 97.32,
+      "unit": "percent",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "7f0792f5-fee8-459f-af0d-5413c0183acb",
+      "metric_type": "quality_score",
+      "value": 96.66,
+      "unit": "percent",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "8058c2c1-ba6e-4d51-8ee1-c1236cb5cd95",
+      "metric_type": "quality_score",
+      "value": 97.86,
+      "unit": "percent",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "f29c83a1-e29c-4049-9ada-d61e4a580afb",
+      "metric_type": "quality_score",
+      "value": 94.67,
+      "unit": "percent",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "b9cea633-cc4e-48f1-ab43-9099a14d461e",
+      "metric_type": "quality_score",
+      "value": 95.89,
+      "unit": "percent",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "0bcc9c72-bbfd-48a3-a885-e4dfbb157d3c",
+      "metric_type": "quality_score",
+      "value": 94.75,
+      "unit": "percent",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "193c50cf-94be-477c-b0a2-d706b182292d",
+      "metric_type": "quality_score",
+      "value": 96.94,
+      "unit": "percent",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "5f877623-5072-4cba-b6ff-7e4a21e63ad3",
+      "metric_type": "quality_score",
+      "value": 93.37,
+      "unit": "percent",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "7345b951-772d-4742-b8f3-f4cacd7ac62f",
+      "metric_type": "quality_score",
+      "value": 93.55,
+      "unit": "percent",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "0c3a4dbd-7ffe-49e9-8747-c20363ca7bf4",
+      "metric_type": "quality_score",
+      "value": 96.53,
+      "unit": "percent",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "ede98a28-ade7-4997-a8d4-8e79b390296a",
+      "metric_type": "quality_score",
+      "value": 90.67,
+      "unit": "percent",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "c2d458f8-0257-4c21-866f-6e4646694c04",
+      "metric_type": "quality_score",
+      "value": 99.32,
+      "unit": "percent",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "a5827d83-a660-46f6-b5d1-0cbd083f5eff",
+      "metric_type": "quality_score",
+      "value": 95.72,
+      "unit": "percent",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "4fe2129e-42bc-488f-88fc-6f7b2829852f",
+      "metric_type": "quality_score",
+      "value": 97.0,
+      "unit": "percent",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "01219723-76f3-4dfa-ac5e-94968390da99",
+      "metric_type": "quality_score",
+      "value": 93.67,
+      "unit": "percent",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "cdbbe9d0-fa6c-46dd-a373-1069f7fb2ab6",
+      "metric_type": "quality_score",
+      "value": 96.67,
+      "unit": "percent",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "4e119a20-960d-489f-ae5c-1ae02ecef578",
+      "metric_type": "quality_score",
+      "value": 95.54,
+      "unit": "percent",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "905559ad-deff-4135-acf1-6117f114e1c2",
+      "metric_type": "quality_score",
+      "value": 92.95,
+      "unit": "percent",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "69a6962f-63a8-421b-a6de-991e62fd113a",
+      "metric_type": "quality_score",
+      "value": 98.35,
+      "unit": "percent",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    },
+    {
+      "metric_id": "f8cf9662-a288-4f72-aea3-a83cf0561433",
+      "metric_type": "quality_score",
+      "value": 96.42,
+      "unit": "percent",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "dimension": "validity"
+      }
+    }
+  ]
+}

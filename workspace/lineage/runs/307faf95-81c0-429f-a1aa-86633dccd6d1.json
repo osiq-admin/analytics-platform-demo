@@ -1,0 +1,104 @@
+{
+  "run_id": "307faf95-81c0-429f-a1aa-86633dccd6d1",
+  "job_name": "silver_to_reference",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-25T17:47:53+00:00",
+  "duration_ms": 2651,
+  "record_count": 4913,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@silver",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "product@reference",
+      "fields": [
+        "product_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "is_derivative",
+      "input_fields": [
+        "instrument_type"
+      ],
+      "transformation": "conditional",
+      "expression": "",
+      "confidence": 0.98
+    },
+    {
+      "output_field": "cfi_code",
+      "input_fields": [
+        "cfi_code"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.94
+    },
+    {
+      "output_field": "currency",
+      "input_fields": [
+        "currency"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.97
+    },
+    {
+      "output_field": "asset_class",
+      "input_fields": [
+        "asset_class"
+      ],
+      "transformation": "normalize",
+      "expression": "",
+      "confidence": 1.0
+    },
+    {
+      "output_field": "ticker",
+      "input_fields": [
+        "ticker"
+      ],
+      "transformation": "normalize",
+      "expression": "",
+      "confidence": 0.96
+    },
+    {
+      "output_field": "isin",
+      "input_fields": [
+        "isin"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.98
+    },
+    {
+      "output_field": "product_id",
+      "input_fields": [
+        "product_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.97
+    }
+  ],
+  "quality_scores": {
+    "completeness": 97.5,
+    "validity": 88.3,
+    "consistency": 85.6
+  },
+  "parent_run_id": ""
+}

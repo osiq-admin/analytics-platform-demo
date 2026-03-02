@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ReactFlow, Background, type Node, type Edge } from "@xyflow/react";
 import dagre from "@dagrejs/dagre";
 import "@xyflow/react/dist/style.css";
@@ -88,18 +89,28 @@ function layoutTrace(alert: AlertTrace) {
 }
 
 export default function CalculationTrace({ alert }: CalculationTraceProps) {
+  const navigate = useNavigate();
   const { nodes, edges } = useMemo(() => layoutTrace(alert), [alert]);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      fitView
-      proOptions={{ hideAttribution: true }}
-      nodesDraggable={false}
-      nodesConnectable={false}
-    >
-      <Background color="var(--color-border)" gap={20} size={1} />
-    </ReactFlow>
+    <div className="relative h-full w-full">
+      <button
+        onClick={() => navigate(`/lineage?alert=${encodeURIComponent(alert.alert_id)}&tab=explorer`)}
+        className="absolute top-2 right-2 z-10 px-2 py-0.5 text-[10px] text-accent hover:text-accent/80 hover:underline transition-colors"
+        data-trace="alerts.view-full-lineage"
+      >
+        View Full Lineage &rarr;
+      </button>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        proOptions={{ hideAttribution: true }}
+        nodesDraggable={false}
+        nodesConnectable={false}
+      >
+        <Background color="var(--color-border)" gap={20} size={1} />
+      </ReactFlow>
+    </div>
   );
 }

@@ -1,0 +1,308 @@
+{
+  "metric_id": "sla_compliance",
+  "metric_type": "sla_compliance",
+  "entity": "pipeline",
+  "tier": "",
+  "points": [
+    {
+      "metric_id": "ceb52588-82aa-4523-b70d-2a0ee7ef69e0",
+      "metric_type": "sla_compliance",
+      "value": 96.4,
+      "unit": "percent",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "0321a31e-d068-4c42-b4c4-0a7180e89077",
+      "metric_type": "sla_compliance",
+      "value": 97.7,
+      "unit": "percent",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "b93fc9ad-1f53-4ff5-8f85-85b36da36cf5",
+      "metric_type": "sla_compliance",
+      "value": 87.2,
+      "unit": "percent",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "cd3186e4-07f3-483e-b823-93a57821935f",
+      "metric_type": "sla_compliance",
+      "value": 95.9,
+      "unit": "percent",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "5ed1620f-b469-4566-8840-d4be8b0eb7cc",
+      "metric_type": "sla_compliance",
+      "value": 99.3,
+      "unit": "percent",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "a0ee81b7-197c-45c5-9bab-f08dba93dbac",
+      "metric_type": "sla_compliance",
+      "value": 95.1,
+      "unit": "percent",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "b1f23f11-2fad-4f31-8ef3-cb41d7811ac7",
+      "metric_type": "sla_compliance",
+      "value": 96.0,
+      "unit": "percent",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "1969be90-c0d0-468a-9fa1-debb8eb6ee5c",
+      "metric_type": "sla_compliance",
+      "value": 95.7,
+      "unit": "percent",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "94be7d20-dc9b-4685-8d0f-9790c0492de0",
+      "metric_type": "sla_compliance",
+      "value": 99.1,
+      "unit": "percent",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "a9599a77-1dc3-460d-86d5-80b2edae58cb",
+      "metric_type": "sla_compliance",
+      "value": 99.1,
+      "unit": "percent",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "f66671dc-203d-4857-8275-4ad89b3e0957",
+      "metric_type": "sla_compliance",
+      "value": 99.6,
+      "unit": "percent",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "b418a93c-131b-402a-8d98-6d7830c1d784",
+      "metric_type": "sla_compliance",
+      "value": 96.5,
+      "unit": "percent",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "340455c0-e597-4956-b86f-53a54e6565ba",
+      "metric_type": "sla_compliance",
+      "value": 97.8,
+      "unit": "percent",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "e507d465-65e7-4736-9aa5-9b03118471ee",
+      "metric_type": "sla_compliance",
+      "value": 97.8,
+      "unit": "percent",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "88678dd5-d717-4337-a3eb-6c0d3095765d",
+      "metric_type": "sla_compliance",
+      "value": 99.2,
+      "unit": "percent",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "f86c9043-c836-415b-a50e-f4f20b663203",
+      "metric_type": "sla_compliance",
+      "value": 98.4,
+      "unit": "percent",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "eaef0fd9-462b-4aaa-9023-081703b4fa1f",
+      "metric_type": "sla_compliance",
+      "value": 97.7,
+      "unit": "percent",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "c9010adc-3f07-4933-b6f6-6a6469d4cc42",
+      "metric_type": "sla_compliance",
+      "value": 96.9,
+      "unit": "percent",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "e158928d-0728-42f0-b268-200c5a635e61",
+      "metric_type": "sla_compliance",
+      "value": 98.7,
+      "unit": "percent",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "2f850491-b430-49bd-87a4-c971ce9f59c5",
+      "metric_type": "sla_compliance",
+      "value": 99.0,
+      "unit": "percent",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "35617a69-79b7-4e4e-be2e-bc85258e1bbe",
+      "metric_type": "sla_compliance",
+      "value": 98.4,
+      "unit": "percent",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "022d4e3a-d526-4147-b772-7ace3fec64ac",
+      "metric_type": "sla_compliance",
+      "value": 82.6,
+      "unit": "percent",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "74528688-8692-4d73-a5b5-c08337d5e783",
+      "metric_type": "sla_compliance",
+      "value": 98.7,
+      "unit": "percent",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "783bef88-8e6c-4630-bffc-fd4958265239",
+      "metric_type": "sla_compliance",
+      "value": 96.7,
+      "unit": "percent",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "bf927a4b-df9b-405f-b467-e782e62e315f",
+      "metric_type": "sla_compliance",
+      "value": 95.5,
+      "unit": "percent",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "094ce008-0036-48d0-b3a0-e23edf2c6445",
+      "metric_type": "sla_compliance",
+      "value": 96.2,
+      "unit": "percent",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "069bf691-f75a-4bc2-95b1-26210b16e11f",
+      "metric_type": "sla_compliance",
+      "value": 95.4,
+      "unit": "percent",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "db3580ea-9cd8-404d-a275-f2b1b26a2484",
+      "metric_type": "sla_compliance",
+      "value": 98.0,
+      "unit": "percent",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "6e53e1ea-7216-4ac2-a8dd-cfa2c47bfeed",
+      "metric_type": "sla_compliance",
+      "value": 98.1,
+      "unit": "percent",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "25697908-f76a-4cb4-98df-b8a8c4c267cd",
+      "metric_type": "sla_compliance",
+      "value": 86.7,
+      "unit": "percent",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    }
+  ]
+}

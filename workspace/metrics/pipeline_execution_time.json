@@ -1,0 +1,308 @@
+{
+  "metric_id": "pipeline_execution_time",
+  "metric_type": "execution_time",
+  "entity": "pipeline",
+  "tier": "",
+  "points": [
+    {
+      "metric_id": "01302ffd-9703-4927-a933-6700d4ed504f",
+      "metric_type": "execution_time",
+      "value": 1347.6,
+      "unit": "ms",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "dd7126c3-8fd4-42a7-ba10-4db792e6dc7b",
+      "metric_type": "execution_time",
+      "value": 1312.0,
+      "unit": "ms",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "6d0080fc-257c-49ff-8c07-0d9a00904b85",
+      "metric_type": "execution_time",
+      "value": 1078.2,
+      "unit": "ms",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "ac29589f-b5e4-48e2-acba-a01bc4af15e7",
+      "metric_type": "execution_time",
+      "value": 1514.5,
+      "unit": "ms",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "b3cebb25-1a26-40ef-acd8-b7a408899258",
+      "metric_type": "execution_time",
+      "value": 1494.5,
+      "unit": "ms",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "30350470-3eff-4f53-b804-072633cbd5ad",
+      "metric_type": "execution_time",
+      "value": 1313.7,
+      "unit": "ms",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "1e627cb7-04e4-4290-ad31-9b398e630f46",
+      "metric_type": "execution_time",
+      "value": 1425.8,
+      "unit": "ms",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "641f4d2d-44bb-4e7c-a396-ba8b619625c7",
+      "metric_type": "execution_time",
+      "value": 1437.9,
+      "unit": "ms",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "85beda70-7e93-4701-8617-ee817c0b7b44",
+      "metric_type": "execution_time",
+      "value": 1151.1,
+      "unit": "ms",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "1389291e-6062-4970-bee1-f0050b5bdd10",
+      "metric_type": "execution_time",
+      "value": 1559.2,
+      "unit": "ms",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "e542578a-c840-4ae7-985a-6c946e8cd838",
+      "metric_type": "execution_time",
+      "value": 1420.4,
+      "unit": "ms",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "ab7c2bc3-5d81-492b-98f6-858db2717d88",
+      "metric_type": "execution_time",
+      "value": 1490.0,
+      "unit": "ms",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "f14efef4-ecb4-4ad7-8daf-49dd4dc35f8c",
+      "metric_type": "execution_time",
+      "value": 1813.9,
+      "unit": "ms",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "0bfdccbe-d7c3-459b-8e67-8b80e08c340c",
+      "metric_type": "execution_time",
+      "value": 1327.2,
+      "unit": "ms",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "4a56a616-1e8b-46d4-bead-622a2ea84b02",
+      "metric_type": "execution_time",
+      "value": 1504.2,
+      "unit": "ms",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "48718c87-1e39-4fd2-86a2-2b92b774f3f2",
+      "metric_type": "execution_time",
+      "value": 1474.4,
+      "unit": "ms",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "1a2eee8e-2a6a-48ba-831a-717bac606235",
+      "metric_type": "execution_time",
+      "value": 1683.6,
+      "unit": "ms",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "d9529944-2ee6-44c2-be74-e39502fd3b1b",
+      "metric_type": "execution_time",
+      "value": 1776.2,
+      "unit": "ms",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "0a4b43dc-767e-461a-8bc3-bfd19bb50b65",
+      "metric_type": "execution_time",
+      "value": 1656.2,
+      "unit": "ms",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "58de393f-3c0b-46f3-a088-a24da7ab5206",
+      "metric_type": "execution_time",
+      "value": 1571.0,
+      "unit": "ms",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "0a39a0b7-22c4-47dd-844a-0a520ceaba82",
+      "metric_type": "execution_time",
+      "value": 1431.3,
+      "unit": "ms",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "83885be8-ecea-46d9-8fcf-c07e5e130a6b",
+      "metric_type": "execution_time",
+      "value": 1357.9,
+      "unit": "ms",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "7850a1ba-a385-480f-8c90-4f0a861a8216",
+      "metric_type": "execution_time",
+      "value": 1591.5,
+      "unit": "ms",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "fa3120a6-d1aa-4d84-b798-7e95d038cb91",
+      "metric_type": "execution_time",
+      "value": 1682.7,
+      "unit": "ms",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "bf9025fa-26f5-40a6-aeea-3830fb78ded7",
+      "metric_type": "execution_time",
+      "value": 1620.5,
+      "unit": "ms",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "081e844f-0520-4a9b-a929-a7cf3f247155",
+      "metric_type": "execution_time",
+      "value": 1621.4,
+      "unit": "ms",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "2e055a7c-04e8-4d93-9dc5-fda6fe6e4abd",
+      "metric_type": "execution_time",
+      "value": 1709.0,
+      "unit": "ms",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "ea71a10c-4fc2-4ec9-b3d2-969ff1113f7d",
+      "metric_type": "execution_time",
+      "value": 1271.2,
+      "unit": "ms",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "bea7cd9e-e9fe-491b-8d0a-33e9b3f2073c",
+      "metric_type": "execution_time",
+      "value": 1553.6,
+      "unit": "ms",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    },
+    {
+      "metric_id": "0f4fa926-aacf-47ea-9396-a9c5d093b229",
+      "metric_type": "execution_time",
+      "value": 1564.8,
+      "unit": "ms",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily_avg"
+      }
+    }
+  ]
+}

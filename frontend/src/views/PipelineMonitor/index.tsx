@@ -1,12 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePipelineStore } from "../../stores/pipelineStore.ts";
 import Panel from "../../components/Panel.tsx";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 import PipelineDAG from "./PipelineDAG.tsx";
+import MetricsPanel from "./MetricsPanel.tsx";
+import EventTimeline from "./EventTimeline.tsx";
+import PipelineRunsPanel from "./PipelineRunsPanel.tsx";
 import { formatLabel } from "../../utils/format.ts";
 
 export default function PipelineMonitor() {
   const { steps, running, error, runPipeline, stages, stageResult, stageRunning, fetchStages, runStage } = usePipelineStore();
+
+  const [metricsCollapsed, setMetricsCollapsed] = useState(false);
+  const [eventsCollapsed, setEventsCollapsed] = useState(false);
+  const [runsCollapsed, setRunsCollapsed] = useState(false);
 
   useEffect(() => { void fetchStages(); }, [fetchStages]);
 
@@ -158,6 +165,45 @@ export default function PipelineMonitor() {
           </table>
         </Panel>
       )}
+
+      {/* Pipeline Metrics */}
+      <Panel
+        title="Pipeline Metrics"
+        collapsible
+        collapsed={metricsCollapsed}
+        onToggleCollapse={() => setMetricsCollapsed((v) => !v)}
+        dataTour="pipeline-metrics"
+        dataTrace="pipeline.metrics-panel"
+        tooltip="Execution time trends, quality scores, and SLA compliance"
+      >
+        <MetricsPanel />
+      </Panel>
+
+      {/* Event Timeline */}
+      <Panel
+        title="Event Timeline"
+        collapsible
+        collapsed={eventsCollapsed}
+        onToggleCollapse={() => setEventsCollapsed((v) => !v)}
+        dataTour="pipeline-events"
+        dataTrace="pipeline.event-timeline"
+        tooltip="Recent pipeline execution events from the observability log"
+      >
+        <EventTimeline />
+      </Panel>
+
+      {/* Pipeline Runs */}
+      <Panel
+        title="Pipeline Runs"
+        collapsible
+        collapsed={runsCollapsed}
+        onToggleCollapse={() => setRunsCollapsed((v) => !v)}
+        dataTour="pipeline-runs"
+        dataTrace="pipeline.runs-panel"
+        tooltip="OpenLineage pipeline run history with input/output datasets and quality scores"
+      >
+        <PipelineRunsPanel />
+      </Panel>
     </div>
   );
 }

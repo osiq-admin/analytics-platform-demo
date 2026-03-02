@@ -1332,3 +1332,28 @@ class MetadataService:
         d.mkdir(parents=True, exist_ok=True)
         p = d / "manifest.json"
         p.write_text(manifest.model_dump_json(indent=2))
+
+    # ------------------------------------------------------------------
+    # Observability metadata loaders
+    # ------------------------------------------------------------------
+
+    def load_event_types(self) -> dict:
+        """Load observability event type definitions."""
+        p = self._base / "observability" / "event_types.json"
+        if not p.exists():
+            return {"event_types": []}
+        return json.loads(p.read_text())
+
+    def load_metric_definitions(self) -> dict:
+        """Load observability metric definitions."""
+        p = self._base / "observability" / "metric_definitions.json"
+        if not p.exists():
+            return {"metrics": []}
+        return json.loads(p.read_text())
+
+    def load_lineage_config(self) -> dict:
+        """Load lineage configuration (entities, layers, sources)."""
+        p = self._base / "observability" / "lineage_config.json"
+        if not p.exists():
+            return {"entities": [], "layers": []}
+        return json.loads(p.read_text())

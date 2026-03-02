@@ -28,6 +28,7 @@ const ReferenceData = lazy(() => import("./views/ReferenceData/index.tsx"));
 const DataGovernance = lazy(() => import("./views/DataGovernance/index.tsx"));
 const BusinessGlossary = lazy(() => import("./views/BusinessGlossary/index.tsx"));
 const AnalyticsTiers = lazy(() => import("./views/AnalyticsTiers/index.tsx"));
+const DataLineage = lazy(() => import("./views/DataLineage/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -50,9 +51,10 @@ export const routes: RouteObject[] = [
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
       { path: "analytics-tiers", element: <Suspense fallback={null}><AnalyticsTiers /></Suspense> },
 
-      // Govern — data governance, business glossary
+      // Govern — data governance, business glossary, data lineage
       { path: "governance", element: <Suspense fallback={null}><DataGovernance /></Suspense> },
       { path: "glossary", element: <Suspense fallback={null}><BusinessGlossary /></Suspense> },
+      { path: "lineage", element: <Suspense fallback={null}><DataLineage /></Suspense> },
 
       // Detect — models, use cases, pipeline, dashboard
       { path: "models", element: <ModelComposer /> },

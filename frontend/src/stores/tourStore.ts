@@ -37,7 +37,8 @@ export type ScenarioCategory =
   | "admin"
   | "pipeline"
   | "governance"
-  | "lakehouse";
+  | "lakehouse"
+  | "lineage";
 
 export type ScenarioDifficulty = "beginner" | "intermediate" | "advanced";
 

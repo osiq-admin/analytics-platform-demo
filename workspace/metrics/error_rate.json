@@ -1,0 +1,308 @@
+{
+  "metric_id": "error_rate",
+  "metric_type": "error_rate",
+  "entity": "pipeline",
+  "tier": "",
+  "points": [
+    {
+      "metric_id": "7415bf6e-f766-4d71-bf87-d3dfada3744d",
+      "metric_type": "error_rate",
+      "value": 4.37,
+      "unit": "percent",
+      "timestamp": "2026-02-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "ca7268f4-f142-4628-b1b1-657471a0d1cb",
+      "metric_type": "error_rate",
+      "value": 1.99,
+      "unit": "percent",
+      "timestamp": "2026-02-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "575892bf-eb5b-4883-b272-a35e276e6e49",
+      "metric_type": "error_rate",
+      "value": 0.98,
+      "unit": "percent",
+      "timestamp": "2026-02-03T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "3b702ead-2ebf-4601-828c-4faa52b54f9b",
+      "metric_type": "error_rate",
+      "value": 0.71,
+      "unit": "percent",
+      "timestamp": "2026-02-04T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "9d535a52-5606-46e1-8bad-a8161bc0dcdb",
+      "metric_type": "error_rate",
+      "value": 1.88,
+      "unit": "percent",
+      "timestamp": "2026-02-05T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "cab686cc-92ae-462b-b011-986480bf6417",
+      "metric_type": "error_rate",
+      "value": 0.86,
+      "unit": "percent",
+      "timestamp": "2026-02-06T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "80d747b2-db95-4e8d-9ebb-de083760145b",
+      "metric_type": "error_rate",
+      "value": 1.36,
+      "unit": "percent",
+      "timestamp": "2026-02-07T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "94f06bfa-3822-4618-8a34-3dd6d70cbb9b",
+      "metric_type": "error_rate",
+      "value": 1.32,
+      "unit": "percent",
+      "timestamp": "2026-02-08T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "b116f4d7-ce54-4330-b9ee-50a9600f4dab",
+      "metric_type": "error_rate",
+      "value": 0.17,
+      "unit": "percent",
+      "timestamp": "2026-02-09T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "d988abf9-a0cf-43b8-bb8b-da626b9f1a77",
+      "metric_type": "error_rate",
+      "value": 1.24,
+      "unit": "percent",
+      "timestamp": "2026-02-10T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "35948c99-a854-4005-b3a9-0d731984a8c0",
+      "metric_type": "error_rate",
+      "value": 6.99,
+      "unit": "percent",
+      "timestamp": "2026-02-11T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "1718b508-4fb7-407f-b43b-39a3e5eb7a76",
+      "metric_type": "error_rate",
+      "value": 1.43,
+      "unit": "percent",
+      "timestamp": "2026-02-12T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "44c5c257-071a-4176-8093-4dfa09a51832",
+      "metric_type": "error_rate",
+      "value": 0.16,
+      "unit": "percent",
+      "timestamp": "2026-02-13T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "ab7e3093-b55c-4c73-87b8-afd4bbf28a38",
+      "metric_type": "error_rate",
+      "value": 0.31,
+      "unit": "percent",
+      "timestamp": "2026-02-14T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "45edffff-cf3b-4a5d-a461-d6f32e47c687",
+      "metric_type": "error_rate",
+      "value": 1.42,
+      "unit": "percent",
+      "timestamp": "2026-02-15T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "d9d0b709-3d5a-44f3-b2ac-a5ad3066f035",
+      "metric_type": "error_rate",
+      "value": 1.27,
+      "unit": "percent",
+      "timestamp": "2026-02-16T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "4af4f989-a63b-48c1-89e8-949b0576d989",
+      "metric_type": "error_rate",
+      "value": 1.48,
+      "unit": "percent",
+      "timestamp": "2026-02-17T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "17a788cb-2ec4-4e3b-b272-413326cbc251",
+      "metric_type": "error_rate",
+      "value": 0.63,
+      "unit": "percent",
+      "timestamp": "2026-02-18T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "cba514fd-e034-4950-8124-c242aeb1d98b",
+      "metric_type": "error_rate",
+      "value": 0.21,
+      "unit": "percent",
+      "timestamp": "2026-02-19T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "a0ef40c6-8226-4f9a-8daa-00f60c8015bf",
+      "metric_type": "error_rate",
+      "value": 0.01,
+      "unit": "percent",
+      "timestamp": "2026-02-20T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "730fdb6f-cf54-414a-a968-c42512476324",
+      "metric_type": "error_rate",
+      "value": 4.54,
+      "unit": "percent",
+      "timestamp": "2026-02-21T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "4b71a33b-9fb9-40f4-b041-d4651a3aa091",
+      "metric_type": "error_rate",
+      "value": 0.72,
+      "unit": "percent",
+      "timestamp": "2026-02-22T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "55a7bf45-908c-4d31-986a-a186324f87b4",
+      "metric_type": "error_rate",
+      "value": 0.54,
+      "unit": "percent",
+      "timestamp": "2026-02-23T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "24b56707-25c5-4a76-a6ea-75b53db4c544",
+      "metric_type": "error_rate",
+      "value": 0.27,
+      "unit": "percent",
+      "timestamp": "2026-02-24T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "98f3138f-e79c-4630-8da2-64c2021b1279",
+      "metric_type": "error_rate",
+      "value": 3.94,
+      "unit": "percent",
+      "timestamp": "2026-02-25T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "b8a58cac-711f-4c0f-93cb-947b35713874",
+      "metric_type": "error_rate",
+      "value": 0.9,
+      "unit": "percent",
+      "timestamp": "2026-02-26T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "f3b19023-a577-419f-8075-cb0c9b67b476",
+      "metric_type": "error_rate",
+      "value": 1.11,
+      "unit": "percent",
+      "timestamp": "2026-02-27T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "2b5f1f5e-7c8b-4340-b3da-a78ec32f4074",
+      "metric_type": "error_rate",
+      "value": 0.82,
+      "unit": "percent",
+      "timestamp": "2026-02-28T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "36400f3b-1972-4b2a-8abe-ce80d82be392",
+      "metric_type": "error_rate",
+      "value": 0.05,
+      "unit": "percent",
+      "timestamp": "2026-03-01T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    },
+    {
+      "metric_id": "52d95538-2fe3-4180-8781-01553ca36324",
+      "metric_type": "error_rate",
+      "value": 0.71,
+      "unit": "percent",
+      "timestamp": "2026-03-02T12:00:00+00:00",
+      "tags": {
+        "aggregation": "daily"
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "run_id": "13d09eb4-ac3e-4604-ac63-34705c04be62",
+  "job_name": "gold_to_platinum",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-05T13:28:48+00:00",
+  "duration_ms": 829,
+  "record_count": 4751,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "order@gold",
+      "fields": [
+        "order_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "order@platinum",
+      "fields": [
+        "order_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 96.2,
+    "validity": 92.8,
+    "consistency": 96.5
+  },
+  "parent_run_id": ""
+}

@@ -8,6 +8,7 @@ import { adminScenarios } from "./admin";
 import { pipelineScenarios } from "./pipeline";
 import { governanceScenarios } from "./governance";
 import { lakehouseScenarios } from "./lakehouse";
+import { lineageScenarios } from "./lineage";
 
 import type { ScenarioDefinition } from "../../stores/tourStore.ts";
 
@@ -22,4 +23,5 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   ...pipelineScenarios,
   ...governanceScenarios,
   ...lakehouseScenarios,
+  ...lineageScenarios,
 };

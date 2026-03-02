@@ -14,6 +14,7 @@ from backend.services.contract_validator import ContractValidator, ContractValid
 if TYPE_CHECKING:
     from backend.engine.calculation_engine import CalculationEngine
     from backend.engine.detection_engine import DetectionEngine
+    from backend.services.event_service import EventService
     from backend.services.metadata_service import MetadataService
 
 log = logging.getLogger(__name__)
@@ -53,12 +54,14 @@ class PipelineOrchestrator:
         metadata: "MetadataService",
         calc_engine: "CalculationEngine | None" = None,
         detection_engine: "DetectionEngine | None" = None,
+        event_service: "EventService | None" = None,
     ) -> None:
         self._workspace = workspace_dir
         self._db = db
         self._metadata = metadata
         self._calc_engine = calc_engine
         self._detection_engine = detection_engine
+        self._event_service = event_service
         self._validator = ContractValidator(db)
 
     def run_stage(self, stage_id: str) -> StageResult:
@@ -120,7 +123,26 @@ class PipelineOrchestrator:
 
         result.completed_at = datetime.now(timezone.utc).isoformat()
         self._compute_duration(result)
+        self._emit_stage_event(result)
         return result
+
+    def _emit_stage_event(self, result: StageResult) -> None:
+        """Emit a pipeline_execution event if event_service is available."""
+        if self._event_service is None:
+            return
+        try:
+            self._event_service.emit(
+                event_type="pipeline_execution",
+                actor="pipeline",
+                entity=result.stage_id,
+                details={
+                    "status": result.status,
+                    "duration_ms": result.duration_ms,
+                    "error": result.error or "",
+                },
+            )
+        except Exception:
+            log.debug("Failed to emit pipeline event for %s", result.stage_id)
 
     def run_all(self) -> PipelineRunResult:
         """Run all pipeline stages in order."""

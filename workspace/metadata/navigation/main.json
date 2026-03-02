@@ -27,7 +27,8 @@
             "order": 3,
             "items": [
                 {"view_id": "glossary", "label": "Business Glossary", "path": "/glossary", "icon": "BookOpen", "order": 0},
-                {"view_id": "governance", "label": "Data Governance", "path": "/governance", "icon": "Lock", "order": 1}
+                {"view_id": "governance", "label": "Data Governance", "path": "/governance", "icon": "Lock", "order": 1},
+                {"view_id": "lineage", "label": "Data Lineage", "path": "/lineage", "icon": "GitBranch", "order": 2}
             ]
         },
         {

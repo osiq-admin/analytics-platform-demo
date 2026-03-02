@@ -1,0 +1,40 @@
+{
+  "run_id": "ba8a0769-8a83-46dc-bfe7-ee0eeea7781d",
+  "job_name": "ingest_landing",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-03-02T09:33:28+00:00",
+  "duration_ms": 4526,
+  "record_count": 3013,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@landing",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@landing",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 99.3,
+    "validity": 89.3,
+    "consistency": 98.3
+  },
+  "parent_run_id": ""
+}

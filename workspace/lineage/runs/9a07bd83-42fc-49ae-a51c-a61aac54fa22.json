@@ -1,0 +1,86 @@
+{
+  "run_id": "9a07bd83-42fc-49ae-a51c-a61aac54fa22",
+  "job_name": "silver_to_reference",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-02T13:59:19+00:00",
+  "duration_ms": 4422,
+  "record_count": 3312,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@silver",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "md_eod@reference",
+      "fields": [
+        "md_eod_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "product_id",
+      "input_fields": [
+        "product_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.99
+    },
+    {
+      "output_field": "currency",
+      "input_fields": [
+        "currency"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.9
+    },
+    {
+      "output_field": "isin",
+      "input_fields": [
+        "isin"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.97
+    },
+    {
+      "output_field": "ticker",
+      "input_fields": [
+        "ticker"
+      ],
+      "transformation": "normalize",
+      "expression": "",
+      "confidence": 0.93
+    },
+    {
+      "output_field": "cfi_code",
+      "input_fields": [
+        "cfi_code"
+      ],
+      "transformation": "validate",
+      "expression": "",
+      "confidence": 0.98
+    }
+  ],
+  "quality_scores": {
+    "completeness": 95.5,
+    "validity": 92.8,
+    "consistency": 94.4
+  },
+  "parent_run_id": ""
+}

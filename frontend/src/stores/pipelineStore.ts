@@ -38,6 +38,38 @@ export interface StageRunResult {
   error: string;
 }
 
+export interface MetricsData {
+  executionTimeSeries: { timestamp: string; value: number }[];
+  completenessSeries: { timestamp: string; value: number }[];
+  validitySeries: { timestamp: string; value: number }[];
+  sla: { metric_id: string; status: string; current_value: number; threshold: number }[];
+}
+
+export interface PipelineEvent {
+  event_type: string;
+  entity: string;
+  timestamp: string;
+  severity: string;
+  details: string;
+  message: string;
+  duration_ms?: number;
+}
+
+export interface LineageRun {
+  run_id: string;
+  job_name: string;
+  job_namespace: string;
+  event_type: string;
+  event_time: string;
+  duration_ms: number;
+  record_count: number;
+  inputs: { namespace: string; name: string; facets: Record<string, unknown> }[];
+  outputs: { namespace: string; name: string; facets: Record<string, unknown> }[];
+  column_lineage: { input_field: string; output_field: string; transformation: string }[];
+  quality_scores: Record<string, number>;
+  parent_run_id: string;
+}
+
 interface PipelineState {
   steps: PipelineStep[];
   running: boolean;
@@ -45,10 +77,16 @@ interface PipelineState {
   stages: MedallionStage[];
   stageResult: StageRunResult | null;
   stageRunning: boolean;
+  metrics: MetricsData | null;
+  events: PipelineEvent[];
+  runs: LineageRun[];
   runPipeline: () => Promise<void>;
   runCalculation: (calcId: string) => Promise<void>;
   fetchStages: () => Promise<void>;
   runStage: (stageId: string) => Promise<void>;
+  fetchMetrics: () => Promise<void>;
+  fetchEvents: () => Promise<void>;
+  fetchRuns: () => Promise<void>;
 }
 
 export const usePipelineStore = create<PipelineState>((set, get) => {
@@ -82,6 +120,9 @@ export const usePipelineStore = create<PipelineState>((set, get) => {
     stages: [],
     stageResult: null,
     stageRunning: false,
+    metrics: null,
+    events: [],
+    runs: [],
 
     runPipeline: async () => {
       set({ running: true, error: null });
@@ -124,6 +165,52 @@ export const usePipelineStore = create<PipelineState>((set, get) => {
         set({ stageResult: result, stageRunning: false });
       } catch (e) {
         set({ error: String(e), stageRunning: false });
+      }
+    },
+
+    fetchMetrics: async () => {
+      try {
+        const [execSeries, completeSeries, validSeries, slaData] = await Promise.all([
+          api.get<{ metric_id: string; points: { timestamp: string; value: number }[] }>("/metrics/series/pipeline_execution_time").catch(() => null),
+          api.get<{ metric_id: string; points: { timestamp: string; value: number }[] }>("/metrics/series/quality_score_completeness").catch(() => null),
+          api.get<{ metric_id: string; points: { timestamp: string; value: number }[] }>("/metrics/series/quality_score_validity").catch(() => null),
+          api.get<{ metric_id: string; status: string; current_value: number; threshold: number }[]>("/metrics/sla").catch(() => []),
+        ]);
+        set({
+          metrics: {
+            executionTimeSeries: execSeries?.points ?? [],
+            completenessSeries: completeSeries?.points ?? [],
+            validitySeries: validSeries?.points ?? [],
+            sla: Array.isArray(slaData) ? slaData : [],
+          },
+        });
+      } catch {
+        set({
+          metrics: {
+            executionTimeSeries: [],
+            completenessSeries: [],
+            validitySeries: [],
+            sla: [],
+          },
+        });
+      }
+    },
+
+    fetchEvents: async () => {
+      try {
+        const data = await api.get<PipelineEvent[]>("/observability/events?type=pipeline_execution");
+        set({ events: Array.isArray(data) ? data.slice(0, 20) : [] });
+      } catch {
+        set({ events: [] });
+      }
+    },
+
+    fetchRuns: async () => {
+      try {
+        const data = await api.get<LineageRun[]>("/lineage/runs");
+        set({ runs: Array.isArray(data) ? data : [] });
+      } catch {
+        set({ runs: [] });
       }
     },
   };

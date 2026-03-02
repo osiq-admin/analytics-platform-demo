@@ -1,0 +1,36 @@
+{
+  "run_id": "2b5c6872-7ef2-4977-a059-6973b0acfe6d",
+  "job_name": "ingest_landing",
+  "job_namespace": "analytics-platform",
+  "event_type": "FAIL",
+  "event_time": "2026-02-02T15:02:18+00:00",
+  "duration_ms": 71,
+  "record_count": 0,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "order@landing",
+      "fields": [
+        "order_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "order@landing",
+      "fields": [
+        "order_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {},
+  "parent_run_id": ""
+}

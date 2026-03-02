@@ -1,0 +1,40 @@
+{
+  "run_id": "d1d0f6fe-b686-420b-a785-e52992ee2319",
+  "job_name": "gold_to_archive",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-02T13:50:04+00:00",
+  "duration_ms": 3024,
+  "record_count": 2025,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@gold",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@archive",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [],
+  "quality_scores": {
+    "completeness": 98.2,
+    "validity": 96.8,
+    "consistency": 93.3
+  },
+  "parent_run_id": ""
+}

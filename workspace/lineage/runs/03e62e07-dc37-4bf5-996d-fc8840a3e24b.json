@@ -1,0 +1,105 @@
+{
+  "run_id": "03e62e07-dc37-4bf5-996d-fc8840a3e24b",
+  "job_name": "landing_to_bronze",
+  "job_namespace": "analytics-platform",
+  "event_type": "COMPLETE",
+  "event_time": "2026-02-10T15:05:51+00:00",
+  "duration_ms": 2818,
+  "record_count": 2896,
+  "inputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@landing",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "analytics-platform",
+      "name": "execution@bronze",
+      "fields": [
+        "execution_id",
+        "product_id",
+        "price"
+      ],
+      "quality_assertions": []
+    }
+  ],
+  "column_lineage": [
+    {
+      "output_field": "side",
+      "input_fields": [
+        "side"
+      ],
+      "transformation": "normalize",
+      "expression": "",
+      "confidence": 0.91
+    },
+    {
+      "output_field": "price",
+      "input_fields": [
+        "price"
+      ],
+      "transformation": "cast",
+      "expression": "",
+      "confidence": 0.92
+    },
+    {
+      "output_field": "order_id",
+      "input_fields": [
+        "order_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.91
+    },
+    {
+      "output_field": "venue_mic",
+      "input_fields": [
+        "venue_mic"
+      ],
+      "transformation": "normalize",
+      "expression": "",
+      "confidence": 0.98
+    },
+    {
+      "output_field": "execution_timestamp",
+      "input_fields": [
+        "execution_date",
+        "execution_time"
+      ],
+      "transformation": "derive",
+      "expression": "",
+      "confidence": 0.9
+    },
+    {
+      "output_field": "quantity",
+      "input_fields": [
+        "quantity"
+      ],
+      "transformation": "cast",
+      "expression": "",
+      "confidence": 0.96
+    },
+    {
+      "output_field": "execution_id",
+      "input_fields": [
+        "execution_id"
+      ],
+      "transformation": "passthrough",
+      "expression": "",
+      "confidence": 0.94
+    }
+  ],
+  "quality_scores": {
+    "completeness": 98.4,
+    "validity": 94.6,
+    "consistency": 96.1
+  },
+  "parent_run_id": ""
+}

@@ -27,6 +27,7 @@ import { reference_dataTour } from "./reference_data";
 import { lakehouse_explorerTour } from "./lakehouse_explorer";
 import { governanceTour } from "./governance";
 import { glossaryTour } from "./glossary";
+import { lineageTour } from "./lineage";
 
 export const TOURS: Record<string, TourDefinition> = {
   overview: overviewTour,
@@ -56,4 +57,5 @@ export const TOURS: Record<string, TourDefinition> = {
   "lakehouse-explorer": lakehouse_explorerTour,
   governance: governanceTour,
   glossary: glossaryTour,
+  lineage: lineageTour,
 };
