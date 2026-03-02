@@ -9,7 +9,7 @@ export const TOURS: Record<string, TourDefinition> = {
       {
         target: "[data-tour='sidebar']",
         title: "Navigation Sidebar",
-        content: "The sidebar organizes views into 5 workflow-ordered groups: Define, Ingest, Detect, Investigate, and Advanced.",
+        content: "The sidebar organizes views into 6 workflow-ordered groups: Define, Ingest, Govern, Detect, Investigate, and Advanced.",
         placement: "right",
       },
       {
@@ -775,6 +775,169 @@ export const TOURS: Record<string, TourDefinition> = {
         title: "Reconciliation Dashboard",
         content: "Trigger reconciliation to match and merge source records into golden records. View results: source vs golden counts, new/updated records, conflicts, and confidence distribution (high/medium/low).",
         placement: "top",
+      },
+    ],
+  },
+
+  "lakehouse-explorer": {
+    id: "lakehouse-explorer",
+    name: "Lakehouse Explorer",
+    description: "Explore the Apache Iceberg lakehouse — tables, schema evolution, PII governance, calculation audit, pipeline runs, and materialized views.",
+    steps: [
+      {
+        target: "[data-tour='medallion-tab-lakehouse']",
+        title: "Lakehouse Tab",
+        content: "Switch to the Lakehouse tab to explore Apache Iceberg tables, governance, and pipeline data across all medallion tiers.",
+        placement: "bottom",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-iceberg-tables']",
+        title: "Iceberg Tables",
+        content: "Browse all Iceberg tables grouped by tier (Silver, Gold, Platinum, Reference, Logging, Archive). Each tier uses Iceberg for ACID transactions, time travel, and schema evolution.",
+        placement: "right",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-schema-evolution']",
+        title: "Schema Evolution",
+        content: "Track schema changes over time — column additions, removals, and type changes. Schema drift is detected by comparing entity JSON definitions against Iceberg table schemas.",
+        placement: "left",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-pii-governance']",
+        title: "PII Governance",
+        content: "Review PII field classifications (HIGH/MEDIUM/LOW), GDPR-regulated entities, crypto-shredding requirements, and retention policies. Governance tags are applied to Iceberg table properties.",
+        placement: "right",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-calc-audit']",
+        title: "Calculation Audit",
+        content: "Monitor calculation execution statistics including skip rates (fingerprint-based deduplication), execution durations, and record counts per calculation layer.",
+        placement: "left",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-pipeline-runs']",
+        title: "Pipeline Runs",
+        content: "View pipeline run history with run types (daily, backfill, correction), Iceberg branch/tag references, and affected entities and tiers.",
+        placement: "right",
+        route: "/medallion",
+      },
+      {
+        target: "[data-tour='lakehouse-materialized-views']",
+        title: "Materialized Views",
+        content: "Check materialized view status and trigger refreshes. MVs pre-compute dashboard stats and alert summaries from Iceberg tables via DuckDB.",
+        placement: "left",
+        route: "/medallion",
+      },
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // Governance Tour (7 steps)
+  // --------------------------------------------------------------------------
+  governance: {
+    id: "governance",
+    name: "Data Governance Tour",
+    description: "Explore role-based data masking, RBAC controls, and audit-aware PII protection.",
+    steps: [
+      {
+        target: "[data-tour='role-switcher']",
+        title: "Role Switcher",
+        content: "Switch between roles to see different data masking levels. Analyst sees masked PII, Compliance Officer sees full data, Admin has unrestricted access.",
+        placement: "bottom",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='governance-masking-policies']",
+        title: "Masking Policies",
+        content: "View all 7 masking policies with classification levels (HIGH/MEDIUM/LOW), masking types (partial, tokenize, generalize), and which roles can see unmasked data.",
+        placement: "right",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='governance-role-management']",
+        title: "Role Management",
+        content: "See all 4 role definitions with their tier access badges, classification access levels, and permissions (export, audit viewing).",
+        placement: "right",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='governance-data-preview']",
+        title: "Data Preview",
+        content: "Compare how the same data appears to different roles. Select an entity and see masked vs unmasked values side by side.",
+        placement: "right",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='governance-data-preview']",
+        title: "Side-by-Side Comparison",
+        content: "The comparison table shows each field with values from every role. Masked fields are highlighted in red — hover to see the masking type applied.",
+        placement: "left",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='governance-audit-log']",
+        title: "Audit Log",
+        content: "View the audit trail with role-appropriate masking. If your role lacks audit access, you'll see an access-denied message instead.",
+        placement: "right",
+        route: "/governance",
+      },
+      {
+        target: "[data-tour='role-switcher']",
+        title: "Try It: Switch Roles",
+        content: "Switch to Compliance Officer using the role dropdown in the header, then revisit the Data Preview and Audit Log tabs to see unmasked PII.",
+        placement: "bottom",
+        route: "/governance",
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // Business Glossary Tour (Phase 23)
+  // ---------------------------------------------------------------------------
+  glossary: {
+    id: "glossary",
+    name: "Business Glossary Tour",
+    description: "Explore the ISO 11179-compliant business glossary, semantic metrics, and DAMA-DMBOK coverage.",
+    steps: [
+      {
+        target: "[data-tour='glossary-categories']",
+        title: "Category Browser",
+        content: "Browse glossary terms by category. Each category groups related business concepts — Market Abuse, Data Entities, Metrics, Regulatory, Data Quality, and Architecture.",
+        placement: "right",
+        route: "/glossary",
+      },
+      {
+        target: "[data-tour='glossary-term-list']",
+        title: "Term List",
+        content: "The main term grid shows all glossary terms. Terms with 'planned' status have a blue dashed border — these represent future capabilities. Click any term to see its full definition.",
+        placement: "bottom",
+        route: "/glossary",
+      },
+      {
+        target: "[data-tour='glossary-term-detail']",
+        title: "Term Detail — ISO 11179",
+        content: "The detail panel shows the full ISO 11179 decomposition (Object Class + Property + Representation), FIBO alignment, technical mappings to entity fields, regulatory references, and synonyms.",
+        placement: "left",
+        route: "/glossary",
+      },
+      {
+        target: "[data-tour='glossary-metrics-list']",
+        title: "Semantic Metrics",
+        content: "Business-friendly metrics built from Gold/Platinum tier data. Each metric has a SQL formula, source tier, sliceable dimensions, and BCBS 239 principle mapping.",
+        placement: "bottom",
+        route: "/glossary",
+      },
+      {
+        target: "[data-tour='glossary-dmbok-grid']",
+        title: "DAMA-DMBOK Coverage",
+        content: "All 11 DAMA-DMBOK 2.0 knowledge areas mapped to platform capabilities. Coverage badges show high/medium/low coverage with implementing phases and views.",
+        placement: "bottom",
+        route: "/glossary",
       },
     ],
   },

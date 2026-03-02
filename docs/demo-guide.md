@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (33 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (35 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 33 guided scenarios in 13 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Analytics). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 35 guided scenarios in 15 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 24 tours and 33 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 26 tours and 35 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -544,7 +544,7 @@ Click **Skip to End** to show the final state.
 
 **Interactive: Run a Guided Scenario**
 1. Click the **Scenarios** button in the top toolbar
-2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Analytics
+2. Browse categories: Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Pipeline, Governance, Glossary
 3. Filter by difficulty (All / Beginner / Intermediate / Advanced)
 4. Select a scenario (e.g., "S1: View Settings Overview")
 5. Choose **Watch Demo** to see auto-narrated walkthrough, or **Try It Yourself** for interactive hints
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 122 operations defined across 21 views
+- 136 operations defined across 23 views
 
 ### 7.3 Scenario Categories
 
@@ -578,7 +578,6 @@ Click **Skip to End** to show the final state.
 | Mapping | S29 | Beginner |
 | Medallion Pipeline | S30 | Intermediate |
 | Governance | S31-S32 | Intermediate |
-| Analytics | S33 | Intermediate |
 
 ## Act 8: Metadata Configuration
 
@@ -617,8 +616,20 @@ Navigate to **Architecture → Medallion** to see the 11-tier data architecture.
 6. Review the pipeline stages that involve the selected tier
 7. Key takeaway: "The entire data architecture is metadata-driven — tiers, contracts, transformations, and pipeline stages are all JSON definitions"
 
-### Guided Scenario
-**S27: Medallion Architecture Exploration** (Architecture category, beginner difficulty) — available in the Scenarios browser. Walks through the 11-tier architecture, data contracts, and pipeline stages.
+### Lakehouse Explorer Tab
+
+Click the **Lakehouse** tab in the MedallionOverview header to see the Apache Iceberg infrastructure:
+
+- **Iceberg Tables** — Tables grouped by tier (Bronze, Silver, Gold, Platinum, Reference, Logging, Archive)
+- **Schema Evolution** — Timeline of schema changes across Iceberg tables
+- **PII Governance** — Classified PII fields, GDPR-regulated tables, crypto-shred tracking
+- **Calculation Audit** — Execution log with skip rates, fingerprinting stats, lineage
+- **Pipeline Runs** — Run history with branch/tag status for versioning (daily, backfill, correction)
+- **Materialized Views** — MV status and refresh controls for DuckDB OLAP layer
+
+### Guided Scenarios
+- **S27: Medallion Architecture Exploration** (Architecture category, beginner difficulty) — walks through the 11-tier architecture, data contracts, and pipeline stages
+- **S33: Lakehouse Data Governance** (Lakehouse category, intermediate difficulty) — reviews Iceberg tables, PII governance, and schema evolution
 
 ## Data Onboarding (DataOnboarding)
 
@@ -700,29 +711,6 @@ Navigate to **Define → Reference Data** to browse golden records for the 4 mas
 
 **S32: Reference Data — Golden Record Reconciliation** (Governance category, intermediate difficulty) — available in the Scenarios browser. Walks through entity selection, golden record browsing, provenance inspection, and reconciliation.
 
-## Analytics Tiers (AnalyticsTiers)
-
-Navigate to **Ingest → Analytics Tiers** to access the extended analytical tiers view covering Platinum, Sandbox, and Archive.
-
-### Key Points
-- **Path**: `/analytics-tiers`
-- **Purpose**: Manage the three extended analytical tiers of the medallion architecture
-- **Features**:
-  - **3-tab layout**: Platinum, Sandbox, Archive — each tier with dedicated management UI
-  - **Platinum tab**: Pre-built KPI dashboard with daily alert summaries, model effectiveness metrics, score distribution statistics, and regulatory report datasets. KPIs are metadata-defined SQL aggregations that run on Gold tier data.
-  - **Sandbox tab**: Isolated testing environment with copy-on-write sandbox creation. Users can modify settings, thresholds, and mappings without production impact. Supports side-by-side comparison of sandbox vs. production results, with promote or discard workflow.
-  - **Archive tab**: Regulatory retention policy management. Displays retention periods per regulation (MiFID II 5-7yr, Dodd-Frank 5yr, MAR 5yr, FINRA 6yr, GDPR minimal). Archive format uses compressed Parquet with metadata sidecar. GDPR vs. regulatory retention resolved via crypto-shredding.
-
-### Interactive: Explore Analytics Tiers
-1. Navigate to **Ingest → Analytics Tiers**
-2. Start on the **Platinum** tab — review KPI cards showing alert summaries and model effectiveness
-3. Switch to the **Sandbox** tab — create a new sandbox session, modify thresholds, compare results
-4. Switch to the **Archive** tab — review retention policies per regulation, archive status per entity
-5. Key takeaway: "Extended tiers support pre-built analytics (Platinum), safe testing (Sandbox), and regulatory compliance (Archive) — all metadata-driven"
-
-### Guided Scenario
-**S33: Analytics Tiers Exploration** (Analytics category, intermediate difficulty) — available in the Scenarios browser. Walks through Platinum KPIs, Sandbox isolation testing, and Archive retention policies.
-
 ---
 
 ## Architecture Traceability Mode — M128
@@ -758,7 +746,7 @@ Each section is rated on a 5-level metadata maturity scale:
 
 ### Coverage
 
-- **100 traced sections** across all 21 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
+- **86 traced sections** across all 19 views plus cross-cutting concerns (sidebar, toolbar, demo controls)
 - Every view has 3-6 traced sections covering its major panels and features
 - Cross-cutting sections cover: sidebar navigation, demo toolbar, theme switcher, tour system, scenario system, help system
 
@@ -835,6 +823,79 @@ Phase 11 introduces a clean separation between out-of-box (vendor-shipped) metad
 2. **Metadata Explorer** (`/metadata`) — "OOB" column in calculation list grid
 3. **Settings Manager** (`/settings`) — "Layer" column in settings list grid
 4. **Model Composer** (`/models`) — inline badge next to each model name
+
+---
+
+## Data Governance — Phase 22
+
+Phase 22 adds dynamic data masking, role-based access control, and audit-aware PII protection. Navigate to `/governance` (Govern > Data Governance in sidebar).
+
+### Walkthrough A: Switch Roles and Compare
+
+1. Navigate to **Data Governance** (`/governance`)
+2. Note the **role indicator** in the app header — defaults to "Surveillance Analyst"
+3. On the **Masking Policies** tab, review the 7 masking policies — each shows the entity, field, classification level, masking type, and which roles can see unmasked data
+4. Switch to the **Data Preview** tab
+5. See trader data with **masked values** — trader_name shows partial masking (A***e), trader_id shows a hex token
+6. Click the **role switcher** in the header and select "Compliance Officer"
+7. The data preview **instantly updates** — all fields now show unmasked: "Alice Smith", "T001"
+8. Key takeaway: "The same API, the same data, dynamically masked based on who is looking"
+
+### Walkthrough B: Audit Log Protection
+
+1. Switch to the **Audit Log** tab
+2. As "Analyst", you see an access-denied message — analysts cannot view audit entries
+3. Switch to "Compliance Officer" via the header dropdown — audit entries now appear with full PII visible
+4. Key takeaway: "Even audit logs respect role-based access — analysts see activity patterns without personal data"
+
+### Walkthrough C: Role Management
+
+1. Switch to the **Role Management** tab
+2. See 4 role cards: Analyst, Compliance Officer, Data Engineer, Administrator
+3. Each card shows tier access badges, classification access levels, and permissions
+4. The active role is highlighted — click "Switch" on any other card to change
+
+### Guided Scenario
+
+**S34: Role-Based Data Masking** (Governance category, intermediate) — available in the Scenarios browser. Walks through role switching, data comparison, and audit log masking in 8 steps.
+
+---
+
+## Business Glossary — Phase 23
+
+Phase 23 adds an ISO 11179 business glossary, semantic layer with business-friendly metrics, DAMA-DMBOK knowledge area coverage, and standards compliance tracking. Navigate to `/glossary` (Govern > Business Glossary in sidebar).
+
+### Walkthrough A: Browse Business Terms
+
+1. Navigate to **Business Glossary** (`/glossary`)
+2. The **Glossary Terms** tab shows 18 business terms organized by category (market_abuse, trading, compliance, risk, data_quality)
+3. Use the search bar to filter terms by name, definition, or category
+4. Click any term to see its full detail: ISO 11179 metadata, regulatory references, technical field mappings, related terms, and data steward
+5. Note the **ownership matrix** showing which teams own which data domains
+
+### Walkthrough B: Explore Semantic Metrics
+
+1. Switch to the **Semantic Metrics** tab
+2. Browse 12 business-friendly metrics with formulas, source tiers, and dimensions
+3. Each metric shows its SQL formula, source entities, and available drill-down dimensions
+4. Metrics are composed from glossary terms — click through to see the underlying business definitions
+
+### Walkthrough C: DAMA-DMBOK Coverage
+
+1. Switch to the **DMBOK Coverage** tab
+2. See coverage across all 11 DAMA-DMBOK knowledge areas
+3. Each area shows which platform phases implement it, with coverage percentage and status
+4. Areas range from fully covered (Data Modeling, Data Quality) to partially covered (Document & Content)
+
+### Walkthrough D: Standards Compliance
+
+1. Switch to the **Standards** tab
+2. Review compliance status across ISO 11179, ISO 8000, ISO 25012, ISO 27001, and BCBS 239
+3. Each standard shows applicable requirements, implementation status, and phase references
+
+### Guided Scenario
+
+**S35: Business Glossary Exploration** (Glossary category, beginner) — available in the Scenarios browser. Walks through term browsing, semantic metrics, DMBOK coverage, and standards compliance in 8 steps.
 
 ---
 

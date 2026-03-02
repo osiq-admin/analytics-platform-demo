@@ -1,11 +1,15 @@
 """Reference Data / MDM service — reconciliation engine for golden records."""
 from __future__ import annotations
 
+import logging
 import time
 from collections import Counter
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+import pyarrow as pa
 
 from backend.db import DuckDBManager
 from backend.models.reference import (
@@ -18,12 +22,24 @@ from backend.models.reference import (
 )
 from backend.services.metadata_service import MetadataService
 
+if TYPE_CHECKING:
+    from backend.services.lakehouse_service import LakehouseService
+
+log = logging.getLogger(__name__)
+
 
 class ReferenceService:
-    def __init__(self, workspace: Path, db: DuckDBManager, metadata: MetadataService):
+    def __init__(
+        self,
+        workspace: Path,
+        db: DuckDBManager,
+        metadata: MetadataService,
+        lakehouse: "LakehouseService | None" = None,
+    ):
         self._workspace = workspace
         self._db = db
         self._metadata = metadata
+        self._lakehouse = lakehouse
 
     # ---- Public API ----
 
@@ -54,6 +70,9 @@ class ReferenceService:
             last_reconciled=now,
         )
         self._metadata.save_golden_records(entity, record_set)
+
+        # Dual-write to Reference Iceberg tier
+        self._write_to_iceberg(entity, records)
 
         duration = int((time.monotonic() - start) * 1000)
         conf_dist = self._confidence_distribution(records)
@@ -370,3 +389,41 @@ class ReferenceService:
             else:
                 dist["low"] += 1
         return dist
+
+    def _write_to_iceberg(self, entity: str, records: list[GoldenRecord]) -> None:
+        """Write golden records to Reference Iceberg tier (dual-write alongside JSON)."""
+        if not self._lakehouse or not self._lakehouse.is_iceberg_tier("reference"):
+            return
+
+        try:
+            import json as _json
+
+            table_name = f"{entity}_golden"
+            rows = {
+                "golden_id": [r.golden_id for r in records],
+                "entity": [r.entity for r in records],
+                "natural_key": [r.natural_key for r in records],
+                "data_json": [_json.dumps(r.data) for r in records],
+                "confidence_score": [r.confidence_score for r in records],
+                "status": [r.status for r in records],
+                "version": [r.version for r in records],
+                "last_reconciled": [r.last_reconciled for r in records],
+            }
+            schema = pa.schema([
+                ("golden_id", pa.string()),
+                ("entity", pa.string()),
+                ("natural_key", pa.string()),
+                ("data_json", pa.string()),
+                ("confidence_score", pa.float64()),
+                ("status", pa.string()),
+                ("version", pa.int32()),
+                ("last_reconciled", pa.string()),
+            ])
+            arrow_table = pa.table(rows, schema=schema)
+
+            if not self._lakehouse.table_exists("reference", table_name):
+                self._lakehouse.create_table("reference", table_name, schema)
+            self._lakehouse.overwrite("reference", table_name, arrow_table)
+            log.info("Wrote %d golden records to reference.%s Iceberg", len(records), table_name)
+        except Exception:
+            log.warning("Iceberg dual-write failed for reference.%s_golden", entity, exc_info=True)

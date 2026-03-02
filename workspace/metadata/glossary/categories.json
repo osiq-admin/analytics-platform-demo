@@ -1,0 +1,10 @@
+{
+  "categories": [
+    { "category_id": "market_abuse", "display_name": "Market Abuse", "description": "Terms related to market abuse detection and prevention", "icon": "AlertTriangle", "order": 1 },
+    { "category_id": "data_entities", "display_name": "Data Entities", "description": "Core data model entities and their business meaning", "icon": "Database", "order": 2 },
+    { "category_id": "metrics", "display_name": "Metrics & Scores", "description": "Quantitative measures used in surveillance", "icon": "TrendingUp", "order": 3 },
+    { "category_id": "regulatory", "display_name": "Regulatory", "description": "Regulatory requirements and obligations", "icon": "Shield", "order": 4 },
+    { "category_id": "data_quality", "display_name": "Data Quality", "description": "Data quality dimensions and measures", "icon": "ShieldCheck", "order": 5 },
+    { "category_id": "architecture", "display_name": "Architecture", "description": "Platform architecture concepts", "icon": "Layers", "order": 6 }
+  ]
+}

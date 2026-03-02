@@ -1,7 +1,14 @@
 """Append-only audit trail for metadata changes."""
+from __future__ import annotations
+
+import copy
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from backend.services.masking_service import MaskingService
 
 
 class AuditService:
@@ -36,3 +43,45 @@ class AuditService:
                 continue
             records.append(record)
         return records
+
+    def get_history_masked(
+        self,
+        role_id: str,
+        masking_service: MaskingService,
+        metadata_type: str | None = None,
+        item_id: str | None = None,
+    ) -> list[dict]:
+        """Return audit history with PII fields masked based on the requesting role.
+
+        Audit entries are stored unmasked (regulatory requirement). This method
+        applies read-time masking via the MaskingService so that roles without
+        PII access see redacted values.
+
+        The entity name for masking is derived from the entry's ``metadata_type``.
+        If ``metadata_type`` is a generic category (e.g. "entities"), the entry's
+        ``item_id`` is used as the entity name instead.
+        """
+        raw = self.get_history(metadata_type=metadata_type, item_id=item_id)
+        masked_entries: list[dict] = []
+
+        # Generic metadata_type values that are not entity names themselves
+        _generic_types = {"entities", "calculations", "settings", "detection_models"}
+
+        for entry in raw:
+            entry = copy.deepcopy(entry)
+            mt = entry.get("metadata_type", "")
+            entity_id = mt if mt not in _generic_types else entry.get("item_id", mt)
+
+            if entry.get("new_value") and isinstance(entry["new_value"], dict):
+                entry["new_value"] = masking_service.mask_record(
+                    entity_id, entry["new_value"], role_id
+                )
+
+            if entry.get("previous_value") and isinstance(entry["previous_value"], dict):
+                entry["previous_value"] = masking_service.mask_record(
+                    entity_id, entry["previous_value"], role_id
+                )
+
+            masked_entries.append(entry)
+
+        return masked_entries

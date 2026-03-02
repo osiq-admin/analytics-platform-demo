@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "policies": [
+    {
+      "policy_id": "mask_trader_name",
+      "target_entity": "trader",
+      "target_field": "trader_name",
+      "classification": "HIGH",
+      "masking_type": "partial",
+      "algorithm": "first_last_char",
+      "params": { "mask_char": "*", "visible_start": 1, "visible_end": 1 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    },
+    {
+      "policy_id": "mask_trader_id",
+      "target_entity": "trader",
+      "target_field": "trader_id",
+      "classification": "MEDIUM",
+      "masking_type": "tokenize",
+      "algorithm": "sha256_prefix",
+      "params": { "prefix_length": 8 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    },
+    {
+      "policy_id": "mask_account_name",
+      "target_entity": "account",
+      "target_field": "account_name",
+      "classification": "HIGH",
+      "masking_type": "partial",
+      "algorithm": "first_last_char",
+      "params": { "mask_char": "*", "visible_start": 1, "visible_end": 1 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    },
+    {
+      "policy_id": "mask_registration_country",
+      "target_entity": "account",
+      "target_field": "registration_country",
+      "classification": "LOW",
+      "masking_type": "generalize",
+      "algorithm": "region_bucket",
+      "params": {},
+      "unmask_roles": ["compliance_officer", "data_engineer", "admin"],
+      "audit_unmask": false
+    },
+    {
+      "policy_id": "mask_exec_trader_id",
+      "target_entity": "execution",
+      "target_field": "trader_id",
+      "classification": "MEDIUM",
+      "masking_type": "tokenize",
+      "algorithm": "sha256_prefix",
+      "params": { "prefix_length": 8 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    },
+    {
+      "policy_id": "mask_exec_account_id",
+      "target_entity": "execution",
+      "target_field": "account_id",
+      "classification": "MEDIUM",
+      "masking_type": "tokenize",
+      "algorithm": "sha256_prefix",
+      "params": { "prefix_length": 8 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    },
+    {
+      "policy_id": "mask_order_trader_id",
+      "target_entity": "order",
+      "target_field": "trader_id",
+      "classification": "MEDIUM",
+      "masking_type": "tokenize",
+      "algorithm": "sha256_prefix",
+      "params": { "prefix_length": 8 },
+      "unmask_roles": ["compliance_officer", "admin"],
+      "audit_unmask": true
+    }
+  ]
+}

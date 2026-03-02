@@ -1,0 +1,40 @@
+{
+  "materialized_views": [
+    {
+      "mv_id": "dashboard_stats",
+      "source_tier": "gold",
+      "source_tables": ["alerts", "score_results"],
+      "refresh_strategy": "on_pipeline_complete",
+      "sql_template": "SELECT count(*) as total_alerts, count(DISTINCT product_id) as products_affected, avg(final_score) as avg_score FROM alerts",
+      "target_table": "mv_dashboard_stats",
+      "description": "Dashboard summary statistics — alert counts, affected products, average scores"
+    },
+    {
+      "mv_id": "recent_alerts",
+      "source_tier": "gold",
+      "source_tables": ["alerts"],
+      "refresh_strategy": "on_pipeline_complete",
+      "sql_template": "SELECT alert_id, model_id, product_id, final_score, alert_status, triggered_at FROM alerts ORDER BY triggered_at DESC LIMIT 100",
+      "target_table": "mv_recent_alerts",
+      "description": "Most recent 100 alerts for quick access"
+    },
+    {
+      "mv_id": "model_performance",
+      "source_tier": "gold",
+      "source_tables": ["alerts"],
+      "refresh_strategy": "on_pipeline_complete",
+      "sql_template": "SELECT model_id, count(*) as alert_count, avg(final_score) as avg_score, min(final_score) as min_score, max(final_score) as max_score FROM alerts GROUP BY model_id",
+      "target_table": "mv_model_performance",
+      "description": "Detection model performance aggregation"
+    },
+    {
+      "mv_id": "tier_record_counts",
+      "source_tier": "silver",
+      "source_tables": ["execution", "order", "product", "account", "trader", "venue"],
+      "refresh_strategy": "on_demand",
+      "sql_template": "SELECT 'execution' as entity, count(*) as record_count FROM execution UNION ALL SELECT 'order', count(*) FROM \"order\" UNION ALL SELECT 'product', count(*) FROM product",
+      "target_table": "mv_tier_record_counts",
+      "description": "Record counts per entity for monitoring"
+    }
+  ]
+}

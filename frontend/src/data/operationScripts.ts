@@ -1133,6 +1133,126 @@ export const VIEW_OPERATIONS: Record<string, ViewOperations> = {
       "Data contracts enforce quality rules and SLAs at each tier boundary.",
       "Pipeline stages define the ordered execution plan for moving data through tiers.",
       "Side tiers (Quarantine, Reference, Sandbox) handle special cases outside the main flow.",
+      "Switch to the Lakehouse tab to explore Apache Iceberg tables, PII governance, and calculation audit data.",
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // 22. Data Governance
+  // --------------------------------------------------------------------------
+  governance: {
+    viewId: "governance",
+    label: "Data Governance",
+    operations: [
+      {
+        id: "switch_role",
+        name: "Switch RBAC Role",
+        description:
+          "Use the role switcher in the header to change between Analyst, Compliance Officer, Data Engineer, and Admin. Each role sees different masking levels.",
+        scenarioId: "s34_role_based_data_masking",
+      },
+      {
+        id: "view_masking_policies",
+        name: "View Masking Policies",
+        description:
+          "Review all 7 masking policies showing entity, field, classification level (HIGH/MEDIUM/LOW), masking type (partial, tokenize, generalize), and which roles can bypass masking.",
+      },
+      {
+        id: "preview_masked_data",
+        name: "Preview Masked Data",
+        description:
+          "Select an entity on the Data Preview tab to see how its records look under the current role. Masked fields show asterisks (partial) or hex tokens (tokenize).",
+      },
+      {
+        id: "compare_roles",
+        name: "Compare Role Perspectives",
+        description:
+          "The Data Preview comparison table shows each field's value across all roles side by side. Masked cells are highlighted red with masking type badges.",
+        scenarioId: "s34_role_based_data_masking",
+      },
+      {
+        id: "view_audit_log",
+        name: "View Audit Log",
+        description:
+          "Access the audit trail on the Audit Log tab. Only Compliance Officer and Admin roles can view audit entries. PII values in audit records are masked based on your role.",
+      },
+      {
+        id: "explore_role_management",
+        name: "Explore Role Management",
+        description:
+          "On the Role Management tab, view all 4 role definitions with tier access badges, classification access, export and audit permissions.",
+      },
+    ],
+    tips: [
+      "Masking is applied at API response time — stored data remains unmasked for regulatory compliance.",
+      "The role switcher in the header affects all views, not just Data Governance.",
+      "Analysts see masked PII (partial names, tokenized IDs); Compliance Officers and Admins see full data.",
+      "Even audit log entries mask PII values based on your role — analysts see activity patterns without personal data.",
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // Business Glossary (Phase 23)
+  // ---------------------------------------------------------------------------
+  glossary: {
+    viewId: "glossary",
+    label: "Business Glossary",
+    operations: [
+      {
+        id: "browse_terms",
+        name: "Browse Terms by Category",
+        description:
+          "Use the category sidebar to filter glossary terms. Categories include Market Abuse, Data Entities, Metrics, Regulatory, Data Quality, and Architecture. Click a category to see only terms in that group.",
+        scenarioId: "s35_explore_business_glossary",
+      },
+      {
+        id: "search_terms",
+        name: "Search Terms",
+        description:
+          "Type in the search box to filter terms by ID, business name, definition, or synonyms. Search 'wash' to find Wash Trade, or 'phantom' to find Spoofing (via its synonym).",
+      },
+      {
+        id: "view_term_detail",
+        name: "View Term Detail (ISO 11179)",
+        description:
+          "Click any term to see its full ISO 11179 decomposition (Object Class + Property + Representation), FIBO ontology alignment, BCBS 239 principle, technical entity.field mappings, and regulatory references.",
+        scenarioId: "s35_explore_business_glossary",
+      },
+      {
+        id: "reverse_lookup",
+        name: "Reverse Lookup",
+        description:
+          "Use the Ownership tab to see which business owner is responsible for which terms across domains. This matrix shows accountability for data definitions.",
+      },
+      {
+        id: "view_metrics",
+        name: "View Semantic Metrics",
+        description:
+          "Switch to the Semantic Metrics tab to see business-friendly computed metrics. Each metric has a SQL formula, source tier (Gold/Platinum), unit, and sliceable dimensions.",
+      },
+      {
+        id: "dmbok_coverage",
+        name: "DAMA-DMBOK Coverage",
+        description:
+          "The DAMA-DMBOK tab shows all 11 knowledge areas with coverage badges. 10 areas have high coverage; Document & Content has medium coverage. Each card lists platform capabilities.",
+      },
+      {
+        id: "standards_compliance",
+        name: "Standards Compliance",
+        description:
+          "The Standards & Gaps tab shows 18 standards the platform complies with (ISO 6166, 10383, 10962, MAR, MiFID II, etc.) plus 10 gap standards in a roadmap section.",
+      },
+      {
+        id: "entity_gap_analysis",
+        name: "Entity Gap Analysis",
+        description:
+          "Below standards, the Entity Gap Analysis shows 25 missing attributes across 8 entities, with ISO standard references, regulatory needs, and priority badges.",
+      },
+    ],
+    tips: [
+      "Terms with 'planned' status have a blue dashed border — these are future capabilities documented proactively.",
+      "The ISO 11179 decomposition follows the Data Element Concept = Object Class + Property + Representation pattern.",
+      "FIBO alignment connects glossary terms to the EDM Council Financial Industry Business Ontology for interoperability.",
     ],
   },
 };

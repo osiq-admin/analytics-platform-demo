@@ -11,6 +11,7 @@ dependencies = [
     "pydantic>=2.10.0",
     "pydantic-settings>=2.7.0",
     "anthropic>=0.42.0",
+    "pyiceberg[sql-sqlite]>=0.11.0",
 ]
 
 [dependency-groups]

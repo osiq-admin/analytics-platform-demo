@@ -28,7 +28,7 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (972 Vite modules)             │
+│  React 19 SPA (975 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (12 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
@@ -89,7 +89,7 @@ uv run python -m scripts.generate_snapshots
 - Alert fires when: all gates pass AND (all checks pass OR score >= threshold)
 - Settings resolve per entity context: product-specific → hierarchy/multi-dim → default fallback
 
-## 21 Views
+## 23 Views
 
 | Area | View | What It Does |
 |------|------|-------------|
@@ -101,7 +101,6 @@ uv run python -m scripts.generate_snapshots
 | | Mapping Studio | Drag-and-drop source → canonical field mapping |
 | | Data Quality | Quality dimension scores, spider charts, quarantine queue, entity profiling |
 | | Medallion Overview | 11-tier medallion data architecture with React Flow, data contracts, pipeline stages |
-| | Analytics Tiers | Platinum KPIs, Sandbox isolation testing, Archive retention policies |
 | **Detect** | Model Composer | 7-step wizard: Define → Calcs → Scoring → Query → Review → Test → Deploy |
 | | Use Case Studio | 5-step wizard for test scenarios with sample data + expected results |
 | | Pipeline Monitor | Calculation DAG execution status |
@@ -114,6 +113,9 @@ uv run python -m scripts.generate_snapshots
 | | Data Manager | Browse and preview loaded data tables |
 | | Metadata Editor | Side-by-side Monaco JSON + visual form, bidirectional sync |
 | | AI Assistant | Claude-powered chat (live or mock) with Run Query integration |
+| | Analytics Tiers | Extended analytical tiers with platinum, sandbox, and archive layers |
+| **Govern** | Data Governance | Masking policies, role management, data preview, role-aware audit log |
+| | Business Glossary | ISO 11179 business terms, semantic metrics, DAMA-DMBOK coverage, standards compliance |
 
 ## Key Features
 
@@ -148,8 +150,8 @@ Clean separation between out-of-box (vendor-shipped) and user customizations:
 
 ### Architecture Traceability Mode
 
-Toolbar toggle overlays info icons on every section across all 21 views:
-- 100 traced sections showing source files, Zustand stores, API endpoints, metadata sources
+Toolbar toggle overlays info icons on every section across all 23 views:
+- 112 traced sections showing source files, Zustand stores, API endpoints, metadata sources
 - 5-level metadata maturity rating per section (Fully Metadata-Driven → Infrastructure)
 - Improvement opportunities for each section
 
@@ -162,10 +164,10 @@ Toolbar toggle overlays info icons on every section across all 21 views:
 
 ### Guided Experience
 
-- **33 scenarios** in 13 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
+- **35 scenarios** in 15 categories with Watch Demo (auto-play) and Try It Yourself (interactive) modes
 - **Per-view tours** with spotlight overlay and step-by-step popovers
 - **3 demo workflow guides** (Act 1: data discovery, Act 2: model composition, Act 3: investigation)
-- **122 operation scripts** across 21 views via per-view help panels
+- **136 operation scripts** across 23 views via per-view help panels
 - **Onboarding modal** for first-time visitors
 - **8 demo checkpoints**: Pristine → Data Loaded → Pipeline Run → Alerts → Acts 1-3 → Final
 
@@ -179,7 +181,7 @@ Toolbar toggle overlays info icons on every section across all 21 views:
 │   └── services/        # Business logic services
 ├── frontend/            # React 19 TypeScript SPA
 │   └── src/
-│       ├── views/       # 21 view components
+│       ├── views/       # 23 view components
 │       ├── components/  # Shared UI components
 │       ├── stores/      # 12 Zustand state stores
 │       ├── data/        # Tours, scenarios, operations, traceability
@@ -193,17 +195,17 @@ Toolbar toggle overlays info icons on every section across all 21 views:
 │   └── snapshots/       # Demo checkpoint snapshots
 ├── scripts/             # Data generation + snapshot generation
 ├── qa/                  # QA automation toolkit (test/quality/regression)
-├── tests/               # 1116 tests (885 backend + 231 E2E Playwright)
+├── tests/               # 1343 tests (1105 backend + 238 E2E Playwright)
 └── docs/                # Design docs, plans, progress tracker
 ```
 
 ## Testing & QA Automation
 
 ```bash
-# Backend tests (885) — via QA automation framework
+# Backend tests (1105) — via QA automation framework
 uv run python -m qa test backend
 
-# E2E Playwright tests (231)
+# E2E Playwright tests (238)
 uv run python -m qa test e2e
 
 # Quality scan (ruff, bandit, radon, vulture, coverage)
@@ -223,7 +225,7 @@ uv run python -m qa report --regression  # Compare against baseline
 cd frontend && npm run build
 ```
 
-1116 tests total: 885 backend unit/integration + 231 E2E Playwright. All 21 views have dedicated E2E coverage. QA automation toolkit provides regression detection, quality gates, and timestamped reports.
+1343 tests total: 1105 backend unit/integration + 238 E2E Playwright. All 23 views have dedicated E2E coverage. QA automation toolkit provides regression detection, quality gates, and timestamped reports.
 
 ## Development
 

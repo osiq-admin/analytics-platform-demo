@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar.tsx";
 import DemoToolbar from "../components/DemoToolbar.tsx";
@@ -11,6 +11,7 @@ import TraceToggleButton from "../components/TraceabilityMode/TraceToggleButton.
 import TraceOverlay from "../components/TraceabilityMode/TraceOverlay.tsx";
 import { useTheme } from "../hooks/useTheme.ts";
 import { useTourStore } from "../stores/tourStore.ts";
+import { useGovernanceStore } from "../stores/governanceStore.ts";
 import { TOURS } from "../data/tourDefinitions.ts";
 import { SCENARIOS } from "../data/scenarioDefinitions.ts";
 import { VIEW_OPERATIONS } from "../data/operationScripts.ts";
@@ -39,21 +40,51 @@ function getTourIdForPath(pathname: string): string | null {
     onboarding: "onboarding",
     quality: "data-quality",
     reference: "reference-data",
-    "analytics-tiers": "analytics-tiers",
+    governance: "governance",
+    glossary: "glossary",
   };
   return map[seg] ?? "overview";
 }
+
+const ROLE_ICONS: Record<string, string> = {
+  analyst: "\u{1F441}",
+  compliance_officer: "\u{1F6E1}",
+  data_engineer: "\u{1F527}",
+  admin: "\u{1F451}",
+};
+
+const ROLE_COLORS: Record<string, string> = {
+  analyst: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  compliance_officer: "bg-green-500/15 text-green-400 border-green-500/30",
+  data_engineer: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  admin: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+};
 
 export default function AppLayout() {
   const { theme, toggle } = useTheme();
   const location = useLocation();
   const [showScenarios, setShowScenarios] = useState(false);
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const roleMenuRef = useRef<HTMLDivElement>(null);
   const { startTour, activeTour, definitions, registerTours, registerScenarios, activeScenario } = useTourStore();
+  const { currentRole, roles, fetchRoles, switchRole } = useGovernanceStore();
 
   useEffect(() => {
     registerTours(TOURS);
     registerScenarios(SCENARIOS);
   }, [registerTours, registerScenarios]);
+
+  useEffect(() => { fetchRoles(); }, [fetchRoles]);
+
+  // Close role menu on outside click
+  useEffect(() => {
+    if (!showRoleMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (roleMenuRef.current && !roleMenuRef.current.contains(e.target as Node)) setShowRoleMenu(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showRoleMenu]);
 
   // Derive view ID for operation scripts
   const viewId = location.pathname.replace("/", "") || "dashboard";
@@ -97,6 +128,33 @@ export default function AppLayout() {
               Scenarios
             </button>
             <TraceToggleButton />
+
+            {/* Role switcher */}
+            <div className="relative" ref={roleMenuRef} data-tour="role-switcher" data-trace="app.role-switcher">
+              <button
+                onClick={() => setShowRoleMenu(!showRoleMenu)}
+                className={`px-2 py-0.5 rounded border text-xs transition-colors ${ROLE_COLORS[currentRole] || "border-border text-muted"}`}
+                title="Switch RBAC role — controls data masking and access levels"
+              >
+                {ROLE_ICONS[currentRole] || ""}{" "}
+                {roles.find(r => r.role_id === currentRole)?.display_name || currentRole || "Role"}
+              </button>
+              {showRoleMenu && roles.length > 0 && (
+                <div className="absolute right-0 top-full mt-1 w-56 rounded-md border border-border bg-surface shadow-lg z-50">
+                  {roles.map(r => (
+                    <button
+                      key={r.role_id}
+                      onClick={() => { switchRole(r.role_id); setShowRoleMenu(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs hover:bg-muted/20 transition-colors flex items-center gap-2 ${r.role_id === currentRole ? "bg-accent/10 font-medium" : ""}`}
+                    >
+                      <span>{ROLE_ICONS[r.role_id] || ""}</span>
+                      <span className="flex-1">{r.display_name}</span>
+                      {r.role_id === currentRole && <span className="text-accent text-[10px]">Active</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Divider */}
             <div className="w-px h-4 bg-border mx-0.5" />

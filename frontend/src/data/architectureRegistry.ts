@@ -5,7 +5,7 @@
 // Each entry documents the files, APIs, stores, data sources, technologies,
 // and metadata-maturity rating for a UI section identified by data-trace.
 //
-// 100 sections across 21 views + 3 cross-cutting components.
+// 112 sections across 22 views + 3 cross-cutting components.
 // ==========================================================================
 
 import type { TraceableSection, ViewTrace } from "./architectureRegistryTypes.ts";
@@ -3376,6 +3376,234 @@ export const VIEW_TRACES: ViewTrace[] = [
           "Tier properties, data contracts, and pipeline stages are all loaded from medallion metadata. No hardcoded data.",
         metadataOpportunities: [],
       },
+      {
+        id: "medallion.lakehouse.iceberg-tables",
+        displayName: "Iceberg Tables",
+        viewId: "medallion",
+        description:
+          "Panel displaying all Iceberg tables grouped by tier (Silver, Gold, Platinum, Reference, Logging, Archive). Tables are fetched from the Lakehouse API which queries the PyIceberg catalog. Each table supports ACID transactions, time travel via snapshots, and schema evolution.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders IcebergTablesPanel component" },
+          { path: "backend/api/lakehouse.py", role: "API endpoint returning tier-grouped table lists" },
+          { path: "backend/services/lakehouse_service.py", role: "LakehouseService wrapping PyIceberg catalog operations" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/tables",
+            role: "Returns all Iceberg tables grouped by tier",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/config/lakehouse.yaml",
+            category: "config",
+            role: "Lakehouse deployment profiles (catalog URI, storage, compute)",
+          },
+          {
+            path: "workspace/metadata/medallion/iceberg_config.json",
+            category: "metadata",
+            role: "Tier mapping configuration (which tiers use Iceberg)",
+          },
+        ],
+        technologies: [
+          { name: "PyIceberg", role: "Apache Iceberg table management (SQL catalog, SQLite)" },
+          { name: "DuckDB", role: "OLAP reads via iceberg_scan()" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Table lists come from the Iceberg catalog queried at runtime. Tier configuration is metadata-driven from iceberg_config.json.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "medallion.lakehouse.schema-evolution",
+        displayName: "Schema Evolution",
+        viewId: "medallion",
+        description:
+          "Timeline of schema evolution events — column additions and removals detected by comparing entity JSON definitions against Iceberg table schemas. History is persisted in schema_history.json and applied via PyIceberg's update_schema() API.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders SchemaEvolutionPanel component" },
+          { path: "backend/services/schema_evolution_service.py", role: "Detects drift and applies schema evolutions" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/tables/{tier}/{table}/schema-history",
+            role: "Returns schema evolution history for a table",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/governance/schema_history.json",
+            category: "metadata",
+            role: "Persisted schema evolution audit trail",
+          },
+          {
+            path: "workspace/metadata/entities/",
+            category: "metadata",
+            role: "Entity JSON definitions — source of truth for schema",
+          },
+        ],
+        technologies: [
+          { name: "PyIceberg", role: "Schema evolution via update_schema() API" },
+          { name: "PyArrow", role: "Schema representation and type mapping" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "Schema evolution is derived from entity metadata definitions compared against Iceberg table schemas. History is metadata-persisted.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "medallion.lakehouse.pii-governance",
+        displayName: "PII Governance Dashboard",
+        viewId: "medallion",
+        description:
+          "Dashboard showing PII field classifications, GDPR-regulated entities, crypto-shredding requirements, and retention policies. Dual-layer governance: metadata registry (pii_registry.json) + Iceberg table properties.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders PIIGovernancePanel component" },
+          { path: "backend/services/governance_service.py", role: "Loads PII registry, classifies tables, tags Iceberg properties" },
+          { path: "backend/models/governance.py", role: "Pydantic models for PIIField, PIIRegistry, DataClassification" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/governance/pii-registry",
+            role: "Returns the full PII registry with field classifications",
+            routerFile: "backend/api/lakehouse.py",
+          },
+          {
+            method: "GET",
+            path: "/api/lakehouse/governance/classification",
+            role: "Returns data classification per table",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/governance/pii_registry.json",
+            category: "metadata",
+            role: "PII field registry with classification, regulation, crypto-shred, retention",
+          },
+        ],
+        technologies: [
+          { name: "PyIceberg", role: "Table properties for governance tags" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "All PII classifications, regulations, and governance tags are loaded from the pii_registry.json metadata file. Iceberg table properties store machine-readable tags.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "medallion.lakehouse.calc-audit",
+        displayName: "Calculation Audit",
+        viewId: "medallion",
+        description:
+          "Panel showing calculation execution statistics (total, skipped, skip rate) and a result log table with per-calculation status, record counts, and durations. Fingerprint-based skip detection avoids redundant recalculation.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders CalcAuditPanel component" },
+          { path: "backend/services/calc_result_service.py", role: "Fingerprinting, skip detection, result logging" },
+          { path: "backend/models/calculation_optimization.py", role: "Pydantic models for CalcFingerprint, CalcResultLog" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/calc/stats",
+            role: "Returns execution statistics with skip rate",
+            routerFile: "backend/api/lakehouse.py",
+          },
+          {
+            method: "GET",
+            path: "/api/lakehouse/calc/result-log",
+            role: "Returns calculation result log entries",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [],
+        metadataMaturity: "mixed",
+        maturityExplanation:
+          "Calculation definitions are metadata-driven, but the result log and skip logic are computed at runtime by the CalcResultService.",
+        metadataOpportunities: [
+          "Persist calc result log to Iceberg table for time-travel audit",
+        ],
+      },
+      {
+        id: "medallion.lakehouse.pipeline-runs",
+        displayName: "Pipeline Runs",
+        viewId: "medallion",
+        description:
+          "Panel showing pipeline run history with run types (daily, backfill, rerun, correction), Iceberg branch/tag references, status (running, published, failed, rolled_back), and affected entities and tiers. Uses Write-Audit-Publish pattern with Iceberg branches.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders PipelineRunsPanel component" },
+          { path: "backend/services/run_versioning_service.py", role: "Run lifecycle, branch/tag management" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/runs",
+            role: "Returns pipeline run history",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [],
+        technologies: [
+          { name: "PyIceberg", role: "Branch creation, tag management, snapshot references" },
+        ],
+        metadataMaturity: "mixed",
+        maturityExplanation:
+          "Run history is tracked by the RunVersioningService at runtime. Branch/tag operations delegate to PyIceberg.",
+        metadataOpportunities: [
+          "Persist run history to Iceberg logging table for time-travel audit",
+        ],
+      },
+      {
+        id: "medallion.lakehouse.materialized-views",
+        displayName: "Materialized Views",
+        viewId: "medallion",
+        description:
+          "Panel showing materialized view status with refresh controls. MVs pre-compute aggregations from Iceberg tables into DuckDB in-memory tables for fast dashboard queries. Configuration is metadata-driven from materialized_views.json.",
+        files: [
+          { path: "frontend/src/views/MedallionOverview/index.tsx", role: "Renders MaterializedViewsPanel component with refresh button" },
+          { path: "backend/services/materialized_view_service.py", role: "MV refresh, status tracking, DuckDB table management" },
+        ],
+        stores: [],
+        apis: [
+          {
+            method: "GET",
+            path: "/api/lakehouse/materialized-views",
+            role: "Returns MV status list",
+            routerFile: "backend/api/lakehouse.py",
+          },
+          {
+            method: "POST",
+            path: "/api/lakehouse/materialized-views/refresh",
+            role: "Triggers refresh of all materialized views",
+            routerFile: "backend/api/lakehouse.py",
+          },
+        ],
+        dataSources: [
+          {
+            path: "workspace/metadata/medallion/materialized_views.json",
+            category: "metadata",
+            role: "MV definitions with source tables, SQL templates, refresh strategies",
+          },
+        ],
+        technologies: [
+          { name: "DuckDB", role: "Executes MV SQL templates and stores results in-memory" },
+          { name: "PyIceberg", role: "Source data reads via iceberg_scan()" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation:
+          "MV definitions (source tables, SQL templates, refresh strategies) are loaded from materialized_views.json metadata. Refresh is triggered via API.",
+        metadataOpportunities: [],
+      },
     ],
   },
 
@@ -3853,196 +4081,410 @@ export const VIEW_TRACES: ViewTrace[] = [
   },
 
   // =========================================================================
-  // VIEW 23: Analytics Tiers
+  // VIEW: Data Governance (Masking & RBAC)
   // =========================================================================
   {
-    viewId: "analytics-tiers",
-    viewName: "Analytics Tiers",
-    route: "/analytics-tiers",
+    viewId: "governance",
+    viewName: "Data Governance",
+    route: "/governance",
     sections: [
       {
-        id: "analytics-tiers.tabs",
-        displayName: "Tier Tab Selector",
-        viewId: "analytics-tiers",
+        id: "governance.masking-policies",
+        displayName: "Masking Policies Table",
+        viewId: "governance",
         description:
-          "Tab bar switching between Platinum KPIs, Sandbox testing, and Archive management — three operational tiers beyond the core medallion pipeline",
+          "Table of field-level masking policies loaded from governance metadata. Each policy maps entity+field to a masking type (partial, tokenize, generalize, redact) with classification levels (HIGH/MEDIUM/LOW) and unmask roles.",
         files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders tab bar and conditional tier panels" },
+          { path: "frontend/src/views/DataGovernance/index.tsx", role: "Renders masking policies table with type/classification badges" },
         ],
-        stores: [],
-        apis: [],
-        dataSources: [],
-        technologies: [],
-        metadataMaturity: "mostly-metadata-driven",
-        maturityExplanation:
-          "Tab labels are hardcoded but content within each tab is fully metadata-driven from API",
-        metadataOpportunities: ["Could load tab definitions from metadata API"],
-      },
-      {
-        id: "analytics-tiers.platinum",
-        displayName: "Platinum KPI Dashboard",
-        viewId: "analytics-tiers",
-        description:
-          "Browse pre-built KPI datasets aggregated from Gold tier detection results. Shows dataset name, record count, freshness, aggregation type, and column definitions",
-        files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders Platinum KPI dataset list and detail panel" },
+        stores: [
+          {
+            name: "governanceStore",
+            path: "frontend/src/stores/governanceStore.ts",
+            role: "Fetches and caches masking policies from API",
+          },
         ],
-        stores: [],
         apis: [
           {
             method: "GET",
-            path: "/api/analytics/platinum/datasets",
-            role: "Returns list of Platinum KPI datasets with metadata",
-            routerFile: "backend/api/analytics.py",
+            path: "/api/governance/masking-policies",
+            role: "Returns field-level masking policy definitions",
+            routerFile: "backend/api/governance.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/analytics/platinum/*.json",
+            path: "workspace/metadata/governance/masking_policies.json",
             category: "metadata",
-            role: "Platinum KPI dataset definitions",
+            role: "Field-level masking policy definitions (entity, field, type, algorithm, params, unmask roles)",
           },
         ],
-        technologies: [],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+          { name: "Tailwind CSS", role: "Styling and layout" },
+        ],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "KPI datasets fully loaded from metadata API with definitions from workspace/metadata/analytics/platinum/",
+          "Masking policies are entirely metadata-driven — policies JSON defines entity, field, masking type, algorithm, params, unmask roles. Adding a new policy requires only editing masking_policies.json.",
         metadataOpportunities: [],
       },
       {
-        id: "analytics-tiers.sandbox",
-        displayName: "Sandbox Lifecycle Manager",
-        viewId: "analytics-tiers",
+        id: "governance.role-management",
+        displayName: "Role Management Cards",
+        viewId: "governance",
         description:
-          "Create, run, and manage isolated sandbox environments for testing threshold and model changes against cloned production data",
+          "Grid of role definition cards showing tier access badges, classification access levels, and permissions. Active role highlighted with accent styling and 'Switch' buttons on inactive roles.",
         files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders sandbox list, creation form, and lifecycle controls" },
+          { path: "frontend/src/views/DataGovernance/index.tsx", role: "Renders role cards with tier/classification badges and switch buttons" },
         ],
-        stores: [],
+        stores: [
+          {
+            name: "governanceStore",
+            path: "frontend/src/stores/governanceStore.ts",
+            role: "Fetches roles and manages active role state",
+          },
+        ],
         apis: [
           {
             method: "GET",
-            path: "/api/analytics/sandbox",
-            role: "Returns list of sandbox environments",
-            routerFile: "backend/api/analytics.py",
+            path: "/api/governance/roles",
+            role: "Returns role definitions with tier access and permissions",
+            routerFile: "backend/api/governance.py",
           },
           {
             method: "POST",
-            path: "/api/analytics/sandbox",
-            role: "Creates a new sandbox environment",
-            routerFile: "backend/api/analytics.py",
-          },
-          {
-            method: "POST",
-            path: "/api/analytics/sandbox/{sandbox_id}/run",
-            role: "Executes a sandbox run",
-            routerFile: "backend/api/analytics.py",
+            path: "/api/governance/switch-role",
+            role: "Switches the active governance role for the session",
+            routerFile: "backend/api/governance.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/analytics/sandbox/*.json",
+            path: "workspace/metadata/governance/roles.json",
             category: "metadata",
-            role: "Sandbox environment definitions",
+            role: "Role definitions with tier access, classification access, and permissions",
           },
         ],
-        technologies: [],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+          { name: "Tailwind CSS", role: "Styling and layout" },
+        ],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Sandbox environments fully managed via API with metadata definitions",
+          "Role definitions are fully metadata-driven from roles.json. Tier access, classification access, export/audit permissions — all configured via metadata. Adding a new role requires only editing roles.json.",
         metadataOpportunities: [],
       },
       {
-        id: "analytics-tiers.archive",
-        displayName: "Archive Retention Dashboard",
-        viewId: "analytics-tiers",
+        id: "governance.data-preview",
+        displayName: "Data Preview Comparison",
+        viewId: "governance",
         description:
-          "View retention policies per tier and browse archived datasets — hot/warm/cold storage durations, compression settings, and regulatory hold flags",
+          "Multi-role data comparison table showing how entity records appear to each role. Fetches role-comparison data showing masked vs unmasked values per field per role, with masking type badges on masked cells.",
         files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders archive retention policies and dataset list" },
+          { path: "frontend/src/views/DataGovernance/index.tsx", role: "Renders multi-role data comparison table with masking badges" },
         ],
-        stores: [],
+        stores: [
+          {
+            name: "governanceStore",
+            path: "frontend/src/stores/governanceStore.ts",
+            role: "Fetches role-comparison data for selected entity",
+          },
+        ],
         apis: [
           {
             method: "GET",
-            path: "/api/analytics/archive/policies",
-            role: "Returns archive retention policies",
-            routerFile: "backend/api/analytics.py",
-          },
-          {
-            method: "GET",
-            path: "/api/analytics/archive/datasets",
-            role: "Returns archived datasets with status",
-            routerFile: "backend/api/analytics.py",
+            path: "/api/governance/role-comparison/{entity}",
+            role: "Returns entity data as seen by each role with masking applied",
+            routerFile: "backend/api/governance.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/analytics/archive/*.json",
+            path: "workspace/metadata/governance/masking_policies.json",
             category: "metadata",
-            role: "Archive retention policy definitions",
+            role: "Masking policies applied at response time per role",
+          },
+          {
+            path: "workspace/metadata/governance/roles.json",
+            category: "metadata",
+            role: "Role definitions determining field visibility per role",
           },
         ],
-        technologies: [],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+          { name: "Tailwind CSS", role: "Styling and layout" },
+        ],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Archive policies and datasets fully driven by metadata API",
+          "Data preview is fully metadata-driven — masking policies and role definitions determine what each role sees. The backend MaskingService applies masking at response time based on policy configuration.",
         metadataOpportunities: [],
       },
       {
-        id: "analytics-tiers.sandbox-comparison",
-        displayName: "Sandbox Comparison Panel",
-        viewId: "analytics-tiers",
+        id: "governance.audit-log",
+        displayName: "Audit Log (Role-Aware)",
+        viewId: "governance",
         description:
-          "Side-by-side comparison of sandbox results vs production — alert counts, score distributions, and threshold impact analysis",
+          "Audit trail viewer with role-based PII masking. Entries are stored unmasked (regulatory requirement) but masked at read time based on the requesting role. Unauthorized roles see access-denied message.",
         files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders comparison table with production vs sandbox metrics" },
+          { path: "frontend/src/views/DataGovernance/index.tsx", role: "Renders audit log entries with role-based PII masking" },
+          { path: "backend/api/governance.py", role: "Audit log endpoint with role-based access control" },
+          { path: "backend/services/audit_service.py", role: "Audit trail storage and retrieval" },
         ],
-        stores: [],
-        apis: [
+        stores: [
           {
-            method: "GET",
-            path: "/api/analytics/sandbox/{sandbox_id}/compare",
-            role: "Returns production vs sandbox comparison metrics",
-            routerFile: "backend/api/analytics.py",
+            name: "governanceStore",
+            path: "frontend/src/stores/governanceStore.ts",
+            role: "Fetches audit log entries for the active role",
           },
         ],
-        dataSources: [],
-        technologies: [],
-        metadataMaturity: "fully-metadata-driven",
-        maturityExplanation:
-          "Comparison data fully computed and served by API",
-        metadataOpportunities: [],
-      },
-      {
-        id: "analytics-tiers.retention-timeline",
-        displayName: "Retention Policy Timeline",
-        viewId: "analytics-tiers",
-        description:
-          "Visual timeline showing retention lifecycle stages (hot → warm → cold → delete) for each tier, with regulatory hold indicators",
-        files: [
-          { path: "frontend/src/views/AnalyticsTiers/index.tsx", role: "Renders retention timeline visualization" },
-        ],
-        stores: [],
         apis: [
           {
             method: "GET",
-            path: "/api/analytics/archive/policies",
-            role: "Returns retention policies with lifecycle stages",
-            routerFile: "backend/api/analytics.py",
+            path: "/api/governance/audit-log",
+            role: "Returns audit log entries with PII masking based on requesting role",
+            routerFile: "backend/api/governance.py",
           },
         ],
         dataSources: [
           {
-            path: "workspace/metadata/analytics/archive/policies.json",
+            path: "workspace/metadata/governance/masking_policies.json",
             category: "metadata",
-            role: "Retention policy lifecycle definitions",
+            role: "Masking policies applied to audit log PII fields",
+          },
+          {
+            path: "workspace/metadata/governance/roles.json",
+            category: "metadata",
+            role: "Role permissions determining audit log access (can_view_audit)",
           },
         ],
-        technologies: [],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+          { name: "Tailwind CSS", role: "Styling and layout" },
+          { name: "FastAPI", role: "Backend API with role-based access control" },
+        ],
         metadataMaturity: "fully-metadata-driven",
         maturityExplanation:
-          "Retention timeline fully driven by archive policy metadata",
+          "Audit log access and PII masking are fully metadata-driven. Role permissions (can_view_audit) and masking policies determine what each role sees in audit entries.",
+        metadataOpportunities: [],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // Business Glossary (Phase 23)
+  // =========================================================================
+  {
+    viewId: "glossary",
+    viewName: "Business Glossary",
+    route: "/glossary",
+    sections: [
+      {
+        id: "glossary.category-browser",
+        displayName: "Category Sidebar",
+        viewId: "glossary",
+        description:
+          "Category sidebar with term counts. Six categories loaded from glossary metadata: Market Abuse, Data Entities, Metrics, Regulatory, Data Quality, Architecture. Click to filter the term list.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders category sidebar with click-to-filter" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches categories from API" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/categories", role: "Returns categories with term counts", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/glossary/categories.json", category: "metadata", role: "Category definitions (id, name, icon, order)" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "Categories loaded from JSON metadata via API.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.term-list",
+        displayName: "Term List Grid",
+        viewId: "glossary",
+        description:
+          "Searchable term grid with business name, category, status badge, owner, and mapping count. Terms with 'planned' status shown with dashed border. Search checks term_id, business_name, definition, and synonyms.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders term table with search filtering" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches terms with category/search filters" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/terms", role: "Returns terms with optional category and search filters", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/glossary/terms.json", category: "metadata", role: "45 ISO 11179-compliant business terms" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+          { name: "Tailwind CSS", role: "Styling including planned term dashed borders" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "All terms from JSON metadata via API with server-side filtering.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.term-detail",
+        displayName: "Term Detail Panel",
+        viewId: "glossary",
+        description:
+          "Full ISO 11179 term definition with Object Class + Property + Representation decomposition, FIBO ontology alignment, BCBS 239 principle, technical entity.field mappings, regulatory references, synonyms, and related terms.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders detail panel with ISO 11179 and FIBO sections" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Selected term from fetched list" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/terms/{term_id}", role: "Single term detail (used for GlossaryTooltip)", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/glossary/terms.json", category: "metadata", role: "Term definitions with ISO 11179, FIBO, BCBS 239 metadata" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "All term fields from JSON metadata — ISO 11179, FIBO, BCBS 239, regulatory references.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.semantic-metrics",
+        displayName: "Semantic Metrics Grid",
+        viewId: "glossary",
+        description:
+          "Business-friendly computed metrics with SQL formula, source tier, unit, sliceable dimensions, and BCBS 239 principle. Click for detail panel showing formula and dimension list.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders metric table and detail panel" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches metrics and dimensions from API" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/metrics", role: "Returns semantic metrics with optional tier filter", routerFile: "backend/api/glossary.py" },
+          { method: "GET", path: "/api/glossary/dimensions", role: "Returns reusable dimensions", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/semantic/metrics.json", category: "metadata", role: "12 business metric definitions" },
+          { path: "workspace/metadata/semantic/dimensions.json", category: "metadata", role: "7 reusable dimension definitions" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Zustand", role: "State management" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "Metrics and dimensions from JSON metadata via API.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.dmbok-coverage",
+        displayName: "DAMA-DMBOK Knowledge Area Cards",
+        viewId: "glossary",
+        description:
+          "11 DAMA-DMBOK 2.0 knowledge area cards in a 3-column grid. Each card shows coverage badge (high/medium), description, and platform capabilities. 10 areas at high coverage, 1 at medium.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders 3-column card grid with coverage badges" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches DMBOK data from API" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/dmbok", role: "Returns DAMA-DMBOK coverage data", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/dmbok/coverage.json", category: "metadata", role: "11 knowledge area definitions with capabilities" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+          { name: "Tailwind CSS", role: "3-column card grid layout" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "All 11 knowledge areas from JSON metadata via API.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.ownership-matrix",
+        displayName: "Ownership Matrix",
+        viewId: "glossary",
+        description:
+          "Term ownership grouped by owner and domain. Shows {owner: {domain: [term_ids]}} matrix with expandable groups and term count badges.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders grouped ownership display" },
+        ],
+        stores: [],
+        apis: [
+          { method: "GET", path: "/api/glossary/ownership", role: "Returns ownership matrix", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/glossary/terms.json", category: "metadata", role: "Term owner and domain fields" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "Ownership derived from term metadata owner/domain fields.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.standards-compliance",
+        displayName: "Standards Compliance Table",
+        viewId: "glossary",
+        description:
+          "Table of 18 standards the platform complies with (ISO, FIX, MAR, MiFID II, etc.) with compliance level badges (full/partial/reference). Separate roadmap section for 10 gap standards with suggested phases.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders compliance table and roadmap section" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches standards from API" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/standards", role: "Returns compliance registry", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/standards/compliance_registry.json", category: "metadata", role: "18 compliant + 10 gap standards" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "All standards from JSON registry via API.",
+        metadataOpportunities: [],
+      },
+      {
+        id: "glossary.entity-gaps",
+        displayName: "Entity Gap Analysis",
+        viewId: "glossary",
+        description:
+          "Per-entity expandable cards showing missing attributes with ISO standard references, regulatory need descriptions, and priority badges (high/medium/low). 25 gaps across 8 entities.",
+        files: [
+          { path: "frontend/src/views/BusinessGlossary/index.tsx", role: "Renders entity gap cards with attribute tables" },
+        ],
+        stores: [
+          { name: "glossaryStore", path: "frontend/src/stores/glossaryStore.ts", role: "Fetches entity gaps from API" },
+        ],
+        apis: [
+          { method: "GET", path: "/api/glossary/entity-gaps", role: "Returns entity attribute gap analysis", routerFile: "backend/api/glossary.py" },
+        ],
+        dataSources: [
+          { path: "workspace/metadata/glossary/entity_gaps.json", category: "metadata", role: "25 missing attributes across 8 entities" },
+        ],
+        technologies: [
+          { name: "React 19", role: "UI rendering" },
+        ],
+        metadataMaturity: "fully-metadata-driven",
+        maturityExplanation: "All gap data from JSON metadata via API.",
         metadataOpportunities: [],
       },
     ],

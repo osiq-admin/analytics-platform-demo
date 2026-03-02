@@ -3480,90 +3480,260 @@ const S32_REFERENCE_DATA_RECONCILIATION: ScenarioDefinition = {
 };
 
 // --------------------------------------------------------------------------
-// S33: Analytics Tiers — Platinum KPIs, Sandbox Testing, Archive (5 min)
+// S33: Lakehouse Data Governance (Intermediate, 4 min)
 // --------------------------------------------------------------------------
-const S33_ANALYTICS_TIERS: ScenarioDefinition = {
-  id: "s33_analytics_tiers",
-  name: "Analytics Tiers — Platinum, Sandbox & Archive",
+const S33_LAKEHOUSE_DATA_GOVERNANCE: ScenarioDefinition = {
+  id: "s33_lakehouse_data_governance",
+  name: "Lakehouse Data Governance",
   description:
-    "Browse Platinum KPI datasets, create a sandbox environment, run a comparison, and review archive retention policies",
-  category: "pipeline",
+    "Explore the Apache Iceberg lakehouse — browse Iceberg tables, review PII governance classifications, and inspect calculation audit logs.",
+  category: "lakehouse",
+  difficulty: "intermediate",
+  estimatedMinutes: 4,
+  steps: [
+    {
+      target: "[data-tour='medallion-tab-lakehouse']",
+      title: "Switch to Lakehouse Tab",
+      content:
+        "Navigate to the Medallion Overview and switch to the Lakehouse tab to explore Apache Iceberg table management and governance.",
+      placement: "bottom",
+      route: "/medallion",
+      action: "click",
+      actionTarget: "[data-tour='medallion-tab-lakehouse']",
+      hint: "Click the 'Lakehouse' tab at the top right of the Medallion Overview.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='lakehouse-iceberg-tables']",
+      title: "Browse Iceberg Tables",
+      content:
+        "Iceberg tables are grouped by tier — Silver (canonical entities), Gold (calculated results), Reference (golden records), Logging (audit trails). Each table supports ACID transactions, time travel, and schema evolution.",
+      placement: "right",
+      action: "wait",
+      hint: "Review the Iceberg Tables panel showing tables organized by medallion tier.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='lakehouse-pii-governance']",
+      title: "Review PII Governance",
+      content:
+        "The PII Governance panel shows classified PII fields across all entities. Fields are tagged with classification levels (HIGH/MEDIUM/LOW), regulation applicability (GDPR, MiFID II), crypto-shredding requirements, and retention periods.",
+      placement: "left",
+      action: "wait",
+      hint: "Look at the PII Governance panel to see which entity fields contain personally identifiable information.",
+      delay: 3500,
+    },
+    {
+      target: "[data-tour='lakehouse-calc-audit']",
+      title: "Inspect Calculation Audit",
+      content:
+        "The Calculation Audit panel shows execution statistics including total executions, skip count (fingerprint-based deduplication), and skip rate. The result log table shows individual calculation executions with status, record counts, and durations.",
+      placement: "right",
+      action: "wait",
+      hint: "Check the Calculation Audit panel for execution statistics and the result log.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='lakehouse-pipeline-runs']",
+      title: "View Pipeline Runs",
+      content:
+        "Pipeline runs track each execution with run type (daily, backfill, correction), Iceberg branch/tag references, and the list of entities and tiers affected. Branches enable isolated processing; tags mark successful completions.",
+      placement: "left",
+      action: "wait",
+      hint: "Review the Pipeline Runs panel to see run history with branch and tag information.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='lakehouse-materialized-views']",
+      title: "Materialized Views",
+      content:
+        "Materialized views pre-compute aggregations from Iceberg tables into DuckDB tables for fast dashboard queries. Click 'Refresh All' to trigger a refresh of all configured MVs.",
+      placement: "top",
+      action: "wait",
+      hint: "Check MV status and use the Refresh All button to update materialized views.",
+      delay: 2000,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// S34: Role-Based Data Masking (Governance, Intermediate, 5 min)
+// --------------------------------------------------------------------------
+const S34_ROLE_BASED_DATA_MASKING: ScenarioDefinition = {
+  id: "s34_role_based_data_masking",
+  name: "Role-Based Data Masking",
+  description:
+    "Explore how PII fields are dynamically masked based on RBAC roles. Switch between analyst (masked) and compliance officer (unmasked) to see real-time masking differences across data preview and audit logs.",
+  category: "governance",
   difficulty: "intermediate",
   estimatedMinutes: 5,
   steps: [
     {
-      target: "[data-tour='analytics-tier-tabs']",
-      title: "Navigate to Analytics Tiers",
+      target: "[data-tour='governance-masking-policies']",
+      title: "Review Masking Policies",
       content:
-        "Open the Analytics Tiers view from the Ingest sidebar group.",
-      action: "navigate",
-      route: "/analytics-tiers",
-      placement: "bottom",
-      hint: "Navigate to Analytics Tiers using the sidebar.",
-      delay: 500,
-    },
-    {
-      target: "[data-tour='analytics-platinum']",
-      title: "Browse Platinum KPIs",
-      content:
-        "View pre-built KPI datasets aggregated from Gold tier detection results. Each dataset shows record count, freshness, and aggregation type.",
+        "Start at the Data Governance view. The Masking Policies tab shows all 7 masking policies — each with entity, field, classification level, masking type, and which roles can bypass masking.",
+      placement: "right",
+      route: "/governance",
       action: "wait",
-      placement: "bottom",
-      hint: "Browse the Platinum KPI dataset list",
+      hint: "Navigate to Data Governance and review the policies table.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='governance-role-management']",
+      title: "View Role Definitions",
+      content:
+        "Switch to the Role Management tab to see all 4 roles. Note which tiers each role can access and whether they can view audit logs or export data.",
+      placement: "right",
+      action: "click",
+      actionTarget: "[data-tour='governance-role-management']",
+      hint: "Click the 'Role Management' tab to see role definitions.",
       delay: 2000,
     },
     {
-      target: "[data-tour='analytics-tier-tabs'] button:nth-child(2)",
-      title: "Switch to Sandbox Tab",
+      target: "[data-tour='role-switcher']",
+      title: "Switch to Compliance Officer",
       content:
-        "Click the Sandbox tab to manage isolated testing environments.",
-      action: "click",
-      actionTarget: "[data-tour='analytics-tier-tabs'] button:nth-child(2)",
+        "Click the role switcher in the header and change to 'Compliance Officer'. This role has full PII access — all masked fields will become visible.",
       placement: "bottom",
-      hint: "Click the Sandbox tab",
-      delay: 1500,
-    },
-    {
-      target: "[data-tour='analytics-sandbox'] button",
-      title: "Create a Sandbox",
-      content:
-        "Click Create Sandbox to provision an isolated environment for testing threshold changes without affecting production data.",
       action: "click",
-      actionTarget: "[data-tour='analytics-sandbox'] button",
-      placement: "bottom",
-      hint: "Click the Create Sandbox button",
+      actionTarget: "[data-tour='role-switcher']",
+      hint: "Click the role badge in the header to open the dropdown, then select Compliance Officer.",
       delay: 2000,
     },
     {
-      target: "[data-tour='analytics-sandbox']",
-      title: "View Sandbox Comparison",
+      target: "[data-tour='governance-data-preview']",
+      title: "View Unmasked Data",
       content:
-        "After running the sandbox, compare results side-by-side with production — see how threshold changes affect alert volumes and scores.",
+        "Switch to the Data Preview tab. As Compliance Officer, all PII fields are now unmasked — trader names, IDs, and account details are fully visible.",
+      placement: "right",
+      action: "click",
+      actionTarget: "[data-tour='governance-data-preview']",
+      hint: "Click 'Data Preview' tab to see unmasked entity data.",
+      delay: 3000,
+    },
+    {
+      target: "[data-tour='role-switcher']",
+      title: "Switch Back to Analyst",
+      content:
+        "Switch back to 'Surveillance Analyst'. PII fields will be masked again — trader_name shows partial masking (A***e), trader_id shows tokenized hex values.",
+      placement: "bottom",
+      action: "click",
+      actionTarget: "[data-tour='role-switcher']",
+      hint: "Click the role switcher and select Surveillance Analyst.",
+      delay: 2000,
+    },
+    {
+      target: "[data-tour='governance-data-preview']",
+      title: "Compare Masked vs Unmasked",
+      content:
+        "The Data Preview now shows masked values. Compare the role columns — masked fields are highlighted in red with the masking type badge. The same data, same API, different view based on who is looking.",
+      placement: "left",
       action: "wait",
-      placement: "bottom",
-      hint: "Review the sandbox comparison results",
-      delay: 2000,
+      hint: "Review the comparison table showing different masking levels per role.",
+      delay: 3500,
     },
     {
-      target: "[data-tour='analytics-tier-tabs'] button:nth-child(3)",
-      title: "Switch to Archive Tab",
+      target: "[data-tour='governance-audit-log']",
+      title: "Check Audit Log Access",
       content:
-        "Click the Archive tab to view retention policies and archived datasets.",
+        "Switch to the Audit Log tab. As Analyst, you'll see an access-denied message — analysts cannot view audit logs. Switch to Compliance Officer to see masked-aware audit entries.",
+      placement: "right",
       action: "click",
-      actionTarget: "[data-tour='analytics-tier-tabs'] button:nth-child(3)",
-      placement: "bottom",
-      hint: "Click the Archive tab",
-      delay: 1500,
+      actionTarget: "[data-tour='governance-audit-log']",
+      hint: "Click 'Audit Log' tab. Note the access restriction for analyst role.",
+      delay: 3000,
     },
     {
-      target: "[data-tour='analytics-archive']",
-      title: "Review Retention Policies",
+      target: "[data-tour='governance-audit-log']",
+      title: "Audit PII Protection Complete",
       content:
-        "View retention policies for each tier — hot, warm, and cold storage durations, compression settings, and regulatory hold requirements.",
+        "Key takeaway: Even audit logs respect role-based access. Analysts see activity patterns without seeing personal data. Compliance officers see full PII for regulatory investigations. All masking is applied at read time — stored data remains intact.",
+      placement: "top",
       action: "wait",
+      hint: "Review how audit log PII masking varies by role.",
+      delay: 3000,
+    },
+  ],
+};
+
+// ==========================================================================
+// S35: Explore Business Glossary (Phase 23)
+// ==========================================================================
+
+const S35_EXPLORE_BUSINESS_GLOSSARY: ScenarioDefinition = {
+  id: "s35_explore_business_glossary",
+  name: "Explore Business Glossary",
+  description:
+    "Navigate the ISO 11179-compliant glossary, explore term definitions with FIBO alignment, review semantic metrics, and assess DAMA-DMBOK knowledge area coverage.",
+  category: "governance",
+  difficulty: "beginner",
+  estimatedMinutes: 5,
+  steps: [
+    {
+      target: "[data-tour='glossary-categories']",
+      title: "Browse by Category",
+      content:
+        "Start by clicking the 'Market Abuse' category in the sidebar. This filters the term list to show only market abuse-related terms like Wash Trade, Spoofing, and Layering.",
+      placement: "right",
+      action: "click",
+      hint: "Select Market Abuse to see surveillance-related terms.",
+    },
+    {
+      target: "[data-tour='glossary-search']",
+      title: "Search for a Term",
+      content:
+        "Type 'wash' in the search box. The list filters to show the Wash Trade term. Search checks term IDs, business names, definitions, and synonyms.",
       placement: "bottom",
-      hint: "Review the archive retention policies",
-      delay: 2000,
+      action: "type",
+      hint: "Try searching for 'insider' or 'spoofing' too.",
+    },
+    {
+      target: "[data-tour='glossary-term-list']",
+      title: "Select a Term",
+      content:
+        "Click on the 'Wash Trade' row in the term list. Notice terms with 'planned' status have a blue dashed border — these represent future platform capabilities.",
+      placement: "bottom",
+      action: "click",
+      hint: "Look for the dashed border on planned terms.",
+    },
+    {
+      target: "[data-tour='glossary-term-detail']",
+      title: "Review Term Detail",
+      content:
+        "The detail panel shows the full ISO 11179 decomposition: Object Class (Trade), Property (Wash Indicator), and Representation (Score). Below that: FIBO alignment, technical mappings to execution.trader_id, and regulatory references (MAR Art. 12, SEC Rule 10b-5).",
+      placement: "left",
+      action: "wait",
+      delay: 3000,
+      hint: "Scroll down to see FIBO, mappings, and regulatory references.",
+    },
+    {
+      target: "[data-tour='glossary-metrics-list']",
+      title: "Switch to Semantic Metrics",
+      content:
+        "Click the 'Semantic Metrics' tab. These are business-friendly computed metrics built from Gold and Platinum tier data. Click any metric to see its SQL formula, source tier, and sliceable dimensions.",
+      placement: "bottom",
+      action: "click",
+      hint: "Try clicking 'Daily Alert Rate' for its formula.",
+    },
+    {
+      target: "[data-tour='glossary-dmbok-grid']",
+      title: "DAMA-DMBOK Coverage",
+      content:
+        "Click the 'DAMA-DMBOK' tab. All 11 knowledge areas are mapped to platform capabilities. 10 areas show 'high' coverage and 1 shows 'medium'. Each card shows the specific capabilities that deliver coverage.",
+      placement: "bottom",
+      action: "click",
+      hint: "Review which phases implement each knowledge area.",
+    },
+    {
+      target: "[data-tour='glossary-standards']",
+      title: "Standards Compliance",
+      content:
+        "Click the 'Standards & Gaps' tab. Review the 18 compliant standards with their compliance levels (full/partial/reference). The Roadmap section shows 10 gap standards with suggested future phases. Below that, Entity Gap Analysis details 25 missing attributes across 8 entities.",
+      placement: "top",
+      action: "wait",
+      delay: 3000,
+      hint: "Key takeaway: The platform complies with 18 industry standards.",
     },
   ],
 };
@@ -3604,5 +3774,7 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
   s30_pipeline_orchestration: S30_PIPELINE_ORCHESTRATION,
   s31_data_quality_investigation: S31_DATA_QUALITY_INVESTIGATION,
   s32_reference_data_reconciliation: S32_REFERENCE_DATA_RECONCILIATION,
-  s33_analytics_tiers: S33_ANALYTICS_TIERS,
+  s33_lakehouse_data_governance: S33_LAKEHOUSE_DATA_GOVERNANCE,
+  s34_role_based_data_masking: S34_ROLE_BASED_DATA_MASKING,
+  s35_explore_business_glossary: S35_EXPLORE_BUSINESS_GLOSSARY,
 };

@@ -1255,3 +1255,148 @@ class TestAIContextE2E:
         """)
         assert result["status"] == 200
         assert result["hasContext"] is True
+
+
+# ============================================================================
+# Scenario 20: Data Governance
+# ============================================================================
+
+class TestDataGovernance:
+    """Data Governance view E2E tests."""
+
+    def test_governance_view_renders(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/governance")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("text=Data Governance").first.is_visible(timeout=5000) or \
+               loaded_page.locator("text=Masking Policies").first.is_visible(timeout=5000)
+
+    def test_masking_policies_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/masking-policies');
+                const data = await resp.json();
+                return { status: resp.status, count: data.policies?.length || 0 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] == 7
+
+    def test_role_switching_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                await fetch('/api/governance/switch-role', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({role_id: 'compliance_officer'})
+                });
+                const resp = await fetch('/api/governance/current-role');
+                const data = await resp.json();
+                // Switch back to analyst for other tests
+                await fetch('/api/governance/switch-role', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({role_id: 'analyst'})
+                });
+                return data.role_id;
+            }
+        """)
+        assert result == "compliance_officer"
+
+    def test_role_comparison_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/role-comparison/trader');
+                const data = await resp.json();
+                return {
+                    status: resp.status,
+                    entity: data.entity || '',
+                    roleCount: Object.keys(data.roles || {}).length
+                };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["entity"] == "trader"
+        assert result["roleCount"] >= 4
+
+    def test_audit_log_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/audit-log');
+                const data = await resp.json();
+                return { status: resp.status, hasEntries: 'entries' in data };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["hasEntries"] is True
+
+    def test_roles_list_api(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/governance/roles');
+                const data = await resp.json();
+                return { status: resp.status, count: data.roles?.length || 0, currentRole: data.current_role || '' };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 4
+        assert result["currentRole"] == "analyst"
+
+
+class TestBusinessGlossary:
+    """Business Glossary view E2E tests (Phase 23)."""
+
+    def test_view_loads(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("text=Business Glossary").first.is_visible(timeout=5000) or \
+               loaded_page.locator("text=Business Terms").first.is_visible(timeout=5000)
+
+    def test_sidebar_entry_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        nav_link = loaded_page.locator("a[href='/glossary'], [data-path='/glossary']").first
+        assert nav_link.is_visible(timeout=5000)
+
+    def test_category_list_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-categories'], text=Market Abuse").first.is_visible(timeout=5000)
+
+    def test_term_list_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-term-list'], text=Wash Trade").first.is_visible(timeout=5000)
+
+    def test_search_box_visible(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        assert loaded_page.locator("[data-tour='glossary-search'], input[placeholder*='earch']").first.is_visible(timeout=5000)
+
+    def test_tab_navigation_to_metrics(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        metrics_tab = loaded_page.locator("text=Semantic Metrics").first
+        if metrics_tab.is_visible(timeout=3000):
+            metrics_tab.click()
+            loaded_page.wait_for_timeout(500)
+            assert loaded_page.locator("text=daily_alert_rate, text=Metric").first.is_visible(timeout=3000) or \
+                   loaded_page.locator("[data-tour='glossary-metrics-list']").first.is_visible(timeout=3000)
+
+    def test_tab_navigation_to_dmbok(self, loaded_page):
+        loaded_page.goto(f"{APP_URL}/glossary")
+        loaded_page.wait_for_load_state("networkidle")
+        dmbok_tab = loaded_page.locator("text=DAMA-DMBOK").first
+        if dmbok_tab.is_visible(timeout=3000):
+            dmbok_tab.click()
+            loaded_page.wait_for_timeout(500)
+            assert loaded_page.locator("text=Data Governance, text=Data Architecture").first.is_visible(timeout=3000) or \
+                   loaded_page.locator("[data-tour='glossary-dmbok-grid']").first.is_visible(timeout=3000)
+
+    def test_glossary_api_returns_terms(self, loaded_page):
+        result = loaded_page.evaluate("""
+            async () => {
+                const resp = await fetch('/api/glossary/terms');
+                const data = await resp.json();
+                return { status: resp.status, count: data.count || 0 };
+            }
+        """)
+        assert result["status"] == 200
+        assert result["count"] >= 30

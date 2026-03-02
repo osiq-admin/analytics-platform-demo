@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-02-28 (M242 Phase 20 Complete; 1116 total tests: 885 backend + 231 E2E, 21 views, 33 scenarios, 100 architecture sections, 972 modules)
+**Last Updated**: 2026-03-02 (M285 Phase 24 Test Sweep; 1410 total tests: 1147 backend + 263 E2E, 23 views, 35 scenarios, 112 architecture sections, 975 modules)
 
 ---
 
@@ -57,6 +57,10 @@
 | Reference Data & MDM (Phase 19) | COMPLETE | M216-M227: Golden records for 4 entities (product/venue/account/trader), reconciliation engine with exact+fuzzy matching, field-level provenance, 9 API endpoints, ReferenceData view, 4 data contracts, S32 scenario — 1018 total tests (794+224), 20 views, 32 scenarios, 94 architecture sections |
 | QA Automation Toolkit | COMPLETE | `qa/` package: test runner, quality scanner (ruff/bandit/radon/vulture/coverage), regression detection, flaky test detection, quality gate, file watcher, git pre-push hooks. All 6 quality tools PASS. All guidelines updated |
 | Extended Analytical Tiers (Phase 20) | COMPLETE | M228-M242: Platinum KPIs, Sandbox isolation, Archive retention, 3 services, 3 API routers (16 endpoints), AnalyticsTiers view, ~90 backend tests, 7 E2E tests, 6 architecture sections, S33 scenario — 1116 total tests (885+231), 21 views, 33 scenarios, 100 architecture sections |
+| Apache Iceberg Lakehouse Architecture (Phase 21) | COMPLETE | M243-M256: LakehouseService (PyIceberg + DuckDB OLAP), schema evolution, PII governance, calculate-once, run versioning, materialized views, metadata replicator, 14 API endpoints, Lakehouse Explorer tab — 1186 total tests (962+224), 21 views |
+| Masking, Encryption & Access Control (Phase 22) | COMPLETE | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1152 total tests (1057+230), 22 views, 34 scenarios, 104 architecture sections |
+| Business Glossary & Semantic Layer (Phase 23) | COMPLETE | M269-M280: ISO 11179 glossary, semantic metrics, DAMA-DMBOK, standards compliance, entity gaps — 1105 backend + 238 E2E |
+| Comprehensive Test Sweep (Phase 24) | COMPLETE | M281-M285: Contract tests, startup integration, consistency validators, API sentinel, E2E governance role-switching, nav smoke — 1147 backend + 263 E2E |
 
 ---
 
@@ -352,6 +356,67 @@
 | M240 | E2E Tests | COMPLETE | 2 | 2 | 7 E2E Playwright tests for AnalyticsTiers view |
 | M241 | Full Test Suite + Build Verification | COMPLETE | 2 | 2 | 885 backend + 231 E2E tests passing, 972 frontend modules |
 | M242 | Phase D Documentation Sweep | COMPLETE | 2 | 2 | Update all docs, sync counts, commit |
+
+### Phase 21: Apache Iceberg Lakehouse Architecture (M243-M256)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M243 | Lakehouse Config + Pydantic Models | COMPLETE | 2 | 2 | LakehouseConfig, IcebergTierConfig, 8 models, lakehouse.yaml (5 profiles), iceberg_config.json, 21 model tests |
+| M244 | LakehouseService + SQLite Catalog | COMPLETE | 3 | 3 | PyIceberg SQLite catalog, table CRUD, append/overwrite, schema evolution, snapshots, branches, tags, properties, DuckDB integration, 26 service tests |
+| M245 | Silver Iceberg Dual-Write | COMPLETE | 2 | 2 | DataLoader dual-write (Parquet + Iceberg), backward-compatible when no lakehouse, overwrite on reload, 5 tests |
+| M246 | Schema Evolution Service | COMPLETE | 2 | 2 | Entity→PyArrow schema derivation, drift detection, evolution application, history persistence, sync all, 12 tests |
+| M247 | PII/IPP Governance Service | COMPLETE | 2 | 2 | PII registry (4 entities, 5 fields), GovernanceService, Iceberg table tagging, GDPR classification, crypto-shred tracking, 13 tests |
+| M248 | Calculation Optimization Models | COMPLETE | 1 | 1 | CalcFingerprint, CalcResultLog Pydantic models |
+| M249 | CalcResultService + Gold Iceberg | COMPLETE | 3 | 3 | SHA-256 fingerprinting, skip detection (immutable+param-dependent), audit logging, Gold Iceberg writes, 20 tests |
+| M250 | Run Versioning Service | COMPLETE | 2 | 2 | RunVersioningService: daily/backfill/rerun/correction runs, Iceberg branch lifecycle, tagging, rollback, persistence, 12 tests |
+| M251 | Materialized View Manager | COMPLETE | 2 | 2 | MaterializedViewService: metadata-driven MV config, refresh (single/all/by-strategy), DuckDB OLAP layer, 4 MV definitions, 11 tests |
+| M252 | Reference Iceberg + Metadata Replicator | COMPLETE | 3 | 3 | MetadataReplicator: syncs entity defs, calculations, detection models, settings to Iceberg. ReferenceService Iceberg dual-write for golden records. 20 tests |
+| M253 | Lakehouse API Endpoints | COMPLETE | 2 | 2 | 14 REST endpoints: config, tables (list/info/snapshots/schema-history), governance (PII/classification), calc audit (log/stats/lineage), pipeline runs, materialized views (status/refresh). 20 tests |
+| M254 | Pipeline Integration | COMPLETE | 4 | 4 | Lifespan wiring for all lakehouse services (graceful Parquet-only fallback). GovernanceService/SchemaEvolutionService made optional-lakehouse. Integration tests. 8 tests |
+| M255 | Lakehouse Explorer Frontend | COMPLETE | 3 | 3 | Lakehouse tab in MedallionOverview with 6 panels (Iceberg tables, schema evolution, PII governance, calc audit, pipeline runs, MVs). Tour, scenario S33, 6 architecture sections (100 total), lakehouse category. |
+
+### Phase 22: Masking, Encryption & Access Control (M257-M269)
+
+| Milestone | Description | Status | Est | Act | Notes |
+|---|---|---|---|---|---|
+| M257 | Masking Policy Metadata + Role Definitions + Pydantic Models | COMPLETE | 2 | 2 | masking_policies.json (7 policies), roles.json (4 roles), MaskingPolicy/RoleDefinition/MaskingPolicies/RoleRegistry models |
+| M258 | MaskingService with TDD | COMPLETE | 2 | 2 | Dynamic field-level masking engine: partial, tokenize, hash, generalize, redact. 60 tests |
+| M259 | RBACService with TDD | COMPLETE | 2 | 2 | Role switching, tier access, classification checks, audit/export permissions. 18 tests |
+| M260 | Governance API Router + Service Wiring | COMPLETE | 2 | 2 | 7 REST endpoints: roles, current-role, switch-role, masking-policies, masked-preview, role-comparison, audit-log. 13 tests |
+| M261 | Audit-Aware Masking | COMPLETE | 1 | 1 | get_history_masked() — PII masked at read time by role. Stored unmasked for regulatory compliance. 4 tests |
+| M262-M263 | DataGovernance Frontend View | COMPLETE | 3 | 3 | 4-tab view: Masking Policies, Role Management, Data Preview, Audit Log. governanceStore, navigation, route |
+| M264 | Global Role Switcher | COMPLETE | 1 | 1 | Role indicator/dropdown in AppLayout header with role-colored badges. Visible on every view |
+| M265 | Tours, Scenarios, Operations | COMPLETE | 2 | 2 | Governance tour (7 steps), S34 scenario (8 steps), 6 operations + 4 tips, tour registry updated |
+| M266 | Architecture Registry + BDD | COMPLETE | 2 | 2 | 4 architecture sections (104 total), 5 BDD scenarios (Category 14: Masking & RBAC), traceability update |
+| M267 | E2E Playwright Tests | COMPLETE | 1 | 1 | 6 E2E tests: view render, masking policies API, role switching, role comparison, audit log, roles list |
+| M268 | Demo Guide + Progress | COMPLETE | 1 | 1 | Demo guide section with 3 walkthroughs + guided scenario reference. Progress tracker entries |
+
+### Phase 23: Business Glossary & Semantic Layer (M269-M280)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M269 | Glossary Metadata + Pydantic Models | COMPLETE | 2 | 2 | workspace/metadata/glossary/terms.json (18 ISO 11179 terms), GlossaryTerm/SemanticMetric Pydantic models |
+| M270 | Semantic Layer Metadata + Models | COMPLETE | 2 | 2 | workspace/metadata/semantic/metrics.json (12 metrics), workspace/metadata/semantic/dimensions.json (8 dimensions) |
+| M271 | GlossaryService with TDD | COMPLETE | 2 | 2 | GlossaryService: term search, field-to-term lookup, category filtering, ownership matrix |
+| M272 | SemanticLayerService with TDD | COMPLETE | 2 | 2 | SemanticLayerService: metric composition, dimension drill-down, formula validation |
+| M273 | Glossary API Router + Wiring | COMPLETE | 2 | 2 | backend/api/glossary.py + backend/api/semantic.py, 10 endpoints, app wiring |
+| M274 | DAMA-DMBOK, Standards Registry, Entity Gaps | COMPLETE | 2 | 2 | workspace/metadata/dmbok/knowledge_areas.json, standards compliance registry, entity gap analysis |
+| M275 | BusinessGlossary View | COMPLETE | 2 | 2 | frontend/src/views/BusinessGlossary/index.tsx: term browser, semantic metrics, DMBOK coverage, standards compliance |
+| M276 | GlossaryTooltip Component | COMPLETE | 1 | 1 | Cross-view glossary tooltip on entity fields with business definitions |
+| M277 | Tours, S35 Scenario, Operations | COMPLETE | 2 | 2 | BusinessGlossary tour, S35 scenario (8 steps), 8 operations + 4 tips, tour registry updated |
+| M278 | Architecture Registry + BDD Scenarios | COMPLETE | 2 | 2 | 8 architecture sections (112 total), BDD scenarios (Category 15: Business Glossary), traceability update |
+| M279 | E2E Playwright Tests | COMPLETE | 1 | 1 | 8 E2E tests: view render, glossary API, semantic API, term search, DMBOK coverage, standards compliance |
+| M280 | Phase D Completion | COMPLETE | 1 | 1 | Full documentation sweep, count sync, demo guide, progress tracker entries |
+
+### Phase 24: Comprehensive Test Sweep (M281-M285)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M281 | Governance API Contract Tests | COMPLETE | 1 | 1 | 15 tests validating response shapes match frontend TypeScript interfaces (roles, masked-preview, role-comparison, audit-log, masking-policies) |
+| M282 | Dashboard Contract + Startup Integration | COMPLETE | 1 | 1 | 4 dashboard shape tests + 3 startup CSV→Parquet→DuckDB integration tests |
+| M283 | Consistency Validators + API Sentinel | COMPLETE | 1 | 1 | 20 tests: navigation (6), tours (4), masking policies (6), API module sentinel (4) — auto-detects cross-system drift |
+| M284 | E2E Governance + Navigation Smoke | COMPLETE | 1 | 1 | 3 governance role-switching E2E tests + 22-path dynamic navigation smoke test |
+| M285 | Full Suite Verification | COMPLETE | 1 | 1 | 1147 backend + 263 E2E = 1410 total, 0 failures, docs updated |
 
 ---
 

@@ -1551,3 +1551,175 @@ And the coverage spans both EU and US jurisdictions:
   | spoofing_layering    | MAR, MiFID II, Dodd-Frank    |
 And the Regulatory Map graph shows these coverage relationships
 ```
+
+---
+
+## Category 13: Lakehouse Architecture
+
+### Scenario: Silver Tier Dual-Write (Iceberg + Parquet)
+```gherkin
+Given the medallion pipeline is configured with dual-write enabled
+When a Bronze-to-Silver transformation completes for the "execution" entity
+Then data is written to both Parquet and Iceberg table formats
+And the Iceberg table metadata records the new snapshot version
+And the Parquet file path follows the workspace/silver/ convention
+And the Lakehouse Explorer "Iceberg Tables" panel shows the updated table entry
+```
+
+### Scenario: Schema Evolution Detection
+```gherkin
+Given the Iceberg table "execution_silver" exists with schema version 1
+When a new column "venue_country" is added to the silver entity definition
+Then the schema evolution detector identifies the change as an ADD_COLUMN operation
+And the evolution history records the old and new schema versions
+And the Lakehouse Explorer "Schema Evolution" panel displays the evolution timeline
+And no data rewrite is required for the additive change
+```
+
+### Scenario: PII Governance Tagging
+```gherkin
+Given the governance metadata defines PII classification rules
+When the "trader" entity is scanned for PII fields
+Then "trader_name" is tagged as PII with classification "personal_identifier"
+And "trader_id" is tagged as PII with classification "internal_identifier"
+And "desk" is tagged as non-PII
+And the Lakehouse Explorer "PII Governance" panel shows tagged fields with masking policies
+And the governance audit trail records the tagging timestamp and rule applied
+```
+
+### Scenario: Calculate-Once Skip Logic
+```gherkin
+Given the silver-to-gold pipeline includes a "vwap_enrichment" calculation step
+And the calculation was previously run for partition "2024-01-15"
+When the pipeline orchestrator evaluates the partition
+Then the calculate-once logic detects the existing result
+And the calculation step is skipped with status "SKIPPED_CACHED"
+And the Lakehouse Explorer "Calc Audit" panel shows the skip reason and prior run timestamp
+```
+
+### Scenario: Pipeline Run Versioning
+```gherkin
+Given a medallion pipeline run completes for "bronze_to_silver_execution"
+When the run result is persisted
+Then a new pipeline version entry is created with incremented run_id
+And the version metadata includes start_time, end_time, record_count, and status
+And the Lakehouse Explorer "Pipeline Runs" panel shows the run in the version history
+And previous run versions remain accessible for comparison
+```
+
+---
+
+## Category 14: Masking & RBAC
+
+### Scenario: Dynamic Masking by Role
+```gherkin
+Given the user has the "analyst" role active
+When viewing trader data via the masked-preview endpoint
+Then the "trader_name" field is partially masked (e.g., "J*** S****")
+And the "trader_id" field is tokenized (e.g., "tok_a1b2c3")
+And fields not covered by masking policies are shown in plain text
+```
+
+### Scenario: Compliance Officer Full Access
+```gherkin
+Given the user has the "compliance_officer" role active
+When viewing the same trader data via the masked-preview endpoint
+Then all fields are unmasked and shown in plain text
+And no masking badges appear on any cells
+```
+
+### Scenario: Audit Log PII Protection
+```gherkin
+Given the user has the "analyst" role active
+And the analyst role has can_view_audit set to false
+When requesting the audit log via /api/governance/audit-log
+Then access is denied with an appropriate message
+And no audit entries are returned
+```
+
+### Scenario: Role Switching Live Preview
+```gherkin
+Given the user has the "analyst" role active
+And trader data fields are partially masked in the data preview
+When the user switches to "compliance_officer" via the switch-role API
+And the masked-preview is refreshed
+Then previously masked fields become fully visible
+And the active role indicator updates to "compliance_officer"
+```
+
+### Scenario: Tier Access Restriction
+```gherkin
+Given the "analyst" role has tier_access restricted to ["gold", "platinum"]
+When the analyst requests data from the "silver" tier
+Then access is restricted and the data is not returned
+Given the "compliance_officer" role has tier_access including "silver"
+When the compliance_officer requests data from the "silver" tier
+Then access is granted and the data is returned normally
+```
+
+## Feature: Business Glossary (Phase 23)
+
+### Scenario: Browse Glossary by Category
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Market Abuse" category in the sidebar
+Then only terms with category "market_abuse" are shown in the term list
+And the category sidebar shows the count of matching terms
+```
+
+### Scenario: Search Glossary Terms
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I type "wash" in the search box
+Then the term list filters to show terms matching "wash" in term_id, business_name, definition, or synonyms
+And "Wash Trade" appears in the results
+```
+
+### Scenario: Reverse Lookup Entity Field to Glossary Term
+```gherkin
+Given the platform is running
+When I call GET /api/glossary/field/execution/trader_id
+Then the response includes the "wash_trade" glossary term
+And the term shows the technical mapping with relationship "key_field"
+```
+
+### Scenario: DAMA-DMBOK Coverage Display
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "DAMA-DMBOK" tab
+Then 11 knowledge area cards are displayed
+And each card shows a coverage badge (high or medium)
+And each card lists platform capabilities for that knowledge area
+```
+
+### Scenario: Semantic Metric Detail
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Semantic Metrics" tab
+And I select the "daily_alert_rate" metric
+Then the detail panel shows the metric formula, source tier, unit, and dimensions
+And the dimensions list includes sliceable dimension names
+```
+
+### Scenario: Standards Compliance Registry
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I click on the "Standards & Gaps" tab
+Then a compliance table shows 18 standards with compliance level badges (full/partial/reference)
+And a roadmap section shows 10 gap standards with suggested implementation phases
+```
+
+### Scenario: Entity Gap Analysis
+```gherkin
+Given the platform is running
+And the Business Glossary view is loaded at /glossary
+When I view the entity gap analysis section in the "Standards & Gaps" tab
+Then I see expandable cards for entities with missing attributes
+And the product entity shows 6 missing attributes with ISO/regulatory references
+And each gap includes a priority badge and regulatory need description
+```
