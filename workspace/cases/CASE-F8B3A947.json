@@ -1,0 +1,41 @@
+{
+  "case_id": "CASE-F8B3A947",
+  "title": "Investigation: Front Running \u2014 ALT-4A1ABAED",
+  "description": "Automated case created from 1 alert(s).",
+  "status": "closed",
+  "priority": "low",
+  "category": "spoofing",
+  "assignee": "analyst_2",
+  "alert_ids": [
+    "ALT-4A1ABAED"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-57099A25",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-13T23:46:32.596005",
+      "type": "note",
+      "content": "Initial review of ALT-4A1ABAED \u2014 patterns consistent with front running.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-92914C44",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-14T12:46:32.596005",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-15T23:46:32.596005",
+    "sla_hours": 72,
+    "sla_status": "breached"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-12T23:46:32.596005",
+  "updated_at": "2026-03-02T23:46:32.596096",
+  "resolved_at": "2026-02-14T23:46:32.596005",
+  "closed_at": "2026-02-15T23:46:32.596005"
+}

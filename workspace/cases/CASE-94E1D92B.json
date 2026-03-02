@@ -1,0 +1,26 @@
+{
+  "case_id": "CASE-94E1D92B",
+  "title": "Investigation: Insider Trading \u2014 ALT-31ED76E9",
+  "description": "Automated case created from 3 alert(s).",
+  "status": "open",
+  "priority": "high",
+  "category": "market_abuse",
+  "assignee": "analyst_1",
+  "alert_ids": [
+    "ALT-31ED76E9",
+    "ALT-D1EBAF52",
+    "ALT-4A1ABAED"
+  ],
+  "annotations": [],
+  "sla": {
+    "due_date": "2026-02-24T23:46:32.592719",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-21T23:46:32.592719",
+  "updated_at": "2026-03-02T23:46:32.592833",
+  "resolved_at": null,
+  "closed_at": null
+}

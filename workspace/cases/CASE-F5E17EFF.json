@@ -1,0 +1,41 @@
+{
+  "case_id": "CASE-F5E17EFF",
+  "title": "Investigation: Market Abuse \u2014 ALT-DD3C74C7",
+  "description": "Automated case created from 1 alert(s).",
+  "status": "resolved",
+  "priority": "critical",
+  "category": "spoofing",
+  "assignee": "compliance_officer",
+  "alert_ids": [
+    "ALT-DD3C74C7"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-98D2F9D6",
+      "author": "analyst_1",
+      "timestamp": "2026-02-06T19:46:32.597290",
+      "type": "note",
+      "content": "Initial review of ALT-DD3C74C7 \u2014 patterns consistent with spoofing.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-7375116A",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-07T14:46:32.597290",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-08T23:46:32.597290",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-05T23:46:32.597290",
+  "updated_at": "2026-03-02T23:46:32.597380",
+  "resolved_at": "2026-02-07T23:46:32.597290",
+  "closed_at": null
+}

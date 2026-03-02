@@ -1,0 +1,35 @@
+{
+  "case_id": "CASE-E0A95759",
+  "title": "Investigation: Market Abuse \u2014 ALT-616F3448",
+  "description": "Automated case created from 3 alert(s).",
+  "status": "investigating",
+  "priority": "high",
+  "category": "front_running",
+  "assignee": "senior_analyst",
+  "alert_ids": [
+    "ALT-616F3448",
+    "ALT-0E9B8C22",
+    "ALT-D1EBAF52"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-32ED8643",
+      "author": "analyst_2",
+      "timestamp": "2026-02-28T16:46:32.593172",
+      "type": "note",
+      "content": "Initial review of ALT-616F3448 \u2014 patterns consistent with front running.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-03-02T23:46:32.593172",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-27T23:46:32.593172",
+  "updated_at": "2026-03-02T23:46:32.593266",
+  "resolved_at": null,
+  "closed_at": null
+}

@@ -1,0 +1,42 @@
+{
+  "case_id": "CASE-6AD6623E",
+  "title": "Investigation: Wash Trading \u2014 ALT-F66E066A",
+  "description": "Automated case created from 2 alert(s).",
+  "status": "resolved",
+  "priority": "high",
+  "category": "spoofing",
+  "assignee": "analyst_2",
+  "alert_ids": [
+    "ALT-F66E066A",
+    "ALT-151078D2"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-E07E4003",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-24T06:46:32.595654",
+      "type": "note",
+      "content": "Initial review of ALT-F66E066A \u2014 patterns consistent with wash trading.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-C439FBC1",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-25T11:46:32.595654",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-26T23:46:32.595654",
+    "sla_hours": 72,
+    "sla_status": "breached"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-23T23:46:32.595654",
+  "updated_at": "2026-03-02T23:46:32.595747",
+  "resolved_at": "2026-02-25T23:46:32.595654",
+  "closed_at": null
+}

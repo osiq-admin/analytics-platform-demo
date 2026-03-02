@@ -1,0 +1,42 @@
+{
+  "case_id": "CASE-08D996EB",
+  "title": "Investigation: Market Abuse \u2014 ALT-151078D2",
+  "description": "Automated case created from 2 alert(s).",
+  "status": "closed",
+  "priority": "critical",
+  "category": "insider_trading",
+  "assignee": "compliance_officer",
+  "alert_ids": [
+    "ALT-151078D2",
+    "ALT-40CB0601"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-43977CA7",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-21T18:46:32.594253",
+      "type": "note",
+      "content": "Initial review of ALT-151078D2 \u2014 patterns consistent with insider trading.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-AEFDD7D4",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-22T21:46:32.594253",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-23T23:46:32.594253",
+    "sla_hours": 72,
+    "sla_status": "breached"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-20T23:46:32.594253",
+  "updated_at": "2026-03-02T23:46:32.594348",
+  "resolved_at": "2026-02-22T23:46:32.594253",
+  "closed_at": "2026-02-23T23:46:32.594253"
+}

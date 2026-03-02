@@ -1,0 +1,41 @@
+{
+  "case_id": "CASE-E15D7968",
+  "title": "Investigation: Front Running \u2014 ALT-0E9B8C22",
+  "description": "Automated case created from 1 alert(s).",
+  "status": "closed",
+  "priority": "high",
+  "category": "insider_trading",
+  "assignee": "senior_analyst",
+  "alert_ids": [
+    "ALT-0E9B8C22"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-5CD5BAC0",
+      "author": "analyst_1",
+      "timestamp": "2026-02-23T02:46:32.597639",
+      "type": "note",
+      "content": "Initial review of ALT-0E9B8C22 \u2014 patterns consistent with wash trading.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-C9F914A3",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-24T01:46:32.597639",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-25T23:46:32.597639",
+    "sla_hours": 72,
+    "sla_status": "breached"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-22T23:46:32.597639",
+  "updated_at": "2026-03-02T23:46:32.597732",
+  "resolved_at": "2026-02-24T23:46:32.597639",
+  "closed_at": "2026-02-25T23:46:32.597639"
+}

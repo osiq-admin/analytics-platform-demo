@@ -1,0 +1,35 @@
+{
+  "case_id": "CASE-5817235F",
+  "title": "Investigation: Front Running \u2014 ALT-616F3448",
+  "description": "Automated case created from 3 alert(s).",
+  "status": "investigating",
+  "priority": "critical",
+  "category": "market_abuse",
+  "assignee": "compliance_officer",
+  "alert_ids": [
+    "ALT-616F3448",
+    "ALT-0FAAE341",
+    "ALT-151078D2"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-839A5CEB",
+      "author": "senior_analyst",
+      "timestamp": "2026-02-18T16:46:32.596619",
+      "type": "note",
+      "content": "Initial review of ALT-616F3448 \u2014 patterns consistent with spoofing.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-20T23:46:32.596619",
+    "sla_hours": 72,
+    "sla_status": "at_risk"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-17T23:46:32.596619",
+  "updated_at": "2026-03-02T23:46:32.596687",
+  "resolved_at": null,
+  "closed_at": null
+}

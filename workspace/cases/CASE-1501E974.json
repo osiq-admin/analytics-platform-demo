@@ -1,0 +1,41 @@
+{
+  "case_id": "CASE-1501E974",
+  "title": "Investigation: Market Abuse \u2014 ALT-151078D2",
+  "description": "Automated case created from 1 alert(s).",
+  "status": "resolved",
+  "priority": "low",
+  "category": "front_running",
+  "assignee": "analyst_1",
+  "alert_ids": [
+    "ALT-151078D2"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-344DCAB0",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-18T11:46:32.593894",
+      "type": "note",
+      "content": "Initial review of ALT-151078D2 \u2014 patterns consistent with front running.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-F4142817",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-19T07:46:32.593894",
+      "type": "disposition",
+      "content": "Investigation complete. Filing STOR.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-20T23:46:32.593894",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-17T23:46:32.593894",
+  "updated_at": "2026-03-02T23:46:32.593990",
+  "resolved_at": "2026-02-19T23:46:32.593894",
+  "closed_at": null
+}

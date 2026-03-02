@@ -303,6 +303,7 @@ class TestAPIEndpointSentinel:
             "ai",
             "alerts",
             "archive",
+            "cases",
             "dashboard",
             "data",
             "data_info",

@@ -1,0 +1,41 @@
+{
+  "case_id": "CASE-681092BD",
+  "title": "Investigation: Spoofing \u2014 ALT-D52BFC54",
+  "description": "Automated case created from 1 alert(s).",
+  "status": "escalated",
+  "priority": "high",
+  "category": "insider_trading",
+  "assignee": "compliance_officer",
+  "alert_ids": [
+    "ALT-D52BFC54"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-F8E93584",
+      "author": "analyst_1",
+      "timestamp": "2026-02-12T05:46:32.593532",
+      "type": "note",
+      "content": "Initial review of ALT-D52BFC54 \u2014 patterns consistent with wash trading.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-566AC6C1",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-13T09:46:32.593532",
+      "type": "escalation",
+      "content": "Escalated for senior review.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-14T23:46:32.593532",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-11T23:46:32.593532",
+  "updated_at": "2026-03-02T23:46:32.593635",
+  "resolved_at": null,
+  "closed_at": null
+}

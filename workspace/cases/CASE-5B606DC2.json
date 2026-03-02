@@ -1,0 +1,43 @@
+{
+  "case_id": "CASE-5B606DC2",
+  "title": "Investigation: Insider Trading \u2014 ALT-81128086",
+  "description": "Automated case created from 3 alert(s).",
+  "status": "escalated",
+  "priority": "critical",
+  "category": "spoofing",
+  "assignee": "analyst_2",
+  "alert_ids": [
+    "ALT-81128086",
+    "ALT-31ED76E9",
+    "ALT-BFB9E2B7"
+  ],
+  "annotations": [
+    {
+      "annotation_id": "ANN-EAF3995D",
+      "author": "senior_analyst",
+      "timestamp": "2026-02-17T00:46:32.596942",
+      "type": "note",
+      "content": "Initial review of ALT-81128086 \u2014 patterns consistent with spoofing.",
+      "metadata": {}
+    },
+    {
+      "annotation_id": "ANN-32E25A1C",
+      "author": "compliance_officer",
+      "timestamp": "2026-02-18T15:46:32.596942",
+      "type": "escalation",
+      "content": "Escalated for senior review.",
+      "metadata": {}
+    }
+  ],
+  "sla": {
+    "due_date": "2026-02-19T23:46:32.596942",
+    "sla_hours": 72,
+    "sla_status": "on_track"
+  },
+  "disposition": null,
+  "tags": [],
+  "created_at": "2026-02-16T23:46:32.596942",
+  "updated_at": "2026-03-02T23:46:32.597031",
+  "resolved_at": null,
+  "closed_at": null
+}
