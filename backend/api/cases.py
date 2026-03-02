@@ -41,6 +41,14 @@ def get_cases_for_alert(alert_id: str, request: Request):
     return {"cases": _svc(request).get_cases_for_alert(alert_id)}
 
 
+@router.post("/from-alert/{alert_id}")
+def create_case_from_alert(alert_id: str, request: Request):
+    return _svc(request).create_case(
+        title=f"Investigation: {alert_id}",
+        alert_ids=[alert_id],
+    )
+
+
 @router.get("")
 @router.get("/")
 def list_cases(request: Request):

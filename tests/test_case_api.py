@@ -69,3 +69,32 @@ class TestCaseAPI:
         r = client.get("/api/cases/for-alert/ALT-X")
         assert r.status_code == 200
         assert len(r.json()["cases"]) == 1
+
+    def test_create_from_alert(self):
+        r = client.post("/api/cases/from-alert/ALT-001")
+        assert r.status_code == 200
+        data = r.json()
+        assert "ALT-001" in data["alert_ids"]
+        assert "ALT-001" in data["title"]
+
+    def test_annotation_types(self):
+        created = client.post("/api/cases", json={"title": "T", "alert_ids": []}).json()
+        for ann_type in ("note", "disposition", "escalation", "evidence"):
+            r = client.post(f"/api/cases/{created['case_id']}/annotate", json={
+                "type": ann_type, "content": f"Test {ann_type}"
+            })
+            assert r.status_code == 200
+        case = client.get(f"/api/cases/{created['case_id']}").json()
+        assert len(case["annotations"]) == 4
+
+    def test_annotation_ordering(self):
+        created = client.post("/api/cases", json={"title": "T", "alert_ids": []}).json()
+        client.post(f"/api/cases/{created['case_id']}/annotate", json={
+            "content": "First"
+        })
+        client.post(f"/api/cases/{created['case_id']}/annotate", json={
+            "content": "Second"
+        })
+        case = client.get(f"/api/cases/{created['case_id']}").json()
+        assert case["annotations"][0]["content"] == "First"
+        assert case["annotations"][1]["content"] == "Second"

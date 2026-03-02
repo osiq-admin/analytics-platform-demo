@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { AlertTrace } from "../../../stores/alertStore.ts";
+import InvestigationActions from "./InvestigationActions.tsx";
 
 interface FooterActionsProps {
   alert: AlertTrace;
@@ -21,6 +22,11 @@ export default function FooterActions({ alert, onViewRelatedAlerts }: FooterActi
 
   return (
     <div className="space-y-2">
+      {/* Investigation actions */}
+      <div className="border-t border-border pt-3" data-tour="alert-investigation-actions">
+        <InvestigationActions alert={alert} />
+      </div>
+
       <div className="flex items-center gap-2 border-t border-border pt-3">
         <button
           onClick={() => setShowRaw(!showRaw)}
