@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-02 (M285 Phase 24 Test Sweep; 1410 total tests: 1147 backend + 263 E2E, 23 views, 35 scenarios, 112 architecture sections, 975 modules)
+**Last Updated**: 2026-03-02 (M288 Phase 25 Post-Merge System Audit; 1509 total tests: 1238 backend + 271 E2E, 24 views, 35 scenarios, 112 architecture sections, 976 modules)
 
 ---
 
@@ -61,6 +61,7 @@
 | Masking, Encryption & Access Control (Phase 22) | COMPLETE | M257-M268: MaskingService (partial/tokenize/generalize/redact), RBACService (4 roles), 7 governance API endpoints, audit-aware masking, DataGovernance view (4 tabs), global role switcher, S34 scenario — 1152 total tests (1057+230), 22 views, 34 scenarios, 104 architecture sections |
 | Business Glossary & Semantic Layer (Phase 23) | COMPLETE | M269-M280: ISO 11179 glossary, semantic metrics, DAMA-DMBOK, standards compliance, entity gaps — 1105 backend + 238 E2E |
 | Comprehensive Test Sweep (Phase 24) | COMPLETE | M281-M285: Contract tests, startup integration, consistency validators, API sentinel, E2E governance role-switching, nav smoke — 1147 backend + 263 E2E |
+| Post-Merge System Audit (Phase 25) | COMPLETE | M286-M288: Restore AnalyticsTiers integrations dropped during PR #16 merge, register 3 API routers, add route/sidebar/tour, fix API sentinel + stale scenario ref, verify 1238 backend + 271 E2E tests, 976 frontend modules — 24 views, 30 API modules |
 
 ---
 
@@ -417,6 +418,14 @@
 | M283 | Consistency Validators + API Sentinel | COMPLETE | 1 | 1 | 20 tests: navigation (6), tours (4), masking policies (6), API module sentinel (4) — auto-detects cross-system drift |
 | M284 | E2E Governance + Navigation Smoke | COMPLETE | 1 | 1 | 3 governance role-switching E2E tests + 22-path dynamic navigation smoke test |
 | M285 | Full Suite Verification | COMPLETE | 1 | 1 | 1147 backend + 263 E2E = 1410 total, 0 failures, docs updated |
+
+### Phase 25: Post-Merge System Audit (M286-M288)
+
+| Milestone | Title | Status | Planned | Actual | Notes |
+|---|---|---|---|---|---|
+| M286 | Restore Dropped Integrations | COMPLETE | 1 | 1 | Register archive/platinum/sandbox API routers, add /analytics-tiers route, sidebar fallback, tour map, API sentinel, fix stale scenario ref |
+| M287 | Full Test Suite Verification | COMPLETE | 1 | 1 | 1238 backend + 271 E2E = 1509 total, 976 frontend modules, 20/20 consistency validators |
+| M288 | Documentation Count Sync | COMPLETE | 1 | 1 | All docs updated: 24 views, 30 API modules, 1509 tests across CLAUDE.md, README, progress, checklist |
 
 ---
 

@@ -28,12 +28,12 @@ uv run python -m scripts.generate_snapshots
 
 ```
 ┌──────────────────────────────────────────────┐
-│  React 19 SPA (975 Vite modules)             │
+│  React 19 SPA (976 Vite modules)             │
 │  AG Grid · TradingView Charts · Monaco       │
 │  React Flow · Recharts · Zustand (12 stores) │
 │  Tailwind CSS 4 · react-resizable-panels     │
 └──────────────────┬───────────────────────────┘
-                   │ /api/* (27 route modules)
+                   │ /api/* (30 route modules)
 ┌──────────────────┴───────────────────────────┐
 │  FastAPI Backend                             │
 │  Calculation Engine · Detection Engine       │
@@ -89,7 +89,7 @@ uv run python -m scripts.generate_snapshots
 - Alert fires when: all gates pass AND (all checks pass OR score >= threshold)
 - Settings resolve per entity context: product-specific → hierarchy/multi-dim → default fallback
 
-## 23 Views
+## 24 Views
 
 | Area | View | What It Does |
 |------|------|-------------|
