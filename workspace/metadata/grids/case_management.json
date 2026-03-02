@@ -1,0 +1,13 @@
+{
+    "grid_id": "case_management",
+    "columns": [
+        {"field": "case_id", "headerName": "Case ID", "width": 140},
+        {"field": "title", "headerName": "Title", "flex": 1, "minWidth": 200},
+        {"field": "status", "headerName": "Status", "width": 130},
+        {"field": "priority", "headerName": "Priority", "width": 110},
+        {"field": "assignee", "headerName": "Assignee", "width": 140},
+        {"field": "alert_count", "headerName": "Alerts", "width": 80},
+        {"field": "sla_status", "headerName": "SLA", "width": 100},
+        {"field": "created_at", "headerName": "Created", "width": 120}
+    ]
+}

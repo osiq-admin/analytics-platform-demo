@@ -46,8 +46,9 @@
             "order": 5,
             "items": [
                 {"view_id": "alerts", "label": "Risk Cases", "path": "/alerts", "icon": "AlertTriangle", "order": 0},
-                {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 1},
-                {"view_id": "regulatory", "label": "Regulatory Map", "path": "/regulatory", "icon": "Shield", "order": 2}
+                {"view_id": "cases", "label": "Case Management", "path": "/cases", "icon": "Briefcase", "order": 1},
+                {"view_id": "submissions", "label": "Submissions", "path": "/submissions", "icon": "FileText", "order": 2},
+                {"view_id": "regulatory", "label": "Regulatory Map", "path": "/regulatory", "icon": "Shield", "order": 3}
             ]
         },
         {

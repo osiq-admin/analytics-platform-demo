@@ -29,6 +29,7 @@ const DataGovernance = lazy(() => import("./views/DataGovernance/index.tsx"));
 const BusinessGlossary = lazy(() => import("./views/BusinessGlossary/index.tsx"));
 const AnalyticsTiers = lazy(() => import("./views/AnalyticsTiers/index.tsx"));
 const DataLineage = lazy(() => import("./views/DataLineage/index.tsx"));
+const CaseManagement = lazy(() => import("./views/CaseManagement/index.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -62,9 +63,10 @@ export const routes: RouteObject[] = [
       { path: "pipeline", element: <PipelineMonitor /> },
       { path: "dashboard", element: <Dashboard /> },
 
-      // Investigate — risk cases, submissions, regulatory
+      // Investigate — risk cases, case management, submissions, regulatory
       { path: "alerts", element: <RiskCaseManager /> },
       { path: "alerts/:alertId", element: <RiskCaseManager /> },
+      { path: "cases", element: <Suspense fallback={null}><CaseManagement /></Suspense> },
       { path: "submissions", element: <Submissions /> },
       { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
 
