@@ -1723,3 +1723,73 @@ Then I see expandable cards for entities with missing attributes
 And the product entity shows 6 missing attributes with ISO/regulatory references
 And each gap includes a priority badge and regulatory need description
 ```
+
+---
+
+## Feature: Data Lineage
+
+### Scenario: View End-to-End Tier Lineage
+```gherkin
+Given the platform is running
+And the Data Lineage view is loaded at /lineage
+When I select "execution" from the entity multi-select dropdown
+Then a tier swim lane graph renders with Landing, Bronze, Silver, and Gold swim lanes
+And each node shows an ISO 8000 quality badge (green >95%, amber 80-95%, red <80%)
+And animated edges show data flow between tiers
+And layer toggle chips are visible for 6 composable layers
+```
+
+### Scenario: Trace Field Through Tiers
+```gherkin
+Given the platform is running
+And the Data Lineage view is loaded at /lineage
+When I click the "Field Tracing" tab
+And I select entity "execution" and field "venue_mic"
+Then a chain graph renders showing the field transformation through Landing → Bronze → Silver → Gold
+And each node shows tier name, field name, data type, and quality score
+And each edge shows the transformation type (cast, normalize, derive, or aggregate)
+```
+
+### Scenario: Run Impact Analysis with What-If
+```gherkin
+Given the platform is running
+And the Data Lineage view is loaded at /lineage
+When I click the "Impact Analysis" tab
+And I select a Gold-tier node
+And I toggle direction to "Upstream"
+Then a weighted BFS graph shows hard (MUST_PASS) and soft (OPTIONAL) impact paths
+When I adjust the what-if threshold slider
+Then the projected alert count change updates in real time
+```
+
+### Scenario: Alert Explainability Tunnel
+```gherkin
+Given the platform is running
+And the Risk Case Manager view is loaded at /alerts
+When I click on an alert row to open the investigation workspace
+And I click "View Full Lineage" in the Calculation Trace panel
+Then the Data Lineage view opens with the alert's provenance chain highlighted
+And non-relevant nodes are dimmed
+And the exact data path from source to alert is visible
+```
+
+### Scenario: Toggle Regulatory Compliance Overlay
+```gherkin
+Given the platform is running
+And the Data Lineage view is loaded at /lineage
+When I click the "Regulatory" overlay toggle button
+Then regulation badges appear on affected nodes (MAR, MiFID II, Dodd-Frank, FINRA)
+And each badge shows which regulatory requirement the node fulfills
+When I click the toggle again
+Then the regulatory badges are hidden
+```
+
+### Scenario: View Surveillance Coverage Matrix
+```gherkin
+Given the platform is running
+And the Data Lineage view is loaded at /lineage
+When I click the "Surveillance Coverage" button
+Then a modal opens showing a products × abuse types coverage matrix
+And cells show coverage status (covered, partial, gap)
+And a regulatory gap analysis section highlights uncovered combinations
+```

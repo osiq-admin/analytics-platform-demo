@@ -177,39 +177,39 @@ uv run python -m qa test e2e              # E2E tests — ALL PASS
 
 Every file and line containing hardcoded test counts. When test counts change, update **ALL** of these. Current test counts are also available via `uv run python -m qa report`.
 
-### Backend Test Count (currently 1105)
+### Backend Test Count (currently 1408)
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 4 (Project Overview) | `1343 tests (1105 backend + 238 E2E)` |
-| `CLAUDE.md` | Quick Start comment | `# Run backend tests (1105)` |
-| `CLAUDE.md` | Architecture section | `1105 backend tests + 238 E2E` |
-| `README.md` | Project Structure | `# 1343 tests (1105 backend + 238 E2E Playwright)` |
-| `README.md` | Testing section comment | `# Backend tests (1105)` |
-| `README.md` | Testing section text | `1343 tests total: 1105 backend...` |
-| `docs/progress.md` | Line 5 (header) | `1343 total tests: 1105 backend + 238 E2E` |
-| `docs/feature-development-checklist.md` | Line 5 (header) | `1343 total tests: 1105 backend + 238 E2E` |
-| `docs/feature-development-checklist.md` | Section 1 | `currently 1105` |
-| `docs/feature-development-checklist.md` | Section 4 | `currently 1105` |
-| `docs/feature-development-checklist.md` | Section 5 | `currently 238` |
-| `docs/feature-development-checklist.md` | Quick Reference | `# Backend tests (1105+)` |
-| `docs/feature-development-checklist.md` | Quick Reference | `# E2E Playwright tests (238+)` |
-| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Current State | `1343 tests (1105 backend + 238 E2E)` |
+| `CLAUDE.md` | Line 4 (Project Overview) | `1694 tests (1408 backend + 286 E2E)` |
+| `CLAUDE.md` | Quick Start comment | `# Run backend tests (1408)` |
+| `CLAUDE.md` | Architecture section | `1408 backend tests + 286 E2E` |
+| `README.md` | Project Structure | `# 1694 tests (1408 backend + 286 E2E Playwright)` |
+| `README.md` | Testing section comment | `# Backend tests (1408)` |
+| `README.md` | Testing section text | `1694 tests total: 1408 backend...` |
+| `docs/progress.md` | Line 5 (header) | `1694 total tests: 1408 backend + 286 E2E` |
+| `docs/feature-development-checklist.md` | Line 5 (header) | `1694 total tests: 1408 backend + 286 E2E` |
+| `docs/feature-development-checklist.md` | Section 1 | `currently 1408` |
+| `docs/feature-development-checklist.md` | Section 4 | `currently 1408` |
+| `docs/feature-development-checklist.md` | Section 5 | `currently 286` |
+| `docs/feature-development-checklist.md` | Quick Reference | `# Backend tests (1408+)` |
+| `docs/feature-development-checklist.md` | Quick Reference | `# E2E Playwright tests (286+)` |
+| `docs/plans/2026-02-24-comprehensive-roadmap.md` | Current State | `1694 tests (1408 backend + 286 E2E)` |
 
-### E2E Test Count (currently 238)
+### E2E Test Count (currently 286)
 
 Same files as above — search for the E2E count alongside backend count.
 
-### Total Test Count (currently 1343)
+### Total Test Count (currently 1694)
 
 Sum of backend + E2E. Same files as above.
 
-### Frontend Module Count (currently 975)
+### Frontend Module Count (currently 1082)
 
 | File | Location | Format |
 |------|----------|--------|
-| `CLAUDE.md` | Line 11 | `# Build frontend (975 modules)` |
-| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (975 Vite modules)` |
+| `CLAUDE.md` | Line 11 | `# Build frontend (1082 modules)` |
+| `README.md` | Line 31 (Architecture diagram) | `React 19 SPA (1082 Vite modules)` |
 
 ---
 
@@ -241,7 +241,7 @@ Sum of backend + E2E. Same files as above.
 | `docs/architecture-traceability.md` | Header |
 | Context-level `MEMORY.md` | Current State section |
 
-### Operation Script Count (currently 136 across 23 views)
+### Operation Script Count (currently 146 across 25 views)
 
 | File | Location |
 |------|----------|
@@ -249,14 +249,14 @@ Sum of backend + E2E. Same files as above.
 | Context-level `MEMORY.md` | Current State section |
 | In-repo `.claude/memory/MEMORY.md` | Current State section |
 
-### Tour Count (currently 26 tours in registry)
+### Tour Count (currently 27 tours in registry)
 
 | File | Location |
 |------|----------|
 | `workspace/metadata/tours/registry.json` | `tours` array length |
 | `docs/demo-guide.md` | Tour registry section |
 
-### Milestone Range (currently M0-M280)
+### Milestone Range (currently M0-M316)
 
 | File | Location |
 |------|----------|
@@ -290,7 +290,7 @@ uv run python -m qa report
 
 # Frontend build — expect 0 errors, module count matches registry
 cd frontend && npm run build 2>&1 | grep "modules transformed"
-# Expected: "975 modules transformed" (or current count)
+# Expected: "1082 modules transformed" (or current count)
 
 # Test count sync — verify all files agree
 grep -rn "1105\|238\|1343" CLAUDE.md README.md docs/progress.md docs/feature-development-checklist.md | grep -i "test\|backend\|e2e"

@@ -100,7 +100,7 @@ class TestFieldTracingTab:
         loaded_page.goto(f"{APP_URL}/lineage")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
         # Click Field Tracing tab
-        tab_btn = loaded_page.get_by_text("Field Tracing", exact=False).first
+        tab_btn = loaded_page.locator("[data-trace='lineage.tab.field-tracing']")
         tab_btn.click()
         loaded_page.wait_for_timeout(1000)
         body = loaded_page.locator("main").inner_text()
@@ -111,7 +111,7 @@ class TestFieldTracingTab:
         """Entity dropdown renders on Field Tracing tab."""
         loaded_page.goto(f"{APP_URL}/lineage")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        tab_btn = loaded_page.get_by_text("Field Tracing", exact=False).first
+        tab_btn = loaded_page.locator("[data-trace='lineage.tab.field-tracing']")
         tab_btn.click()
         loaded_page.wait_for_timeout(1000)
         # Look for select elements
@@ -126,17 +126,17 @@ class TestImpactAnalysisTab:
         """Switching to Impact Analysis tab renders direction controls."""
         loaded_page.goto(f"{APP_URL}/lineage")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        tab_btn = loaded_page.get_by_text("Impact Analysis", exact=False).first
+        tab_btn = loaded_page.locator("[data-trace='lineage.tab.impact-analysis']")
         tab_btn.click()
         loaded_page.wait_for_timeout(1000)
         body = loaded_page.locator("main").inner_text()
-        assert "upstream" in body.lower() or "downstream" in body.lower() or "impact" in body.lower()
+        assert "upstream" in body.lower() or "downstream" in body.lower() or "node" in body.lower()
 
     def test_whatif_slider_present(self, loaded_page):
         """What-if threshold simulator panel renders on Impact Analysis tab."""
         loaded_page.goto(f"{APP_URL}/lineage")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        tab_btn = loaded_page.get_by_text("Impact Analysis", exact=False).first
+        tab_btn = loaded_page.locator("[data-trace='lineage.tab.impact-analysis']")
         tab_btn.click()
         loaded_page.wait_for_timeout(1000)
         body = loaded_page.locator("main").inner_text()
@@ -146,9 +146,9 @@ class TestImpactAnalysisTab:
         """Direction toggle buttons render (Upstream/Downstream/Both)."""
         loaded_page.goto(f"{APP_URL}/lineage")
         loaded_page.wait_for_load_state("networkidle", timeout=15000)
-        tab_btn = loaded_page.get_by_text("Impact Analysis", exact=False).first
+        tab_btn = loaded_page.locator("[data-trace='lineage.tab.impact-analysis']")
         tab_btn.click()
-        loaded_page.wait_for_timeout(1000)
+        loaded_page.wait_for_timeout(2000)
         body = loaded_page.locator("main").inner_text()
-        has_direction = ("upstream" in body.lower() or "downstream" in body.lower() or "both" in body.lower())
+        has_direction = "upstream" in body.lower() or "downstream" in body.lower() or "both" in body.lower()
         assert has_direction

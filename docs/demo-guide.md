@@ -30,7 +30,7 @@ The top toolbar shows demo controls:
 The top-right toolbar area has:
 - **Tour** — Start a guided tour for the current view
 - **Trace** — Toggle Architecture Traceability Mode (info icons appear on every traced section)
-- **Scenarios** — Open the guided scenario browser (35 scenarios in Watch Demo or Try It Yourself mode)
+- **Scenarios** — Open the guided scenario browser (39 scenarios in Watch Demo or Try It Yourself mode)
 - **Light/Dark** — Toggle theme
 
 Each view also has a **(?)** help button in the bottom-right corner that opens a per-view operations panel with available actions, related scenarios, and quick tips.
@@ -46,7 +46,7 @@ Each view also has a **(?)** help button in the bottom-right corner that opens a
 - **Act 2 Guide** (4 steps): Model composition, parameters, score steps, input mappings
 - **Act 3 Guide** (3 steps): Alert investigation, dashboard overview, AI analysis
 
-**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 35 guided scenarios in 15 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary). Each scenario supports:
+**Guided Scenarios (Phase 7B):** Click the **Scenarios** button in the toolbar to open the scenario browser with 39 guided scenarios in 16 categories (Settings, Calculations, Detection Models, Use Cases, Entities, Investigation, Admin, Architecture, Data Onboarding, Mapping, Medallion Pipeline, Governance, Lakehouse, Glossary, Lineage). Each scenario supports:
 - **Watch Demo** — Auto-plays with narration, auto-fills forms, clicks buttons
 - **Try It Yourself** — Interactive mode with hints and validation
 
@@ -322,7 +322,7 @@ The Regulatory Map provides end-to-end traceability from regulatory requirements
   - `useWorkflowStates(workflowId)` hook with module-level cache
 - **Demo checkpoints**: 8 demo progression checkpoints from `workspace/metadata/demo/default.json`
   - Labels, descriptions, ordering accessible via `/api/metadata/demo/default`
-- **Tour/scenario registry**: 26 tours and 35 scenarios catalogued in `workspace/metadata/tours/registry.json`
+- **Tour/scenario registry**: 27 tours and 39 scenarios catalogued in `workspace/metadata/tours/registry.json`
   - Tour summaries (id, path, title, step count) and scenario categories via `/api/metadata/tours`
 
 ## Act 2: Model Composition
@@ -560,7 +560,7 @@ Click **Skip to End** to show the final state.
   - **Available Operations** — what you can do on this screen
   - **Related Scenarios** — links to relevant guided scenarios
   - **Quick Tips** — context-specific advice
-- 136 operations defined across 23 views
+- 146 operations defined across 25 views
 
 ### 7.3 Scenario Categories
 
@@ -896,6 +896,59 @@ Phase 23 adds an ISO 11179 business glossary, semantic layer with business-frien
 ### Guided Scenario
 
 **S35: Business Glossary Exploration** (Glossary category, beginner) — available in the Scenarios browser. Walks through term browsing, semantic metrics, DMBOK coverage, and standards compliance in 8 steps.
+
+---
+
+## Data Lineage — Phase 26
+
+Navigate to **Govern → Data Lineage** or visit `/lineage`.
+
+### Key Points
+- 25th view — flagship 3-tab lineage explorer
+- 6-layer composable lineage graph with ~215 nodes and ~125 edges
+- ISO 8000 quality scores at every tier node (6 ISO 25012 dimensions)
+- Regulatory compliance overlay (MAR, MiFID II, Dodd-Frank, FINRA)
+- Alert explainability tunnel — one-click from any alert to full provenance chain
+
+### Tab 1: Lineage Explorer (Hero Graph)
+- **Tier swim lanes**: Entity data flows left-to-right through Landing → Bronze → Silver → Gold
+- **Quality badges**: Green (>95%), amber (80-95%), red (<80%) at every node
+- **Calc→alert overlay**: Calculation chain and detection models overlaid below Gold tier
+- **Animated edges**: Data flow particles with SLA coloring
+- **Regulatory overlay toggle**: Shows which regulations require which data nodes/fields
+- **Surveillance Coverage button**: Opens matrix modal showing products × abuse types coverage
+
+### Tab 2: Field Tracing
+- Select entity + field → trace transformation chain through all tier transitions
+- Each node shows: tier, field name, data type, quality score (ISO 8000-61)
+- Each edge shows: transformation type (cast, normalize, derive, aggregate)
+- "Trace All" mode: show all field chains simultaneously
+
+### Tab 3: Impact Analysis
+- **Node impact**: Select any node → weighted BFS shows hard (MUST_PASS) vs soft (OPTIONAL) impact
+- **What-if simulator**: Adjust detection threshold → preview projected alert count change
+- **Regulatory impact**: Shows affected regulations when changing upstream data
+
+### Interactive: Explore the Hero Graph
+1. Navigate to `/lineage`
+2. Select "execution" from the entity multi-select
+3. Observe the tier swim lane graph with quality badges
+4. Click an edge between tiers to see field mapping detail
+5. Toggle "Regulatory" overlay to see regulation badges on nodes
+6. Click "Surveillance Coverage" to open the coverage matrix
+
+### Interactive: Alert Explainability
+1. Navigate to Risk Case Manager (`/alerts`)
+2. Click any alert row to open the investigation workspace
+3. In the Calculation Trace panel, click "View Full Lineage"
+4. Observe the DataLineage view with the alert's provenance chain highlighted
+5. All non-relevant nodes are dimmed — the exact data path is highlighted
+
+### Guided Scenarios
+- **S36**: Explore End-to-End Lineage
+- **S37**: Trace a Regulatory-Required Field
+- **S38**: Analyze Impact of a Change
+- **S39**: Alert Explainability Tunnel
 
 ---
 
