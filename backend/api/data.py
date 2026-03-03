@@ -2,6 +2,13 @@
 from fastapi import APIRouter, Request
 
 from backend.config import settings
+from backend.services.masking_wrapper import (
+    get_pii_columns,
+    has_pii_fields,
+    log_pii_access,
+    mask_entity_rows,
+    mask_query_rows,
+)
 from backend.services.query_service import QueryService
 
 router = APIRouter(prefix="/api/data", tags=["data"])
@@ -20,18 +27,26 @@ def list_data_files():
 
 @router.get("/files/{filename}/preview")
 def preview_data_file(filename: str, request: Request, limit: int = 100):
-    """Preview data for a table by querying DuckDB."""
+    """Preview data for a table by querying DuckDB — GDPR Art. 25 masking applied."""
     svc = QueryService(request.app.state.db)
+    role_id = request.app.state.rbac_service.current_role_id
     try:
         result = svc.execute(f'SELECT * FROM "{filename}" LIMIT {limit}', limit=limit)  # nosec B608
+        rows = result.get("rows", [])
+        columns = result.get("columns", [])
+        pii_cols = get_pii_columns(columns) if columns else {}
+        if rows and has_pii_fields(columns):
+            rows = mask_entity_rows(filename, rows, role_id=role_id, masking_service=request.app.state.masking_service)
+            log_pii_access(request.app.state.audit, filename, len(rows), role_id, "data_preview")
         return {
             "filename": filename,
-            "columns": result.get("columns", []),
-            "rows": result.get("rows", []),
-            "total_rows": len(result.get("rows", [])),
+            "columns": columns,
+            "rows": rows,
+            "total_rows": len(rows),
+            "pii_columns": pii_cols,
         }
     except Exception:
-        return {"filename": filename, "columns": [], "rows": [], "total_rows": 0}
+        return {"filename": filename, "columns": [], "rows": [], "total_rows": 0, "pii_columns": {}}
 
 
 @router.post("/reload")
@@ -132,7 +147,11 @@ def get_related_orders(
         limit=limit,
     )
 
+    role_id = request.app.state.rbac_service.current_role_id
+    msvc = request.app.state.masking_service
+    order_rows = mask_entity_rows("order", orders.get("rows", []), role_id=role_id, masking_service=msvc)
+    exec_rows = mask_entity_rows("execution", executions.get("rows", []), role_id=role_id, masking_service=msvc)
     return {
-        "orders": orders.get("rows", []),
-        "executions": executions.get("rows", []),
+        "orders": order_rows,
+        "executions": exec_rows,
     }

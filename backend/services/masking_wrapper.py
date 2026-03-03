@@ -116,14 +116,16 @@ def mask_entity_rows(
     rows: list[dict],
     role_id: str | None = None,
     rbac: RBACService | None = None,
+    masking_service: MaskingService | None = None,
 ) -> list[dict]:
     """Mask PII fields in rows for a known entity.
 
     If role_id is not provided, uses rbac.current_role_id.
+    If masking_service is not provided, creates one from _WORKSPACE.
     """
     if not rows:
         return rows
-    svc = MaskingService(_WORKSPACE)
+    svc = masking_service or MaskingService(_WORKSPACE)
     if role_id is None and rbac is not None:
         role_id = rbac.current_role_id
     if role_id is None:
@@ -135,6 +137,7 @@ def mask_query_rows(
     rows: list[dict],
     role_id: str | None = None,
     rbac: RBACService | None = None,
+    masking_service: MaskingService | None = None,
 ) -> list[dict]:
     """Auto-detect entity from column names and mask PII fields.
 
@@ -146,7 +149,7 @@ def mask_query_rows(
     entity_id = infer_entity_from_columns(columns)
     if entity_id is None:
         return rows
-    return mask_entity_rows(entity_id, rows, role_id=role_id, rbac=rbac)
+    return mask_entity_rows(entity_id, rows, role_id=role_id, rbac=rbac, masking_service=masking_service)
 
 
 def log_pii_access(
