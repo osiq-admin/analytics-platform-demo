@@ -6,5 +6,5 @@ export function formatLabel(value: string): string {
 /** Format ISO timestamp to human-readable form: "2026-02-25 10:35:49" (drop microseconds and T separator) */
 export function formatTimestamp(ts: string): string {
   if (!ts) return "";
-  return ts.replace("T", " ").replace(/\.\d+$/, "");
+  return ts.replace("T", " ").replace(/\.\d+/, "").replace("Z", "").trim();
 }

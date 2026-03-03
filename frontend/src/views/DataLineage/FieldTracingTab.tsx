@@ -67,7 +67,7 @@ function layoutFieldChains(traces: FieldTrace[]) {
         g.setNode(nodeId, { width: NODE_W, height: NODE_H });
 
         const tierColor = TIER_COLORS[step.tier] ?? "#71717a";
-        const qualityPct = Math.round(step.quality_score * 100);
+        const qualityPct = Math.round((step.quality_score ?? 0) * 100);
         const qualityColor =
           qualityPct >= 90
             ? "#10b981"

@@ -27,6 +27,7 @@ export default function DataGrid<T>({ className, ...props }: DataGridProps<T>) {
       <AgGridReact<T>
         animateRows
         suppressCellFocus
+        suppressNoRowsOverlay
         defaultColDef={defaultColDef}
         autoSizeStrategy={autoSizeStrategy}
         tooltipShowDelay={300}
