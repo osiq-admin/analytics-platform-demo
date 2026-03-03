@@ -43,19 +43,35 @@ def list_alerts(request: Request):
     return alerts
 
 
+def _mask_alert_trace(data: dict, request: Request) -> dict:
+    """Apply PII masking to alert trace fields — GDPR Art. 25."""
+    from backend.services.masking_wrapper import has_pii_fields, mask_query_rows
+
+    columns = list(data.keys())
+    if has_pii_fields(columns):
+        masked_list = mask_query_rows(
+            [data],
+            role_id=request.app.state.rbac_service.current_role_id,
+            masking_service=request.app.state.masking_service,
+        )
+        return masked_list[0]
+    return data
+
+
 @router.get("/{alert_id}")
-def get_alert(alert_id: str):
-    """Get full alert trace JSON."""
+def get_alert(alert_id: str, request: Request):
+    """Get full alert trace JSON with PII masking applied."""
     path = _traces_dir() / f"{alert_id}.json"
     if not path.exists():
         return JSONResponse({"error": "not found"}, status_code=404)
-    return json.loads(path.read_text())
+    data = json.loads(path.read_text())
+    return _mask_alert_trace(data, request)
 
 
 @router.get("/{alert_id}/trace")
-def get_alert_trace(alert_id: str):
+def get_alert_trace(alert_id: str, request: Request):
     """Get alert trace (same as full alert for now)."""
-    return get_alert(alert_id)
+    return get_alert(alert_id, request)
 
 
 @router.post("/generate/{model_id}")
