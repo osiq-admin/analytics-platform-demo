@@ -21,8 +21,8 @@ import Panel from "../../components/Panel.tsx";
 
 // ─── Constants ───
 
-const NODE_W = 200;
-const NODE_H = 70;
+const NODE_W = 240;
+const NODE_H = 85;
 const CALC_W = 170;
 const CALC_H = 50;
 
@@ -380,7 +380,7 @@ function buildLineageGraph(
 ): { nodes: Node[]; edges: Edge[] } {
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: "LR", nodesep: 40, ranksep: 120 });
+  g.setGraph({ rankdir: "LR", nodesep: 50, ranksep: 140 });
 
   // Determine node dimensions based on type
   for (const node of graph.nodes) {

@@ -127,13 +127,15 @@ class AIAssistant:
                             "mode": "mock",
                         }
 
-        # Fallback: suggest available sequences
+        # Fallback: echo the user's question and suggest relevant scenarios
         titles = [s["title"] for s in self._mock_sequences]
         return {
             "role": "assistant",
             "content": (
-                "I'm in mock mode and don't have a pre-scripted response for that question. "
-                "Try one of these scenarios:\n\n"
+                f"That's a great question about \"{last_user}\". "
+                "I'm currently in demo mode with pre-scripted responses. "
+                "For a full answer, enable live AI mode with a Claude API key.\n\n"
+                "In the meantime, try one of these pre-built scenarios:\n\n"
                 + "\n".join(f"- {t}" for t in titles)
             ),
             "mode": "mock",
