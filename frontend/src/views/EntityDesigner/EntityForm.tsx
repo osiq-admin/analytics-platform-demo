@@ -7,6 +7,7 @@ interface EntityFormProps {
   isNew: boolean;
   onSave: (entity: EntityDef) => Promise<void>;
   onCancel: () => void;
+  entityIds?: string[];
 }
 
 const FIELD_TYPES = ["string", "decimal", "integer", "boolean", "date", "datetime"];
@@ -25,7 +26,7 @@ function emptyRelationship(): RelationshipDef {
   return { target_entity: "", relationship_type: "many_to_one", join_fields: {} };
 }
 
-export default function EntityForm({ entity, isNew, onSave, onCancel }: EntityFormProps) {
+export default function EntityForm({ entity, isNew, onSave, onCancel, entityIds = [] }: EntityFormProps) {
   const [entityId, setEntityId] = useState(entity.entity_id);
   const [name, setName] = useState(entity.name);
   const [description, setDescription] = useState(entity.description ?? "");
@@ -241,12 +242,16 @@ export default function EntityForm({ entity, isNew, onSave, onCancel }: EntityFo
                   className="p-2 rounded border border-border bg-background text-xs space-y-2"
                 >
                   <div className="flex items-center gap-2">
-                    <input
+                    <select
                       className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs flex-1"
                       value={rel.target_entity}
                       onChange={(e) => updateRelationship(idx, { target_entity: e.target.value })}
-                      placeholder="target_entity"
-                    />
+                    >
+                      <option value="">Select entity...</option>
+                      {entityIds.filter((id) => id !== entityId).map((id) => (
+                        <option key={id} value={id}>{id}</option>
+                      ))}
+                    </select>
                     <select
                       className="px-2 py-1 rounded border border-border bg-surface text-foreground text-xs"
                       value={rel.relationship_type}
@@ -262,6 +267,49 @@ export default function EntityForm({ entity, isNew, onSave, onCancel }: EntityFo
                     >
                       &times;
                     </button>
+                  </div>
+                  {/* Join fields */}
+                  <div className="flex flex-col gap-1 ml-2">
+                    <span className="text-[9px] text-muted uppercase font-semibold">Join Fields:</span>
+                    {Object.entries(rel.join_fields).map(([fromField, toField]) => (
+                      <div key={fromField} className="flex items-center gap-1">
+                        <input
+                          className="px-1.5 py-0.5 rounded border border-border bg-surface text-foreground text-[10px] w-28"
+                          value={fromField}
+                          onChange={(e) => {
+                            const newJoin = { ...rel.join_fields };
+                            const val = newJoin[fromField];
+                            delete newJoin[fromField];
+                            newJoin[e.target.value] = val;
+                            updateRelationship(idx, { join_fields: newJoin });
+                          }}
+                          placeholder="from_field"
+                        />
+                        <span className="text-muted text-[10px]">&rarr;</span>
+                        <input
+                          className="px-1.5 py-0.5 rounded border border-border bg-surface text-foreground text-[10px] w-28"
+                          value={toField}
+                          onChange={(e) => {
+                            updateRelationship(idx, { join_fields: { ...rel.join_fields, [fromField]: e.target.value } });
+                          }}
+                          placeholder="to_field"
+                        />
+                        <button
+                          onClick={() => {
+                            const newJoin = { ...rel.join_fields };
+                            delete newJoin[fromField];
+                            updateRelationship(idx, { join_fields: newJoin });
+                          }}
+                          className="text-red-400 hover:text-red-300 text-[10px]"
+                        >&times;</button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        updateRelationship(idx, { join_fields: { ...rel.join_fields, "": "" } });
+                      }}
+                      className="text-[9px] text-accent hover:text-accent/80 self-start"
+                    >+ Add Join Field</button>
                   </div>
                 </div>
               ))}

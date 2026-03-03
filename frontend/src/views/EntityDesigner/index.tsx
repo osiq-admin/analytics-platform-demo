@@ -175,6 +175,7 @@ export default function EntityDesigner() {
                     isNew
                     onSave={handleSave}
                     onCancel={handleCancelForm}
+                    entityIds={entities.map((e) => e.entity_id)}
                   />
                 ) : mode === "edit" && selected ? (
                   <EntityForm
@@ -182,6 +183,7 @@ export default function EntityDesigner() {
                     isNew={false}
                     onSave={handleSave}
                     onCancel={handleCancelForm}
+                    entityIds={entities.map((e) => e.entity_id)}
                   />
                 ) : selected ? (
                   <EntityDetail
