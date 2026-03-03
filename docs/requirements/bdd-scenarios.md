@@ -1897,3 +1897,50 @@ Then summary cards show correct open count and resolution rate
 And the priority distribution chart renders
 And the SLA tracking table shows at-risk cases
 ```
+
+---
+
+## Feature: Cross-View PII Governance (Phase 22b)
+
+### Scenario: Analyst sees masked PII in SQL Console
+```gherkin
+Given the active role is "analyst"
+When the user queries "SELECT * FROM trader LIMIT 5"
+Then trader_name fields are partially masked
+And trader_id fields are tokenized
+And the response includes pii_columns metadata
+```
+
+### Scenario: Compliance officer sees unmasked PII
+```gherkin
+Given the active role is "compliance_officer"
+When the user queries "SELECT * FROM trader LIMIT 5"
+Then trader_name fields show full names
+And trader_id fields show original IDs
+```
+
+### Scenario: Role switch triggers data re-masking
+```gherkin
+Given the user is viewing trader data as "analyst"
+When the user switches role to "compliance_officer"
+Then the data refreshes with unmasked PII
+And the toolbar masking count updates to reflect the new role
+```
+
+### Scenario: PII access logged to audit trail
+```gherkin
+Given the active role is "analyst"
+When the user queries trader data via any endpoint
+Then a pii_access audit event is recorded
+And the event includes entity, role, row count, and endpoint
+```
+
+### Scenario: PII registry reflects role masking status
+```gherkin
+Given the active role is "analyst"
+When the PII registry endpoint is called
+Then each PII field shows currently_masked as true
+And the total masked_count matches the number of masked fields
+When the role switches to "compliance_officer"
+Then masked fields show currently_masked as false
+```

@@ -388,23 +388,26 @@
         {
           "control_id": "iso_27001_c2",
           "control_name": "Data masking and PII protection",
-          "description": "5 masking algorithms with role-based unmasking and PII classification",
+          "description": "5 masking algorithms with role-based unmasking and PII classification, enforced across all data endpoints (GDPR Art. 25)",
           "platform_capability": "masking_service",
           "compliance_level": "full",
           "evidence_links": [
             {"type": "service", "path": "backend/services/masking_service.py", "description": "5 masking algorithms (partial, tokenize, hash, generalize, redact)"},
+            {"type": "service", "path": "backend/services/masking_wrapper.py", "description": "Cross-view masking enforcement — entity inference, PII detection, audit logging"},
             {"type": "metadata", "path": "workspace/metadata/governance/masking_policies.json", "description": "7 field-level masking policies"},
-            {"type": "metadata", "path": "workspace/metadata/governance/pii_registry.json", "description": "PII classification per entity"}
+            {"type": "metadata", "path": "workspace/metadata/governance/pii_registry.json", "description": "PII classification per entity"},
+            {"type": "api", "path": "backend/api/governance.py", "description": "PII registry endpoint — GDPR Art. 30 records of processing activities"}
           ]
         },
         {
           "control_id": "iso_27001_c3",
           "control_name": "Audit logging",
-          "description": "Append-only audit trail for all data modifications",
+          "description": "Append-only audit trail for all data modifications and PII access events (MAR Art. 16)",
           "platform_capability": "audit_service",
           "compliance_level": "full",
           "evidence_links": [
             {"type": "service", "path": "backend/services/audit_service.py", "description": "Append-only audit trail service"},
+            {"type": "service", "path": "backend/services/masking_wrapper.py", "description": "PII access audit logging — entity, role, row count per request"},
             {"type": "metadata", "path": "workspace/metadata/_audit/", "description": "Audit trail storage directory"}
           ]
         },

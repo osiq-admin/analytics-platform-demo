@@ -101,6 +101,9 @@ function MaskingPoliciesTab() {
       dataTour="governance-masking-policies"
       dataTrace="governance.masking-policies"
     >
+      <div className="mb-3 px-2 py-1.5 rounded border border-info/30 bg-info/5 text-xs text-info">
+        Cross-view enforcement active — PII masking is applied across all data endpoints (Data Manager, SQL Console, Alerts, Orders) based on the current RBAC role.
+      </div>
       {policies.length === 0 ? (
         <p className="text-muted text-xs">No masking policies configured.</p>
       ) : (

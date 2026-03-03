@@ -70,14 +70,14 @@ export default function AppLayout() {
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const roleMenuRef = useRef<HTMLDivElement>(null);
   const { startTour, activeTour, definitions, registerTours, registerScenarios, activeScenario } = useTourStore();
-  const { currentRole, roles, fetchRoles, switchRole } = useGovernanceStore();
+  const { currentRole, roles, fetchRoles, switchRole, fetchPiiRegistry, piiRegistry } = useGovernanceStore();
 
   useEffect(() => {
     registerTours(TOURS);
     registerScenarios(SCENARIOS);
   }, [registerTours, registerScenarios]);
 
-  useEffect(() => { fetchRoles(); }, [fetchRoles]);
+  useEffect(() => { fetchRoles(); fetchPiiRegistry(); }, [fetchRoles, fetchPiiRegistry]);
 
   // Close role menu on outside click
   useEffect(() => {
@@ -141,6 +141,11 @@ export default function AppLayout() {
               >
                 {ROLE_ICONS[currentRole] || ""}{" "}
                 {roles.find(r => r.role_id === currentRole)?.display_name || currentRole || "Role"}
+                {piiRegistry && piiRegistry.masked_count > 0 && (
+                  <span className="ml-1 text-[9px] opacity-70" title={`${piiRegistry.masked_count} PII fields masked for this role`}>
+                    ({piiRegistry.masked_count} masked)
+                  </span>
+                )}
               </button>
               {showRoleMenu && roles.length > 0 && (
                 <div className="absolute right-0 top-full mt-1 w-56 rounded-md border border-border bg-surface shadow-lg z-50">

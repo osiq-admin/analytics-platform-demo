@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-03-03 (M368 — 1776 total tests: 1480 backend + 296 E2E, 40 scenarios, 26 views, 129 architecture sections)
+**Last Updated**: 2026-03-03 (M378 — 1813 total tests: 1517 backend + 296 E2E, 40 scenarios, 26 views, 131 architecture sections)
 
 ---
 
@@ -25,7 +25,7 @@
 - [ ] **Data generation**: If new entity/data — update `scripts/generate_data.py` and regenerate CSVs
 - [ ] **Snapshot generation**: If new demo state — update `scripts/generate_snapshots.py`
 - [ ] **Backend unit tests**: Written in `tests/test_<feature>.py`, covering happy path + edge cases
-- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 1480)
+- [ ] **Run all backend tests**: `uv run python -m qa test backend` — ALL PASSING (currently 1517)
 - [ ] **Architecture traceability**: If adding new sections/panels, add `data-trace` attributes and registry entries (see Section 10)
 
 ---
@@ -58,7 +58,7 @@
 - [ ] **API endpoint tests**: Test each new route (GET, POST, PUT, DELETE as applicable)
 - [ ] **Edge cases**: Empty inputs, missing fields, invalid data, not-found resources
 - [ ] **Integration tests**: Test interaction between services where applicable
-- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 1480)
+- [ ] **Run full suite**: `uv run python -m qa test backend` — ALL PASSING (currently 1517)
 - [ ] **Architecture registry**: If new sections/panels added, update `architectureRegistry.ts` entries
 
 ---
@@ -341,7 +341,7 @@
 ## Quick Reference: Test Commands
 
 ```bash
-# Backend tests (1480+)
+# Backend tests (1517+)
 uv run python -m qa test backend
 
 # E2E Playwright tests (296+)

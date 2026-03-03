@@ -25,8 +25,9 @@ Toggle mode that overlays architecture info icons on every view section. Clickin
 | infrastructure | Framework/utility code | API client |
 
 ## Technical Details
-- **Registry:** `frontend/src/data/architecture/index.ts` — 129 sections across 26 views + app layout
-- **Maturity Distribution (Current):** 74 fully-metadata-driven (57%), 35 mostly-metadata-driven (27%), 6 mixed (5%), 5 code-driven (4%), 8 infrastructure (6%) — **85% metadata-driven** overall
+- **Registry:** `frontend/src/data/architecture/index.ts` — 131 sections across 26 views + app layout
+- **Maturity Distribution (Current):** 75 fully-metadata-driven (57%), 36 mostly-metadata-driven (27%), 6 mixed (5%), 5 code-driven (4%), 8 infrastructure (6%) — **85% metadata-driven** overall
+- **Previous (M368):** 74 fully-metadata-driven (57%), 35 mostly-metadata-driven (27%), 6 mixed (5%), 5 code-driven (4%), 8 infrastructure (6%) — 85%
 - **Previous (M326):** 71 fully-metadata-driven (59%), 30 mostly-metadata-driven (25%), 6 mixed (5%), 5 code-driven (4%), 8 infrastructure (7%) — 84%
 - **Previous (M285):** 63 fully-metadata-driven (56%), 30 mostly-metadata-driven (27%), 6 mixed (5%), 5 code-driven (4%), 8 infrastructure (7%) — 83%
 - **Previous (M268):** 55 fully-metadata-driven (53%), 30 mostly-metadata-driven (29%), 6 mixed (6%), 5 code-driven (5%), 8 infrastructure (8%) — 82%

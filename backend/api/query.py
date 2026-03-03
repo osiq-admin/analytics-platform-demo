@@ -18,7 +18,19 @@ class QueryRequest(BaseModel):
 
 @router.post("/execute")
 def execute_query(req: QueryRequest, request: Request):
-    return _query_svc(request).execute(req.sql, req.limit)
+    """Execute SQL query with GDPR Art. 25 PII masking applied to results."""
+    from backend.services.masking_wrapper import get_pii_columns, has_pii_fields, mask_query_rows
+
+    result = _query_svc(request).execute(req.sql, req.limit)
+    rows = result.get("rows", [])
+    columns = result.get("columns", [])
+    pii_cols: dict = {}
+    if rows and columns and has_pii_fields(columns):
+        role_id = request.app.state.rbac_service.current_role_id
+        result["rows"] = mask_query_rows(rows, role_id=role_id, masking_service=request.app.state.masking_service)
+        pii_cols = get_pii_columns(columns)
+    result["pii_columns"] = pii_cols
+    return result
 
 
 @router.get("/tables")

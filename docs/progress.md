@@ -2,7 +2,7 @@
 
 **Project**: Analytics Platform Demo — Trade Surveillance Risk Case Manager
 **Started**: 2026-02-23
-**Last Updated**: 2026-03-03 (M368 Phase 27 Investigation & Case Management; 1776 total tests: 1480 backend + 296 E2E, 26 views, 40 scenarios, 129 architecture sections, 1093 modules)
+**Last Updated**: 2026-03-03 (M378 Phase 22b Cross-View Governance COMPLETE; 1813 total tests: 1517 backend + 296 E2E, 26 views, 40 scenarios, 131 architecture sections, 1093 modules)
 
 ---
 
@@ -65,6 +65,7 @@
 | Observability, Lineage & Audit (Phase 26) | COMPLETE | M289-M316: E2E stabilization, file splitting, 6-layer lineage engine, DataLineage view (25th), PipelineMonitor/DataGovernance extensions — 1694 tests (1408 backend + 286 E2E), 25 views, 39 scenarios, 120 architecture sections, 1082 modules |
 | Standards Integration (Phase 25) | COMPLETE | M317-M326: Standards compliance matrix (18 standards, 48 controls), BCBS 239 full mapping (11 principles), Standards Compliance tab in RegulatoryMap (3rd tab), compliance matrix API, evidence links, gap analysis — 1704 tests (1418 backend + 286 E2E), 121 architecture sections |
 | Investigation & Case Management (Phase 27) | COMPLETE | M327-M368: CaseManagement view (26th), case lifecycle (open→investigating→escalated→closed), investigation annotations, STOR/SAR report generation, lakehouse medallion integration, compliance dashboard, AI triage — 1776 tests (1480 backend + 296 E2E), 26 views, 40 scenarios, 129 architecture sections, 1093 modules |
+| Cross-View PII Governance (Phase 22b) | COMPLETE | M369-M378: Cross-view masking enforcement (GDPR Art. 25), PII access audit (MAR Art. 16), PII registry API, frontend indicators, 131 architecture sections — 1813 tests (1517 backend + 296 E2E) |
 
 ---
 
@@ -524,6 +525,21 @@
 | M366 | AI triage UI integration | COMPLETE | 1 | 1 | Triage suggestions in case detail, confidence scores, explain mode |
 | M367 | Backend tests — AI triage | COMPLETE | 1 | 1 | 3 tests for triage scoring, recommendations, and explanations |
 | M368 | Phase 27 documentation sweep | COMPLETE | 1 | 1 | All docs updated: 26 views, 36 API modules, 1776 tests, 129 architecture sections, 40 scenarios |
+
+### Phase 22b: Cross-View PII Governance Enforcement (M369-M378)
+
+| Milestone | Description | Status | Plan | Actual | Notes |
+|-----------|------------|--------|------|--------|-------|
+| M369 | Cross-view masking wrapper service | COMPLETE | 1 | 1 | Entity inference, PII detection, masking functions, audit logging — 16 tests |
+| M370 | Integrate masking into data & query endpoints | COMPLETE | 1 | 1 | Data preview, orders, SQL query endpoints masked per RBAC role — 10 tests |
+| M371 | Integrate masking into alerts endpoints | COMPLETE | 1 | 1 | Alert traces masked for analyst role — 4 tests |
+| M372 | PII registry API endpoint | COMPLETE | 1 | 1 | GET /api/governance/pii-registry with role-aware masking status — 7 tests |
+| M373 | Tier 2 stage checkpoint — backend complete | COMPLETE | 1 | 1 | 1517 backend tests, quality gate PASS, frontend build clean |
+| M374 | Frontend governance store + PiiBadge | COMPLETE | 1 | 1 | governanceStore piiRegistry, PiiBadge component, piiColumns utility |
+| M375 | AppLayout integration + masking indicators | COMPLETE | 1 | 1 | PII registry fetch, masking count in toolbar, cross-view banner |
+| M376 | E2E Playwright tests | COMPLETE | 1 | 1 | 8 cross-view masking E2E tests |
+| M377 | Compliance evidence + architecture registry | COMPLETE | 1 | 1 | compliance_matrix, bcbs239_mapping, 2 architecture sections, 5 BDD scenarios, demo guide |
+| M378 | Tier 3 phase completion — full QA + merge | COMPLETE | 1 | 1 | Full QA (1517 backend, 8 E2E), Playwright verified, doc sweep, merge |
 
 ---
 
