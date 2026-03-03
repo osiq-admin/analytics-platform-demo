@@ -218,3 +218,71 @@ def audit_log(request: Request):
         masked_entries.append(entry)
 
     return {"entries": masked_entries}
+
+
+# ---------------------------------------------------------------------------
+# 6. PII Registry — GDPR Art. 30 records of processing activities
+# ---------------------------------------------------------------------------
+
+
+@router.get("/pii-registry")
+def pii_registry(request: Request):
+    """Return PII field registry with per-field masking status for the active role.
+
+    Implements GDPR Art. 30 — records of processing activities.
+    Each field includes currently_masked and masking_type based on the active RBAC role.
+    """
+    import json as _json
+    from backend.config import settings
+
+    registry_path = settings.workspace_dir / "metadata" / "governance" / "pii_registry.json"
+    if not registry_path.exists():
+        return {"entities": {}, "total_pii_fields": 0, "masked_count": 0}
+
+    raw = _json.loads(registry_path.read_text())
+    entities = raw.get("entities", {})
+
+    masking = _masking(request)
+    role_id = _rbac(request).current_role_id
+
+    total_pii = 0
+    masked_count = 0
+
+    # Build a policy lookup: (entity, field) -> policy
+    policy_map: dict[tuple[str, str], object] = {}
+    for p in masking.policies.policies:
+        policy_map[(p.target_entity, p.target_field)] = p
+
+    result_entities: dict = {}
+    for entity_id, entity_info in entities.items():
+        fields = []
+        for field_info in entity_info.get("pii_fields", []):
+            field_name = field_info["field"]
+            total_pii += 1
+
+            policy = policy_map.get((entity_id, field_name))
+            is_masked = True
+            masking_type = None
+            if policy:
+                is_masked = role_id not in policy.unmask_roles
+                masking_type = policy.masking_type
+            else:
+                is_masked = False
+
+            if is_masked:
+                masked_count += 1
+
+            fields.append({
+                **field_info,
+                "currently_masked": is_masked,
+                "masking_type": masking_type,
+            })
+
+        result_entities[entity_id] = {"pii_fields": fields}
+
+    return {
+        "entities": result_entities,
+        "total_pii_fields": total_pii,
+        "masked_count": masked_count,
+        "current_role": role_id,
+    }
