@@ -55,11 +55,10 @@
             "title": "Advanced",
             "order": 6,
             "items": [
-                {"view_id": "schema", "label": "Schema", "path": "/schema", "icon": "Table", "order": 0},
+                {"view_id": "schema", "label": "Data Explorer", "path": "/schema", "icon": "Table", "order": 0},
                 {"view_id": "sql", "label": "SQL Console", "path": "/sql", "icon": "Terminal", "order": 1},
-                {"view_id": "data", "label": "Data", "path": "/data", "icon": "HardDrive", "order": 2},
-                {"view_id": "editor", "label": "Editor", "path": "/editor", "icon": "Code", "order": 3},
-                {"view_id": "assistant", "label": "Assistant", "path": "/assistant", "icon": "Bot", "order": 4}
+                {"view_id": "editor", "label": "Editor", "path": "/editor", "icon": "Code", "order": 2},
+                {"view_id": "assistant", "label": "Assistant", "path": "/assistant", "icon": "Bot", "order": 3}
             ]
         }
     ]

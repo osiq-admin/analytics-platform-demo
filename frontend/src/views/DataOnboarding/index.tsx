@@ -216,9 +216,10 @@ export default function DataOnboarding() {
                     active
                       ? "bg-[var(--color-info)] text-white"
                       : done
-                        ? "bg-[var(--color-success)] text-white"
+                        ? "bg-[var(--color-success)] text-white cursor-pointer"
                         : "bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-primary)]"
                   }`}
+                  onClick={() => { if (done) setStep(num); }}
                 >
                   {num}
                 </div>

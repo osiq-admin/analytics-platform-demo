@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { type RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout.tsx";
 
 // Eager-loaded views
@@ -11,7 +11,6 @@ import PipelineMonitor from "./views/PipelineMonitor/index.tsx";
 import SchemaExplorer from "./views/SchemaExplorer/index.tsx";
 import SQLConsole from "./views/SQLConsole/index.tsx";
 import ModelComposer from "./views/ModelComposer/index.tsx";
-import DataManager from "./views/DataManager/index.tsx";
 import UseCaseStudio from "./views/UseCaseStudio/index.tsx";
 import RiskCaseManager from "./views/RiskCaseManager/index.tsx";
 import AIAssistant from "./views/AIAssistant/index.tsx";
@@ -71,10 +70,10 @@ export const routes: RouteObject[] = [
       { path: "submissions", element: <Submissions /> },
       { path: "regulatory", element: <Suspense fallback={null}><RegulatoryMap /></Suspense> },
 
-      // Advanced — schema, SQL, data, editor, AI assistant
+      // Advanced — data explorer, SQL, editor, AI assistant
       { path: "schema", element: <SchemaExplorer /> },
+      { path: "data", element: <Navigate to="/schema" replace /> },
       { path: "sql", element: <SQLConsole /> },
-      { path: "data", element: <DataManager /> },
       { path: "editor", element: <MetadataEditor /> },
       { path: "assistant", element: <AIAssistant /> },
     ],

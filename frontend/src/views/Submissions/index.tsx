@@ -229,8 +229,11 @@ export default function Submissions() {
         dataTrace="submissions.grid"
       >
         {submissions.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-xs text-muted">
-            No submissions yet. Submit a use case from the Use Case Studio.
+          <div className="flex flex-col items-center justify-center h-full gap-2 text-xs text-muted">
+            <span>No submissions yet. Submit a use case from the Use Case Studio.</span>
+            <a href="/use-cases" className="px-3 py-1 text-xs rounded bg-accent text-white hover:bg-accent/80 transition-colors">
+              Go to Use Case Studio
+            </a>
           </div>
         ) : (
           <DataGrid<Submission>
