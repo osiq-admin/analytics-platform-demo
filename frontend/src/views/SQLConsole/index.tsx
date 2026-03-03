@@ -40,7 +40,7 @@ export default function SQLConsole() {
     setLoading(true);
     api
       .post<QueryResult>("/query/execute", { sql })
-      .then(setResult)
+      .then((data) => setResult(data.error ? { error: data.error } : data))
       .catch((e) => setResult({ error: String(e) }))
       .finally(() => setLoading(false));
   };

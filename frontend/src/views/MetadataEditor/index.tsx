@@ -150,8 +150,10 @@ export default function MetadataEditor() {
           break;
       }
       setSaveStatus("success");
+      setTimeout(() => setSaveStatus("idle"), 3000);
     } catch {
       setSaveStatus("error");
+      setTimeout(() => setSaveStatus("idle"), 3000);
     } finally {
       setSaving(false);
     }
