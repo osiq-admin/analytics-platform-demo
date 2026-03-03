@@ -139,40 +139,40 @@ export default function StepOverlay({
         <>
           {/* Top */}
           <div
-            className="fixed left-0 top-0 z-[9998] bg-black/50"
+            className={`fixed left-0 top-0 z-[9998] bg-black/50 ${mode === "try" ? "pointer-events-none" : ""}`}
             style={{ width: "100%", height: Math.max(0, targetRect.top - pad) }}
-            onClick={onSkip}
+            onClick={mode === "try" ? undefined : onSkip}
           />
           {/* Bottom */}
           <div
-            className="fixed left-0 z-[9998] bg-black/50"
+            className={`fixed left-0 z-[9998] bg-black/50 ${mode === "try" ? "pointer-events-none" : ""}`}
             style={{
               width: "100%",
               top: targetRect.bottom + pad,
               bottom: 0,
             }}
-            onClick={onSkip}
+            onClick={mode === "try" ? undefined : onSkip}
           />
           {/* Left */}
           <div
-            className="fixed left-0 z-[9998] bg-black/50"
+            className={`fixed left-0 z-[9998] bg-black/50 ${mode === "try" ? "pointer-events-none" : ""}`}
             style={{
               top: targetRect.top - pad,
               width: Math.max(0, targetRect.left - pad),
               height: targetRect.height + pad * 2,
             }}
-            onClick={onSkip}
+            onClick={mode === "try" ? undefined : onSkip}
           />
           {/* Right */}
           <div
-            className="fixed z-[9998] bg-black/50"
+            className={`fixed z-[9998] bg-black/50 ${mode === "try" ? "pointer-events-none" : ""}`}
             style={{
               top: targetRect.top - pad,
               left: targetRect.right + pad,
               right: 0,
               height: targetRect.height + pad * 2,
             }}
-            onClick={onSkip}
+            onClick={mode === "try" ? undefined : onSkip}
           />
         </>
       ) : (

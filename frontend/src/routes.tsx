@@ -50,6 +50,7 @@ export const routes: RouteObject[] = [
       { path: "mappings", element: <MappingStudio /> },
       { path: "quality", element: <Suspense fallback={null}><DataQuality /></Suspense> },
       { path: "medallion", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
+      { path: "lakehouse", element: <Suspense fallback={null}><MedallionOverview /></Suspense> },
       { path: "analytics-tiers", element: <Suspense fallback={null}><AnalyticsTiers /></Suspense> },
 
       // Govern — data governance, business glossary, data lineage
