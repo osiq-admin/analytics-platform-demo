@@ -2,7 +2,7 @@
 
 **Purpose**: Every new feature MUST complete every applicable item on this checklist before it is considered done. Reference this document at the start of every feature branch. Update this document when a new broad system (like tours, scenarios, or a new view category) is added.
 
-**Last Updated**: 2026-03-03 (M373 — 1813 total tests: 1517 backend + 296 E2E, 40 scenarios, 26 views, 129 architecture sections)
+**Last Updated**: 2026-03-03 (M378 — 1813 total tests: 1517 backend + 296 E2E, 40 scenarios, 26 views, 131 architecture sections)
 
 ---
 
