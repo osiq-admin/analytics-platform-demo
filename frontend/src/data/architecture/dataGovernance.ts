@@ -188,5 +188,94 @@ export const dataGovernanceSections: ViewTrace = {
         "Audit log access and PII masking are fully metadata-driven. Role permissions (can_view_audit) and masking policies determine what each role sees in audit entries.",
       metadataOpportunities: [],
     },
+    {
+      id: "governance.cross-view-masking",
+      displayName: "Cross-View Masking Enforcement",
+      viewId: "governance",
+      description:
+        "Backend masking wrapper that enforces PII masking across all data-serving API endpoints (data preview, SQL query, alerts). Entity auto-detection infers entity type from column signatures. GDPR Art. 25 compliant — masking is applied at the API layer before data reaches the frontend.",
+      files: [
+        { path: "backend/services/masking_wrapper.py", role: "Cross-view masking orchestrator — entity inference, PII detection, masking dispatch, audit logging" },
+        { path: "backend/api/data.py", role: "Data preview and orders endpoints with masking integration" },
+        { path: "backend/api/query.py", role: "SQL query endpoint with auto-detect masking" },
+        { path: "backend/api/alerts.py", role: "Alert trace endpoint with PII masking" },
+        { path: "frontend/src/layouts/AppLayout.tsx", role: "Toolbar masking count indicator next to role name" },
+      ],
+      stores: [
+        {
+          name: "governanceStore",
+          path: "frontend/src/stores/governanceStore.ts",
+          role: "PII registry state + maskingVersion counter for re-render triggers on role switch",
+        },
+      ],
+      apis: [
+        {
+          method: "GET",
+          path: "/api/governance/pii-registry",
+          role: "Returns per-entity PII field registry with role-aware masking status",
+          routerFile: "backend/api/governance.py",
+        },
+      ],
+      dataSources: [
+        {
+          path: "workspace/metadata/governance/pii_registry.json",
+          category: "metadata",
+          role: "PII field definitions per entity (field, classification, regulation, masking type)",
+        },
+        {
+          path: "workspace/metadata/governance/masking_policies.json",
+          category: "metadata",
+          role: "Masking algorithm configuration per field",
+        },
+      ],
+      technologies: [
+        { name: "FastAPI", role: "API-layer masking enforcement" },
+        { name: "MaskingService", role: "5 masking algorithms (partial, tokenize, hash, generalize, redact)" },
+        { name: "RBACService", role: "Role-based access control for masking decisions" },
+        { name: "React 19", role: "Toolbar PII indicator rendering" },
+        { name: "Zustand", role: "PII registry state management" },
+      ],
+      metadataMaturity: "fully-metadata-driven",
+      maturityExplanation:
+        "Cross-view masking is entirely metadata-driven. PII registry JSON defines which fields are PII per entity. Masking policies JSON defines algorithms. Roles JSON defines unmask permissions. Adding a new PII field requires only editing pii_registry.json and masking_policies.json.",
+      metadataOpportunities: [],
+    },
+    {
+      id: "governance.pii-access-audit",
+      displayName: "PII Access Audit Trail",
+      viewId: "governance",
+      description:
+        "Audit logging for every PII data access event. Records entity, row count, role, endpoint, and timestamp. Implements MAR Art. 16 (complete surveillance audit trail) and ISO 27001 A.12.4 (logging and monitoring). Fire-and-forget — never blocks data access.",
+      files: [
+        { path: "backend/services/masking_wrapper.py", role: "log_pii_access function — records audit events on PII access" },
+        { path: "backend/services/audit_service.py", role: "Append-only audit trail storage" },
+      ],
+      stores: [],
+      apis: [
+        {
+          method: "GET",
+          path: "/api/governance/audit-log",
+          role: "Returns audit log including PII access events",
+          routerFile: "backend/api/governance.py",
+        },
+      ],
+      dataSources: [
+        {
+          path: "workspace/metadata/_audit/",
+          category: "metadata",
+          role: "Append-only audit trail files with PII access events",
+        },
+      ],
+      technologies: [
+        { name: "AuditService", role: "Append-only audit event recording" },
+        { name: "FastAPI", role: "Request context for endpoint and role extraction" },
+      ],
+      metadataMaturity: "mostly-metadata-driven",
+      maturityExplanation:
+        "PII access audit events are recorded via the existing AuditService. Event structure and storage are metadata-driven. The log_pii_access function is code that orchestrates audit recording based on PII detection results.",
+      metadataOpportunities: [
+        "Could make audit event types configurable via metadata (which events to log, retention policies)",
+      ],
+    },
   ],
 };

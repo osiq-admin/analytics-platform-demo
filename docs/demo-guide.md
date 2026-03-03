@@ -872,6 +872,35 @@ Phase 22 adds dynamic data masking, role-based access control, and audit-aware P
 
 ---
 
+## Cross-View PII Governance — Phase 22b
+
+Phase 22b extends PII masking beyond the Data Governance view to **all data-serving endpoints** — data preview, SQL queries, alerts, and orders. Masking is enforced at the API layer (GDPR Art. 25 — Data Protection by Design).
+
+### Walkthrough A: Cross-View Masking in Action
+
+1. Navigate to **Data Manager** (`/data`)
+2. Select the **trader** table — note that trader_name shows partial masking (A***e) and trader_id shows tokenized values
+3. Switch to **SQL Console** (`/sql`) and run `SELECT * FROM trader LIMIT 5` — same masking applied
+4. Navigate to **Risk Case Manager** (`/alerts`) — alert traces also mask PII fields
+5. Key takeaway: "PII masking is enforced uniformly across every data endpoint, not just the governance view"
+
+### Walkthrough B: Role Switch Changes Everything
+
+1. Note the **toolbar indicator** next to the role name — it shows `(N masked)` field count
+2. Click the **role switcher** and select "Compliance Officer"
+3. Return to **Data Manager** → trader data now shows full names and original IDs
+4. The toolbar indicator updates — compliance officers see fewer (or zero) masked fields
+5. Key takeaway: "Role switching dynamically changes what data is visible across the entire platform"
+
+### Walkthrough C: PII Registry
+
+1. Navigate to **Data Governance** (`/governance`)
+2. Note the **cross-view enforcement banner** at the top of the Masking Policies tab
+3. The PII registry API (`/api/governance/pii-registry`) returns per-field masking status for the active role
+4. Key takeaway: "The PII registry provides a single source of truth for what is masked, for whom, and why"
+
+---
+
 ## Business Glossary — Phase 23
 
 Phase 23 adds an ISO 11179 business glossary, semantic layer with business-friendly metrics, DAMA-DMBOK knowledge area coverage, and standards compliance tracking. Navigate to `/glossary` (Govern > Business Glossary in sidebar).

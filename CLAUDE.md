@@ -1,7 +1,7 @@
 # Analytics Platform Demo — Claude Code Project Instructions
 
 ## Project Overview
-Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 26 views, 1813 tests (1517 backend + 296 E2E), 8 entities, 5 detection models, 40 guided scenarios, 129 architecture sections.
+Metadata-driven trade surveillance platform demo (Risk Case Manager). Python FastAPI + DuckDB backend, React 19 + TypeScript + Vite frontend. 26 views, 1813 tests (1517 backend + 296 E2E), 8 entities, 5 detection models, 40 guided scenarios, 131 architecture sections.
 
 ## Quick Start
 ```bash
