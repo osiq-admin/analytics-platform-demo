@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-FAAEE121",
-  "title": "Investigation: Wash Trading \u2014 ALT-83885FB8",
+  "title": "Investigation: Wash Trading \u2014 ALT-0E3FBD5B",
   "description": "Automated case created from 1 alert(s).",
   "status": "open",
   "priority": "medium",
   "category": "wash_trading",
   "assignee": "compliance_officer",
   "alert_ids": [
-    "ALT-83885FB8"
+    "ALT-0E3FBD5B"
   ],
   "annotations": [],
   "sla": {

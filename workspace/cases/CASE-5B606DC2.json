@@ -1,15 +1,15 @@
 {
   "case_id": "CASE-5B606DC2",
-  "title": "Investigation: Insider Trading \u2014 ALT-81128086",
+  "title": "Investigation: Spoofing \u2014 ALT-6A8A9753",
   "description": "Automated case created from 3 alert(s).",
   "status": "escalated",
   "priority": "critical",
   "category": "spoofing",
   "assignee": "analyst_2",
   "alert_ids": [
-    "ALT-81128086",
-    "ALT-31ED76E9",
-    "ALT-BFB9E2B7"
+    "ALT-6A8A9753",
+    "ALT-A558A9F2",
+    "ALT-D7B02811"
   ],
   "annotations": [
     {
@@ -17,7 +17,7 @@
       "author": "senior_analyst",
       "timestamp": "2026-02-17T00:46:32.596942",
       "type": "note",
-      "content": "Initial review of ALT-81128086 \u2014 patterns consistent with spoofing.",
+      "content": "Initial review of ALT-6A8A9753 \u2014 patterns consistent with spoofing.",
       "metadata": {}
     },
     {

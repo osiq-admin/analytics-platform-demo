@@ -1,15 +1,15 @@
 {
   "case_id": "CASE-E0A95759",
-  "title": "Investigation: Market Abuse \u2014 ALT-616F3448",
+  "title": "Investigation: Front Running \u2014 ALT-2106D945",
   "description": "Automated case created from 3 alert(s).",
   "status": "investigating",
   "priority": "high",
   "category": "front_running",
   "assignee": "senior_analyst",
   "alert_ids": [
-    "ALT-616F3448",
-    "ALT-0E9B8C22",
-    "ALT-D1EBAF52"
+    "ALT-2106D945",
+    "ALT-22F0BF03",
+    "ALT-25029ED4"
   ],
   "annotations": [
     {
@@ -17,7 +17,7 @@
       "author": "analyst_2",
       "timestamp": "2026-02-28T16:46:32.593172",
       "type": "note",
-      "content": "Initial review of ALT-616F3448 \u2014 patterns consistent with front running.",
+      "content": "Initial review of ALT-2106D945 \u2014 patterns consistent with front running.",
       "metadata": {}
     }
   ],

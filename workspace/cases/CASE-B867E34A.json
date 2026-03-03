@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-B867E34A",
-  "title": "Investigation: Front Running \u2014 ALT-DD3C74C7",
+  "title": "Investigation: Front Running \u2014 ALT-274637CC",
   "description": "Automated case created from 1 alert(s).",
   "status": "investigating",
   "priority": "high",
   "category": "front_running",
   "assignee": "analyst_2",
   "alert_ids": [
-    "ALT-DD3C74C7"
+    "ALT-274637CC"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "compliance_officer",
       "timestamp": "2026-02-19T22:46:32.594995",
       "type": "note",
-      "content": "Initial review of ALT-DD3C74C7 \u2014 patterns consistent with market abuse.",
+      "content": "Initial review of ALT-274637CC \u2014 patterns consistent with front running.",
       "metadata": {}
     }
   ],

@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-F8B3A947",
-  "title": "Investigation: Front Running \u2014 ALT-4A1ABAED",
+  "title": "Investigation: Spoofing \u2014 ALT-366C6E7B",
   "description": "Automated case created from 1 alert(s).",
   "status": "closed",
   "priority": "low",
   "category": "spoofing",
   "assignee": "analyst_2",
   "alert_ids": [
-    "ALT-4A1ABAED"
+    "ALT-366C6E7B"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "compliance_officer",
       "timestamp": "2026-02-13T23:46:32.596005",
       "type": "note",
-      "content": "Initial review of ALT-4A1ABAED \u2014 patterns consistent with front running.",
+      "content": "Initial review of ALT-UNKNOWN \u2014 patterns consistent with spoofing.",
       "metadata": {}
     },
     {

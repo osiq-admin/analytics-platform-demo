@@ -1,14 +1,14 @@
 {
   "case_id": "CASE-6AD6623E",
-  "title": "Investigation: Wash Trading \u2014 ALT-F66E066A",
+  "title": "Investigation: Spoofing \u2014 ALT-D8FF1890",
   "description": "Automated case created from 2 alert(s).",
   "status": "resolved",
   "priority": "high",
   "category": "spoofing",
   "assignee": "analyst_2",
   "alert_ids": [
-    "ALT-F66E066A",
-    "ALT-151078D2"
+    "ALT-D8FF1890",
+    "ALT-F5198DF3"
   ],
   "annotations": [
     {
@@ -16,7 +16,7 @@
       "author": "compliance_officer",
       "timestamp": "2026-02-24T06:46:32.595654",
       "type": "note",
-      "content": "Initial review of ALT-F66E066A \u2014 patterns consistent with wash trading.",
+      "content": "Initial review of ALT-D8FF1890 \u2014 patterns consistent with spoofing.",
       "metadata": {}
     },
     {

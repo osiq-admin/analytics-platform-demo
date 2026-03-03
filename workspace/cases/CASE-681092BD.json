@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-681092BD",
-  "title": "Investigation: Spoofing \u2014 ALT-D52BFC54",
+  "title": "Investigation: Insider Trading \u2014 ALT-5F1C810E",
   "description": "Automated case created from 1 alert(s).",
   "status": "escalated",
   "priority": "high",
   "category": "insider_trading",
   "assignee": "compliance_officer",
   "alert_ids": [
-    "ALT-D52BFC54"
+    "ALT-5F1C810E"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "analyst_1",
       "timestamp": "2026-02-12T05:46:32.593532",
       "type": "note",
-      "content": "Initial review of ALT-D52BFC54 \u2014 patterns consistent with wash trading.",
+      "content": "Initial review of ALT-5F1C810E \u2014 patterns consistent with insider trading.",
       "metadata": {}
     },
     {

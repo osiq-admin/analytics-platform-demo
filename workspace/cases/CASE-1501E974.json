@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-1501E974",
-  "title": "Investigation: Market Abuse \u2014 ALT-151078D2",
+  "title": "Investigation: Front Running \u2014 ALT-25D46D93",
   "description": "Automated case created from 1 alert(s).",
   "status": "resolved",
   "priority": "low",
   "category": "front_running",
   "assignee": "analyst_1",
   "alert_ids": [
-    "ALT-151078D2"
+    "ALT-25D46D93"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "compliance_officer",
       "timestamp": "2026-02-18T11:46:32.593894",
       "type": "note",
-      "content": "Initial review of ALT-151078D2 \u2014 patterns consistent with front running.",
+      "content": "Initial review of ALT-25D46D93 \u2014 patterns consistent with front running.",
       "metadata": {}
     },
     {

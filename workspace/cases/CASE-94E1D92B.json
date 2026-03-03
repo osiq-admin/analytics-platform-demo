@@ -1,15 +1,15 @@
 {
   "case_id": "CASE-94E1D92B",
-  "title": "Investigation: Insider Trading \u2014 ALT-31ED76E9",
+  "title": "Investigation: Market Abuse \u2014 ALT-16AE7761",
   "description": "Automated case created from 3 alert(s).",
   "status": "open",
   "priority": "high",
   "category": "market_abuse",
   "assignee": "analyst_1",
   "alert_ids": [
-    "ALT-31ED76E9",
-    "ALT-D1EBAF52",
-    "ALT-4A1ABAED"
+    "ALT-16AE7761",
+    "ALT-17363AE5",
+    "ALT-19FA9685"
   ],
   "annotations": [],
   "sla": {

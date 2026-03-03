@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-F5E17EFF",
-  "title": "Investigation: Market Abuse \u2014 ALT-DD3C74C7",
+  "title": "Investigation: Spoofing \u2014 ALT-2C2C7383",
   "description": "Automated case created from 1 alert(s).",
   "status": "resolved",
   "priority": "critical",
   "category": "spoofing",
   "assignee": "compliance_officer",
   "alert_ids": [
-    "ALT-DD3C74C7"
+    "ALT-2C2C7383"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "analyst_1",
       "timestamp": "2026-02-06T19:46:32.597290",
       "type": "note",
-      "content": "Initial review of ALT-DD3C74C7 \u2014 patterns consistent with spoofing.",
+      "content": "Initial review of ALT-UNKNOWN \u2014 patterns consistent with spoofing.",
       "metadata": {}
     },
     {

@@ -1,15 +1,15 @@
 {
   "case_id": "CASE-5817235F",
-  "title": "Investigation: Front Running \u2014 ALT-616F3448",
+  "title": "Investigation: Market Abuse \u2014 ALT-09010005",
   "description": "Automated case created from 3 alert(s).",
   "status": "investigating",
   "priority": "critical",
   "category": "market_abuse",
   "assignee": "compliance_officer",
   "alert_ids": [
-    "ALT-616F3448",
-    "ALT-0FAAE341",
-    "ALT-151078D2"
+    "ALT-09010005",
+    "ALT-10E59FEA",
+    "ALT-15EC36F3"
   ],
   "annotations": [
     {
@@ -17,7 +17,7 @@
       "author": "senior_analyst",
       "timestamp": "2026-02-18T16:46:32.596619",
       "type": "note",
-      "content": "Initial review of ALT-616F3448 \u2014 patterns consistent with spoofing.",
+      "content": "Initial review of ALT-09010005 \u2014 patterns consistent with market abuse.",
       "metadata": {}
     }
   ],

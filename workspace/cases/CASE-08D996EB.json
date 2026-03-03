@@ -1,14 +1,14 @@
 {
   "case_id": "CASE-08D996EB",
-  "title": "Investigation: Market Abuse \u2014 ALT-151078D2",
+  "title": "Investigation: Insider Trading \u2014 ALT-35A96EB8",
   "description": "Automated case created from 2 alert(s).",
   "status": "closed",
   "priority": "critical",
   "category": "insider_trading",
   "assignee": "compliance_officer",
   "alert_ids": [
-    "ALT-151078D2",
-    "ALT-40CB0601"
+    "ALT-35A96EB8",
+    "ALT-47C5319D"
   ],
   "annotations": [
     {
@@ -16,7 +16,7 @@
       "author": "compliance_officer",
       "timestamp": "2026-02-21T18:46:32.594253",
       "type": "note",
-      "content": "Initial review of ALT-151078D2 \u2014 patterns consistent with insider trading.",
+      "content": "Initial review of ALT-35A96EB8 \u2014 patterns consistent with insider trading.",
       "metadata": {}
     },
     {

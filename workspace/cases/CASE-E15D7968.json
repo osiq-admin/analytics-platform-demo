@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-E15D7968",
-  "title": "Investigation: Front Running \u2014 ALT-0E9B8C22",
+  "title": "Investigation: Insider Trading \u2014 ALT-8E3DBC19",
   "description": "Automated case created from 1 alert(s).",
   "status": "closed",
   "priority": "high",
   "category": "insider_trading",
   "assignee": "senior_analyst",
   "alert_ids": [
-    "ALT-0E9B8C22"
+    "ALT-8E3DBC19"
   ],
   "annotations": [
     {
@@ -15,7 +15,7 @@
       "author": "analyst_1",
       "timestamp": "2026-02-23T02:46:32.597639",
       "type": "note",
-      "content": "Initial review of ALT-0E9B8C22 \u2014 patterns consistent with wash trading.",
+      "content": "Initial review of ALT-8E3DBC19 \u2014 patterns consistent with insider trading.",
       "metadata": {}
     },
     {

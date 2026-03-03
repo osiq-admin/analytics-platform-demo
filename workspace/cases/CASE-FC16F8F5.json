@@ -1,13 +1,13 @@
 {
   "case_id": "CASE-FC16F8F5",
-  "title": "Investigation: Market Abuse \u2014 ALT-42D264D0",
+  "title": "Investigation: Insider Trading \u2014 ALT-CF2ED18C",
   "description": "Automated case created from 1 alert(s).",
   "status": "open",
   "priority": "critical",
   "category": "insider_trading",
   "assignee": "analyst_2",
   "alert_ids": [
-    "ALT-42D264D0"
+    "ALT-CF2ED18C"
   ],
   "annotations": [],
   "sla": {

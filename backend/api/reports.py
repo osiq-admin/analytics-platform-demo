@@ -31,11 +31,22 @@ def generate_report(body: GenerateReportRequest, request: Request):
     case_data = _case_svc(request).get_case(body.case_id)
     if case_data is None:
         return JSONResponse({"error": "case not found"}, status_code=404)
+
+    # Auto-fetch first linked alert when alert_data is empty
+    alert_data = body.alert_data if body.alert_data else None
+    if not alert_data and case_data.get("alert_ids"):
+        import json
+        from backend.config import settings
+        first_id = case_data["alert_ids"][0]
+        trace_path = settings.workspace_dir / "alerts" / "traces" / f"{first_id}.json"
+        if trace_path.exists():
+            alert_data = json.loads(trace_path.read_text())
+
     try:
         report = _svc(request).generate_report(
             template_id=body.template_id,
             case_data=case_data,
-            alert_data=body.alert_data if body.alert_data else None,
+            alert_data=alert_data,
         )
         return report
     except ValueError as e:
