@@ -339,6 +339,7 @@ interface LakehouseTabProps {
   pipelineRuns: PipelineRun[];
   mvStatus: MVStatus[];
   onMVRefresh: () => void;
+  mvError?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -355,6 +356,7 @@ export function LakehouseTab({
   pipelineRuns,
   mvStatus,
   onMVRefresh,
+  mvError,
 }: LakehouseTabProps) {
   return (
     <div className="flex-1 min-h-0 overflow-y-auto" data-tour="lakehouse-explorer">
@@ -370,6 +372,11 @@ export function LakehouseTab({
           <CalcAuditPanel stats={calcStats} log={calcLog} />
           <PipelineRunsPanel runs={pipelineRuns} />
           <MaterializedViewsPanel mvs={mvStatus} onRefresh={onMVRefresh} />
+          {mvError && (
+            <div className="col-span-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">
+              {mvError}
+            </div>
+          )}
         </div>
       )}
     </div>

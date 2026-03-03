@@ -49,6 +49,7 @@ export default function MedallionOverview() {
   const [mvStatus, setMvStatus] = useState<MVStatus[]>([]);
   const [lhLoading, setLhLoading] = useState(false);
   const [lhLoaded, setLhLoaded] = useState(false);
+  const [mvError, setMvError] = useState<string | null>(null);
 
   // Load architecture data on mount
   useEffect(() => {
@@ -116,11 +117,12 @@ export default function MedallionOverview() {
   }, []);
 
   const handleMVRefresh = useCallback(async () => {
+    setMvError(null);
     try {
       const result = await api.post<Record<string, { status: string; record_count: number }>>("/lakehouse/materialized-views/refresh");
       setMvStatus(Object.entries(result).map(([mv_id, v]) => ({ mv_id, status: v.status, record_count: v.record_count })));
-    } catch {
-      // ignore
+    } catch (e) {
+      setMvError(`Materialized view refresh failed: ${String(e)}`);
     }
   }, []);
 
@@ -187,6 +189,7 @@ export default function MedallionOverview() {
           pipelineRuns={pipelineRuns}
           mvStatus={mvStatus}
           onMVRefresh={handleMVRefresh}
+          mvError={mvError}
         />
       )}
     </div>

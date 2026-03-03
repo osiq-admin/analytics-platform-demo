@@ -467,7 +467,7 @@ function AuditLogTab() {
                     {entry.new_value != null
                       ? typeof entry.new_value === "object"
                         ? Object.entries(entry.new_value as Record<string, unknown>)
-                            .map(([k, v]) => `${k}: ${String(v)}`)
+                            .map(([k, v]) => `${k}: ${typeof v === "object" && v !== null ? JSON.stringify(v) : String(v)}`)
                             .join(", ")
                         : String(entry.new_value)
                       : "--"}
