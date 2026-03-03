@@ -91,7 +91,7 @@ class TestMockMode:
 
         assert result["role"] == "assistant"
         assert result["mode"] == "mock"
-        assert "mock mode" in result["content"].lower()
+        assert "demo mode" in result["content"].lower()
 
     def test_mock_reply_empty_messages(self, assistant):
         import asyncio
