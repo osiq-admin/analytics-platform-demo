@@ -67,7 +67,11 @@ export default function EventTimeline() {
                 </span>
               </div>
               <div className="text-xs text-muted">
-                {evt.details || evt.message || "Pipeline event recorded"}
+                {typeof evt.details === "string"
+                  ? evt.details
+                  : typeof evt.details === "object" && evt.details != null
+                    ? Object.entries(evt.details as Record<string, unknown>).map(([k, v]) => `${k}: ${v}`).join(", ")
+                    : evt.message || "Pipeline event recorded"}
               </div>
               {evt.duration_ms != null && evt.duration_ms > 0 && (
                 <div className="text-[10px] text-muted mt-0.5">

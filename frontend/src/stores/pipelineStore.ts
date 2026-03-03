@@ -50,7 +50,7 @@ export interface PipelineEvent {
   entity: string;
   timestamp: string;
   severity: string;
-  details: string;
+  details: string | Record<string, unknown>;
   message: string;
   duration_ms?: number;
 }
