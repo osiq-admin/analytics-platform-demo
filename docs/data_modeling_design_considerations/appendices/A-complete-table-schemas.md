@@ -14,16 +14,18 @@ Organized by medallion tier and dependency order.
 2. [Configuration Tables (Reference/MDM Tier)](#2-configuration-tables-referencemdm-tier)
    - 2.1 [match_patterns](#21-match_patterns)
    - 2.2 [match_pattern_attributes](#22-match_pattern_attributes)
-   - 2.3 [calc_definitions](#23-calc_definitions)
-   - 2.4 [detection_models](#24-detection_models)
-   - 2.5 [model_calculations](#25-model_calculations)
-   - 2.6 [calc_pattern_bindings](#26-calc_pattern_bindings)
-   - 2.7 [calc_settings](#27-calc_settings)
-   - 2.8 [score_steps](#28-score_steps)
+   - 2.3 [setting_definitions](#23-setting_definitions)
+   - 2.4 [calc_definitions](#24-calc_definitions)
+   - 2.5 [calc_required_settings](#25-calc_required_settings)
+   - 2.6 [detection_models](#26-detection_models)
+   - 2.7 [model_calculations](#27-model_calculations)
+   - 2.8 [calc_pattern_bindings](#28-calc_pattern_bindings)
+   - 2.9 [score_steps](#29-score_steps)
 3. [Result Tables (Gold Tier)](#3-result-tables-gold-tier)
    - 3.1 [time_windows](#31-time_windows)
    - 3.2 [calc_results](#32-calc_results)
    - 3.3 [calc_instances](#33-calc_instances)
+   - 3.4 [instance_setting_values](#34-instance_setting_values)
 4. [Alert Tables (Platinum Tier)](#4-alert-tables-platinum-tier)
    - 4.1 [alert_traces](#41-alert_traces)
 5. [Versioning Tables (Logging/Audit Tier)](#5-versioning-tables-loggingaudit-tier)
@@ -41,23 +43,25 @@ Each group can be created in parallel within the group; groups must be created s
 ```
 Group 1 (no dependencies):
   match_patterns
+  setting_definitions
   calc_definitions
 
 Group 2 (depends on Group 1):
   match_pattern_attributes    (FK -> match_patterns)
+  calc_required_settings      (FK -> calc_definitions, setting_definitions)
   detection_models            (FK -> match_patterns)
   calc_pattern_bindings       (FK -> calc_definitions, match_patterns)
-  calc_settings               (FK -> calc_definitions, match_patterns)
   score_steps                 (FK -> match_patterns, calc_definitions)
   match_pattern_versions      (FK -> match_patterns)
 
 Group 3 (depends on Groups 1-2):
   model_calculations          (FK -> detection_models, calc_definitions)
   time_windows                (no FK, but logically depends on config tables)
+  calc_instances              (FK -> calc_definitions, match_patterns, time_windows)
 
 Group 4 (depends on Groups 1-3):
+  instance_setting_values     (FK -> calc_instances, setting_definitions)
   calc_results                (FK -> calc_definitions, time_windows, match_patterns)
-  calc_instances              (FK -> calc_definitions, match_patterns)
 
 Group 5 (depends on Groups 1-4):
   alert_traces                (FK -> detection_models)
@@ -200,12 +204,67 @@ COMMENT ON COLUMN match_pattern_attributes.attribute_value IS
     'See doc 07-detection-level-design.md.';
 ```
 
-### 2.3 calc_definitions
+### 2.3 setting_definitions
 
-Stores the definition of each calculation in the DAG. One row per calculation.
-Calculations are reusable across detection models.
+Pure metadata definitions for configurable parameters. Each row declares what
+a setting IS — its name, type, and purpose — without specifying any concrete
+values. Values are assigned at the calculation instance level via
+`instance_setting_values`.
 
-See: Document 05 (Calculation Instance Model), Document 09, Section 4.1.
+See: Document 12 (Settings Resolution Patterns), Section 4.1.
+
+```sql
+CREATE TABLE setting_definitions (
+    -- Unique setting identifier matching the setting JSON filename
+    -- (e.g., 'wash_vwap_threshold', 'business_date_cutoff')
+    setting_id    VARCHAR PRIMARY KEY,
+
+    -- Display name for UI (e.g., 'VWAP Proximity Threshold')
+    name          VARCHAR NOT NULL,
+
+    -- Human-readable description of what this setting controls
+    description   TEXT,
+
+    -- Data type of the setting value:
+    -- 'decimal'     : floating-point numeric (thresholds, multipliers)
+    -- 'integer'     : whole number (counts, days)
+    -- 'string'      : text value (cutoff times, identifiers)
+    -- 'boolean'     : true/false flag
+    -- 'score_steps' : graduated scoring matrix (array of min/max/score)
+    value_type    VARCHAR NOT NULL CHECK (value_type IN (
+        'decimal', 'integer', 'string', 'boolean', 'score_steps'
+    )),
+
+    -- Semantic versioning for the definition (not the values)
+    version       VARCHAR NOT NULL DEFAULT '1.0.0',
+
+    -- Optional illustrative examples showing typical values.
+    -- These are documentation aids, NOT operational defaults.
+    -- Example: {"typical_range": "0.01 to 0.02", "unit": "ratio"}
+    examples      JSON
+);
+
+COMMENT ON TABLE setting_definitions IS
+    'Pure metadata definitions for configurable parameters. Declares what a setting IS '
+    '(name, type, purpose) without specifying concrete values. Values are assigned per '
+    'calculation instance via instance_setting_values. See doc 12 Section 4.1.';
+
+COMMENT ON COLUMN setting_definitions.value_type IS
+    'Data type discriminator. The engine uses this to validate and deserialize '
+    'param_value entries in instance_setting_values.';
+
+COMMENT ON COLUMN setting_definitions.examples IS
+    'Illustrative examples for documentation purposes only. NOT operational defaults. '
+    'Concrete values live in instance_setting_values.';
+```
+
+### 2.4 calc_definitions
+
+Runtime-agnostic calculation definitions. One row per calculation in the DAG.
+Calculations are reusable across detection models. Calculations declare their
+required settings via `calc_required_settings` (not inline).
+
+See: Document 05 (Calculation Instance Model); Document 09, Section 4.1.
 
 ```sql
 CREATE TABLE calc_definitions (
@@ -231,44 +290,35 @@ CREATE TABLE calc_definitions (
         'derived'
     )),
 
-    -- The SQL template with $param placeholders for parameterized execution.
-    -- Placeholders are resolved by the settings engine at runtime.
-    -- Example: 'CASE WHEN execution_time > $cutoff_time THEN ...'
-    logic_sql     TEXT,
+    -- Runtime discriminator telling the engine which executor to invoke:
+    -- 'sql'   : DuckDB SQL template with $param placeholders
+    -- 'code'  : Python/procedural code reference
+    -- 'flink' : Apache Flink streaming job specification
+    formula_type  VARCHAR NOT NULL CHECK (formula_type IN ('sql', 'code', 'flink')),
 
-    -- Parameter specifications with source type and default values.
-    -- JSON object where each key is a parameter name and each value is:
-    --   {"source": "setting", "setting_id": "wash_vwap_threshold", "default": 0.02}
-    --   {"source": "literal", "value": 0.5}
-    -- Parameters with source="setting" participate in context-dependent resolution.
-    -- Parameters with source="literal" are substituted directly.
-    parameters    JSON,
+    -- The formula with $param placeholders for parameterized execution.
+    -- For SQL: 'CASE WHEN execution_time > $cutoff_time THEN ...'
+    -- For code: module path or inline code reference
+    -- For Flink: job specification or DAG reference
+    formula       TEXT NOT NULL,
+
+    -- JSON object describing the output columns produced by this calculation.
+    -- Maps column names to types, descriptions, and display hints.
+    -- Example: {"qty_match_ratio": {"type": "DOUBLE", "description": "Buy/sell quantity match ratio"}}
+    output_schema JSON,
+
+    -- JSON object with UI rendering configuration: column labels, formats,
+    -- chart types, conditional formatting rules.
+    -- Example: {"primary_value": "Quantity Match Ratio", "secondary_value": "VWAP Proximity"}
+    display_config JSON,
 
     -- Array of calc_ids this calculation depends on (DAG edges).
     -- The engine executes dependencies in topological order before this calculation.
     -- Example: ['large_trading_activity', 'vwap_calc'] for wash_detection
     depends_on    VARCHAR[],
 
-    -- DuckDB table name where this calculation writes its output.
-    -- Example: 'calc_wash_detection', 'calc_large_trading_activity'
-    -- In the unified schema, this is superseded by calc_results, but retained
-    -- for backwards compatibility with per-calc table mode.
-    output_table  VARCHAR NOT NULL,
-
-    -- JSON object describing the output columns produced by this calculation.
-    -- Maps column names to types and descriptions for documentation/validation.
-    -- Example: {"qty_match_ratio": {"type": "DOUBLE", "description": "Buy/sell quantity match ratio"}}
-    output_fields JSON,
-
-    -- Which output column is the primary metric stored in calc_results.primary_value
-    -- (e.g., 'qty_match_ratio', 'total_value', 'cancel_count')
-    value_field   VARCHAR,
-
-    -- JSON mapping generic calc_results columns to calculation-specific display labels.
-    -- Example: {"primary_value": "Quantity Match Ratio", "secondary_value": "VWAP Proximity",
-    --           "flag_value": "Is Wash Candidate"}
-    -- Used by the frontend to render meaningful column headers.
-    value_labels  VARCHAR,
+    -- Semantic versioning for the definition
+    version       VARCHAR NOT NULL DEFAULT '1.0.0',
 
     -- Array of regulatory standard references this calculation supports.
     -- Example: ['MAR Art. 12(1)(a)', 'MiFID II Art. 16(2)']
@@ -276,21 +326,62 @@ CREATE TABLE calc_definitions (
 );
 
 COMMENT ON TABLE calc_definitions IS
-    'Calculation metadata definitions. One row per calculation in the DAG. '
-    'Calculations are reusable across detection models. Currently 10 calculations '
-    'across 4 layers. See doc 05-calculation-instance-model.md, doc 09 Section 4.1.';
+    'Runtime-agnostic calculation definitions. One row per calculation in the DAG. '
+    'Calculations declare their required settings via calc_required_settings (not inline). '
+    'The formula_type discriminator tells the engine which executor to invoke. '
+    'See doc 05-calculation-instance-model.md.';
 
-COMMENT ON COLUMN calc_definitions.parameters IS
-    'JSON parameter specifications. Each parameter declares its source (setting or literal), '
-    'the setting_id for resolver lookup, and a default fallback value. '
-    'See doc 05, Section 2 (Resolution Flow).';
+COMMENT ON COLUMN calc_definitions.formula_type IS
+    'Runtime discriminator: sql (DuckDB template), code (procedural), flink (streaming). '
+    'The engine dispatches to the appropriate executor based on this value.';
+
+COMMENT ON COLUMN calc_definitions.formula IS
+    'The calculation formula with $param placeholders. Placeholders are resolved from '
+    'instance_setting_values at runtime. Format depends on formula_type.';
 
 COMMENT ON COLUMN calc_definitions.depends_on IS
     'DAG dependency edges as an array of calc_ids. The engine uses topological sort '
     'to ensure all dependencies are executed before this calculation runs.';
 ```
 
-### 2.4 detection_models
+### 2.5 calc_required_settings
+
+Junction table declaring which settings a calculation requires. Each row says:
+"This calculation needs this setting and uses it as this parameter placeholder."
+Replaces the `parameters` JSON blob previously embedded in `calc_definitions`.
+
+See: Document 05 (Calculation Instance Model), Section 6; Document 12, Section 4.
+
+```sql
+CREATE TABLE calc_required_settings (
+    -- FK to the calculation that requires this setting
+    calc_id       VARCHAR NOT NULL
+        REFERENCES calc_definitions(calc_id),
+
+    -- FK to the setting definition (pure metadata)
+    setting_id    VARCHAR NOT NULL
+        REFERENCES setting_definitions(setting_id),
+
+    -- Placeholder name in the calculation's formula.
+    -- This is the $param_name that gets substituted at runtime.
+    -- Example: 'vwap_threshold', 'cutoff_time', 'trend_multiplier'
+    param_name    VARCHAR NOT NULL,
+
+    -- Each calculation can reference each parameter name at most once
+    PRIMARY KEY (calc_id, param_name)
+);
+
+COMMENT ON TABLE calc_required_settings IS
+    'Junction table declaring which settings a calculation requires. Replaces the '
+    'parameters JSON blob in calc_definitions for setting-sourced parameters. '
+    'Literal parameters remain inline in the formula. See doc 05 Section 6, doc 12 Section 4.';
+
+COMMENT ON COLUMN calc_required_settings.param_name IS
+    'The $placeholder name in the calculation formula that this setting fills. '
+    'Must match a $param reference in calc_definitions.formula.';
+```
+
+### 2.6 detection_models
 
 One row per detection model. Defines the surveillance model configuration
 including which calculations it uses, what grain it operates at, and
@@ -362,7 +453,7 @@ COMMENT ON COLUMN detection_models.score_threshold_setting IS
     'See doc 10, Section 5.';
 ```
 
-### 2.5 model_calculations
+### 2.7 model_calculations
 
 Junction table mapping which calculations contribute to each detection model.
 Defines strictness (MUST_PASS vs OPTIONAL), value field mapping, scoring
@@ -424,7 +515,7 @@ COMMENT ON COLUMN model_calculations.ordinal IS
     'order: MUST_PASS gates first, then OPTIONAL scored calculations.';
 ```
 
-### 2.6 calc_pattern_bindings
+### 2.8 calc_pattern_bindings
 
 Links calculations to the match patterns that parameterize them. When a
 calculation is bound to a pattern, the settings resolver uses the pattern's
@@ -477,55 +568,7 @@ COMMENT ON COLUMN calc_pattern_bindings.model_id IS
     'When set, the binding is model-specific and only applies when that model invokes the calculation.';
 ```
 
-### 2.7 calc_settings
-
-Resolved parameter values per calculation-pattern context. Stores the
-concrete setting values that the engine uses when executing a calculation
-instance in a specific match pattern context.
-
-See: Document 05, Section 2 (Resolution Flow); Document 08 (Resolution Priority Rules).
-
-```sql
-CREATE TABLE calc_settings (
-    -- Surrogate primary key
-    setting_id    VARCHAR PRIMARY KEY,
-
-    -- FK to the calculation whose parameter is being set
-    calc_id       VARCHAR NOT NULL
-        REFERENCES calc_definitions(calc_id),
-
-    -- FK to the match pattern providing the context for this setting value.
-    -- A zero-attribute pattern (no child rows) represents the default.
-    pattern_id    VARCHAR NOT NULL
-        REFERENCES match_patterns(pattern_id),
-
-    -- The parameter name from calc_definitions.parameters
-    -- (e.g., 'vwap_threshold', 'cutoff_time', 'trend_multiplier')
-    param_name    VARCHAR NOT NULL,
-
-    -- The resolved parameter value as JSON (supports numeric, string, boolean, array).
-    -- Examples:
-    --   0.015                              (numeric threshold)
-    --   "21:00"                            (string cutoff time)
-    --   [{"min": 0, "max": 25000, ...}]   (score step array)
-    param_value   JSON NOT NULL,
-
-    -- Ensures one value per calc+pattern+param combination
-    UNIQUE (calc_id, pattern_id, param_name)
-);
-
-COMMENT ON TABLE calc_settings IS
-    'Resolved parameter values per calculation-pattern context. Each row stores the '
-    'concrete value the engine substitutes into a calculation SQL template when running '
-    'under a specific match pattern context. See doc 05 Section 2, doc 08.';
-
-COMMENT ON COLUMN calc_settings.param_value IS
-    'JSON-typed parameter value. Supports scalars (0.015, "21:00", true), arrays '
-    '(score step definitions), and objects (complex parameter specs). '
-    'The engine deserializes based on the parameter type declared in calc_definitions.parameters.';
-```
-
-### 2.8 score_steps
+### 2.9 score_steps
 
 Graduated scoring ranges linked to match patterns. Each row maps a value range
 to a score. The engine uses these to convert raw calculation outputs into
@@ -754,80 +797,99 @@ COMMENT ON COLUMN calc_results.flag_value IS
 
 ### 3.3 calc_instances
 
-Runtime-populated table recording each resolved calculation instance for
-auditability. One row per (calculation x pattern x run) execution. Tracks
-the resolved parameters, caching status, and resolution trace.
+THE COMPOSITION POINT. Each row represents a specific combination of
+calculation definition + match pattern + optional time window. Concrete
+setting values are stored in `instance_setting_values`. Multiple instances
+can exist per calculation (one per context).
 
 See: Document 05, Section 6.
 
 ```sql
 CREATE TABLE calc_instances (
-    -- Globally unique instance identifier (UUID or composite)
+    -- Unique instance identifier
     instance_id          VARCHAR PRIMARY KEY,
-
-    -- FK to the pipeline run that produced this instance.
-    -- Enables grouping all instances from a single engine execution.
-    run_id               VARCHAR NOT NULL,
 
     -- FK to the calculation definition
     calc_id              VARCHAR NOT NULL
         REFERENCES calc_definitions(calc_id),
 
-    -- FK to the match pattern that supplied the entity context for parameter resolution
+    -- FK to the match pattern that defines the context for this instance
     pattern_id           VARCHAR NOT NULL
         REFERENCES match_patterns(pattern_id),
 
-    -- JSON object of the fully resolved parameters.
-    -- Example: {"vwap_threshold": 0.015, "qty_threshold": 0.5}
-    -- These are the concrete values that were substituted into the SQL template.
-    resolved_params      JSON NOT NULL,
+    -- FK to the time window (nullable). When set, scopes the instance
+    -- to a specific temporal context.
+    window_id            VARCHAR
+        REFERENCES time_windows(window_id),
 
-    -- SHA-256 hash of sorted resolved parameter key-value pairs.
-    -- Used for deduplication: if two patterns produce identical resolved parameters
-    -- for the same calculation, only one instance is executed.
-    resolved_params_hash VARCHAR NOT NULL,
+    -- Semantic versioning for the instance configuration
+    version              VARCHAR NOT NULL DEFAULT '1.0.0',
 
-    -- DuckDB table name or reference where results were written
-    result_table         VARCHAR NOT NULL,
-
-    -- Number of rows produced by this instance execution
-    row_count            INTEGER NOT NULL,
-
-    -- When this instance was executed
-    executed_at          TIMESTAMP NOT NULL,
-
-    -- TRUE if result was reused from a previous instance with the same
-    -- (calc_id, resolved_params_hash) tuple. Avoids redundant computation
-    -- when multiple detection models share the same parameterized calculation.
-    cached               BOOLEAN NOT NULL DEFAULT FALSE,
-
-    -- Per-parameter resolution audit trail. JSON object keyed by parameter name.
-    -- Each entry records: setting_id, context, matched_override, resolved_value, why.
-    -- Example:
-    -- {
-    --   "vwap_threshold": {
-    --     "setting_id": "wash_vwap_threshold",
-    --     "context": {"asset_class": "equity"},
-    --     "matched_override": {"match": {"asset_class": "equity"}, "value": 0.015, "priority": 1},
-    --     "resolved_value": 0.015,
-    --     "why": "Matched override: {asset_class=equity} (priority 1)"
-    --   }
-    -- }
-    resolution_trace     JSON
+    -- When this instance was created
+    created_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 COMMENT ON TABLE calc_instances IS
-    'Runtime audit table recording each resolved calculation instance. One row per '
-    '(calculation x pattern x run). Enables alert traceability: alert -> instance -> '
-    'resolved parameters -> matched settings overrides. See doc 05 Section 6.';
+    'THE COMPOSITION POINT. Each row represents a specific combination of '
+    'calculation definition + match pattern + optional time window. '
+    'Concrete setting values are stored in instance_setting_values. '
+    'Multiple instances can exist per calculation (one per context). '
+    'See doc 05 Section 6.';
 
-COMMENT ON COLUMN calc_instances.resolved_params_hash IS
-    'SHA-256 hash of sorted resolved params. Enables deduplication: instances with '
-    'identical (calc_id, hash) tuples share cached results.';
+COMMENT ON COLUMN calc_instances.pattern_id IS
+    'The match pattern that defines this instance''s context. A zero-attribute '
+    'pattern (no child rows) represents the default/fallback instance.';
 
-COMMENT ON COLUMN calc_instances.resolution_trace IS
-    'Complete per-parameter resolution audit trail. Records which setting was loaded, '
-    'which context was passed, which override matched, and why.';
+COMMENT ON COLUMN calc_instances.window_id IS
+    'Optional time window scoping. NULL means the instance applies to all time windows. '
+    'When set, the instance is specific to a temporal context.';
+```
+
+### 3.4 instance_setting_values
+
+The actual concrete values for each parameter, per calculation instance.
+This is the ONLY place in the system where parameter values are stored.
+Every value that was previously a "default" or an "override" in a setting
+JSON file is now an explicit row in this table, associated with a specific
+calculation instance.
+
+See: Document 05 (Calculation Instance Model), Section 6;
+Document 12 (Settings Resolution Patterns), Section 4.4.
+
+```sql
+CREATE TABLE instance_setting_values (
+    -- FK to the calculation instance this value belongs to
+    instance_id      VARCHAR NOT NULL
+        REFERENCES calc_instances(instance_id),
+
+    -- FK to the setting definition (pure metadata)
+    setting_id       VARCHAR NOT NULL
+        REFERENCES setting_definitions(setting_id),
+
+    -- Parameter name matching calc_required_settings.param_name.
+    -- This is the $placeholder in the formula that this value fills.
+    param_name       VARCHAR NOT NULL,
+
+    -- The actual concrete value as JSON.
+    -- Supports scalars (0.015, "21:00", true), arrays (score step
+    -- definitions), and objects (complex parameter specs).
+    -- The engine deserializes based on value_type from setting_definitions.
+    param_value      JSON NOT NULL,
+
+    -- Each instance can have at most one value per setting+param combination
+    PRIMARY KEY (instance_id, setting_id, param_name)
+);
+
+COMMENT ON TABLE instance_setting_values IS
+    'Concrete parameter values per calculation instance. This is the ONLY place '
+    'where setting values are stored. Replaces both SettingDefinition.default and '
+    'SettingDefinition.overrides from the current JSON model. '
+    'See doc 05 Section 6, doc 12 Section 4.4.';
+
+COMMENT ON COLUMN instance_setting_values.param_value IS
+    'JSON-typed parameter value. The engine deserializes based on value_type '
+    'from the referenced setting_definitions row. Supports numeric thresholds '
+    '(0.015), string cutoffs ("21:00"), boolean flags, and score step arrays.';
 ```
 
 ---
@@ -1106,18 +1168,34 @@ CREATE INDEX idx_cpb_model
 
 **Rationale**: The instance engine queries by calc_id to find applicable patterns. Impact analysis queries by pattern_id. The partial index on model_id filters efficiently when most bindings have NULL model_id (shared bindings).
 
-### 6.7 calc_settings Indexes
+### 6.7 setting_definitions Indexes
 
 ```sql
--- Calculation parameter lookup: "all settings for this calc+pattern"
--- Used by the settings resolver during parameter resolution.
-CREATE INDEX idx_calc_settings_calc_pattern
-    ON calc_settings (calc_id, pattern_id);
+-- Value type lookup: "all settings of type decimal"
+-- Used by the configuration UI to filter settings by type.
+CREATE INDEX idx_setting_defs_type
+    ON setting_definitions (value_type);
 ```
 
-**Rationale**: The settings resolver always queries by (calc_id, pattern_id) to find all parameter values for a specific calculation in a specific context.
+**Rationale**: The configuration wizard filters settings by type when building parameter forms.
 
-### 6.8 score_steps Indexes
+### 6.8 calc_required_settings Indexes
+
+```sql
+-- Calculation lookup: "all settings required by this calculation"
+-- Primary access pattern: the engine loads all required settings when resolving parameters.
+CREATE INDEX idx_crs_calc
+    ON calc_required_settings (calc_id);
+
+-- Setting lookup: "all calculations that use this setting"
+-- Used by impact analysis when a setting definition is modified.
+CREATE INDEX idx_crs_setting
+    ON calc_required_settings (setting_id);
+```
+
+**Rationale**: `idx_crs_calc` supports parameter resolution at engine startup. `idx_crs_setting` supports reverse impact analysis.
+
+### 6.9 score_steps Indexes
 
 ```sql
 -- Score lookup: "all steps for this pattern+calc combination"
@@ -1128,7 +1206,7 @@ CREATE INDEX idx_score_steps_pattern_calc
 
 **Rationale**: The scoring engine loads all step ranges for a (pattern, calculation) pair and performs range lookup against the computed value. This index covers the load query.
 
-### 6.9 time_windows Indexes
+### 6.10 time_windows Indexes
 
 ```sql
 -- Primary query: "all windows of a given type for a business date"
@@ -1151,7 +1229,7 @@ CREATE INDEX idx_time_windows_computed
 
 **Rationale**: `idx_time_windows_type_date` covers the cross-join work manifest query (doc 06, Section 4). `idx_time_windows_product_date` is a partial index that only indexes non-NULL product_id rows, covering entity-scoped window lookups efficiently. `idx_time_windows_computed` supports the staleness decision tree (doc 06, Section 7).
 
-### 6.10 calc_results Indexes
+### 6.11 calc_results Indexes
 
 ```sql
 -- Primary: "all results for a specific calculation on a specific date"
@@ -1177,21 +1255,37 @@ CREATE INDEX idx_calc_results_calc_product_date
 
 **Rationale**: See Document 09, Section 8 for detailed justification. `idx_calc_results_calc_date` is the must-have primary index. Product and account indexes support investigation workflows. The composite index covers the full detection model query predicate chain.
 
-### 6.11 calc_instances Indexes
+### 6.12 calc_instances Indexes
 
 ```sql
--- Run lookup: "all instances from a specific pipeline run"
-CREATE INDEX idx_calc_instances_run
-    ON calc_instances (run_id);
+-- Calculation lookup: "all instances of this calculation"
+CREATE INDEX idx_calc_instances_calc
+    ON calc_instances (calc_id);
 
--- Deduplication lookup: instances with the same calc and params hash
-CREATE INDEX idx_calc_instances_calc_hash
-    ON calc_instances (calc_id, resolved_params_hash);
+-- Pattern lookup: "all instances using this pattern"
+CREATE INDEX idx_calc_instances_pattern
+    ON calc_instances (pattern_id);
 ```
 
-**Rationale**: `idx_calc_instances_run` supports pipeline monitoring and audit (list all work done in a run). `idx_calc_instances_calc_hash` supports instance cache lookup for deduplication (doc 05, Section 5).
+**Rationale**: `idx_calc_instances_calc` supports loading all instances for a given calculation during pipeline execution and impact analysis. `idx_calc_instances_pattern` supports reverse lookups when a pattern is modified.
 
-### 6.12 alert_traces Indexes
+### 6.13 instance_setting_values Indexes
+
+```sql
+-- Instance lookup: "all setting values for this instance"
+-- Primary access pattern: the engine loads all values when executing an instance.
+CREATE INDEX idx_isv_instance
+    ON instance_setting_values (instance_id);
+
+-- Setting lookup: "all instances that have a value for this setting"
+-- Used by impact analysis when considering setting changes.
+CREATE INDEX idx_isv_setting
+    ON instance_setting_values (setting_id);
+```
+
+**Rationale**: `idx_isv_instance` is the must-have index -- every instance execution requires loading all its parameter values. `idx_isv_setting` supports "what-if" analysis for setting changes.
+
+### 6.14 alert_traces Indexes
 
 ```sql
 -- Model+date: "all alerts for a model on a date"
@@ -1213,7 +1307,7 @@ CREATE INDEX idx_alert_traces_score
 
 **Rationale**: `idx_alert_traces_model_date` covers the per-model alert review. The partial index `idx_alert_traces_fired_date` skips non-fired candidates (typically 60-80% of all traces), significantly reducing scan scope for compliance dashboards. `idx_alert_traces_score` supports priority-ordered review queues.
 
-### 6.13 match_pattern_versions Indexes
+### 6.15 match_pattern_versions Indexes
 
 ```sql
 -- Pattern version history: "all versions of a pattern, ordered"
@@ -1228,7 +1322,7 @@ CREATE INDEX idx_mpv_created_by
 
 **Rationale**: `idx_mpv_pattern_version` supports the version history display (most recent version first). `idx_mpv_created_by` supports user-centric audit queries ("what did this user change and when?").
 
-### 6.14 Index Summary
+### 6.16 Index Summary
 
 | Table | Index | Columns | Type | Priority |
 |-------|-------|---------|------|----------|
@@ -1242,7 +1336,9 @@ CREATE INDEX idx_mpv_created_by
 | calc_pattern_bindings | idx_cpb_calc | (calc_id) | Single | Must-have |
 | calc_pattern_bindings | idx_cpb_pattern | (pattern_id) | Single | Should-have |
 | calc_pattern_bindings | idx_cpb_model | (model_id) WHERE NOT NULL | Partial | Nice-to-have |
-| calc_settings | idx_calc_settings_calc_pattern | (calc_id, pattern_id) | Composite | Must-have |
+| setting_definitions | idx_setting_defs_type | (value_type) | Single | Nice-to-have |
+| calc_required_settings | idx_crs_calc | (calc_id) | Single | Must-have |
+| calc_required_settings | idx_crs_setting | (setting_id) | Single | Should-have |
 | score_steps | idx_score_steps_pattern_calc | (pattern_id, calc_id) | Composite | Must-have |
 | time_windows | idx_time_windows_type_date | (window_type, business_date) | Composite | Must-have |
 | time_windows | idx_time_windows_product_date | (product_id, business_date) WHERE NOT NULL | Partial | Should-have |
@@ -1251,15 +1347,17 @@ CREATE INDEX idx_mpv_created_by
 | calc_results | idx_calc_results_product_date | (product_id, business_date) | Composite | Should-have |
 | calc_results | idx_calc_results_account_date | (account_id, business_date) | Composite | Should-have |
 | calc_results | idx_calc_results_calc_product_date | (calc_id, product_id, business_date) | Composite | Nice-to-have |
-| calc_instances | idx_calc_instances_run | (run_id) | Single | Must-have |
-| calc_instances | idx_calc_instances_calc_hash | (calc_id, resolved_params_hash) | Composite | Must-have |
+| calc_instances | idx_calc_instances_calc | (calc_id) | Single | Must-have |
+| calc_instances | idx_calc_instances_pattern | (pattern_id) | Single | Should-have |
+| instance_setting_values | idx_isv_instance | (instance_id) | Single | Must-have |
+| instance_setting_values | idx_isv_setting | (setting_id) | Single | Should-have |
 | alert_traces | idx_alert_traces_model_date | (model_id, business_date) | Composite | Must-have |
 | alert_traces | idx_alert_traces_fired_date | (business_date) WHERE fired=TRUE | Partial | Should-have |
 | alert_traces | idx_alert_traces_score | (accumulated_score DESC) WHERE fired=TRUE | Partial/Desc | Nice-to-have |
 | match_pattern_versions | idx_mpv_pattern_version | (pattern_id, version_num DESC) | Composite/Desc | Must-have |
 | match_pattern_versions | idx_mpv_created_by | (created_by, created_at DESC) | Composite/Desc | Should-have |
 
-**Total**: 25 indexes across 12 tables.
+**Total**: 30 indexes across 14 tables.
 
 ---
 
@@ -1367,13 +1465,14 @@ SELECT json_array_length(calculation_scores) FROM alert_traces;
 | Document | Relationship to This Appendix |
 |----------|------------------------------|
 | 04 Match Pattern Architecture | Defines match_patterns and match_pattern_attributes semantics |
-| 05 Calculation Instance Model | Defines calc_pattern_bindings, calc_instances, and resolution flow |
+| 05 Calculation Instance Model | Defines calc_instances (composition point), calc_required_settings, instance_setting_values, and resolution flow |
 | 06 Time Window Framework | Defines time_windows schema and join semantics |
 | 07 Detection Level Design | Defines detection_level_pattern usage in detection_models |
 | 08 Resolution Priority Rules | Defines how match pattern attributes determine priority |
 | 09 Unified Results Schema | Defines calc_results star schema, dimension tables, and indexes |
 | 10 Scoring and Alerting Pipeline | Defines alert_traces, score_steps scoring logic |
 | 11 Entity Relationship Graph | Defines the 8 entities referenced by sparse dimension columns |
+| 12 Settings Resolution Patterns | Defines setting_definitions (pure metadata) and the separation of definitions from values |
 | 14 Medallion Integration | Defines which medallion tier each table belongs to |
 | 16 Lifecycle and Governance | Defines match_pattern_versions and change management |
 | Appendix B | End-to-end worked examples with actual data flowing through these tables |

@@ -711,12 +711,35 @@ The current settings resolver works correctly but has structural limitations tha
 2. **Manual priority integers** --- administrators must assign priority numbers (1, 2, 100) by hand, with no system-enforced consistency.
 3. **No entity awareness** --- the flat `match` keys do not record which entity owns each attribute (is `asset_class` from the product entity or from a derived table?).
 4. **No cross-entity conditions** --- the flat structure cannot express "equity instruments traded by high-risk accounts" as a single match.
+5. **Values tangled with definitions** --- the current `SettingDefinition` Pydantic model carries both the definition metadata AND concrete values (default + overrides). This conflation means settings cannot be defined independently of the calculations that consume them.
 
-The proposed evolution replaces inline match objects with references to the match pattern system described in document 04.
+The proposed evolution addresses all five limitations by separating settings into **pure definitions** (metadata only) and moving all **concrete values** to the calculation instance level.
 
-### 4.1 Match Pattern Types Replace Flat Match Objects
+### 4.1 Settings as Pure Definitions
 
-Instead of each override embedding its own `{"asset_class": "equity"}` dictionary, overrides reference a `pattern_id` that points to the `match_patterns` / `match_pattern_attributes` tables.
+A setting definition becomes pure metadata --- it declares *what kind of parameter* this is, without specifying any concrete values:
+
+```
+setting_definitions:
+  setting_id     PK
+  name           VARCHAR       -- 'VWAP Proximity Threshold'
+  description    TEXT          -- 'VWAP proximity threshold for wash trading detection...'
+  value_type     VARCHAR       -- 'decimal', 'integer', 'string', 'boolean', 'score_steps'
+  version        VARCHAR       -- '1.0.0'
+  examples       JSON          -- optional illustrative examples (not operational)
+```
+
+**What's NOT here:** No `default` value. No `overrides` array. No `match_type`. These were artifacts of the old model where settings carried their own values. In the proposed model, a setting definition is a template --- it says "this parameter is a decimal called VWAP Proximity Threshold" but does not say what the decimal's value is. Values are supplied at the calculation instance level (see document 05).
+
+**Why this matters:**
+
+- **Reusability**: The same setting definition (`wash_vwap_threshold`) can be referenced by multiple calculations without duplicating value configurations. Each calculation instance supplies its own values.
+- **Separation of concerns**: Data stewards define *what* parameters exist. Calculation authors declare *which* parameters their formulas require. Instance configurators set *what values* to use in each context.
+- **Clean versioning**: Setting definitions version independently of the values assigned to them. Changing a setting's description or adding a new valid type does not affect any calculation instance.
+
+### 4.2 Match Pattern Types Replace Flat Match Objects
+
+Instead of each override embedding its own `{"asset_class": "equity"}` dictionary, match patterns are independently-defined, reusable typed predicates that reference the `match_patterns` / `match_pattern_attributes` tables.
 
 Current inline override:
 ```json
@@ -740,7 +763,9 @@ match_pattern_attributes:
   equity_nyse | product | exchange_mic     | XNYS
 ```
 
-### 4.2 Granularity-Based Priority Replaces Integer Priority
+Match patterns carry NO values --- they are pure predicates. Values are assigned when a calculation instance composes a definition with a pattern (see document 05, Section 6).
+
+### 4.3 Granularity-Based Priority Replaces Integer Priority
 
 The current system uses manually assigned priority integers (1, 2, 100). The proposed system computes priority automatically from pattern specificity, following the granularity pyramid described in the design series:
 
@@ -757,34 +782,33 @@ The resolution algorithm counts the number of attribute rows in the pattern. Mor
 
 This is equivalent to the current `HierarchyStrategy`'s `len(o.match)` sort key, but formalized: the priority is an intrinsic property of the pattern, not a field on the override.
 
-### 4.3 The `calc_settings` Table
+### 4.4 Where Values Live: The Calculation Instance
 
-Settings become rows in a `calc_settings` table, linked to calculations via `calc_id` and to match patterns via `pattern_id`:
+In the proposed model, concrete parameter values are assigned at the **calculation instance** level --- the composition point where a calculation definition meets its match pattern(s).
 
-```sql
-CREATE TABLE calc_settings (
-  setting_id   VARCHAR PRIMARY KEY,
-  calc_id      VARCHAR NOT NULL,         -- FK -> calculations.calc_id
-  pattern_id   VARCHAR NOT NULL,         -- FK -> match_patterns (type: setting)
-  param_name   VARCHAR NOT NULL,         -- which parameter this resolves
-  param_value  JSON NOT NULL,            -- the resolved value (scalar or array like score steps)
-  UNIQUE (calc_id, pattern_id, param_name)
-);
+The `instance_setting_values` table stores every concrete value:
+
+```
+instance_setting_values:
+  instance_id      FK -> calc_instances
+  setting_id       FK -> setting_definitions
+  param_name       VARCHAR  -- placeholder name in formula
+  param_value      JSON     -- the actual concrete value
+  PK (instance_id, setting_id, param_name)
 ```
 
-**Column semantics:**
+This table replaces both the current `SettingDefinition.default` and `SettingDefinition.overrides[]` --- every value, whether it was previously a "default" or an "override," is now an explicit row in `instance_setting_values` associated with a specific calculation instance.
 
-| Column | Purpose |
+**Resolution example for `wash_vwap_threshold` with equity context:**
+
+| Source (current) | Target (proposed) |
 |---|---|
-| `setting_id` | Unique identifier for this configuration row |
-| `calc_id` | Which calculation this parameter belongs to |
-| `pattern_id` | Which match pattern determines when this value applies |
-| `param_name` | The parameter name (e.g., `wash_vwap_threshold`, `large_activity_score_steps`) |
-| `param_value` | The parameter value as JSON (scalar `0.012` or array `[{"min_value": 0, "max_value": 25000, "score": 0}, ...]`) |
+| `setting.default = 0.02` | `instance_setting_values` row on the "default" instance (zero-attribute pattern) |
+| `override {asset_class: equity} = 0.015` | `instance_setting_values` row on the "equity" instance |
+| `override {asset_class: equity, exchange_mic: XNYS} = 0.012` | `instance_setting_values` row on the "equity_nyse" instance |
+| `override {product: AAPL} = 0.01` | `instance_setting_values` row on the "aapl" instance |
 
-The `UNIQUE (calc_id, pattern_id, param_name)` constraint ensures that for a given calculation and pattern, each parameter is defined at most once. No ambiguity, no duplicate overrides.
-
-**Default values** are represented by a zero-attribute pattern --- a `match_patterns` row with no corresponding `match_pattern_attributes` rows. This pattern matches everything and has the lowest granularity priority.
+See document 05, Section 6 for the complete table structures and worked examples.
 
 ---
 
@@ -792,24 +816,28 @@ The `UNIQUE (calc_id, pattern_id, param_name)` constraint ensures that for a giv
 
 ### 5.1 General Mapping
 
-The mapping from current JSON settings to the proposed `calc_settings` table follows a consistent pattern:
+The mapping from current JSON settings to the proposed separated model follows a consistent pattern:
 
 | Current Concept | Proposed Concept |
 |---|---|
-| `setting.default` | `calc_settings` row with a zero-attribute (universal) `pattern_id` |
-| `setting.overrides[].match` | `match_pattern_attributes` rows under a named `pattern_id` |
-| `setting.overrides[].value` | `calc_settings.param_value` |
-| `setting.overrides[].priority` | Computed from `match_pattern_attributes` row count (eliminated as explicit field) |
-| `setting.match_type` | Eliminated --- a single resolution algorithm handles all settings |
-| `setting.value_type` | Encoded in `param_value` JSON type (scalar, array) |
+| `SettingDefinition` (name, description, value_type) | `setting_definitions` row (pure metadata, no values) |
+| `SettingDefinition.default` | `instance_setting_values` row on a calc instance with zero-attribute (universal) pattern |
+| `SettingDefinition.overrides[].match` | `match_patterns` / `match_pattern_attributes` rows (reused across settings) |
+| `SettingDefinition.overrides[].value` | `instance_setting_values.param_value` on the corresponding calc instance |
+| `SettingDefinition.overrides[].priority` | Computed from `match_pattern_attributes` row count (eliminated as explicit field) |
+| `SettingDefinition.match_type` | Eliminated --- a single resolution algorithm handles all settings |
+| `calc_settings` table (Section 4.3 of previous version) | Replaced by `calc_required_settings` (declares which settings a calc needs) + `instance_setting_values` (supplies concrete values per instance) |
 
-### 5.2 Example Migration: `wash_vwap_threshold` (Threshold Setting)
+### 5.2 Example Migration: `wash_vwap_threshold`
 
 **Current JSON** (`workspace/metadata/settings/thresholds/wash_vwap_threshold.json`):
 
 ```json
 {
   "setting_id": "wash_vwap_threshold",
+  "name": "VWAP Proximity Threshold",
+  "description": "VWAP proximity threshold for wash trading detection...",
+  "value_type": "decimal",
   "default": 0.02,
   "match_type": "hierarchy",
   "overrides": [
@@ -822,119 +850,77 @@ The mapping from current JSON settings to the proposed `calc_settings` table fol
 }
 ```
 
-**Proposed `match_patterns` rows:**
+**Step 1 --- Extract the pure definition:**
 
-| pattern_id | pattern_type | description |
-|---|---|---|
-| `pat_default` | setting | Universal default (no attributes) |
-| `pat_equity` | setting | Equity instruments |
-| `pat_equity_nyse` | setting | Equity instruments on NYSE |
-| `pat_aapl` | setting | Apple Inc. (product-specific) |
-| `pat_fixed_income` | setting | Fixed income instruments |
-| `pat_index` | setting | Index instruments |
+```
+setting_definitions:
+  setting_id:  wash_vwap_threshold
+  name:        VWAP Proximity Threshold
+  description: VWAP proximity threshold for wash trading detection...
+  value_type:  decimal
+  version:     1.0.0
+  examples:    {"typical_range": "0.01 to 0.02", "unit": "ratio"}
+```
 
-**Proposed `match_pattern_attributes` rows:**
+No `default`, no `overrides`, no `match_type`.
 
-| pattern_id | entity | entity_attribute | attribute_value |
+**Step 2 --- Declare the requirement in the calculation:**
+
+```
+calc_required_settings:
+  calc_id:     wash_detection
+  setting_id:  wash_vwap_threshold
+  param_name:  vwap_threshold
+```
+
+This says: "The `wash_detection` calculation requires a setting called `wash_vwap_threshold` and uses it as the `$vwap_threshold` placeholder."
+
+**Step 3 --- Create instances with values:**
+
+| Instance | calc_id | pattern_id | window_id |
 |---|---|---|---|
-| `pat_equity` | product | asset_class | equity |
-| `pat_equity_nyse` | product | asset_class | equity |
-| `pat_equity_nyse` | product | exchange_mic | XNYS |
-| `pat_aapl` | product | product_id | AAPL |
-| `pat_fixed_income` | product | asset_class | fixed_income |
-| `pat_index` | product | asset_class | index |
+| `inst_wash_default` | `wash_detection` | `pat_default` | NULL |
+| `inst_wash_equity` | `wash_detection` | `pat_equity` | NULL |
+| `inst_wash_equity_nyse` | `wash_detection` | `pat_equity_nyse` | NULL |
+| `inst_wash_aapl` | `wash_detection` | `pat_aapl` | NULL |
+| `inst_wash_fixed_income` | `wash_detection` | `pat_fixed_income` | NULL |
+| `inst_wash_index` | `wash_detection` | `pat_index` | NULL |
 
-Note: `pat_default` has zero attribute rows --- it matches everything.
+**Step 4 --- Assign values per instance:**
 
-**Proposed `calc_settings` rows:**
-
-| setting_id | calc_id | pattern_id | param_name | param_value |
-|---|---|---|---|---|
-| `cs_001` | `wash_detection` | `pat_default` | `wash_vwap_threshold` | `0.02` |
-| `cs_002` | `wash_detection` | `pat_equity` | `wash_vwap_threshold` | `0.015` |
-| `cs_003` | `wash_detection` | `pat_equity_nyse` | `wash_vwap_threshold` | `0.012` |
-| `cs_004` | `wash_detection` | `pat_aapl` | `wash_vwap_threshold` | `0.01` |
-| `cs_005` | `wash_detection` | `pat_fixed_income` | `wash_vwap_threshold` | `0.01` |
-| `cs_006` | `wash_detection` | `pat_index` | `wash_vwap_threshold` | `0.015` |
+| instance_id | setting_id | param_name | param_value |
+|---|---|---|---|
+| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `0.02` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
+| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `0.012` |
+| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
+| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
+| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
 
 **Resolution for context `{product.asset_class: "equity", product.exchange_mic: "XNYS"}`:**
 
 ```
-pat_aapl          → 1 attribute (product_id=AAPL)   → does NOT match (AAPL not in context)
-pat_equity_nyse   → 2 attributes                    → matches → priority = 2 → WINNER
-pat_equity        → 1 attribute                     → matches → priority = 1
-pat_fixed_income  → 1 attribute                     → does NOT match
-pat_index         → 1 attribute                     → does NOT match
-pat_default       → 0 attributes                    → matches → priority = 0
+inst_wash_aapl          → pattern has 1 attribute (product_id=AAPL)   → does NOT match → skip
+inst_wash_equity_nyse   → pattern has 2 attributes                    → matches → priority = 2 → WINNER
+inst_wash_equity        → pattern has 1 attribute                     → matches → priority = 1
+inst_wash_fixed_income  → pattern has 1 attribute                     → does NOT match → skip
+inst_wash_index         → pattern has 1 attribute                     → does NOT match → skip
+inst_wash_default       → pattern has 0 attributes                    → matches → priority = 0
 
-Result: 0.012
+Result: 0.012 (from inst_wash_equity_nyse)
 ```
 
-### 5.3 Example Migration: `large_activity_score_steps` (Score Steps Setting)
+### 5.3 Migration Phases
 
-**Current JSON** (`workspace/metadata/settings/score_steps/large_activity_score_steps.json`):
+**Phase 1 --- Create pure definitions.** Extract `setting_id`, `name`, `description`, `value_type` from each existing JSON setting file into `setting_definitions` rows. Discard `default`, `overrides`, `match_type`.
 
-```json
-{
-  "setting_id": "large_activity_score_steps",
-  "default": [
-    {"min_value": 0, "max_value": 10000, "score": 0},
-    {"min_value": 10000, "max_value": 100000, "score": 3},
-    {"min_value": 100000, "max_value": 500000, "score": 7},
-    {"min_value": 500000, "max_value": null, "score": 10}
-  ],
-  "match_type": "hierarchy",
-  "overrides": [
-    {
-      "match": {"asset_class": "equity"},
-      "value": [
-        {"min_value": 0, "max_value": 25000, "score": 0},
-        {"min_value": 25000, "max_value": 100000, "score": 3},
-        {"min_value": 100000, "max_value": 500000, "score": 7},
-        {"min_value": 500000, "max_value": null, "score": 10}
-      ],
-      "priority": 1
-    }
-  ]
-}
-```
+**Phase 2 --- Create `calc_required_settings` rows.** For each calculation definition that references a setting (via `parameters[].source == "setting"`), create a row linking `calc_id` to `setting_id` with the `param_name`.
 
-**Proposed `calc_settings` rows:**
+**Phase 3 --- Create calculation instances.** For each unique combination of (calculation, match pattern) that currently exists as an override context, create a `calc_instances` row.
 
-| setting_id | calc_id | pattern_id | param_name | param_value |
-|---|---|---|---|---|
-| `cs_010` | `large_trading_activity` | `pat_default` | `large_activity_score_steps` | `[{"min_value":0,"max_value":10000,"score":0},{"min_value":10000,"max_value":100000,"score":3},{"min_value":100000,"max_value":500000,"score":7},{"min_value":500000,"max_value":null,"score":10}]` |
-| `cs_011` | `large_trading_activity` | `pat_equity` | `large_activity_score_steps` | `[{"min_value":0,"max_value":25000,"score":0},{"min_value":25000,"max_value":100000,"score":3},{"min_value":100000,"max_value":500000,"score":7},{"min_value":500000,"max_value":null,"score":10}]` |
+**Phase 4 --- Populate `instance_setting_values`.** Map each current default and override value to the corresponding `instance_setting_values` row.
 
-The `param_value` column stores the full score step array as JSON. The resolution engine selects the correct array based on pattern specificity, then passes it to `evaluate_score`.
-
-### 5.4 Example Migration: `spoofing_score_threshold` (Score Threshold Setting)
-
-**Current JSON** (`workspace/metadata/settings/score_thresholds/spoofing_score_threshold.json`):
-
-```json
-{
-  "setting_id": "spoofing_score_threshold",
-  "default": 12,
-  "match_type": "hierarchy",
-  "overrides": [
-    {"match": {"asset_class": "equity"}, "value": 10, "priority": 1},
-    {"match": {"asset_class": "fixed_income"}, "value": 7, "priority": 1},
-    {"match": {"asset_class": "index"}, "value": 6, "priority": 1}
-  ]
-}
-```
-
-**Proposed `calc_settings` rows:**
-
-| setting_id | calc_id | pattern_id | param_name | param_value |
-|---|---|---|---|---|
-| `cs_020` | `spoofing_layering` | `pat_default` | `spoofing_score_threshold` | `12` |
-| `cs_021` | `spoofing_layering` | `pat_equity` | `spoofing_score_threshold` | `10` |
-| `cs_022` | `spoofing_layering` | `pat_fixed_income` | `spoofing_score_threshold` | `7` |
-| `cs_023` | `spoofing_layering` | `pat_index` | `spoofing_score_threshold` | `6` |
-
-Scalar values are stored directly in `param_value` as JSON numbers. No structural change from the current `value` field.
+**Phase 5 --- Validate equivalence.** Run the full detection pipeline with the new model and verify that every calculation produces identical results to the current system.
 
 ---
 
@@ -942,13 +928,13 @@ Scalar values are stored directly in `param_value` as JSON numbers. No structura
 
 ### 6.1 Coexistence Strategy
 
-The current `HierarchyStrategy`, `MultiDimensionalStrategy`, and `SettingsResolver` can coexist with the proposed pattern-based resolution. Migration does not require a big-bang cutover.
+The current `HierarchyStrategy`, `MultiDimensionalStrategy`, and `SettingsResolver` can coexist with the proposed instance-based value resolution. Migration does not require a big-bang cutover.
 
-**Phase 1 --- New settings use patterns.** Any new setting added to the platform can be authored as a `calc_settings` row referencing a `pattern_id`. The new resolution path looks up `calc_settings` rows for the given `calc_id` + `param_name`, retrieves the associated patterns, and selects the most specific match by counting `match_pattern_attributes` rows.
+**Phase 1 --- New settings use pure definitions.** Any new setting added to the platform is authored as a `setting_definitions` row (metadata only). Its values are assigned through `instance_setting_values` on the corresponding calculation instances.
 
 **Phase 2 --- Old settings continue working.** Existing JSON setting files (`workspace/metadata/settings/**/*.json`) continue to load through the current `SettingDefinition` model and resolve through `HierarchyStrategy` or `MultiDimensionalStrategy`. No changes required.
 
-**Phase 3 --- Incremental migration.** Individual settings can be migrated from JSON files to `calc_settings` rows one at a time. A dual-lookup mechanism checks `calc_settings` first; if no row exists for the requested `calc_id` + `param_name`, it falls back to the JSON-based resolver.
+**Phase 3 --- Incremental migration.** Individual settings can be migrated from JSON files to the pure-definition + instance-values model one at a time. A dual-lookup mechanism checks `instance_setting_values` first; if no row exists for the requested instance + setting, it falls back to the JSON-based resolver.
 
 ### 6.2 Equivalence Between Current and Proposed Resolution
 
@@ -956,7 +942,7 @@ The current `HierarchyStrategy` and the proposed granularity-based priority prod
 
 **HierarchyStrategy sorting:** `(len(o.match), o.priority)` descending.
 
-**Proposed sorting:** count of `match_pattern_attributes` rows, descending.
+**Proposed sorting:** count of `match_pattern_attributes` rows on the instance's pattern, descending.
 
 For settings where all overrides use the same `priority` value (which is true for 14 of the 15 current settings), the sort orders are identical: both rank by number of match keys, descending.
 
@@ -965,28 +951,27 @@ The one setting with non-uniform priorities (`wash_vwap_threshold`) uses:
 - Priority 2 for the 2-key equity+NYSE override
 - Priority 1 for single-key overrides
 
-Under the current `HierarchyStrategy`, the sort key for the product-specific override is `(1, 100)`. The sort key for equity+NYSE is `(2, 2)`. Since the first element (key count) takes precedence, `(2, 2)` ranks above `(1, 100)` --- meaning the equity+NYSE override would win if both matched. This is correct: the product-specific override only matches when `context["product"] == "AAPL"`, which is a different context than `context["asset_class"] == "equity" AND context["exchange_mic"] == "XNYS"`.
-
 Under the proposed system, the product-specific pattern would have 1 attribute row (`product.product_id = AAPL`), and the equity+NYSE pattern would have 2 attribute rows. However, an entity-key match (matching on a primary key like `product_id`) receives automatic highest priority in the granularity pyramid, outranking any multi-attribute category match. This preserves the intent of the `priority: 100` convention currently used for product-specific overrides.
 
 ### 6.3 What Changes, What Does Not
 
 | Aspect | Changes | Does Not Change |
 |---|---|---|
-| **Storage format** | JSON override arrays → `calc_settings` table rows | -- |
-| **Match specification** | Flat `match` dict → `pattern_id` referencing `match_pattern_attributes` | The matching semantics (all keys must match) |
-| **Priority assignment** | Explicit integers → computed from attribute count | The ranking logic (more specific wins) |
+| **Setting definition** | Pure metadata (no default, no overrides) | Setting names, descriptions, types |
+| **Value storage** | `instance_setting_values` rows per calc instance | The matching semantics (all keys must match) |
+| **Value resolution** | Instance-level lookup (instance → values) | The ranking logic (more specific wins) |
+| **Priority assignment** | Explicit integers → computed from attribute count | -- |
 | **Resolution API** | `SettingsResolver.resolve(setting, context)` signature | Return type (`ResolutionResult`) |
 | **Score evaluation** | -- | `evaluate_score(steps, value)` is unchanged |
-| **Strategy registry** | A new `PatternStrategy` joins the registry | Existing strategies remain, handle legacy settings |
+| **Strategy registry** | A new `InstanceStrategy` joins the registry | Existing strategies remain, handle legacy settings |
 
 ### 6.4 Risk Mitigation
 
 **Regression testing:** The current test suite (1517 backend tests) includes extensive settings resolution tests. Any migration step can be validated by running the existing tests against the new resolution path and comparing results.
 
-**Audit trail continuity:** The `ResolutionResult.why` trace string format is preserved. Instead of `"Matched override: {asset_class=equity} (priority 1)"`, the new format would be `"Matched pattern: equity_stocks (2 attributes)"`. Both provide human-readable resolution explanations.
+**Audit trail continuity:** The `ResolutionResult.why` trace string format is preserved. Instead of `"Matched override: {asset_class=equity} (priority 1)"`, the new format would be `"Matched instance: inst_wash_equity (pattern: equity_stocks, 1 attribute)"`. Both provide human-readable resolution explanations.
 
-**Rollback path:** Because old and new resolution coexist, any migrated setting can be rolled back by deleting its `calc_settings` rows and re-enabling the JSON file. The dual-lookup mechanism falls back automatically.
+**Rollback path:** Because old and new resolution coexist, any migrated setting can be rolled back by deleting its `instance_setting_values` rows and re-enabling the JSON file. The dual-lookup mechanism falls back automatically.
 
 ---
 
@@ -996,10 +981,10 @@ Under the proposed system, the product-specific pattern would have 1 attribute r
 |---|---|
 | 02 Current State Analysis | Describes the current settings resolver, entities, and calculations that this document extends |
 | 04 Match Pattern Architecture | Defines the 3-column pattern structure this document proposes for settings resolution |
-| 05 Calculation Instance Model | Settings bind to calculations via `calc_id` in the proposed `calc_settings` table |
+| 05 Calculation Instance Model | Calculation instances are the composition point where setting values are assigned; `calc_required_settings` declares requirements, `instance_setting_values` supplies values |
 | 08 Resolution Priority Rules | Defines the granularity pyramid that replaces manual priority integers |
 | 10 Scoring and Alerting Pipeline | Score step resolution uses `evaluate_score` documented in Section 1.8 |
 | 15 UX Configuration Experience | The configuration wizard abstracts pattern authoring for settings administrators |
 | 18 Glossary | Defines "entity-key override," "granularity-based priority," and related terms |
-| Appendix A | Full DDL for `calc_settings` and related tables |
+| Appendix A | Full DDL for `setting_definitions`, `calc_required_settings`, `instance_setting_values` and related tables |
 | Appendix C | Complete mapping from all 15 current JSON settings to proposed table rows |

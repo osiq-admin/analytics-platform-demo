@@ -11,10 +11,10 @@
 A **Calculation Instance** is the runtime-resolved unit of execution in the surveillance engine. It is the product of two independently-defined metadata objects:
 
 ```
-Calculation Instance = Calculation Definition x Match Pattern (type: setting) --> Parameterized Calculation
+Calculation Instance = Calculation Definition + Match Pattern + Setting Values [+ Time Window] --> Parameterized Calculation
 ```
 
-A **Calculation Definition** declares *what* to compute: the SQL template, its input dependencies, its output schema, and a set of named parameter placeholders (e.g., `$cutoff_time`, `$trend_multiplier`, `$vwap_threshold`). It does not contain concrete threshold values -- it contains references to where those values come from.
+A **Calculation Definition** declares *what* to compute: the formula (which may be SQL, procedural code, or a streaming expression like Flink), its input dependencies, its output schema, and a set of named parameter placeholders (e.g., `$cutoff_time`, `$trend_multiplier`, `$vwap_threshold`). It does not contain concrete threshold values --- it declares which settings it requires (by reference via `calc_required_settings`) and provides a formula type discriminator (`sql`, `code`, `flink`) so the engine knows which executor to invoke.
 
 A **Match Pattern** (of type `setting`) declares *for whom* the calculation applies: a set of entity-attribute predicates such as `{asset_class: "equity"}` or `{asset_class: "equity", exchange_mic: "XNYS"}`. When paired with a settings override, it supplies the concrete parameter values that fill the calculation's placeholders.
 
@@ -59,18 +59,24 @@ The resolution flow describes how a generic calculation definition becomes a con
                                    v
                      +----------------------------+
                      |  Step 2: Load Setting       |
-                     |  Definition from metadata   |
+                     |  Definition (metadata only) |
                      +----------------------------+
                                    |
                                    |  setting: wash_vwap_threshold
-                                   |  default: 0.02
-                                   |  overrides:
-                                   |    {asset_class: equity}      -> 0.015
-                                   |    {asset_class: equity,
-                                   |     exchange_mic: XNYS}       -> 0.012
-                                   |    {product: AAPL}            -> 0.01
-                                   |    {asset_class: fixed_income}-> 0.01
-                                   |    {asset_class: index}       -> 0.015
+                                   |  value_type: decimal
+                                   |  (no default, no overrides ---
+                                   |   pure definition)
+                                   |
+                                   v
+                     +----------------------------+
+                     |  Step 2b: Load Required     |
+                     |  Settings Declaration       |
+                     +----------------------------+
+                                   |
+                                   |  calc_required_settings:
+                                   |    calc_id: wash_detection
+                                   |    setting_id: wash_vwap_threshold
+                                   |    param_name: vwap_threshold
                                    |
                                    v
                      +----------------------------+
@@ -88,9 +94,9 @@ The resolution flow describes how a generic calculation definition becomes a con
                    v               v               v
           +-------------+  +-------------+  +-------------+
           | Step 4:     |  | Step 4:     |  | Step 4:     |
-          | Settings    |  | Settings    |  | Settings    |
-          | Resolver    |  | Resolver    |  | Resolver    |
-          | (hierarchy) |  | (hierarchy) |  | (hierarchy) |
+          | Instance    |  | Instance    |  | Instance    |
+          | Value       |  | Value       |  | Value       |
+          | Lookup      |  | Lookup      |  | Lookup      |
           +-------------+  +-------------+  +-------------+
                    |               |               |
                    v               v               v
@@ -115,15 +121,13 @@ The resolution flow describes how a generic calculation definition becomes a con
 
 1. **Identify parameterized placeholders.** The engine reads `calc.parameters` and filters for entries where `source == "setting"`. Each such entry names a `setting_id` and a `default` fallback. Parameters with `source == "literal"` are resolved immediately to their static `value` and do not participate in context-dependent resolution.
 
-2. **Load the setting definition.** For each setting-sourced parameter, the engine calls `MetadataService.load_setting(setting_id)` to retrieve the full setting definition, including its default value, `match_type` (hierarchy or multi-dimensional), and list of overrides.
+2. **Load the setting definition.** For each setting-sourced parameter, the engine calls `MetadataService.load_setting(setting_id)` to retrieve the setting definition — pure metadata containing name, description, and value_type. The definition carries no default value and no overrides; it describes *what kind of parameter* this is.
+
+2b. **Look up the required settings declaration.** The engine queries `calc_required_settings` for the current `calc_id` to confirm which settings the calculation expects and what `param_name` each maps to.
 
 3. **Construct the entity context.** The match pattern provides the context dictionary -- for example, `{"asset_class": "equity"}` or `{"asset_class": "equity", "exchange_mic": "XNYS"}`. In the proposed model, this context comes from the `calc_pattern_bindings` table. In the current implementation, the context is passed as an empty dictionary `{}`.
 
-4. **Resolve via SettingsResolver.** The `SettingsResolver.resolve(setting, context)` method applies the configured resolution strategy:
-   - **Hierarchy strategy**: all match keys in an override must be present in the context. The override with the most matching keys wins, tie-broken by `priority`. For context `{asset_class: "equity"}`, the override `{asset_class: "equity"} -> 0.015` matches with 1 key. The override `{asset_class: "equity", exchange_mic: "XNYS"} -> 0.012` does not match (context lacks `exchange_mic`). Result: `0.015`.
-   - **Multi-dimensional strategy**: count how many dimensions match. Most matches wins, tie-broken by `priority`.
-   - **Product-specific overrides** (priority >= 100) always win when context matches.
-   - If no override matches, the setting's `default` value is returned.
+4. **Look up instance setting values.** The engine queries `instance_setting_values` for the current `instance_id` and `setting_id` to retrieve the concrete `param_value`. Each calculation instance has its own set of values — the instance for `{asset_class: "equity"}` provides `vwap_threshold = 0.015`, the instance for `{asset_class: "fx"}` provides `vwap_threshold = 0.02`. No override resolution is needed because the correct value was assigned to the instance at configuration time.
 
 5. **Substitute parameters into SQL.** The engine calls `_substitute_parameters(sql, resolved_params)`, which performs string replacement of `$param_name` placeholders with formatted values. Numeric values are substituted directly; strings are single-quoted with SQL escaping; `None` becomes `NULL`.
 
@@ -532,86 +536,177 @@ This query answers: if `large_trading_activity` is modified, which models are af
 
 ## 6. Proposed Table Structure
 
-### `calc_pattern_bindings`
+### `setting_definitions`
 
-This table records the explicit relationship between a calculation, a match pattern, and (optionally) a detection model. It is the core join table of the instance model.
+Pure metadata — defines what a setting IS, not what its value is.
 
 ```sql
-CREATE TABLE calc_pattern_bindings (
-  binding_id   VARCHAR PRIMARY KEY,    -- e.g., 'wash_detection__equity_stocks__setting'
-  calc_id      VARCHAR NOT NULL,       -- FK --> calc_definitions.calc_id
-  pattern_id   VARCHAR NOT NULL,       -- FK --> match_patterns.pattern_id (type: setting)
-  model_id     VARCHAR,                -- FK --> detection_models.model_id (NULL = shared)
-  binding_type VARCHAR NOT NULL,       -- 'setting', 'threshold', 'score'
-  UNIQUE (calc_id, pattern_id, binding_type)
+CREATE TABLE setting_definitions (
+  setting_id     VARCHAR PRIMARY KEY,
+  name           VARCHAR NOT NULL,
+  description    TEXT,
+  value_type     VARCHAR NOT NULL,  -- 'decimal', 'integer', 'string', 'boolean', 'score_steps'
+  version        VARCHAR NOT NULL DEFAULT '1.0.0',
+  examples       JSON               -- optional illustrative examples (not operational)
 );
 ```
 
-**Column semantics:**
+**What's absent:** No `default` column, no `overrides` array, no `match_type`. The definition describes the parameter's identity and type. Concrete values live in `instance_setting_values`.
 
-| Column | Purpose |
-|---|---|
-| `binding_id` | Human-readable composite key: `{calc_id}__{pattern_id}__{binding_type}` |
-| `calc_id` | Which calculation definition this binding parameterizes |
-| `pattern_id` | Which match pattern supplies the entity context for settings resolution |
-| `model_id` | Which detection model uses this binding. `NULL` means the binding is shared (any model may use it) |
-| `binding_type` | Discriminator for what the binding controls: `'setting'` (parameter values), `'threshold'` (alert trigger thresholds), `'score'` (graduated score step overrides) |
+### `calc_definitions`
+
+Runtime-agnostic calculation definitions. The `formula_type` discriminator tells the engine which executor to invoke.
+
+```sql
+CREATE TABLE calc_definitions (
+  calc_id          VARCHAR PRIMARY KEY,
+  name             VARCHAR NOT NULL,
+  description      TEXT,
+  layer            VARCHAR NOT NULL,    -- 'transaction', 'time_window', 'aggregation', 'derived'
+  formula_type     VARCHAR NOT NULL,    -- 'sql', 'code', 'flink'
+  formula          TEXT NOT NULL,       -- SQL template, code reference, or Flink job spec
+  output_schema    JSON,                -- describes output columns and types
+  display_config   JSON,                -- UI rendering hints (labels, formats)
+  depends_on       VARCHAR[],           -- DAG edges (array of calc_ids)
+  version          VARCHAR NOT NULL DEFAULT '1.0.0'
+);
+```
+
+**Key changes from current `calc_definitions`:**
+- `logic_sql` → `formula` (runtime-agnostic name)
+- Added `formula_type` discriminator (`sql`, `code`, `flink`)
+- Added `output_schema` (structured output column descriptions, replaces `output_fields`)
+- Added `display_config` (UI hints, replaces `value_labels`)
+- Added `version` for change tracking
+- Removed `output_table` (superseded by `calc_results` unified table)
+- Removed `parameters` JSON (replaced by `calc_required_settings` junction table)
+
+### `calc_required_settings`
+
+Junction table declaring which settings a calculation requires. This replaces the `parameters` JSON blob on `calc_definitions` for setting-sourced parameters.
+
+```sql
+CREATE TABLE calc_required_settings (
+  calc_id          VARCHAR NOT NULL,    -- FK → calc_definitions
+  setting_id       VARCHAR NOT NULL,    -- FK → setting_definitions
+  param_name       VARCHAR NOT NULL,    -- placeholder name in formula (e.g., 'vwap_threshold')
+  PRIMARY KEY (calc_id, param_name)
+);
+```
 
 **Example data:**
 
-```
-binding_id                                     | calc_id                      | pattern_id         | model_id              | binding_type
------------------------------------------------|------------------------------|--------------------|-----------------------|-------------
-wash_detection__equity_stocks__setting         | wash_detection               | equity_stocks      | NULL                  | setting
-wash_detection__fx_instruments__setting        | wash_detection               | fx_instruments     | NULL                  | setting
-wash_detection__fixed_income_all__setting      | wash_detection               | fixed_income_all   | NULL                  | setting
-business_date_window__nyse_listed__setting     | business_date_window         | nyse_listed        | NULL                  | setting
-business_date_window__fx_instruments__setting  | business_date_window         | fx_instruments     | NULL                  | setting
-trend_window__equity_stocks__setting           | trend_window                 | equity_stocks      | market_price_ramping  | setting
-trend_window__fx_instruments__setting          | trend_window                 | fx_instruments     | market_price_ramping  | setting
-large_trading_activity__equity_stocks__threshold| large_trading_activity       | equity_stocks      | wash_full_day         | threshold
-cancellation_pattern__equity_stocks__setting   | cancellation_pattern         | equity_stocks      | spoofing_layering     | setting
-market_event_window__equity_stocks__setting    | market_event_window          | equity_stocks      | insider_dealing       | setting
-```
+| calc_id | setting_id | param_name |
+|---|---|---|
+| `wash_detection` | `wash_vwap_threshold` | `vwap_threshold` |
+| `trend_window` | `trend_sensitivity` | `trend_multiplier` |
+| `business_date_window` | `business_date_cutoff` | `cutoff_time` |
+| `large_trading_activity` | `large_activity_multiplier` | `activity_multiplier` |
 
-### `calc_instances` (runtime, per-run)
+This says: "The `wash_detection` calculation requires the `wash_vwap_threshold` setting and uses it as the `$vwap_threshold` placeholder in its formula."
 
-This table is populated at execution time and records each resolved instance for auditability.
+Literal parameters (like `qty_threshold = 0.5` in `wash_detection`) are NOT in this table — they remain inline in the formula or in a separate `calc_literal_params` structure. Only setting-sourced parameters that vary by context appear here.
+
+### `calc_instances` (the composition point)
+
+This is WHERE everything comes together. A calculation instance is the product of a calculation definition, a match pattern, an optional time window, and concrete setting values.
 
 ```sql
 CREATE TABLE calc_instances (
-  instance_id         VARCHAR PRIMARY KEY,  -- UUID or composite
-  run_id              VARCHAR NOT NULL,     -- FK --> engine_runs.run_id
-  calc_id             VARCHAR NOT NULL,     -- FK --> calc_definitions.calc_id
-  pattern_id          VARCHAR NOT NULL,     -- FK --> match_patterns.pattern_id
-  resolved_params     JSON NOT NULL,        -- {"vwap_threshold": 0.015, "qty_threshold": 0.5}
-  resolved_params_hash VARCHAR NOT NULL,    -- SHA-256 of sorted params
-  result_table        VARCHAR NOT NULL,     -- DuckDB table name holding results
-  row_count           INTEGER NOT NULL,     -- Number of rows produced
-  executed_at         TIMESTAMP NOT NULL,   -- Execution timestamp
-  cached              BOOLEAN NOT NULL,     -- TRUE if result was reused from cache
-  resolution_trace    JSON                  -- Per-param resolution audit trail
+  instance_id      VARCHAR PRIMARY KEY,
+  calc_id          VARCHAR NOT NULL,    -- FK → calc_definitions
+  pattern_id       VARCHAR NOT NULL,    -- FK → match_patterns
+  window_id        VARCHAR,             -- FK → time_windows (nullable)
+  version          VARCHAR NOT NULL DEFAULT '1.0.0',
+  created_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-**Example `resolution_trace` for a `wash_detection` equity instance:**
+**Example data:**
 
-```json
-{
-  "vwap_threshold": {
-    "setting_id": "wash_vwap_threshold",
-    "context": {"asset_class": "equity"},
-    "matched_override": {"match": {"asset_class": "equity"}, "value": 0.015, "priority": 1},
-    "resolved_value": 0.015,
-    "why": "Matched override: {asset_class=equity} (priority 1)"
-  },
-  "qty_threshold": {
-    "source": "literal",
-    "resolved_value": 0.5,
-    "why": "Literal parameter -- no resolution needed"
-  }
-}
+| instance_id | calc_id | pattern_id | window_id | version |
+|---|---|---|---|---|
+| `inst_wash_default` | `wash_detection` | `pat_default` | NULL | `1.0.0` |
+| `inst_wash_equity` | `wash_detection` | `pat_equity` | NULL | `1.0.0` |
+| `inst_wash_equity_nyse` | `wash_detection` | `pat_equity_nyse` | NULL | `1.0.0` |
+| `inst_wash_aapl` | `wash_detection` | `pat_aapl` | NULL | `1.0.0` |
+| `inst_wash_fixed_income` | `wash_detection` | `pat_fixed_income` | NULL | `1.0.0` |
+| `inst_wash_index` | `wash_detection` | `pat_index` | NULL | `1.0.0` |
+
+Multiple instances can exist per calculation definition — one per context. The `pat_default` instance (zero-attribute pattern) serves as the fallback when no more specific pattern matches.
+
+### `instance_setting_values` (values live HERE)
+
+The actual concrete values for each parameter, per instance. This is the ONLY place in the system where parameter values are stored.
+
+```sql
+CREATE TABLE instance_setting_values (
+  instance_id      VARCHAR NOT NULL,    -- FK → calc_instances
+  setting_id       VARCHAR NOT NULL,    -- FK → setting_definitions
+  param_name       VARCHAR NOT NULL,    -- matches calc_required_settings.param_name
+  param_value      JSON NOT NULL,       -- the actual concrete value
+  PRIMARY KEY (instance_id, setting_id, param_name)
+);
 ```
+
+**Example data for `wash_detection` instances:**
+
+| instance_id | setting_id | param_name | param_value |
+|---|---|---|---|
+| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `0.02` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
+| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `0.012` |
+| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
+| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
+| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
+
+**What was previously the `default` value** (`0.02`) is now an explicit row on `inst_wash_default` — the instance with a zero-attribute match pattern.
+
+**What were previously `overrides`** are now rows on context-specific instances. There is no "override" concept — every value is a first-class row associated with a specific instance.
+
+### Composition Query
+
+To fully resolve a calculation instance with all its setting values:
+
+```sql
+SELECT
+    ci.instance_id,
+    ci.calc_id,
+    cd.formula_type,
+    cd.formula,
+    mp.pattern_id,
+    isv.param_name,
+    isv.param_value
+FROM calc_instances ci
+JOIN calc_definitions cd ON ci.calc_id = cd.calc_id
+JOIN match_patterns mp ON ci.pattern_id = mp.pattern_id
+JOIN instance_setting_values isv ON ci.instance_id = isv.instance_id
+WHERE ci.calc_id = 'wash_detection'
+  AND ci.pattern_id = 'pat_equity';
+
+-- Result:
+-- instance_id      | calc_id         | formula_type | formula          | pattern_id | param_name      | param_value
+-- inst_wash_equity | wash_detection  | sql          | CASE WHEN ...    | pat_equity | vwap_threshold  | 0.015
+```
+
+### FK Relationship Diagram
+
+```
+setting_definitions ←──── calc_required_settings ────→ calc_definitions
+        ↑                                                      ↑
+        │                                                      │
+instance_setting_values ────→ calc_instances ────→ match_patterns
+                                     │
+                                     └──→ time_windows (nullable)
+```
+
+### `match_patterns` + `match_pattern_attributes` (unchanged)
+
+These tables are unchanged from document 04. Match patterns remain pure typed predicates with no values.
+
+### `time_windows` (unchanged)
+
+Time windows remain independently defined temporal scopes, unchanged from document 06.
 
 ---
 
@@ -641,29 +736,28 @@ Pass entity context from the match pattern through to the settings resolver:
 
 ```python
 # PROPOSED: calculation_engine.py
-def _resolve_parameters(self, calc: CalculationDefinition, context: dict[str, str]) -> dict[str, Any]:
+def _resolve_parameters(self, calc: CalculationDefinition, instance: CalcInstance) -> dict[str, Any]:
     resolved: dict[str, Any] = {}
-    for name, spec in calc.parameters.items():
-        if not isinstance(spec, dict) or "source" not in spec:
-            continue
 
-        if spec["source"] == "setting" and self._resolver is not None:
-            setting_id = spec.get("setting_id", "")
-            setting = self._metadata.load_setting(setting_id)
-            if setting is not None:
-                result = self._resolver.resolve(setting, context)  # <-- context, not {}
-                resolved[name] = result.value
-            else:
-                resolved[name] = spec.get("default")
-        elif spec["source"] == "literal":
-            resolved[name] = spec.get("value")
-        elif spec["source"] == "setting" and self._resolver is None:
-            resolved[name] = spec.get("default")
+    # Load required settings for this calculation
+    required = self._metadata.load_required_settings(calc.calc_id)
+
+    for req in required:
+        # Look up the concrete value from instance_setting_values
+        value = self._metadata.load_instance_value(instance.instance_id, req.setting_id, req.param_name)
+        if value is not None:
+            resolved[req.param_name] = value
+        else:
+            # Fallback: check the default instance (zero-attribute pattern)
+            default_value = self._metadata.load_default_instance_value(calc.calc_id, req.setting_id, req.param_name)
+            resolved[req.param_name] = default_value
+
+    # Literal parameters are resolved from the formula spec directly
+    for name, spec in calc.literal_params.items():
+        resolved[name] = spec.get("value")
 
     return resolved
 ```
-
-The only change is on the `self._resolver.resolve(setting, context)` call -- the second argument changes from `{}` to the context dictionary derived from the match pattern.
 
 ### Backwards Compatibility
 
@@ -673,18 +767,19 @@ The migration is fully backwards compatible:
 |---|---|---|
 | Calculation with no parameters (e.g., `value_calc`, `adjusted_direction`, `trading_activity_aggregation`, `vwap_calc`) | Executes as-is, no resolution | Unchanged -- no parameters to resolve |
 | Calculation with literal-only parameters (e.g., `market_event_window` has `price_change_threshold: 0.05`) | Literal value used directly | Unchanged -- literal values bypass resolution |
-| Calculation with setting-sourced parameters, no binding | Resolves to default | Resolves to default (empty context matches no overrides) |
-| Calculation with setting-sourced parameters, with binding | Resolves to default | Resolves to override value (context enables matching) |
+| Calculation with setting-sourced parameters, no instance | Resolves to default | Resolves to default instance values (zero-attribute pattern) |
+| Calculation with setting-sourced parameters, with instance | Resolves to default | Resolves to instance-specific values from `instance_setting_values` |
 
-Calculations that have no `calc_pattern_bindings` rows continue to receive an empty context `{}` and resolve to defaults -- identical to current behavior. Only calculations with explicit bindings gain context-aware resolution.
+Calculations that have no `calc_instances` rows continue to use the default instance (zero-attribute pattern) and resolve to default values -- identical to current behavior. Only calculations with context-specific instances gain context-aware resolution.
 
 ### Migration Steps
 
-1. **Create the `calc_pattern_bindings` table** (DDL in Section 6). No existing tables are modified.
-2. **Populate initial bindings** from the existing calculation x setting x match pattern metadata. The data already exists across three JSON directories -- the migration is a JOIN, not an invention.
-3. **Update `_resolve_parameters()`** to accept and forward context (one-line change shown above).
-4. **Update `_execute()`** to look up the binding for the current calculation and pass its match pattern as context.
-5. **Add `calc_instances` table** for runtime tracking (optional, can be deferred).
-6. **Validate**: run the full calculation DAG with and without bindings; verify that unbound calculations produce identical results, and bound calculations produce the expected per-context results.
+1. **Create `setting_definitions` table.** Extract pure metadata from existing JSON setting files.
+2. **Create `calc_required_settings` table.** Populate from the `parameters` JSON in current `calc_definitions` (one row per `source: "setting"` entry).
+3. **Create `calc_instances` table.** One instance per (calculation, match pattern) combination currently represented by existing overrides.
+4. **Create `instance_setting_values` table.** Populate from existing setting defaults and overrides, mapping each value to the appropriate instance.
+5. **Update `_resolve_parameters()`** to accept a `CalcInstance` and look up values from `instance_setting_values` (code change shown above).
+6. **Update `_execute()`** to select the appropriate instance based on the current entity context and pass it to `_resolve_parameters()`.
+7. **Validate**: run the full calculation DAG with and without instances; verify that unbound calculations (default instances) produce identical results, and bound calculations produce the expected per-context results.
 
-No existing API endpoints, detection models, or settings definitions require changes. The migration adds a new table and modifies one method signature.
+No existing API endpoints or detection models require changes. Setting definitions are simplified (metadata only). The migration adds four new tables (`setting_definitions`, `calc_required_settings`, `calc_instances`, `instance_setting_values`) and modifies one method signature.
