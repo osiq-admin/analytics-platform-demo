@@ -19,13 +19,15 @@ Organized by medallion tier and dependency order.
    - 2.5 [calc_required_settings](#25-calc_required_settings)
    - 2.6 [detection_models](#26-detection_models)
    - 2.7 [model_calculations](#27-model_calculations)
-   - 2.8 [calc_pattern_bindings](#28-calc_pattern_bindings)
-   - 2.9 [score_steps](#29-score_steps)
+   - 2.8 [calc_detection_levels](#28-calc_detection_levels)
+   - 2.9 [calc_pattern_bindings](#29-calc_pattern_bindings)
+   - 2.10 [score_steps](#210-score_steps)
 3. [Result Tables (Gold Tier)](#3-result-tables-gold-tier)
    - 3.1 [time_windows](#31-time_windows)
-   - 3.2 [calc_results](#32-calc_results)
-   - 3.3 [calc_instances](#33-calc_instances)
-   - 3.4 [instance_setting_values](#34-instance_setting_values)
+   - 3.2 [detection_level_universe](#32-detection_level_universe)
+   - 3.3 [calc_results](#33-calc_results)
+   - 3.4 [calc_instances](#34-calc_instances)
+   - 3.5 [instance_setting_values](#35-instance_setting_values)
 4. [Alert Tables (Platinum Tier)](#4-alert-tables-platinum-tier)
    - 4.1 [alert_traces](#41-alert_traces)
 5. [Versioning Tables (Logging/Audit Tier)](#5-versioning-tables-loggingaudit-tier)
@@ -50,6 +52,7 @@ Group 2 (depends on Group 1):
   match_pattern_attributes    (FK -> match_patterns)
   calc_required_settings      (FK -> calc_definitions, setting_definitions)
   detection_models            (FK -> match_patterns)
+  calc_detection_levels       (FK -> calc_definitions, match_patterns)
   calc_pattern_bindings       (FK -> calc_definitions, match_patterns)
   score_steps                 (FK -> match_patterns, calc_definitions)
   match_pattern_versions      (FK -> match_patterns)
@@ -57,11 +60,12 @@ Group 2 (depends on Group 1):
 Group 3 (depends on Groups 1-2):
   model_calculations          (FK -> detection_models, calc_definitions)
   time_windows                (no FK, but logically depends on config tables)
+  detection_level_universe    (FK -> match_patterns)
   calc_instances              (FK -> calc_definitions, match_patterns, time_windows)
 
 Group 4 (depends on Groups 1-3):
   instance_setting_values     (FK -> calc_instances, setting_definitions, match_patterns)
-  calc_results                (FK -> calc_definitions, time_windows, match_patterns)
+  calc_results                (FK -> calc_definitions, time_windows, match_patterns, match_patterns[detection_level_id])
 
 Group 5 (depends on Groups 1-4):
   alert_traces                (FK -> detection_models)
@@ -515,7 +519,60 @@ COMMENT ON COLUMN model_calculations.ordinal IS
     'order: MUST_PASS gates first, then OPTIONAL scored calculations.';
 ```
 
-### 2.8 calc_pattern_bindings
+### 2.8 calc_detection_levels
+
+Junction table linking calculations to the detection levels at which they
+should be computed. A calculation can run at multiple detection levels
+(many-to-many). Transaction-layer calculations that operate on individual
+rows without detection-level grouping (e.g., `value_calc`, `adjusted_direction`)
+have no rows here.
+
+See: Document 07 (Detection Level Design).
+
+```sql
+CREATE TABLE calc_detection_levels (
+    -- FK to the calculation definition
+    calc_id              VARCHAR NOT NULL
+        REFERENCES calc_definitions(calc_id),
+
+    -- FK to the detection level match pattern (pattern_type = 'detection_level').
+    -- Defines one GROUP BY grain at which this calculation should be computed.
+    detection_level_id   VARCHAR NOT NULL
+        REFERENCES match_patterns(pattern_id),
+
+    -- Each calculation is registered for a given detection level at most once
+    PRIMARY KEY (calc_id, detection_level_id)
+);
+
+COMMENT ON TABLE calc_detection_levels IS
+    'Junction table linking calculations to their applicable detection levels. '
+    'A calculation can run at multiple detection levels (many-to-many). '
+    'Transaction-layer calcs (e.g., value_calc) have no rows here. '
+    'See doc 07-detection-level-design.md.';
+```
+
+**Column Semantics**:
+
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `calc_id` | VARCHAR | NOT NULL | FK to `calc_definitions`. Identifies the calculation to be computed at this detection level. |
+| `detection_level_id` | VARCHAR | NOT NULL | FK to `match_patterns` (pattern_type = 'detection_level'). Defines the GROUP BY grain for computation. |
+
+**Example Data**:
+
+| calc_id | detection_level_id |
+|---------|--------------------|
+| `wash_detection` | `DL-PRODUCT` |
+| `wash_detection` | `DL-PRODUCT-ACCOUNT` |
+| `large_trading_activity` | `DL-PRODUCT` |
+| `vwap_calc` | `DL-PRODUCT` |
+
+**Design Rationale**: Separating the calc-to-detection-level relationship into its own
+junction table (rather than embedding an array in `calc_definitions`) enables clean
+many-to-many semantics, supports FK validation, and allows detection-level assignments
+to be managed independently of calculation definitions.
+
+### 2.9 calc_pattern_bindings
 
 Links calculations to the match patterns that parameterize them. When a
 calculation is bound to a pattern, the settings resolver uses the pattern's
@@ -568,7 +625,7 @@ COMMENT ON COLUMN calc_pattern_bindings.model_id IS
     'When set, the binding is model-specific and only applies when that model invokes the calculation.';
 ```
 
-### 2.9 score_steps
+### 2.10 score_steps
 
 Graduated scoring ranges linked to match patterns. Each row maps a value range
 to a score. The engine uses these to convert raw calculation outputs into
@@ -707,7 +764,75 @@ COMMENT ON COLUMN time_windows.metadata IS
     'Trends store trend_type, price_change_pct, start_price, end_price.';
 ```
 
-### 3.2 calc_results
+### 3.2 detection_level_universe
+
+Materialized table of all active dimension combinations for each detection level.
+The computation engine iterates universe rows to compute `calc_results` at each
+combination. For example, DL-PRODUCT with 50 products produces 50 rows;
+DL-PRODUCT-ACCOUNT with 50 products x 220 accounts produces up to 11,000 rows
+(sparse in practice, since not every product-account combination has trading activity).
+
+See: Document 07 (Detection Level Design).
+
+```sql
+CREATE TABLE detection_level_universe (
+    -- Unique row identifier for this dimension combination
+    universe_id          VARCHAR PRIMARY KEY,
+
+    -- FK to the detection level match pattern this row belongs to.
+    detection_level_id   VARCHAR NOT NULL
+        REFERENCES match_patterns(pattern_id),
+
+    -- Sparse nullable entity key columns. Populated based on which entities
+    -- are part of the detection level. Uses the same sparse pattern as calc_results.
+    product_id           VARCHAR,
+    account_id           VARCHAR,
+    venue_id             VARCHAR,
+    trader_id            VARCHAR,
+
+    -- Whether this combination is currently active for computation.
+    -- Inactive rows are retained for audit but excluded from pipeline runs.
+    is_active            BOOLEAN NOT NULL DEFAULT TRUE,
+
+    -- When this universe row was last materialized/refreshed
+    computed_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE detection_level_universe IS
+    'Materialized table of all active dimension combinations for each detection level. '
+    'DL-PRODUCT with 50 products -> 50 rows. DL-PRODUCT-ACCOUNT with 50×220 -> up to 11,000 rows '
+    '(sparse in practice). Drives the computation loop: the engine iterates universe rows '
+    'to compute calc_results at each combination. See doc 07.';
+```
+
+**Column Semantics**:
+
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| `universe_id` | VARCHAR | NOT NULL | Primary key. Unique identifier for this dimension combination. |
+| `detection_level_id` | VARCHAR | NOT NULL | FK to `match_patterns` (pattern_type = 'detection_level'). Identifies which detection level this row belongs to. |
+| `product_id` | VARCHAR | NULL | Product entity key. Populated when the detection level includes product as a GROUP BY dimension. |
+| `account_id` | VARCHAR | NULL | Account entity key. Populated when the detection level includes account as a GROUP BY dimension. |
+| `venue_id` | VARCHAR | NULL | Venue entity key (ISO 10383 MIC). Populated when the detection level includes venue as a GROUP BY dimension. |
+| `trader_id` | VARCHAR | NULL | Trader entity key. Populated when the detection level includes trader as a GROUP BY dimension. |
+| `is_active` | BOOLEAN | NOT NULL | Whether this combination is currently active. Inactive rows are excluded from pipeline runs but retained for audit. Default: TRUE. |
+| `computed_at` | TIMESTAMP | NOT NULL | When this universe row was last materialized/refreshed. Default: CURRENT_TIMESTAMP. |
+
+**Example Data**:
+
+| universe_id | detection_level_id | product_id | account_id | venue_id | trader_id | is_active | computed_at |
+|-------------|-------------------|------------|------------|----------|-----------|-----------|-------------|
+| `DLU-PRD001` | `DL-PRODUCT` | `PRD-001` | NULL | NULL | NULL | TRUE | 2026-03-09 08:00:00 |
+| `DLU-PRD002` | `DL-PRODUCT` | `PRD-002` | NULL | NULL | NULL | TRUE | 2026-03-09 08:00:00 |
+| `DLU-PRD001-ACC042` | `DL-PRODUCT-ACCOUNT` | `PRD-001` | `ACC-042` | NULL | NULL | TRUE | 2026-03-09 08:00:00 |
+| `DLU-PRD001-ACC117` | `DL-PRODUCT-ACCOUNT` | `PRD-001` | `ACC-117` | NULL | NULL | FALSE | 2026-03-08 08:00:00 |
+
+**Design Rationale**: Pre-materializing the dimension universe avoids re-discovering valid
+entity combinations on every pipeline run. The `is_active` flag allows soft-deactivation
+of combinations without deleting audit history. Sparse nullable entity columns follow
+the same pattern as `calc_results`, keeping the schema consistent across the pipeline.
+
+### 3.3 calc_results
 
 Unified fact table for all calculation outputs. Every calculation in the DAG
 writes to this single table, regardless of layer, detection model, or
@@ -719,8 +844,8 @@ See: Document 09 (Unified Results Schema), Sections 1-7.
 ```sql
 CREATE TABLE calc_results (
     -- Surrogate primary key. Generated as a deterministic hash of
-    -- (calc_id, product_id, account_id, business_date, window_id) for idempotent upserts,
-    -- or as a UUID for append-only pipelines.
+    -- (calc_id, detection_level_id, product_id, account_id, business_date, window_id)
+    -- for idempotent upserts, or as a UUID for append-only pipelines.
     result_id        VARCHAR PRIMARY KEY,
 
     -- FK to calc_definitions: identifies which calculation produced this row.
@@ -738,6 +863,13 @@ CREATE TABLE calc_results (
     -- FK to match_patterns: which classification context was active when this result
     -- was computed. NULL when the calculation ran with no pattern-specific parameterization.
     pattern_id       VARCHAR
+        REFERENCES match_patterns(pattern_id),
+
+    -- FK to match_patterns: the detection level grain at which this result was computed.
+    -- Records the GROUP BY dimensions used. NULL for transaction-layer calculations
+    -- (e.g., value_calc, adjusted_direction) that operate on individual rows without
+    -- detection-level grouping.
+    detection_level_id   VARCHAR
         REFERENCES match_patterns(pattern_id),
 
     -- Sparse nullable dimension columns. Populated based on calculation grain.
@@ -795,7 +927,7 @@ COMMENT ON COLUMN calc_results.flag_value IS
     'without threshold comparison. NULL for calculations producing only numeric outputs.';
 ```
 
-### 3.3 calc_instances
+### 3.4 calc_instances
 
 THE COMPOSITION POINT. Each row represents a specific combination of
 calculation definition + match pattern + optional time window. Concrete
@@ -845,7 +977,7 @@ COMMENT ON COLUMN calc_instances.window_id IS
     'When set, the instance is specific to a temporal context.';
 ```
 
-### 3.4 instance_setting_values
+### 3.5 instance_setting_values
 
 The actual concrete values for each parameter, per calculation instance.
 This is the ONLY place in the system where parameter values are stored.
@@ -1165,7 +1297,23 @@ CREATE INDEX idx_model_calcs_calc
 
 **Rationale**: `idx_model_calcs_model` supports the ordered loading of calculations per model (by ordinal). `idx_model_calcs_calc` supports the reverse query for dependency analysis.
 
-### 6.6 calc_pattern_bindings Indexes
+### 6.6 calc_detection_levels Indexes
+
+```sql
+-- Calculation lookup: "all detection levels for this calculation"
+-- Used by the engine to determine which grains a calculation should be computed at.
+CREATE INDEX idx_cdl_calc
+    ON calc_detection_levels (calc_id);
+
+-- Detection level lookup: "all calculations registered at this detection level"
+-- Used by the pipeline to build the computation manifest for a detection level.
+CREATE INDEX idx_cdl_detection_level
+    ON calc_detection_levels (detection_level_id);
+```
+
+**Rationale**: `idx_cdl_calc` supports the engine lookup "which detection levels does this calculation run at?" during pipeline planning. `idx_cdl_detection_level` supports the reverse query "which calculations need to run at this detection level?" for computation manifest generation.
+
+### 6.7 calc_pattern_bindings Indexes
 
 ```sql
 -- Calculation lookup: "all patterns bound to this calculation"
@@ -1186,7 +1334,7 @@ CREATE INDEX idx_cpb_model
 
 **Rationale**: The instance engine queries by calc_id to find applicable patterns. Impact analysis queries by pattern_id. The partial index on model_id filters efficiently when most bindings have NULL model_id (shared bindings).
 
-### 6.7 setting_definitions Indexes
+### 6.8 setting_definitions Indexes
 
 ```sql
 -- Value type lookup: "all settings of type decimal"
@@ -1197,7 +1345,7 @@ CREATE INDEX idx_setting_defs_type
 
 **Rationale**: The configuration wizard filters settings by type when building parameter forms.
 
-### 6.8 calc_required_settings Indexes
+### 6.9 calc_required_settings Indexes
 
 ```sql
 -- Calculation lookup: "all settings required by this calculation"
@@ -1213,7 +1361,7 @@ CREATE INDEX idx_crs_setting
 
 **Rationale**: `idx_crs_calc` supports parameter resolution at engine startup. `idx_crs_setting` supports reverse impact analysis.
 
-### 6.9 score_steps Indexes
+### 6.10 score_steps Indexes
 
 ```sql
 -- Score lookup: "all steps for this pattern+calc combination"
@@ -1224,7 +1372,7 @@ CREATE INDEX idx_score_steps_pattern_calc
 
 **Rationale**: The scoring engine loads all step ranges for a (pattern, calculation) pair and performs range lookup against the computed value. This index covers the load query.
 
-### 6.10 time_windows Indexes
+### 6.11 time_windows Indexes
 
 ```sql
 -- Primary query: "all windows of a given type for a business date"
@@ -1247,7 +1395,18 @@ CREATE INDEX idx_time_windows_computed
 
 **Rationale**: `idx_time_windows_type_date` covers the cross-join work manifest query (doc 06, Section 4). `idx_time_windows_product_date` is a partial index that only indexes non-NULL product_id rows, covering entity-scoped window lookups efficiently. `idx_time_windows_computed` supports the staleness decision tree (doc 06, Section 7).
 
-### 6.11 calc_results Indexes
+### 6.12 detection_level_universe Indexes
+
+```sql
+-- Detection level lookup: "all active universe rows for a detection level"
+-- Primary access pattern: the engine loads universe rows to drive the computation loop.
+CREATE INDEX idx_dlu_detection_level
+    ON detection_level_universe (detection_level_id, is_active);
+```
+
+**Rationale**: The computation loop queries for all active universe rows at a given detection level. This composite index supports both the detection level filter and the active flag filter in a single index scan, efficiently skipping inactive rows.
+
+### 6.13 calc_results Indexes
 
 ```sql
 -- Primary: "all results for a specific calculation on a specific date"
@@ -1269,11 +1428,16 @@ CREATE INDEX idx_calc_results_account_date
 -- Covers the full predicate chain of the generic detection query (doc 09, Section 6).
 CREATE INDEX idx_calc_results_calc_product_date
     ON calc_results (calc_id, product_id, business_date);
+
+-- Detection level lookup: "all results for a calculation at a specific detection level"
+-- Used by the pipeline to retrieve results grouped by detection level grain.
+CREATE INDEX idx_cr_detection_level
+    ON calc_results (detection_level_id, calc_id);
 ```
 
-**Rationale**: See Document 09, Section 8 for detailed justification. `idx_calc_results_calc_date` is the must-have primary index. Product and account indexes support investigation workflows. The composite index covers the full detection model query predicate chain.
+**Rationale**: See Document 09, Section 8 for detailed justification. `idx_calc_results_calc_date` is the must-have primary index. Product and account indexes support investigation workflows. The composite index covers the full detection model query predicate chain. `idx_cr_detection_level` supports detection-level-scoped queries, enabling the engine to efficiently retrieve all results for a specific calculation at a given grain.
 
-### 6.12 calc_instances Indexes
+### 6.14 calc_instances Indexes
 
 ```sql
 -- Calculation lookup: "all instances of this calculation"
@@ -1287,7 +1451,7 @@ CREATE INDEX idx_calc_instances_pattern
 
 **Rationale**: `idx_calc_instances_calc` supports loading all instances for a given calculation during pipeline execution and impact analysis. `idx_calc_instances_pattern` supports reverse lookups when a pattern is modified.
 
-### 6.13 instance_setting_values Indexes
+### 6.15 instance_setting_values Indexes
 
 ```sql
 -- Instance lookup: "all setting values for this instance"
@@ -1308,7 +1472,7 @@ CREATE INDEX idx_isv_instance_pattern
 
 **Rationale**: `idx_isv_instance` is the must-have index -- every instance execution requires loading all its parameter values. `idx_isv_setting` supports "what-if" analysis for setting changes. `idx_isv_instance_pattern` supports the per-value pattern resolution query that selects the best-matching pattern for each setting within an instance.
 
-### 6.14 alert_traces Indexes
+### 6.16 alert_traces Indexes
 
 ```sql
 -- Model+date: "all alerts for a model on a date"
@@ -1330,7 +1494,7 @@ CREATE INDEX idx_alert_traces_score
 
 **Rationale**: `idx_alert_traces_model_date` covers the per-model alert review. The partial index `idx_alert_traces_fired_date` skips non-fired candidates (typically 60-80% of all traces), significantly reducing scan scope for compliance dashboards. `idx_alert_traces_score` supports priority-ordered review queues.
 
-### 6.15 match_pattern_versions Indexes
+### 6.17 match_pattern_versions Indexes
 
 ```sql
 -- Pattern version history: "all versions of a pattern, ordered"
@@ -1345,7 +1509,7 @@ CREATE INDEX idx_mpv_created_by
 
 **Rationale**: `idx_mpv_pattern_version` supports the version history display (most recent version first). `idx_mpv_created_by` supports user-centric audit queries ("what did this user change and when?").
 
-### 6.16 Index Summary
+### 6.18 Index Summary
 
 | Table | Index | Columns | Type | Priority |
 |-------|-------|---------|------|----------|
@@ -1356,6 +1520,8 @@ CREATE INDEX idx_mpv_created_by
 | detection_models | idx_detection_models_status | (status) | Single | Should-have |
 | model_calculations | idx_model_calcs_model | (model_id, ordinal) | Composite | Must-have |
 | model_calculations | idx_model_calcs_calc | (calc_id) | Single | Should-have |
+| calc_detection_levels | idx_cdl_calc | (calc_id) | Single | Must-have |
+| calc_detection_levels | idx_cdl_detection_level | (detection_level_id) | Single | Must-have |
 | calc_pattern_bindings | idx_cpb_calc | (calc_id) | Single | Must-have |
 | calc_pattern_bindings | idx_cpb_pattern | (pattern_id) | Single | Should-have |
 | calc_pattern_bindings | idx_cpb_model | (model_id) WHERE NOT NULL | Partial | Nice-to-have |
@@ -1366,10 +1532,12 @@ CREATE INDEX idx_mpv_created_by
 | time_windows | idx_time_windows_type_date | (window_type, business_date) | Composite | Must-have |
 | time_windows | idx_time_windows_product_date | (product_id, business_date) WHERE NOT NULL | Partial | Should-have |
 | time_windows | idx_time_windows_computed | (window_type, business_date, computed_at) | Composite | Should-have |
+| detection_level_universe | idx_dlu_detection_level | (detection_level_id, is_active) | Composite | Must-have |
 | calc_results | idx_calc_results_calc_date | (calc_id, business_date) | Composite | Must-have |
 | calc_results | idx_calc_results_product_date | (product_id, business_date) | Composite | Should-have |
 | calc_results | idx_calc_results_account_date | (account_id, business_date) | Composite | Should-have |
 | calc_results | idx_calc_results_calc_product_date | (calc_id, product_id, business_date) | Composite | Nice-to-have |
+| calc_results | idx_cr_detection_level | (detection_level_id, calc_id) | Composite | Should-have |
 | calc_instances | idx_calc_instances_calc | (calc_id) | Single | Must-have |
 | calc_instances | idx_calc_instances_pattern | (pattern_id) | Single | Should-have |
 | instance_setting_values | idx_isv_instance | (instance_id) | Single | Must-have |
@@ -1381,7 +1549,7 @@ CREATE INDEX idx_mpv_created_by
 | match_pattern_versions | idx_mpv_pattern_version | (pattern_id, version_num DESC) | Composite/Desc | Must-have |
 | match_pattern_versions | idx_mpv_created_by | (created_by, created_at DESC) | Composite/Desc | Should-have |
 
-**Total**: 31 indexes across 14 tables.
+**Total**: 35 indexes across 16 tables.
 
 ---
 

@@ -37,6 +37,8 @@ This is a design problem, not a coincidence. Different models logically operate 
 
 The hardcoded `granularity` array is a configuration shortcut that became a constraint. The proposed design replaces it with a match pattern -- making detection level a first-class configurable concept.
 
+There is a second, subtler problem: detection levels are currently tied to models, not to calculations. The same calculation can be meaningful at multiple detection levels -- `large_trading_activity`, for example, is useful both at the product grain (for market price ramping) and at the product x account grain (for wash trading). But the current design allows only one `granularity` per model, and calculations are implicitly locked to whatever grain their parent model declares. This means a calculation cannot be pre-computed at multiple grains and shared across models with different detection levels. The result is either redundant calculation definitions (same logic, different grain) or forced grain alignment (all models share the same grain, as seen today). The proposed design decouples calculation grain from model grain by introducing a per-calculation detection level registration.
+
 ---
 
 ## 2. Detection Level as Match Pattern
@@ -95,6 +97,48 @@ Row 1:
 
 This produces: `GROUP BY product_id` -- one alert candidate per product, regardless of which accounts participated.
 
+### 2.3 Detection Levels are Per-Calculation
+
+Detection levels are not solely a property of models -- they are independently registered per calculation. A single calculation can declare that it is computable at multiple detection levels via the `calc_detection_levels` junction table. The detection MODEL still declares its alert grain through a `detection_level_pattern`, but the calculation infrastructure computes results at each grain the calculation is registered for, independently of any particular model.
+
+This decoupling means:
+
+- **`large_trading_activity`** can be registered for both `DL-PRODUCT` and `DL-PRODUCT-ACCOUNT`. The calculation engine computes it once at each grain, storing separate rows in `calc_results` with the appropriate `detection_level_id`. Market Price Ramping reads the `DL-PRODUCT` results; Wash Trading reads the `DL-PRODUCT-ACCOUNT` results. Same calculation logic, different grains, no duplication of calculation definitions.
+
+- **`wash_detection`** is registered only for `DL-PRODUCT-ACCOUNT`, because wash trading is inherently a per-account-per-product behavior. Registering it at `DL-PRODUCT` would be semantically meaningless.
+
+- **`value_calc`** (quantity x price) has NO rows in `calc_detection_levels` -- it is a transaction-layer calculation that operates on individual rows without grouping (see Section 2.4).
+
+**`calc_detection_levels` junction table:**
+
+| calc_id | detection_level_id | Resulting Grain |
+|---|---|---|
+| `large_trading_activity` | `DL-PRODUCT` | GROUP BY product_id |
+| `large_trading_activity` | `DL-PRODUCT-ACCOUNT` | GROUP BY product_id, account_id |
+| `wash_detection` | `DL-PRODUCT-ACCOUNT` | GROUP BY product_id, account_id |
+| `trend_detection` | `DL-PRODUCT` | GROUP BY product_id |
+| `value_calc` | *(no rows)* | transaction-layer, no GROUP BY |
+
+When the calculation engine runs, it iterates over each calculation's registered detection levels and produces one set of `calc_results` rows per detection level. The `detection_level_id` column in `calc_results` identifies which grain each result row belongs to, enabling downstream consumers (detection models, reports, what-if analysis) to select the appropriate grain.
+
+> **Time windows**: Time windows are another join dimension for calculation execution: a calculation runs at a detection level x time window cross-product. Time window association with calculations will be detailed in a future additive document.
+
+### 2.4 Transaction-Layer Calculations
+
+Not all calculations use detection levels. Transaction-layer calculations operate on individual rows without any grouping. These are typically arithmetic transformations, enrichments, or ratio computations applied row-by-row:
+
+- **`value_calc`** -- quantity x price, computed per execution row
+- **`adjusted_direction`** -- normalizes buy/sell direction based on capacity and order side
+- **Ratio calculations** -- e.g., price-to-VWAP ratio per execution, bid-ask spread per market data tick
+
+Transaction-layer calculations have:
+
+- **No rows in `calc_detection_levels`** -- they are not registered for any detection level
+- **`detection_level_id = NULL` in `calc_results`** -- results are stored without a grain key, indexed by the source row's natural key (e.g., `execution_id`)
+- **No universe materialization needed** -- they do not require pre-computed entity combination sets (see Section 3.2)
+
+Transaction-layer results serve as inputs to detection-level calculations. For example, `large_trading_activity` at `DL-PRODUCT` aggregates `value_calc` results across all executions for a product: `SUM(value_calc.value) GROUP BY product_id`. The transaction-layer calc runs first, producing per-row values; the detection-level calc then aggregates those values at the appropriate grain.
+
 ---
 
 ## 3. Examples per Model
@@ -109,6 +153,22 @@ The following table shows the proposed detection level for each current model, t
 | Insider Dealing | account only | `account.account_id` | Suspicious account behavior across products -- the question is "did this account trade abnormally before an event?" not "did this account trade this specific product?" |
 | _(hypothetical)_ Concentration Risk | account only | `account.account_id` | Position concentration is account-level -- risk accumulates across an account's full portfolio, not per instrument |
 | _(hypothetical)_ Cross-venue Arbitrage | product only | `product.product_id` | Price discrepancy across venues -- the same product priced differently on different venues, detected at product level |
+
+**Calculation Registration per Detection Level:**
+
+Because detection levels are per-calculation (Section 2.3), a calculation can appear in multiple models with different detection levels. The following table shows which calculations are registered at which detection levels, and which models consume them:
+
+| Calculation | Registered Detection Levels | Consumed By (Model @ DL) |
+|-------------|----------------------------|--------------------------|
+| `large_trading_activity` | `DL-PRODUCT`, `DL-PRODUCT-ACCOUNT` | Market Price Ramping @ `DL-PRODUCT`, Wash Trading @ `DL-PRODUCT-ACCOUNT` |
+| `trend_detection` | `DL-PRODUCT` | Market Price Ramping @ `DL-PRODUCT` |
+| `same_side_ratio` | `DL-PRODUCT`, `DL-PRODUCT-ACCOUNT` | Market Price Ramping @ `DL-PRODUCT`, Wash Trading @ `DL-PRODUCT-ACCOUNT` |
+| `wash_qty_match` | `DL-PRODUCT-ACCOUNT` | Wash Trading @ `DL-PRODUCT-ACCOUNT` |
+| `wash_vwap_proximity` | `DL-PRODUCT-ACCOUNT` | Wash Trading @ `DL-PRODUCT-ACCOUNT` |
+| `calc_cancellation_pattern` | `DL-PRODUCT-VENUE` | Spoofing / Layering @ `DL-PRODUCT-VENUE` |
+| `value_calc` | *(none -- transaction-layer)* | Input to `large_trading_activity` aggregation |
+
+Note that `large_trading_activity` is registered at TWO detection levels. The calculation engine computes it at both grains, producing separate `calc_results` rows for each. Market Price Ramping queries `calc_results WHERE detection_level_id = 'DL-PRODUCT'`; Wash Trading queries `calc_results WHERE detection_level_id = 'DL-PRODUCT-ACCOUNT'`. The same calculation definition serves both models without duplication.
 
 ### 3.1 Current vs Proposed Query Impact
 
@@ -148,6 +208,42 @@ GROUP BY product_id, account_id
 GROUP BY account_id
 -- Holistic view of account behavior across all products before an event
 ```
+
+### 3.2 Detection Level Universe
+
+The `detection_level_universe` table pre-materializes the set of active entity combinations for each detection level. This avoids the need to discover valid combinations at runtime by scanning transactional data.
+
+**Why pre-materialize?**
+
+Without a universe table, the calculation engine must answer "which product-account pairs actually exist in the data?" by scanning the full execution table at runtime. For `DL-PRODUCT` this is trivial (50 products), but for `DL-PRODUCT-ACCOUNT` the theoretical cross-product is 50 x 220 = 11,000 pairs -- while only ~2,200 pairs have actual trading activity. Pre-materializing the active combinations avoids wasteful computation on empty pairs and provides a stable enumeration for:
+
+- **Calculation scheduling** -- iterate over universe rows, compute each combination
+- **Completeness checks** -- verify that `calc_results` has one row per universe entry per calculation
+- **Gap detection** -- identify combinations that were expected but produced no results (vs. combinations that were never active)
+
+**How it works:**
+
+One row per active entity combination per detection level. The universe is materialized periodically (e.g., daily before the calculation run) or triggered on entity data change (new account created, new product listed).
+
+| universe_id | detection_level_id | product_id | account_id | is_active | last_activity_date |
+|---|---|---|---|---|---|
+| `U-001` | `DL-PRODUCT` | `PROD-001` | `NULL` | `TRUE` | `2026-03-09` |
+| `U-002` | `DL-PRODUCT` | `PROD-002` | `NULL` | `TRUE` | `2026-03-09` |
+| `U-003` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-001` | `TRUE` | `2026-03-09` |
+| `U-004` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-015` | `TRUE` | `2026-03-08` |
+| `U-005` | `DL-PRODUCT-ACCOUNT` | `PROD-002` | `ACCT-001` | `TRUE` | `2026-03-09` |
+| `U-006` | `DL-PRODUCT-ACCOUNT` | `PROD-033` | `ACCT-112` | `FALSE` | `2026-02-15` |
+
+**Scale characteristics:**
+
+| Detection Level | Entity Columns | Theoretical Max | Active Rows (typical) |
+|---|---|---|---|
+| `DL-PRODUCT` | `product_id` | 50 | ~50 |
+| `DL-PRODUCT-ACCOUNT` | `product_id`, `account_id` | 11,000 (50 x 220) | ~2,200 |
+| `DL-PRODUCT-VENUE` | `product_id`, `venue_mic` | 300 (50 x 6) | ~120 |
+| `DL-ACCOUNT` | `account_id` | 220 | ~220 |
+
+The universe table uses `NULL` for entity columns not relevant to a given detection level (e.g., `account_id = NULL` for `DL-PRODUCT` rows). The `is_active` flag supports soft deactivation -- combinations that had historical activity but are no longer traded remain in the universe for historical analysis but are excluded from the active calculation run.
 
 ---
 
@@ -329,7 +425,27 @@ Detection level imposes a validation constraint on all other pattern types withi
 
 ### 6.1 The Validation Rule
 
-This is a **configuration-time** check, not a runtime check. When a user configures a threshold pattern for a detection model, the system validates:
+This is a **configuration-time** check, not a runtime check. Validation now operates at two levels:
+
+**Per-calculation validation:**
+
+When a calculation is registered for a detection level via `calc_detection_levels`, the system validates that all of the calculation's required settings and input attributes are reachable from the detection level entities:
+
+1. Identify the detection level entities for the registered detection level (from the `detection_level` pattern rows).
+2. For each setting or input attribute the calculation references, determine which entity owns it.
+3. Check that a path exists in the entity relationship graph from a detection level entity to the target entity.
+4. If no path exists, reject the registration with a clear error: "Calculation `X` cannot be registered for detection level `Y` because setting `Z` on entity `W` is not reachable from the detection level entities `[...]`."
+
+**Per-model validation:**
+
+When a detection model references a calculation, the system validates that the model's `detection_level_pattern` is compatible with the calculation's registered detection levels:
+
+1. The model's detection level must be one of the calculation's registered detection levels in `calc_detection_levels`, OR it must be aggregatable from one (e.g., a model at `DL-PRODUCT` can use a calculation registered at `DL-PRODUCT-ACCOUNT` by aggregating over the account dimension).
+2. If the calculation has no matching registration, reject the model configuration: "Model `M` at detection level `DL-X` references calculation `C`, but `C` is not registered for `DL-X` or any detection level aggregatable to `DL-X`."
+
+**Legacy (single-level) validation:**
+
+For threshold, score, and setting patterns within a model, the original reachability check still applies:
 
 1. Identify the detection level entities for the model (from the `detection_level` pattern).
 2. For each attribute referenced in the threshold/score/setting pattern, determine which entity owns it.
@@ -459,16 +575,20 @@ In the proposed architecture, the detection engine generates the query from thre
 
 ```sql
 -- Detection level: product.product_id + account.account_id
+-- Detection level ID: DL-PRODUCT-ACCOUNT
 -- Calculations: large_trading_activity (MUST_PASS), wash_qty_match, wash_vwap_proximity
 -- Classification: (none -- applies to all)
+-- Note: each calc_results join filters on detection_level_id to select the
+--       correct grain. large_trading_activity exists at both DL-PRODUCT and
+--       DL-PRODUCT-ACCOUNT; this model reads the DL-PRODUCT-ACCOUNT results.
 
 SELECT
   -- Detection level keys (from detection_level pattern)
-  cr.product_id,
-  cr.account_id,
+  cr_lta.product_id,
+  cr_lta.account_id,
 
   -- Time dimension (from time_window registration)
-  cr.business_date,
+  cr_lta.business_date,
 
   -- Calculation results (from calc references)
   cr_lta.total_value,
@@ -493,8 +613,11 @@ INNER JOIN product p
   ON cr_lta.product_id = p.product_id
 
 WHERE cr_lta.calc_id = 'large_trading_activity'
+  AND cr_lta.detection_level_id = 'DL-PRODUCT-ACCOUNT'
   AND cr_wqm.calc_id = 'wash_qty_match'
+  AND cr_wqm.detection_level_id = 'DL-PRODUCT-ACCOUNT'
   AND cr_wvp.calc_id = 'wash_vwap_proximity'
+  AND cr_wvp.detection_level_id = 'DL-PRODUCT-ACCOUNT'
   AND cr_lta.is_large = TRUE        -- MUST_PASS gate
 ```
 
@@ -502,7 +625,11 @@ WHERE cr_lta.calc_id = 'large_trading_activity'
 
 ```sql
 -- Detection level: product.product_id (no account dimension)
+-- Detection level ID: DL-PRODUCT
 -- Calculations: trend_detection (MUST_PASS), large_trading_activity, same_side_ratio
+-- Note: large_trading_activity is the SAME calculation as in wash trading above,
+--       but here the query reads the DL-PRODUCT results (GROUP BY product_id only).
+--       The calc_detection_levels registration ensures results exist at this grain.
 
 SELECT
   -- Detection level keys (product only -- no account_id)
@@ -532,10 +659,15 @@ INNER JOIN product p
   ON cr_td.product_id = p.product_id
 
 WHERE cr_td.calc_id = 'trend_detection'
+  AND cr_td.detection_level_id = 'DL-PRODUCT'
   AND cr_lta.calc_id = 'large_trading_activity'
+  AND cr_lta.detection_level_id = 'DL-PRODUCT'
   AND cr_ssr.calc_id = 'same_side_ratio'
+  AND cr_ssr.detection_level_id = 'DL-PRODUCT'
   AND cr_td.trend_type IS NOT NULL   -- MUST_PASS gate
 ```
+
+**Query generator verification step:** Before assembling the query, the generator reads `calc_detection_levels` to verify that each referenced calculation has a registration at the model's detection level. If `large_trading_activity` were not registered for `DL-PRODUCT`, the generator would reject the model configuration at build time rather than producing a query that returns no results at runtime.
 
 Key differences from the current hardcoded approach:
 
@@ -546,6 +678,8 @@ Key differences from the current hardcoded approach:
 | WHERE filters | Written by hand | Derived from classification patterns + MUST_PASS gates |
 | Entity context joins | Written by hand (e.g., `INNER JOIN product p`) | Generated from entity graph reachability analysis |
 | Grain change | Requires editing the SQL string and upstream calc | Change the detection level pattern rows -- query regenerates |
+| Calc grain selection | Implicit -- calc and model share same grain | Explicit `detection_level_id` filter in WHERE clause selects the correct grain from `calc_results` |
+| Calc reuse across models | Requires duplicate calc definitions at different grains | Single calc registered at multiple detection levels via `calc_detection_levels` |
 
 ### 8.3 Query Generation Algorithm
 
@@ -567,14 +701,103 @@ function generateDetectionQuery(model):
   7. Return generated SQL
 ```
 
+### 8.4 Separation of Computation from Scoring
+
+A critical design insight in the proposed architecture is the clean separation between **computation** (calculating raw values) and **scoring** (applying thresholds and generating alerts). The `calc_results` table stores raw computed values independently from scoring decisions. Scoring is a downstream consumer of `calc_results`, not an embedded part of the computation pipeline.
+
+**Core principle:** `calc_results` contains the computed facts. Thresholds, score steps, and alert decisions are applied as a separate query layer on top of those facts. This means computation and scoring can evolve independently.
+
+**Benefits:**
+
+1. **Threshold tuning without recomputation.** Changing a score threshold from 15 to 12 does not require re-running the calculation pipeline. The `calc_results` rows already contain the raw `total_value`, `qty_match_ratio`, or `price_change_pct` values. Only the scoring query needs to re-run with the new threshold, which is orders of magnitude cheaper than recomputing from raw execution data.
+
+2. **Score step recalibration.** Graduated scoring ranges (e.g., "value 10-20 = low risk, 20-50 = medium, 50+ = high") can be adjusted and re-applied against existing `calc_results`. The compliance team can recalibrate scoring without involving the data engineering team or waiting for a full pipeline run.
+
+3. **What-if analysis.** "What would our alert volume look like at threshold 10 vs 15?" becomes a pure SQL query against `calc_results`:
+
+   ```sql
+   -- What-if: compare alert counts at threshold 10 vs 15
+   SELECT
+     'threshold_10' AS scenario,
+     COUNT(*) AS alert_count
+   FROM calc_results
+   WHERE calc_id = 'large_trading_activity'
+     AND detection_level_id = 'DL-PRODUCT-ACCOUNT'
+     AND total_value >= 10
+
+   UNION ALL
+
+   SELECT
+     'threshold_15' AS scenario,
+     COUNT(*) AS alert_count
+   FROM calc_results
+   WHERE calc_id = 'large_trading_activity'
+     AND detection_level_id = 'DL-PRODUCT-ACCOUNT'
+     AND total_value >= 15
+   ```
+
+   No pipeline execution required. The analyst gets immediate results because the computation has already been done.
+
+4. **Regulatory audit trail.** Historical `calc_results` are preserved even when thresholds change. An auditor can answer "what was the computed value for this product-account pair on this date?" independently of "what threshold was in effect at that time?" The computation facts and the scoring policy are stored separately, providing full traceability.
+
+**Concrete example: same computation, different scoring outcomes**
+
+Consider a `large_trading_activity` result for PROD-001 / ACCT-042 on 2026-03-09:
+
+```
+calc_results row:
+  calc_id:            large_trading_activity
+  detection_level_id: DL-PRODUCT-ACCOUNT
+  product_id:         PROD-001
+  account_id:         ACCT-042
+  business_date:      2026-03-09
+  total_value:        13.7
+  total_trades:       8
+  buy_value:          7.2
+  sell_value:         6.5
+```
+
+**Scoring configuration A** (current production thresholds):
+```
+Threshold: total_value >= 15
+Result:    13.7 < 15 → NO ALERT
+```
+
+**Scoring configuration B** (proposed lower thresholds for enhanced surveillance):
+```
+Threshold: total_value >= 12
+Result:    13.7 >= 12 → ALERT (score = 68, severity = MEDIUM)
+```
+
+**Scoring configuration C** (graduated scoring with steps):
+```
+Step 1: total_value >= 10 AND < 15 → score += 40 (low concern)
+Step 2: total_value >= 15 AND < 25 → score += 70 (medium concern)
+Step 3: total_value >= 25          → score += 95 (high concern)
+Result: 13.7 matches Step 1 → score += 40
+```
+
+The same `calc_results` row produces three different alert outcomes depending on the scoring configuration. None of these scoring changes require recomputing `large_trading_activity` from raw execution data.
+
+**Architecture implication:** The detection engine pipeline has two distinct phases:
+
+1. **Computation phase** -- reads raw entity data, applies calculation logic at each registered detection level, writes `calc_results`. This is the expensive phase (aggregation, joins, window functions).
+
+2. **Scoring phase** -- reads `calc_results`, applies threshold patterns and score step configurations, produces alert candidates. This is the cheap phase (simple comparisons and arithmetic on pre-computed values).
+
+The separation is enforced by the data model: `calc_results` has no threshold or score columns. Scoring decisions live in the detection model's threshold/score patterns and are applied as a query layer, not baked into the computation.
+
 ---
 
 ## Cross-References
 
 - `04-match-pattern-architecture.md` -- universal 3-column pattern structure that detection levels use
-- `05-calculation-instance-model.md` -- how calculations bind to detection levels for parameterization
+- `05-calculation-instance-model.md` -- how calculations bind to detection levels for parameterization; Section 3 covers detection level orthogonality to the calculation instance model
 - `06-time-window-framework.md` -- time dimension that combines with detection level for alert identity
 - `08-resolution-priority-rules.md` -- how multiple matching patterns are ranked when detection level is ambiguous
-- `09-unified-results-schema.md` -- how `calc_results` stores data at the detection level grain
+- `09-unified-results-schema.md` -- how `calc_results` stores data at the detection level grain; `detection_level_id` column definition and indexing
+- `10-scoring-pipeline.md` -- separation of computation from scoring; threshold application as a query layer on `calc_results`
 - `11-entity-relationship-graph.md` -- full entity graph definition, cardinality rules, and reachability algorithms
+- `appendices/A-schema-catalog.md` -- `calc_detection_levels` and `detection_level_universe` table schemas
 - `appendices/B-worked-examples.md` -- end-to-end scenarios showing detection level in action with real data
+- `appendices/E-per-value-pattern-matching.md` -- Section 4.1 covers detection level worked examples with per-value pattern matching
