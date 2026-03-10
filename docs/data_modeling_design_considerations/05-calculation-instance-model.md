@@ -2,7 +2,7 @@
 
 **Document**: 05 of the Data Modeling Design Considerations series
 **Audience**: Data Engineers, Financial Modelers, Product
-**Last updated**: 2026-03-09
+**Last updated**: 2026-03-10
 
 ---
 
@@ -644,25 +644,31 @@ CREATE TABLE instance_setting_values (
   instance_id      VARCHAR NOT NULL,    -- FK → calc_instances
   setting_id       VARCHAR NOT NULL,    -- FK → setting_definitions
   param_name       VARCHAR NOT NULL,    -- matches calc_required_settings.param_name
+  pattern_id       VARCHAR NOT NULL,    -- FK → match_patterns (per-value granularity)
   param_value      JSON NOT NULL,       -- the actual concrete value
-  PRIMARY KEY (instance_id, setting_id, param_name)
+  PRIMARY KEY (instance_id, setting_id, param_name, pattern_id)
 );
 ```
 
+**Per-value pattern matching:** Within a single calculation instance, different settings can reference match patterns at different granularity levels. For example, the equity instance (`inst_wash_equity`) might have `wash_vwap_threshold` values varying by instrument type (using patterns `pat_equity_call`, `pat_equity_etf`) while `large_activity_score_steps` stays at the asset-class level (using pattern `pat_equity`). The `pattern_id` column enables this per-value granularity — the resolution engine selects the best-matching pattern for each setting independently.
+
 **Example data for `wash_detection` instances:**
 
-| instance_id | setting_id | param_name | param_value |
-|---|---|---|---|
-| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `0.02` |
-| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
-| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `0.012` |
-| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
-| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
-| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
+| instance_id | setting_id | param_name | pattern_id | param_value |
+|---|---|---|---|---|
+| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `pat_default` | `0.02` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity` | `0.015` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_call` | `0.018` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_etf` | `0.012` |
+| `inst_wash_equity` | `large_activity_score_steps` | `score_steps` | `pat_equity` | `[{"min":0,"max":25000,"score":0},...]` |
+| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_nyse` | `0.012` |
+| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `pat_aapl` | `0.01` |
+| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `pat_fixed_income` | `0.01` |
+| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `pat_index` | `0.015` |
 
-**What was previously the `default` value** (`0.02`) is now an explicit row on `inst_wash_default` — the instance with a zero-attribute match pattern.
+**What was previously the `default` value** (`0.02`) is now an explicit row on `inst_wash_default` with `pattern_id = pat_default` — the instance with a zero-attribute match pattern.
 
-**What were previously `overrides`** are now rows on context-specific instances. There is no "override" concept — every value is a first-class row associated with a specific instance.
+**What were previously `overrides`** are now rows on context-specific instances with their own `pattern_id`. There is no "override" concept — every value is a first-class row associated with a specific instance and a specific match pattern. Note how `inst_wash_equity` has multiple rows for `wash_vwap_threshold` at different pattern granularities (asset-class, instrument-type), while `large_activity_score_steps` stays at the `pat_equity` level.
 
 ### Composition Query
 
@@ -674,7 +680,8 @@ SELECT
     ci.calc_id,
     cd.formula_type,
     cd.formula,
-    mp.pattern_id,
+    mp.pattern_id    AS instance_pattern,
+    isv.pattern_id   AS value_pattern,
     isv.param_name,
     isv.param_value
 FROM calc_instances ci
@@ -684,9 +691,12 @@ JOIN instance_setting_values isv ON ci.instance_id = isv.instance_id
 WHERE ci.calc_id = 'wash_detection'
   AND ci.pattern_id = 'pat_equity';
 
--- Result:
--- instance_id      | calc_id         | formula_type | formula          | pattern_id | param_name      | param_value
--- inst_wash_equity | wash_detection  | sql          | CASE WHEN ...    | pat_equity | vwap_threshold  | 0.015
+-- Result (multiple rows — per-value pattern granularity):
+-- instance_id      | calc_id        | ... | instance_pattern | value_pattern    | param_name      | param_value
+-- inst_wash_equity | wash_detection | ... | pat_equity       | pat_equity       | vwap_threshold  | 0.015
+-- inst_wash_equity | wash_detection | ... | pat_equity       | pat_equity_call  | vwap_threshold  | 0.018
+-- inst_wash_equity | wash_detection | ... | pat_equity       | pat_equity_etf   | vwap_threshold  | 0.012
+-- inst_wash_equity | wash_detection | ... | pat_equity       | pat_equity       | score_steps     | [{"min":0,...}]
 ```
 
 ### FK Relationship Diagram
@@ -696,8 +706,10 @@ setting_definitions ←──── calc_required_settings ────→ calc_
         ↑                                                      ↑
         │                                                      │
 instance_setting_values ────→ calc_instances ────→ match_patterns
-                                     │
-                                     └──→ time_windows (nullable)
+        │                                                ↑
+        └────────────────────────────────────────────────┘
+        (per-value pattern_id FK)       │
+                                        └──→ time_windows (nullable)
 ```
 
 ### `match_patterns` + `match_pattern_attributes` (unchanged)
@@ -736,27 +748,74 @@ Pass entity context from the match pattern through to the settings resolver:
 
 ```python
 # PROPOSED: calculation_engine.py
-def _resolve_parameters(self, calc: CalculationDefinition, instance: CalcInstance) -> dict[str, Any]:
+def _resolve_parameters(
+    self,
+    calc: CalculationDefinition,
+    instance: CalcInstance,
+    context: dict[str, str],
+) -> dict[str, Any]:
+    """Resolve all parameters for a calculation instance.
+
+    Each setting is resolved independently: the engine loads ALL pattern-level
+    values for the setting within this instance, then selects the best match
+    for the current entity context. This enables per-value pattern granularity —
+    different settings within the same instance can resolve at different
+    specificity levels.
+    """
     resolved: dict[str, Any] = {}
 
     # Load required settings for this calculation
     required = self._metadata.load_required_settings(calc.calc_id)
 
     for req in required:
-        # Look up the concrete value from instance_setting_values
-        value = self._metadata.load_instance_value(instance.instance_id, req.setting_id, req.param_name)
-        if value is not None:
-            resolved[req.param_name] = value
-        else:
-            # Fallback: check the default instance (zero-attribute pattern)
-            default_value = self._metadata.load_default_instance_value(calc.calc_id, req.setting_id, req.param_name)
-            resolved[req.param_name] = default_value
+        # Load ALL pattern-level values for this setting within the instance
+        pattern_values = self._metadata.load_instance_values_by_pattern(
+            instance.instance_id, req.setting_id, req.param_name
+        )
+        # pattern_values: list of (pattern_id, param_value) tuples
+
+        if pattern_values:
+            # Select the best-matching pattern for the current context
+            best_value = self._select_best_pattern_value(pattern_values, context)
+            if best_value is not None:
+                resolved[req.param_name] = best_value
+                continue
+
+        # Fallback: check the default instance (zero-attribute pattern)
+        default_value = self._metadata.load_default_instance_value(
+            calc.calc_id, req.setting_id, req.param_name
+        )
+        resolved[req.param_name] = default_value
 
     # Literal parameters are resolved from the formula spec directly
     for name, spec in calc.literal_params.items():
         resolved[name] = spec.get("value")
 
     return resolved
+
+def _select_best_pattern_value(
+    self,
+    pattern_values: list[tuple[str, Any]],
+    context: dict[str, str],
+) -> Any | None:
+    """Select the best-matching pattern value for the given context.
+
+    Ranks by pattern specificity (number of matching attributes, descending).
+    Returns the value from the most specific matching pattern, or None if
+    no pattern matches the context.
+    """
+    candidates = []
+    for pattern_id, value in pattern_values:
+        attrs = self._metadata.load_pattern_attributes(pattern_id)
+        if all(context.get(a.entity_attribute) == a.attribute_value for a in attrs):
+            candidates.append((len(attrs), value))
+
+    if not candidates:
+        return None
+
+    # Most specific (highest attribute count) wins
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return candidates[0][1]
 ```
 
 ### Backwards Compatibility

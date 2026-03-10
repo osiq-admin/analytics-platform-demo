@@ -1,7 +1,7 @@
 # Appendix A -- Complete Table Schemas
 
 **Audience**: Data Engineers, Database Architects
-**Last updated**: 2026-03-09
+**Last updated**: 2026-03-10
 
 Full DDL for all proposed tables in the Risk Case Manager trade surveillance platform.
 Organized by medallion tier and dependency order.
@@ -60,7 +60,7 @@ Group 3 (depends on Groups 1-2):
   calc_instances              (FK -> calc_definitions, match_patterns, time_windows)
 
 Group 4 (depends on Groups 1-3):
-  instance_setting_values     (FK -> calc_instances, setting_definitions)
+  instance_setting_values     (FK -> calc_instances, setting_definitions, match_patterns)
   calc_results                (FK -> calc_definitions, time_windows, match_patterns)
 
 Group 5 (depends on Groups 1-4):
@@ -870,26 +870,44 @@ CREATE TABLE instance_setting_values (
     -- This is the $placeholder in the formula that this value fills.
     param_name       VARCHAR NOT NULL,
 
+    -- FK to the match pattern that scopes this specific value.
+    -- Different settings within the same instance can reference different
+    -- patterns, enabling per-value granularity. For example, an equity
+    -- instance might have vwap_threshold varying by instrument type
+    -- (call_option=0.018, etf=0.012) while large_activity_score_steps
+    -- stays at the asset-class level (pat_equity).
+    pattern_id       VARCHAR NOT NULL
+        REFERENCES match_patterns(pattern_id),
+
     -- The actual concrete value as JSON.
     -- Supports scalars (0.015, "21:00", true), arrays (score step
     -- definitions), and objects (complex parameter specs).
     -- The engine deserializes based on value_type from setting_definitions.
     param_value      JSON NOT NULL,
 
-    -- Each instance can have at most one value per setting+param combination
-    PRIMARY KEY (instance_id, setting_id, param_name)
+    -- Each instance can have at most one value per setting+param+pattern combination
+    PRIMARY KEY (instance_id, setting_id, param_name, pattern_id)
 );
 
 COMMENT ON TABLE instance_setting_values IS
-    'Concrete parameter values per calculation instance. This is the ONLY place '
-    'where setting values are stored. Replaces both SettingDefinition.default and '
+    'Concrete parameter values per calculation instance with per-value pattern matching. '
+    'This is the ONLY place where setting values are stored. Different settings within '
+    'the same instance can reference different match patterns, enabling per-value '
+    'granularity (e.g., vwap_threshold varies by instrument type while score_steps stays '
+    'at asset-class level). Replaces both SettingDefinition.default and '
     'SettingDefinition.overrides from the current JSON model. '
-    'See doc 05 Section 6, doc 12 Section 4.4.';
+    'See doc 05 Section 6, doc 12 Section 4.4, Appendix E.';
 
 COMMENT ON COLUMN instance_setting_values.param_value IS
     'JSON-typed parameter value. The engine deserializes based on value_type '
     'from the referenced setting_definitions row. Supports numeric thresholds '
     '(0.015), string cutoffs ("21:00"), boolean flags, and score step arrays.';
+
+COMMENT ON COLUMN instance_setting_values.pattern_id IS
+    'Match pattern scoping this specific value. Enables per-value granularity within '
+    'an instance: different settings can reference patterns at different specificity '
+    'levels. The resolution engine selects the best-matching pattern_id for each '
+    'setting independently. See Appendix E for worked examples.';
 ```
 
 ---
@@ -1281,9 +1299,14 @@ CREATE INDEX idx_isv_instance
 -- Used by impact analysis when considering setting changes.
 CREATE INDEX idx_isv_setting
     ON instance_setting_values (setting_id);
+
+-- Instance+pattern lookup: "all setting values for this instance scoped to a pattern"
+-- Used by the resolution engine when selecting the best-matching value per setting.
+CREATE INDEX idx_isv_instance_pattern
+    ON instance_setting_values (instance_id, pattern_id);
 ```
 
-**Rationale**: `idx_isv_instance` is the must-have index -- every instance execution requires loading all its parameter values. `idx_isv_setting` supports "what-if" analysis for setting changes.
+**Rationale**: `idx_isv_instance` is the must-have index -- every instance execution requires loading all its parameter values. `idx_isv_setting` supports "what-if" analysis for setting changes. `idx_isv_instance_pattern` supports the per-value pattern resolution query that selects the best-matching pattern for each setting within an instance.
 
 ### 6.14 alert_traces Indexes
 
@@ -1351,13 +1374,14 @@ CREATE INDEX idx_mpv_created_by
 | calc_instances | idx_calc_instances_pattern | (pattern_id) | Single | Should-have |
 | instance_setting_values | idx_isv_instance | (instance_id) | Single | Must-have |
 | instance_setting_values | idx_isv_setting | (setting_id) | Single | Should-have |
+| instance_setting_values | idx_isv_instance_pattern | (instance_id, pattern_id) | Composite | Should-have |
 | alert_traces | idx_alert_traces_model_date | (model_id, business_date) | Composite | Must-have |
 | alert_traces | idx_alert_traces_fired_date | (business_date) WHERE fired=TRUE | Partial | Should-have |
 | alert_traces | idx_alert_traces_score | (accumulated_score DESC) WHERE fired=TRUE | Partial/Desc | Nice-to-have |
 | match_pattern_versions | idx_mpv_pattern_version | (pattern_id, version_num DESC) | Composite/Desc | Must-have |
 | match_pattern_versions | idx_mpv_created_by | (created_by, created_at DESC) | Composite/Desc | Should-have |
 
-**Total**: 30 indexes across 14 tables.
+**Total**: 31 indexes across 14 tables.
 
 ---
 

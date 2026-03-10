@@ -50,6 +50,7 @@ The documents in this suite capture design principles and architectural decision
 | B | `appendices/B-worked-examples.md` | 5+ end-to-end scenarios with actual data |
 | C | `appendices/C-current-vs-proposed-mapping.md` | How current JSON metadata maps to proposed tables |
 | D | `appendices/D-implementation-roadmap.md` | Phased approach to migrate from current to proposed |
+| E | `appendices/E-composition-model-examples.md` | Composition model worked examples with per-value pattern matching |
 
 ---
 
