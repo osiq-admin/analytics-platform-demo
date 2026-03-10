@@ -2,7 +2,7 @@
 
 **Document**: 12 of the Data Modeling Design Considerations series
 **Audience**: Data Engineers, Configuration Administrators
-**Last updated**: 2026-03-09
+**Last updated**: 2026-03-10
 
 ---
 
@@ -793,9 +793,12 @@ instance_setting_values:
   instance_id      FK -> calc_instances
   setting_id       FK -> setting_definitions
   param_name       VARCHAR  -- placeholder name in formula
+  pattern_id       FK -> match_patterns  -- per-value granularity
   param_value      JSON     -- the actual concrete value
-  PK (instance_id, setting_id, param_name)
+  PK (instance_id, setting_id, param_name, pattern_id)
 ```
+
+**Per-value pattern matching:** The `pattern_id` column enables different settings within the same instance to reference match patterns at different granularity levels. For example, the equity instance (`inst_wash_equity`) might have `wash_vwap_threshold` varying by instrument type (`pat_equity_call` = 0.018, `pat_equity_etf` = 0.012, `pat_equity` = 0.015 as fallback) while `large_activity_score_steps` stays at the asset-class level (`pat_equity`). The resolution engine selects the best-matching `pattern_id` for each setting independently, providing fine-grained control without requiring separate instances for every combination.
 
 This table replaces both the current `SettingDefinition.default` and `SettingDefinition.overrides[]` --- every value, whether it was previously a "default" or an "override," is now an explicit row in `instance_setting_values` associated with a specific calculation instance.
 
@@ -809,6 +812,28 @@ This table replaces both the current `SettingDefinition.default` and `SettingDef
 | `override {product: AAPL} = 0.01` | `instance_setting_values` row on the "aapl" instance |
 
 See document 05, Section 6 for the complete table structures and worked examples.
+
+#### Within-Instance Resolution: Two-Level Selection
+
+When a candidate row arrives with context `{asset_class: "equity", instrument_type: "call_option"}`, the resolution engine performs two levels of selection:
+
+**Level 1 — Instance selection:** Select the best-matching calculation instance based on the instance's `pattern_id` (from `calc_instances`). The equity instance (`inst_wash_equity` with `pat_equity`) matches.
+
+**Level 2 — Per-value pattern selection:** For each required setting within the selected instance, find the best-matching `pattern_id` from `instance_setting_values`:
+
+| Setting | Available pattern_ids in instance | Context match | Selected | Value |
+|---|---|---|---|---|
+| `wash_vwap_threshold` | `pat_equity` (1 attr), `pat_equity_call` (2 attrs), `pat_equity_etf` (2 attrs) | `pat_equity_call` matches (2 attrs) | `pat_equity_call` | `0.018` |
+| `large_activity_score_steps` | `pat_equity` (1 attr) | `pat_equity` matches (1 attr) | `pat_equity` | `[{min:0,max:25000,...}]` |
+
+For a common stock (context `{asset_class: "equity", instrument_type: "common_stock"}`):
+
+| Setting | Available pattern_ids in instance | Context match | Selected | Value |
+|---|---|---|---|---|
+| `wash_vwap_threshold` | `pat_equity` (1 attr), `pat_equity_call` (2 attrs), `pat_equity_etf` (2 attrs) | Only `pat_equity` matches | `pat_equity` | `0.015` |
+| `large_activity_score_steps` | `pat_equity` (1 attr) | `pat_equity` matches | `pat_equity` | `[{min:0,max:25000,...}]` |
+
+The call option gets a wider VWAP threshold (0.018) reflecting options' inherent price deviation from underlying VWAP, while the common stock gets the standard equity threshold (0.015). Both share the same equity-level score steps.
 
 ---
 
@@ -827,6 +852,7 @@ The mapping from current JSON settings to the proposed separated model follows a
 | `SettingDefinition.overrides[].priority` | Computed from `match_pattern_attributes` row count (eliminated as explicit field) |
 | `SettingDefinition.match_type` | Eliminated --- a single resolution algorithm handles all settings |
 | `calc_settings` table (Section 4.3 of previous version) | Replaced by `calc_required_settings` (declares which settings a calc needs) + `instance_setting_values` (supplies concrete values per instance) |
+| Multiple overrides at different granularity within same asset class | Multiple `instance_setting_values` rows with different `pattern_id` within the same instance |
 
 ### 5.2 Example Migration: `wash_vwap_threshold`
 
@@ -888,14 +914,16 @@ This says: "The `wash_detection` calculation requires a setting called `wash_vwa
 
 **Step 4 --- Assign values per instance:**
 
-| instance_id | setting_id | param_name | param_value |
-|---|---|---|---|
-| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `0.02` |
-| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
-| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `0.012` |
-| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
-| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `0.01` |
-| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `0.015` |
+| instance_id | setting_id | param_name | pattern_id | param_value |
+|---|---|---|---|---|
+| `inst_wash_default` | `wash_vwap_threshold` | `vwap_threshold` | `pat_default` | `0.02` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity` | `0.015` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_call` | `0.018` |
+| `inst_wash_equity` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_etf` | `0.012` |
+| `inst_wash_equity_nyse` | `wash_vwap_threshold` | `vwap_threshold` | `pat_equity_nyse` | `0.012` |
+| `inst_wash_aapl` | `wash_vwap_threshold` | `vwap_threshold` | `pat_aapl` | `0.01` |
+| `inst_wash_fixed_income` | `wash_vwap_threshold` | `vwap_threshold` | `pat_fixed_income` | `0.01` |
+| `inst_wash_index` | `wash_vwap_threshold` | `vwap_threshold` | `pat_index` | `0.015` |
 
 **Resolution for context `{product.asset_class: "equity", product.exchange_mic: "XNYS"}`:**
 
@@ -988,3 +1016,4 @@ Under the proposed system, the product-specific pattern would have 1 attribute r
 | 18 Glossary | Defines "entity-key override," "granularity-based priority," and related terms |
 | Appendix A | Full DDL for `setting_definitions`, `calc_required_settings`, `instance_setting_values` and related tables |
 | Appendix C | Complete mapping from all 15 current JSON settings to proposed table rows |
+| Appendix E | Comprehensive worked examples showing per-value pattern matching and the full composition model |
