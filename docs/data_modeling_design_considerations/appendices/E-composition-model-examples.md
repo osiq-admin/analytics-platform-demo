@@ -38,6 +38,10 @@ per-value pattern matching is the refined composition model.
    - 3.3 [Resolution Queries (SQL)](#33-resolution-queries-sql)
    - 3.4 [FK Relationship Diagram](#34-fk-relationship-diagram)
 4. [Expansion Points](#4-expansion-points)
+   - 4.1 [Detection Levels — Per-Calculation Grain](#41-detection-levels--per-calculation-grain)
+   - 4.2 [Reserved: Temporal Instance Versioning](#42-reserved-temporal-instance-versioning)
+   - 4.3 [Reserved: Cross-Entity Pattern Composition](#43-reserved-cross-entity-pattern-composition)
+   - 4.4 [Reserved: Multi-Model Instance Sharing](#44-reserved-multi-model-instance-sharing)
 5. [Cross-References](#5-cross-references)
 
 ---
@@ -1005,11 +1009,165 @@ Complete ASCII diagram showing all tables, FK arrows, and cardinality annotation
 
 ## 4. Expansion Points
 
-These sections are reserved for future concepts that will extend the composition model.
+These sections extend the composition model with additional concepts. Section 4.1 is a fully
+worked example; the remaining sections are reserved for future documentation.
 
-### 4.1 Reserved: Multi-Model Instance Sharing
+### 4.1 Detection Levels — Per-Calculation Grain
 
-*(Future: How multiple detection models share calculation instances and how shared instances interact with model-specific pattern bindings.)*
+Detection levels answer the question: **at what level of aggregation does the engine look for
+suspicious patterns?** Different surveillance concerns require different grains of analysis.
+
+Consider these two examples:
+
+- **Market price ramping** examines aggregate volume across *all* accounts for a given product.
+  If total volume in AAPL across every participant spikes abnormally, that is a product-level
+  signal. The relevant grain is `GROUP BY product_id`.
+- **Wash trading** looks for a specific account (or pair of related accounts) trading against
+  itself in a specific product. The relevant grain is `GROUP BY product_id, account_id` —
+  product-level aggregation would mask the per-account pattern entirely.
+
+Some calculations operate at the **transaction layer** — they evaluate each individual execution
+without any aggregation. These calculations have no detection level at all.
+
+The `calc_detection_levels` table declares which detection levels a calculation participates in.
+A single calculation can participate in *multiple* detection levels, producing separate result
+rows at each grain.
+
+#### calc_detection_levels — which calculations run at which grain
+
+| calc_id | detection_level_id | Resulting Grain |
+|---|---|---|
+| `large_trading_activity` | `DL-PRODUCT` | GROUP BY product_id |
+| `large_trading_activity` | `DL-PRODUCT-ACCOUNT` | GROUP BY product_id, account_id |
+| `wash_detection` | `DL-PRODUCT-ACCOUNT` | GROUP BY product_id, account_id |
+| `trend_detection` | `DL-PRODUCT` | GROUP BY product_id |
+| `value_calc` | *(no rows)* | transaction-layer, no GROUP BY |
+
+**Key observations:**
+
+- `large_trading_activity` appears at *both* `DL-PRODUCT` and `DL-PRODUCT-ACCOUNT`. The engine
+  runs it twice per business date: once aggregated by product alone, once by product×account.
+  Each run produces its own result rows tagged with the corresponding `detection_level_id`.
+- `wash_detection` only runs at `DL-PRODUCT-ACCOUNT` — product-level aggregation would be
+  meaningless for wash detection because the pattern requires account-specific visibility.
+- `value_calc` has no rows in `calc_detection_levels`. It operates at the transaction layer:
+  one result per execution, with `detection_level_id = NULL` in `calc_results`.
+
+#### detection_level_universe — the set of combinations to evaluate
+
+Each detection level has a universe: the set of dimension-value combinations the engine iterates
+over. The universe is pre-computed from reference data and maintained as a lookup table.
+
+| universe_id | detection_level_id | product_id | account_id | is_active |
+|---|---|---|---|---|
+| `UNI-P-001` | `DL-PRODUCT` | `PROD-001` | NULL | true |
+| `UNI-P-002` | `DL-PRODUCT` | `PROD-002` | NULL | true |
+| `UNI-P-003` | `DL-PRODUCT` | `PROD-003` | NULL | true |
+| `UNI-PA-001` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-100` | true |
+| `UNI-PA-002` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-101` | true |
+| `UNI-PA-003` | `DL-PRODUCT-ACCOUNT` | `PROD-002` | `ACCT-100` | true |
+| `UNI-PA-004` | `DL-PRODUCT-ACCOUNT` | `PROD-002` | `ACCT-102` | true |
+| `UNI-PA-005` | `DL-PRODUCT-ACCOUNT` | `PROD-003` | `ACCT-100` | false |
+
+**Key observations:**
+
+- `DL-PRODUCT` universe rows have `account_id = NULL` — the grain is product-only.
+- `DL-PRODUCT-ACCOUNT` universe rows specify both dimensions.
+- `UNI-PA-005` has `is_active = false`. Inactive universe entries are skipped during engine runs
+  but retained for audit trail — they were previously monitored and may be reactivated.
+- In the full system, `DL-PRODUCT` would have ~50 rows (one per product) and
+  `DL-PRODUCT-ACCOUNT` would have ~11,000 rows (220 accounts x 50 products, filtered to active
+  trading pairs). Only 3 and 5 are shown above for brevity.
+
+#### Resolution walkthrough — `large_trading_activity` at `DL-PRODUCT`
+
+Given calculation `large_trading_activity` with detection level `DL-PRODUCT` for business date
+2024-01-15, the engine proceeds as follows:
+
+**Step 1 — Read universe.** The engine queries `detection_level_universe` for
+`detection_level_id = 'DL-PRODUCT'` and `is_active = true`. This returns 50 product
+combinations (3 shown above: PROD-001, PROD-002, PROD-003).
+
+**Step 2 — Compute per combination.** For each universe row, the engine executes the
+`large_trading_activity` SQL formula with context restricted to that product. The formula
+aggregates all executions for that product on that business date, applies the resolved
+settings (activity multiplier, score steps), and produces a `primary_value` representing
+total notional volume.
+
+**Step 3 — Write tagged results.** Each computation produces one row in `calc_results`,
+tagged with the `detection_level_id` that produced it:
+
+| result_id | calc_id | detection_level_id | product_id | account_id | primary_value |
+|---|---|---|---|---|---|
+| `R-001` | `large_trading_activity` | `DL-PRODUCT` | `PROD-001` | NULL | 75,000 |
+| `R-002` | `large_trading_activity` | `DL-PRODUCT` | `PROD-002` | NULL | 42,000 |
+
+**Step 4 — Model scoring JOIN.** The detection model `market_price_ramping` is configured to
+consume `large_trading_activity` results at `DL-PRODUCT` (via `model_calculations`). The
+scoring pipeline JOINs `calc_results` on `detection_level_id = 'DL-PRODUCT'` to pick up only
+product-level results, ignoring any product×account rows that may also exist for the same
+calculation.
+
+**Now compare:** The same calculation at `DL-PRODUCT-ACCOUNT` produces finer-grained results:
+
+| result_id | calc_id | detection_level_id | product_id | account_id | primary_value |
+|---|---|---|---|---|---|
+| `R-003` | `large_trading_activity` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-100` | 31,000 |
+| `R-004` | `large_trading_activity` | `DL-PRODUCT-ACCOUNT` | `PROD-001` | `ACCT-101` | 44,000 |
+
+Note that `R-003 + R-004 = 75,000 = R-001`. The product-level result is the sum of all
+account-level results for that product. The `detection_level_id` tag ensures the model scoring
+pipeline selects the correct grain.
+
+#### Transaction-layer contrast — `value_calc` with no detection level
+
+Calculations with no rows in `calc_detection_levels` operate at the transaction layer. The
+engine evaluates them once per execution row, producing results with `detection_level_id = NULL`:
+
+| result_id | calc_id | detection_level_id | product_id | account_id | primary_value |
+|---|---|---|---|---|---|
+| `R-100` | `value_calc` | NULL | `PROD-001` | `ACCT-100` | 1,250.00 |
+| `R-101` | `value_calc` | NULL | `PROD-001` | `ACCT-100` | 3,750.00 |
+| `R-102` | `value_calc` | NULL | `PROD-002` | `ACCT-102` | 890.50 |
+
+Each row corresponds to a single execution. There is no aggregation — `primary_value` is the
+computed value for that individual trade (e.g., quantity x price). The NULL `detection_level_id`
+distinguishes these from aggregated results and signals to the scoring pipeline that these
+results should be evaluated individually rather than as group aggregates.
+
+#### SQL — querying calc_results filtered by detection level
+
+```sql
+-- Get all product-level large_trading_activity results for model scoring
+SELECT cr.*
+FROM   calc_results cr
+WHERE  cr.calc_id = 'large_trading_activity'
+  AND  cr.detection_level_id = 'DL-PRODUCT'
+  AND  cr.business_date = '2024-01-15';
+```
+
+```sql
+-- Get product×account results for wash trading model
+SELECT cr.*
+FROM   calc_results cr
+WHERE  cr.calc_id IN ('large_trading_activity', 'wash_detection')
+  AND  cr.detection_level_id = 'DL-PRODUCT-ACCOUNT'
+  AND  cr.business_date = '2024-01-15';
+```
+
+```sql
+-- Get transaction-layer results (no detection level)
+SELECT cr.*
+FROM   calc_results cr
+WHERE  cr.calc_id = 'value_calc'
+  AND  cr.detection_level_id IS NULL
+  AND  cr.business_date = '2024-01-15';
+```
+
+See: Appendix A, Section 2.9 (calc_detection_levels DDL); Document 09, Section 3
+(calc_results schema); Document 05, Section 6 (calculation execution model).
+
+---
 
 ### 4.2 Reserved: Temporal Instance Versioning
 
@@ -1018,6 +1176,10 @@ These sections are reserved for future concepts that will extend the composition
 ### 4.3 Reserved: Cross-Entity Pattern Composition
 
 *(Future: How patterns can reference attributes from multiple entities simultaneously — e.g., "equity instruments traded by high-risk accounts" — and how the entity graph reachability engine resolves cross-entity attribute lookups.)*
+
+### 4.4 Reserved: Multi-Model Instance Sharing
+
+*(Future: How multiple detection models share calculation instances and how shared instances interact with model-specific pattern bindings.)*
 
 ---
 

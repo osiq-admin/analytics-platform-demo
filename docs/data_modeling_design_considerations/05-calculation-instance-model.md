@@ -14,6 +14,8 @@ A **Calculation Instance** is the runtime-resolved unit of execution in the surv
 Calculation Instance = Calculation Definition + Match Pattern + Setting Values [+ Time Window] --> Parameterized Calculation
 ```
 
+**Detection level is orthogonal to the instance model.** A calculation instance defines *what* to compute and *with which parameters*. The detection level (via `calc_detection_levels`) defines *at which grain* to compute it. The same instance's resolved parameters apply regardless of the detection level. For example, `inst_wash_equity` uses `vwap_threshold = 0.015` whether the engine computes wash_detection at `product × account` grain or (hypothetically) at `product × account × venue` grain. See Doc 07 for detection level design.
+
 A **Calculation Definition** declares *what* to compute: the formula (which may be SQL, procedural code, or a streaming expression like Flink), its input dependencies, its output schema, and a set of named parameter placeholders (e.g., `$cutoff_time`, `$trend_multiplier`, `$vwap_threshold`). It does not contain concrete threshold values --- it declares which settings it requires (by reference via `calc_required_settings`) and provides a formula type discriminator (`sql`, `code`, `flink`) so the engine knows which executor to invoke.
 
 A **Match Pattern** (of type `setting`) declares *for whom* the calculation applies: a set of entity-attribute predicates such as `{asset_class: "equity"}` or `{asset_class: "equity", exchange_mic: "XNYS"}`. When paired with a settings override, it supplies the concrete parameter values that fill the calculation's placeholders.
@@ -842,3 +844,13 @@ Calculations that have no `calc_instances` rows continue to use the default inst
 7. **Validate**: run the full calculation DAG with and without instances; verify that unbound calculations (default instances) produce identical results, and bound calculations produce the expected per-context results.
 
 No existing API endpoints or detection models require changes. Setting definitions are simplified (metadata only). The migration adds four new tables (`setting_definitions`, `calc_required_settings`, `calc_instances`, `instance_setting_values`) and modifies one method signature.
+
+---
+
+## Cross-References
+
+| Document | Title | Relevance |
+|---|---|---|
+| [Doc 04](04-match-patterns.md) | Match Patterns | Defines the match pattern structure used by `calc_instances.pattern_id` and `instance_setting_values.pattern_id` |
+| [Doc 06](06-time-windows.md) | Time Windows | Defines the time window structure used by `calc_instances.window_id` |
+| [Doc 07](07-detection-level-design.md) | Detection Level Design | Detection levels (`calc_detection_levels`) define the grain at which a calculation executes; orthogonal to the instance model, which defines parameters and context |

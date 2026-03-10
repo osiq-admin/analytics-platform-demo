@@ -17,6 +17,9 @@ CREATE TABLE calc_results (
     calc_id         VARCHAR NOT NULL,      -- FK -> calc_definitions; identifies which calculation produced this row
     window_id       VARCHAR,               -- FK -> time_windows; nullable for calculations not scoped to a time window
     pattern_id      VARCHAR,               -- FK -> match_patterns; which classification context applies
+    detection_level_id  VARCHAR,           -- FK -> match_patterns (type=detection_level);
+                                           -- the GROUP BY grain at which this result was computed.
+                                           -- NULL for transaction-layer calculations.
     product_id      VARCHAR,               -- Sparse nullable dimension: FK -> product
     account_id      VARCHAR,               -- Sparse nullable dimension: FK -> account
     venue_id        VARCHAR,               -- Sparse nullable dimension: FK -> venue (via MIC)
@@ -37,6 +40,7 @@ CREATE TABLE calc_results (
 | `calc_id` | Foreign key to `calc_definitions`. Identifies which calculation produced this row. The meaning of `primary_value`, `secondary_value`, and `flag_value` is determined entirely by the calc_id. | No | This is the discriminator that makes generic columns interpretable. |
 | `window_id` | Foreign key to a `time_windows` dimension. Links to the time window context (business date window, trend window, cancellation pattern, market event window). NULL for transaction-layer calculations that operate on individual executions without time windowing. | Yes | Time window scoping is optional; transaction-layer calcs like `value_calc` have no window. |
 | `pattern_id` | Foreign key to `match_patterns`. Records which classification context (e.g., `equity_stocks`, `fx_instruments`) was active when this result was computed. NULL when the calculation ran with no pattern-specific parameterization. | Yes | Enables filtering results by the match pattern that drove parameter resolution. |
+| `detection_level_id` | FK to match_patterns (type=detection_level). Records which GROUP BY grain was active when this result was computed. | Yes | NULL for transaction-layer calcs (value_calc, adjusted_direction). See doc 07. |
 | `product_id` | Sparse dimension FK to the product entity. Populated when the calculation grain includes product. NULL for calculations aggregated beyond product level (e.g., desk-level or firm-wide). | Yes | Sparse --- not every calculation operates at product grain. |
 | `account_id` | Sparse dimension FK to the account entity. Populated when the calculation grain includes account. NULL for product-only calculations (e.g., `trend_window`, `market_event_window`). | Yes | Sparse --- time window calculations typically have no account dimension. |
 | `venue_id` | Sparse dimension FK to the venue entity (ISO 10383 MIC). Populated for venue-scoped calculations. NULL for most current calculations which aggregate across venues. | Yes | Reserved for future venue-level detection (e.g., best execution analysis). |
@@ -99,6 +103,8 @@ Each execution:
 **Schema drift.** Each calculation defines its own output schema in JSON metadata. There is no enforcement that related calculations use consistent column naming, types, or grain. One calculation might call it `business_date`, another `pattern_date`, another `event_date` --- all meaning the same thing.
 
 **Cross-model analysis is difficult.** Answering "which product-account pairs scored high across multiple detection models today?" requires querying all 10 tables, unioning results with incompatible schemas, and manually aligning columns.
+
+In the proposed schema, the same calculation can produce results at multiple detection levels. For example, `large_trading_activity` produces separate result rows for `DL-PRODUCT` (50 products x N dates) and `DL-PRODUCT-ACCOUNT` (2,200 pairs x N dates). The `detection_level_id` column discriminates between these, alongside `calc_id`.
 
 ---
 
@@ -716,6 +722,7 @@ WHERE business_date = '2026-03-01'
 - **Document 04** (`04-match-pattern-architecture.md`) --- Defines the universal 3-column match pattern structure used in `match_pattern_attributes`.
 - **Document 05** (`05-calculation-instance-model.md`) --- Describes calculation instances (calc x pattern) whose results land in `calc_results`.
 - **Document 06** (`06-time-window-framework.md`) --- Defines the time window dimension referenced by `calc_results.window_id`.
+- **Document 07** (`07-detection-level-design.md`) --- Defines detection levels and the `detection_level_id` foreign key used in `calc_results` to discriminate GROUP BY grain.
 - **Document 10** (`10-scoring-and-alerting-pipeline.md`) --- Describes the scoring pipeline that reads from `calc_results` and `score_steps`.
 - **Document 17** (`17-performance-and-efficiency.md`) --- Covers query optimization and materialization strategy for the unified schema.
 - **Appendix A** (`appendices/A-complete-table-schemas.md`) --- Full DDL for all tables including constraints and comments.

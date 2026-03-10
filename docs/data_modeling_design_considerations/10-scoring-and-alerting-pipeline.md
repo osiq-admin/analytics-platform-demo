@@ -782,6 +782,103 @@ The alert still fires via the `score_based` path. Even though the quantity match
 
 ---
 
+## 8. Separation of Computation from Scoring
+
+### Architecture Principle
+
+Calculation results (`calc_results`) are produced independently of scoring decisions. The computation pipeline executes detection queries, aggregates raw data, and writes results to the `calc_results` table. The scoring pipeline then reads these pre-computed results and applies score steps + thresholds to generate alerts. These are two distinct phases:
+
+```
+Phase 1: Computation           Phase 2: Scoring
+------------------------       ------------------------
+Detection query executes       Read calc_results rows
+  -> GROUP BY, aggregate         -> Resolve score steps
+  -> Write to calc_results       -> Map values to scores
+                                 -> Accumulate scores
+                                 -> Compare to threshold
+                                 -> Fire or suppress alert
+```
+
+This separation means that **scoring is a pure function of configuration and pre-computed values**. No raw data is re-read, no aggregation is re-run, and no SQL joins are re-executed during score evaluation. The scoring query operates entirely on the output of the computation phase.
+
+### Operational Benefits
+
+This architecture enables three categories of rapid operational adjustment that would otherwise require full recomputation:
+
+**Threshold tuning.** Compliance adjusts `wash_score_threshold` from 15 to 12 via the Settings Manager UI. The scoring query re-runs against existing `calc_results` rows, applying the new threshold. New alert volume is visible in seconds. No detection query re-execution, no data re-aggregation.
+
+**Score step recalibration.** The compliance team adjusts `large_activity_score_steps` equity ranges -- for example, lowering the zero-score floor from $25,000 to $10,000. The scoring pipeline re-maps all existing computed values to scores using the new step ranges. Alert distribution changes are immediately visible for comparison against the previous configuration.
+
+**What-if analysis.** A compliance analyst can run a SQL query against `calc_results` to compare alert counts at different thresholds without modifying any configuration:
+
+```sql
+-- What-if: compare alert counts at threshold 10 vs 12 vs 15
+SELECT
+  threshold_value,
+  COUNT(*) FILTER (WHERE accumulated_score >= threshold_value) AS alert_count,
+  COUNT(*) AS candidate_count,
+  ROUND(100.0 * COUNT(*) FILTER (WHERE accumulated_score >= threshold_value) / COUNT(*), 1) AS alert_rate_pct
+FROM calc_results
+CROSS JOIN (VALUES (10), (12), (15)) AS t(threshold_value)
+WHERE model_id = 'wash_full_day'
+GROUP BY threshold_value
+ORDER BY threshold_value;
+```
+
+### Worked Example: Same Computation, Different Scoring Outcomes
+
+Consider a `large_trading_activity` result row with `primary_value = 75,000` for an equity product. The computation phase produced this value by aggregating buy and sell notional values for the day. The scoring phase then applies two different configurations:
+
+**Config A** -- Current production settings:
+```
+score_threshold_setting:  wash_score_threshold = 15
+score_steps_setting:      large_activity_score_steps (equity override)
+  Equity steps:  [0, 25K) -> 0    [25K, 100K) -> 3    [100K, 500K) -> 7    [500K, inf) -> 10
+
+primary_value = 75,000
+Range match:    25,000 <= 75,000 < 100,000
+Score awarded:  3
+
+Other calculations contribute: qty_match score=3, vwap_proximity score=6
+Accumulated score: 3 + 3 + 6 = 12
+Threshold: 15
+Result: 12 < 15 --> NO ALERT
+```
+
+**Config B** -- After compliance tunes thresholds and recalibrates steps:
+```
+score_threshold_setting:  wash_score_threshold = 12
+score_steps_setting:      large_activity_score_steps (equity override, recalibrated)
+  Equity steps:  [0, 10K) -> 0    [10K, 100K) -> 7    [100K, 500K) -> 10   [500K, inf) -> 10
+
+primary_value = 75,000
+Range match:    10,000 <= 75,000 < 100,000
+Score awarded:  7
+
+Other calculations contribute: qty_match score=3, vwap_proximity score=6
+Accumulated score: 7 + 3 + 6 = 16
+Threshold: 12
+Result: 16 >= 12 --> ALERT FIRES
+```
+
+The critical point: **the `primary_value` of 75,000 was never recomputed**. The detection query was not re-executed. The data was not re-aggregated. Only the scoring configuration changed -- the step ranges and the threshold -- and the scoring pipeline re-evaluated the existing result to produce a different alert decision.
+
+### What Requires Recomputation vs What Does Not
+
+| Change Type | Requires Recomputation? | Reason |
+|---|---|---|
+| Detection level change (e.g., product-level to account-level) | Yes | Different `GROUP BY` clause changes the aggregation grain |
+| Time window change (e.g., full-day to 4-hour) | Yes | Different temporal scope changes the data included in aggregation |
+| Threshold change (e.g., score threshold 15 to 12) | No | Scoring query compares accumulated score to new threshold |
+| Score step change (e.g., equity floor from $25K to $10K) | No | Scoring query re-maps existing computed values to new score ranges |
+| New calculation added to model | Partial | Computation required for the new calculation only; existing calculation results remain valid |
+| WHERE filter change (e.g., `buy_qty > 0` to `buy_qty > 10`) | Yes | Different candidate set requires re-executing the detection query |
+| Entity context field added | No | Context fields are read from existing query results, not re-aggregated |
+
+This separation is fundamental to the platform's operational agility. Compliance teams iterate on scoring configurations daily during model tuning. If every threshold adjustment required full recomputation -- re-reading raw trades, re-joining entity tables, re-aggregating -- the feedback loop would be minutes or hours instead of seconds.
+
+---
+
 ## Summary
 
 | Component | Design Principle | Current Implementation |
@@ -793,5 +890,15 @@ The alert still fires via the `score_based` path. Even though the quantity match
 | Threshold resolution | Score threshold is a setting, resolved per entity context | `_resolve_score_threshold()` with per-asset-class overrides |
 | Explainability | Every alert carries a complete `AlertTrace` with full audit trail | `AlertTrace` Pydantic model with 15 fields |
 | Context awareness | Same value, different score based on entity attributes | Settings override resolution via match patterns |
+| Computation/scoring separation | Calculation results are produced independently of scoring decisions | Scoring reads pre-computed `calc_results`; threshold/step changes do not require recomputation |
 
 The scoring and alerting pipeline is the most operationally critical part of the platform. It transforms raw calculation outputs into actionable compliance signals while preserving complete traceability. The design is deliberately simple -- a single boolean formula, a small set of strictness levels, and graduated score steps -- because complexity in alert logic is a compliance risk. Every decision the engine makes is recorded, every score is traceable to a specific step range, and every threshold is auditable back to its configuration source.
+
+---
+
+## Cross-References
+
+- [07 --- Detection Level Design](07-detection-level-design.md): Detection level design and per-calculation detection levels; detection level changes require recomputation (Section 8)
+- [05 --- Calculation Instance Model](05-calculation-instance-model.md): How calculations are defined and produce computed values consumed by the scoring pipeline
+- [09 --- Unified Results Schema](09-unified-results-schema.md): The `calc_results` schema that stores pre-computed values read by the scoring phase
+- [12 --- Settings Resolution Patterns](12-settings-resolution-patterns.md): How score step settings and threshold settings are resolved via the hierarchy strategy
